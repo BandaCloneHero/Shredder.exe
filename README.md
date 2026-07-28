@@ -1,3 +1,5 @@
-### Nome do jogo
+# Nome do jogo
 
-Premissa
+### Premissa
+
+Roland Schwashredder
