@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Band Hero 3D - 4 Keys Edition</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #050508;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            user-select: none;
+        }
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: radial-gradient(circle at center top, #1a102f 0%, #050508 80%);
+        }
+
+        /* Timer de Contagem Regressiva */
+        #countdown-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 120px;
+            font-weight: 900;
+            color: #00ffcc;
+            text-shadow: 0 0 30px #00ffcc, 0 0 60px #ffffff;
+            pointer-events: none;
+            z-index: 12;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        /* Barra do Tempo da Música */
+        #song-progress-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 7;
+        }
+        #song-progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00ffcc, #ff00ff);
+            transition: width 0.1s linear;
+        }
+        
+        /* HUDs Superiores */
+        #huds-container {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            pointer-events: none;
+            z-index: 5;
+            padding: 0 10px;
+        }
+
+        .player-hud {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid #333;
+            min-width: 190px;
+        }
+        .p-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #00ffcc;
+            margin-bottom: 4px;
+        }
+        .p-stats {
+            display: flex;
+            gap: 14px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .health-mini-bg {
+            width: 100%;
+            height: 10px;
+            background: #222;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 6px;
+            border: 1px solid #444;
+        }
+        .health-mini-bar {
+            width: 70%;
+            height: 100%;
+            background: #00ffcc;
+            transition: width 0.1s ease;
+        }
+
+        /* Popups de Rating */
+        .rating-popups-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 6;
+        }
+        .rating-text {
+            position: absolute;
+            font-size: 24px;
+            font-weight: 900;
+            text-align: center;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: all 0.2s ease;
+            text-shadow: 0 0 10px #000;
+        }
+
+        /* Menus Overlay */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 5, 8, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            z-index: 10;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 44px;
+            color: #00ffcc;
+            text-shadow: 0 0 20px #00ffcc;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 280px;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #050508;
+            background: #00ffcc;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+        }
+        button:hover {
+            transform: scale(1.05);
+            background: #ffffff;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+        }
+        button.secondary {
+            background: #ff3366;
+            color: #fff;
+        }
+        button.gold {
+            background: #ffcc00;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
+        }
+
+        /* Lista de Músicas */
+        .song-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .song-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .song-card:hover {
+            border-color: #00ffcc;
+            background: rgba(0, 255, 204, 0.15);
+            transform: scale(1.02);
+        }
+        .song-info h3 {
+            color: #00ffcc;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        .song-info p {
+            color: #aaa;
+            font-size: 13px;
+        }
+        .song-badge {
+            background: #111020;
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Tabela de Resultados */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 900px;
+            margin: 10px 0;
+        }
+        .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #00ffcc;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: left;
+        }
+        .result-card h3 {
+            color: #00ffcc;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 4px;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin: 4px 0;
+        }
+
+        /* Ranking Table */
+        .ranking-box {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid #00ffcc;
+            padding: 15px;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .ranking-table th, .ranking-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .ranking-table th {
+            color: #00ffcc;
+            font-size: 15px;
+        }
+        .ranking-table tr:nth-child(1) td { color: #ffcc00; font-weight: bold; }
+        .ranking-table tr:nth-child(2) td { color: #cccccc; font-weight: bold; }
+        .ranking-table tr:nth-child(3) td { color: #cd7f32; font-weight: bold; }
+
+        .save-score-box {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .save-score-box input {
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid #00ffcc;
+            background: #111020;
+            color: #fff;
+            font-weight: bold;
+            outline: none;
+            text-align: center;
+        }
+
+        /* Configurações */
+        .config-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 10px 20px;
+            width: 100%;
+            max-width: 750px;
+        }
+        .config-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 18px;
+            border-radius: 10px;
+        }
+        .key-input-group {
+            display: flex;
+            gap: 6px;
+        }
+        .key-btn {
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            border-radius: 6px;
+            font-size: 13px;
+            background: #111020;
+            color: #00ffcc;
+            border: 1px solid #00ffcc;
+            text-transform: uppercase;
+        }
+        .key-btn.listening {
+            background: #ffcc00;
+            color: #000;
+            border-color: #fff;
+            animation: pulse 0.6s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+
+        select {
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: #111020;
+            color: #00ffcc;
+            border: 1px solid #00ffcc;
+            font-weight: bold;
+            font-size: 15px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="canvas"></canvas>
+    
+    <div id="song-progress-container" class="hidden">
+        <div id="song-progress-bar"></div>
+    </div>
+
+    <div id="countdown-overlay">3</div>
+    <div id="ratings-container" class="rating-popups-container"></div>
+
+    <!-- HUDs Superiores -->
+    <div id="huds-container" class="hidden"></div>
+
+    <!-- 1. TELA INICIAL -->
+    <div id="main-menu" class="overlay">
+        <h1>BAND HERO 3D</h1>
+        <p style="color: #aaa; font-size: 16px;">Junte sua banda e domine os palcos!</p>
+        <div class="btn-group">
+            <button id="btn-play">INICIAR SHOW</button>
+            <button id="btn-ranking" class="gold">🏆 RANKING GLOBAL</button>
+            <button id="btn-config">CONFIGURAÇÕES & TECLAS</button>
+        </div>
+    </div>
+
+    <!-- 2. SELEÇÃO DE MÚSICA -->
+    <div id="song-menu" class="overlay hidden">
+        <h1>SELECIONE A MÚSICA</h1>
+        <div class="song-list-container" id="song-list"></div>
+        <button id="btn-back-song" class="secondary" style="margin-top: 10px;">VOLTAR</button>
+    </div>
+
+    <!-- 3. TELA DE RANKING GLOBAL -->
+    <div id="ranking-menu" class="overlay hidden">
+        <h1 style="color: #ffcc00; text-shadow: 0 0 20px #ffcc00;">🏆 RANKING GLOBAL</h1>
+        
+        <div class="ranking-box">
+            <table class="ranking-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>NOME</th>
+                        <th>PONTOS</th>
+                    </tr>
+                </thead>
+                <tbody id="ranking-table-body"></tbody>
+            </table>
+        </div>
+
+        <button id="btn-back-ranking">VOLTAR AO MENU</button>
+    </div>
+
+    <!-- 4. TELA DE PAUSA (ESC) -->
+    <div id="pause-menu" class="overlay hidden">
+        <h1>JOGO PAUSADO</h1>
+        <div class="btn-group">
+            <button id="btn-resume">CONTINUAR SHOW</button>
+            <button id="btn-restart-pause">REINICIAR MÚSICA</button>
+            <button id="btn-home-pause" class="secondary">VOLTAR AO MENU</button>
+        </div>
+    </div>
+
+    <!-- 5. TELA DE CONFIGURAÇÕES -->
+    <div id="config-menu" class="overlay hidden">
+        <h1>CONFIGURAÇÕES DA BANDA</h1>
+        
+        <div class="config-box">
+            <div class="config-row">
+                <label>Quantidade de Integrantes (Jogadores):</label>
+                <select id="cfg-players">
+                    <option value="1">1 Jogador (Carreira Solo)</option>
+                    <option value="2">2 Jogadores (Duo)</option>
+                    <option value="3">3 Jogadores (Trio)</option>
+                    <option value="4" selected>4 Jogadores (Banda Completa)</option>
+                </select>
+            </div>
+
+            <h3 style="color: #00ffcc; margin-top: 10px; text-align: left;">Mapeamento de Teclas (4 Teclas por Jogador):</h3>
+            <div id="keys-mapping-container"></div>
+        </div>
+
+        <button id="btn-back-config" style="margin-top: 10px;">SALVAR E VOLTAR</button>
+    </div>
+
+    <!-- 6. TELA DE FIM DE MÚSICA / RESULTADOS -->
+    <div id="victory-menu" class="overlay hidden">
+        <h1>SHOW FINALIZADO!</h1>
+        <p style="color: #aaa;" id="victory-song-title">Música concluída</p>
+        <div id="victory-results-grid" class="results-grid"></div>
+
+        <div class="save-score-box">
+            <input type="text" id="player-nick-input" placeholder="Seu Nome / Nick" maxlength="12" value="Jogador">
+            <button id="btn-save-score" class="gold">SALVAR NO RANKING</button>
+        </div>
+
+        <div class="btn-group" style="margin-top: 10px;">
+            <button id="btn-restart-victory">TOCAR NOVAMENTE</button>
+            <button id="btn-home-victory" class="secondary">MENU PRINCIPAL</button>
+        </div>
+    </div>
+
+    <!-- 7. TELA DE GAME OVER -->
+    <div id="gameover-menu" class="overlay hidden">
+        <h1 style="color: #ff3366; text-shadow: 0 0 15px #ff3366;">O SHOW FOI INTERROMPIDO!</h1>
+        <p style="font-size: 18px; color: #fff;">A plateia vaiou e o show acabou!</p>
+        <div id="final-scores-list" style="margin: 15px 0; font-size: 18px; color: #00ffcc;"></div>
+        <div class="btn-group">
+            <button id="btn-restart-gameover">TENTAR NOVAMENTE</button>
+            <button id="btn-home-gameover" class="secondary">MENU PRINCIPAL</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    const countdownEl = document.getElementById('countdown-overlay');
+    const hudsContainer = document.getElementById('huds-container');
+    const ratingsContainer = document.getElementById('ratings-container');
+    const keysMappingContainer = document.getElementById('keys-mapping-container');
+    const songProgressBar = document.getElementById('song-progress-bar');
+    const songProgressContainer = document.getElementById('song-progress-container');
+
+    const mainMenu = document.getElementById('main-menu');
+    const songMenu = document.getElementById('song-menu');
+    const rankingMenu = document.getElementById('ranking-menu');
+    const pauseMenu = document.getElementById('pause-menu');
+    const configMenu = document.getElementById('config-menu');
+    const victoryMenu = document.getElementById('victory-menu');
+    const gameoverMenu = document.getElementById('gameover-menu');
+
+    const btnPlay = document.getElementById('btn-play');
+    const btnBackSong = document.getElementById('btn-back-song');
+    const btnRanking = document.getElementById('btn-ranking');
+    const btnBackRanking = document.getElementById('btn-back-ranking');
+    const btnConfig = document.getElementById('btn-config');
+    const btnBackConfig = document.getElementById('btn-back-config');
+    const btnSaveScore = document.getElementById('btn-save-score');
+    
+    // Pause Btns
+    const btnResume = document.getElementById('btn-resume');
+    const btnRestartPause = document.getElementById('btn-restart-pause');
+    const btnHomePause = document.getElementById('btn-home-pause');
+
+    // Victory Btns
+    const btnRestartVictory = document.getElementById('btn-restart-victory');
+    const btnHomeVictory = document.getElementById('btn-home-victory');
+
+    // GameOver Btns
+    const btnRestartGameover = document.getElementById('btn-restart-gameover');
+    const btnHomeGameover = document.getElementById('btn-home-gameover');
+
+    const cfgPlayers = document.getElementById('cfg-players');
+
+    // CONFIGURAÇÃO COM 4 TECLAS CADA
+    let playerControls = [
+        { name: "P1 (Guitarra)", keys: ['a', 's', 'd', 'f'] },
+        { name: "P2 (Baixo)",    keys: ['h', 'j', 'k', 'l'] },
+        { name: "P3 (Bateria)",  keys: ['1', '2', '3', '4'] },
+        { name: "P4 (Teclado)",  keys: ['v', 'b', 'n', 'm'] }
+    ];
+
+    // BANCO DE MÚSICAS
+    const songsList = [
+        {
+            title: "Neon Dreams",
+            genre: "Pop Rock",
+            durationFrames: 3600, // ~60s
+            speed: 0.012,
+            spawnFreq: 28,
+            holdChance: 0.35,
+            badge: "FÁCIL"
+        },
+        {
+            title: "Star Highway",
+            genre: "Rock Clássico",
+            durationFrames: 2700, // ~45s
+            speed: 0.016,
+            spawnFreq: 22,
+            holdChance: 0.25,
+            badge: "MÉDIO"
+        },
+        {
+            title: "Dragonfire Blast",
+            genre: "Speed Metal",
+            durationFrames: 1800, // ~30s
+            speed: 0.021,
+            spawnFreq: 15,
+            holdChance: 0.15,
+            badge: "RÁPIDO"
+        },
+        {
+            title: "Cyber Chaos",
+            genre: "Synth Wave Solo",
+            durationFrames: 2400, // ~40s
+            speed: 0.025,
+            spawnFreq: 11,
+            holdChance: 0.10,
+            badge: "INSANO"
+        }
+    ];
+
+    let currentSong = songsList[0];
+
+    // Cores e frequências ajustadas para 4 Pistas
+    const laneColors = ['#00ff66', '#ff3333', '#ffcc00', '#3399ff'];
+    const laneFreqs = [220, 277.18, 329.63, 440];
+
+    let numPlayers = 4;
+    let isPlaying = false;
+    let isPaused = false;
+    let isCountingDown = false;
+    let animationId;
+    let audioCtx;
+    let keyStates = {};
+    let hueOffset = 0;
+
+    let songCurrentFrame = 0;
+    let playersData = [];
+
+    let defaultRanking = [
+        { name: "JimiHendrix", score: 45200 },
+        { name: "Slash", score: 38900 },
+        { name: "Flea_Bass", score: 31000 },
+        { name: "NeilPeart", score: 27500 },
+        { name: "RookieRock", score: 12000 }
+    ];
+
+    function getGlobalRanking() {
+        const saved = localStorage.getItem('bandhero_ranking');
+        return saved ? JSON.parse(saved) : defaultRanking;
+    }
+
+    function saveToGlobalRanking(name, score) {
+        let ranking = getGlobalRanking();
+        ranking.push({ name: name, score: Math.floor(score) });
+        ranking.sort((a, b) => b.score - a.score);
+        ranking = ranking.slice(0, 10);
+        localStorage.setItem('bandhero_ranking', JSON.stringify(ranking));
+    }
+
+    function renderRankingUI() {
+        const tbody = document.getElementById('ranking-table-body');
+        tbody.innerHTML = '';
+        const ranking = getGlobalRanking();
+
+        ranking.forEach((entry, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>#${idx + 1}</td>
+                <td>${entry.name}</td>
+                <td>${entry.score} pts</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderSongListUI() {
+        const container = document.getElementById('song-list');
+        container.innerHTML = '';
+
+        songsList.forEach((song) => {
+            const card = document.createElement('div');
+            card.className = 'song-card';
+            card.innerHTML = `
+                <div class="song-info">
+                    <h3>${song.title}</h3>
+                    <p>Estilo: ${song.genre} • Duração: ~${Math.round(song.durationFrames/60)}s</p>
+                </div>
+                <div class="song-badge">${song.badge}</div>
+            `;
+            card.onclick = () => {
+                currentSong = song;
+                startGameSequence();
+            };
+            container.appendChild(card);
+        });
+    }
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function renderKeyConfigUI() {
+        keysMappingContainer.innerHTML = '';
+        const count = parseInt(cfgPlayers.value);
+
+        for (let p = 0; p < count; p++) {
+            const row = document.createElement('div');
+            row.className = 'config-row';
+            
+            const label = document.createElement('label');
+            label.textContent = playerControls[p].name + ':';
+            
+            const btnGroup = document.createElement('div');
+            btnGroup.className = 'key-input-group';
+
+            playerControls[p].keys.forEach((key, kIndex) => {
+                const btn = document.createElement('button');
+                btn.className = 'key-btn';
+                btn.textContent = key.toUpperCase();
+                btn.onclick = () => startListeningKey(p, kIndex, btn);
+                btnGroup.appendChild(btn);
+            });
+
+            row.appendChild(label);
+            row.appendChild(btnGroup);
+            keysMappingContainer.appendChild(row);
+        }
+    }
+
+    let activeListeningBtn = null;
+    function startListeningKey(playerIdx, keyIdx, btnElement) {
+        if (activeListeningBtn) activeListeningBtn.classList.remove('listening');
+        activeListeningBtn = btnElement;
+        btnElement.classList.add('listening');
+        btnElement.textContent = '?';
+
+        const listenHandler = (e) => {
+            e.preventDefault();
+            const pressedKey = e.key.toLowerCase();
+            playerControls[playerIdx].keys[keyIdx] = pressedKey;
+            btnElement.textContent = pressedKey.toUpperCase();
+            btnElement.classList.remove('listening');
+            activeListeningBtn = null;
+            window.removeEventListener('keydown', listenHandler);
+        };
+
+        window.addEventListener('keydown', listenHandler, { once: true });
+    }
+
+    cfgPlayers.addEventListener('change', renderKeyConfigUI);
+
+    function initPlayersData() {
+        numPlayers = parseInt(cfgPlayers.value);
+        playersData = [];
+        songCurrentFrame = 0;
+        ratingsContainer.innerHTML = '';
+
+        for (let i = 0; i < numPlayers; i++) {
+            const rEl = document.createElement('div');
+            rEl.className = 'rating-text';
+            rEl.id = `rating-p-${i}`;
+            ratingsContainer.appendChild(rEl);
+
+            playersData.push({
+                id: i,
+                name: playerControls[i].name,
+                keys: playerControls[i].keys,
+                score: 0,
+                combo: 0,
+                multiplier: 1,
+                health: 70,
+                starpower: 0,
+                isStarPowerActive: false,
+                notes: [],
+                fireParticles: [],
+                songTimer: Math.floor(Math.random() * 15),
+                ratingEl: rEl,
+                stats: {
+                    perfect: 0,
+                    good: 0,
+                    okay: 0,
+                    miss: 0
+                }
+            });
+        }
+
+        buildHUDUI();
+    }
+
+    function buildHUDUI() {
+        hudsContainer.innerHTML = '';
+        playersData.forEach(p => {
+            const hud = document.createElement('div');
+            hud.className = 'player-hud';
+            hud.id = `hud-player-${p.id}`;
+            hud.innerHTML = `
+                <div class="p-title">${p.name}</div>
+                <div class="p-stats">
+                    <span>PTS: <span id="score-${p.id}">0</span></span>
+                    <span style="color:#00ffcc;" id="mult-${p.id}">x1</span>
+                </div>
+                <div class="health-mini-bg">
+                    <div class="health-mini-bar" id="health-${p.id}"></div>
+                </div>
+            `;
+            hudsContainer.appendChild(hud);
+        });
+    }
+
+    function showRating(p, text, color) {
+        const trackAreaWidth = window.innerWidth / numPlayers;
+        const centerX = (p.id * trackAreaWidth) + trackAreaWidth / 2;
+
+        p.ratingEl.textContent = text;
+        p.ratingEl.style.color = color;
+        p.ratingEl.style.textShadow = `0 0 12px ${color}`;
+        p.ratingEl.style.left = `${centerX}px`;
+        p.ratingEl.style.top = `40%`;
+        p.ratingEl.style.opacity = '1';
+        p.ratingEl.style.transform = 'translate(-50%, -50%) scale(1.2)';
+
+        setTimeout(() => {
+            p.ratingEl.style.opacity = '0';
+            p.ratingEl.style.transform = 'translate(-50%, -50%) scale(1.0)';
+        }, 220);
+    }
+
+    function playAudioTone(freq, isStar) {
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = isStar ? 'square' : 'sawtooth';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.18);
+    }
+
+    function triggerHit(p, laneIndex) {
+        let hitFound = false;
+        let earlyHitNote = null;
+
+        for (let i = 0; i < p.notes.length; i++) {
+            const note = p.notes[i];
+            if (note.lane === laneIndex && !note.hit) {
+                const diff = Math.abs(note.progress - 1.0);
+
+                if (diff < 0.14) {
+                    hitFound = true;
+                    p.combo++;
+                    p.multiplier = Math.min(4, 1 + Math.floor(p.combo / 10));
+                    const effectiveMult = p.isStarPowerActive ? p.multiplier * 2 : p.multiplier;
+
+                    if (diff < 0.04) {
+                        showRating(p, 'PERFEITO!', '#00ffcc');
+                        p.score += 200 * effectiveMult;
+                        p.health = Math.min(100, p.health + 5);
+                        p.stats.perfect++;
+                        if (!p.isStarPowerActive) p.starpower = Math.min(100, p.starpower + 3.5);
+                    } else if (diff < 0.08) {
+                        showRating(p, 'MUITO BOM', '#ffcc00');
+                        p.score += 100 * effectiveMult;
+                        p.health = Math.min(100, p.health + 3);
+                        p.stats.good++;
+                        if (!p.isStarPowerActive) p.starpower = Math.min(100, p.starpower + 2.0);
+                    } else {
+                        showRating(p, 'OKAY', '#ffffff');
+                        p.score += 50 * effectiveMult;
+                        p.health = Math.min(100, p.health + 1);
+                        p.stats.okay++;
+                        if (!p.isStarPowerActive) p.starpower = Math.min(100, p.starpower + 1.0);
+                    }
+
+                    if (p.starpower >= 100 && !p.isStarPowerActive) {
+                        p.isStarPowerActive = true;
+                    }
+
+                    playAudioTone(laneFreqs[laneIndex], p.isStarPowerActive);
+
+                    if (note.isHold) {
+                        note.holding = true;
+                    } else {
+                        p.notes.splice(i, 1);
+                    }
+                    break;
+                } else if (note.progress > 0.5 && note.progress < 0.86) {
+                    earlyHitNote = note;
+                }
+            }
+        }
+
+        if (!hitFound && earlyHitNote) {
+            showRating(p, 'ANCAPA!', '#ff3366');
+            p.combo = 0;
+            p.multiplier = 1;
+            p.health -= 6;
+            p.stats.miss++;
+        }
+
+        updatePlayerHUD(p);
+
+        if (p.health <= 0) {
+            triggerGameOver();
+        }
+    }
+
+    function updatePlayerHUD(p) {
+        document.getElementById(`score-${p.id}`).textContent = Math.floor(p.score);
+        const multEl = document.getElementById(`mult-${p.id}`);
+        const effectiveMult = p.isStarPowerActive ? p.multiplier * 2 : p.multiplier;
+        multEl.textContent = 'x' + effectiveMult;
+        multEl.style.color = p.isStarPowerActive ? '#00ffff' : '#00ffcc';
+
+        const hBar = document.getElementById(`health-${p.id}`);
+        hBar.style.width = p.health + '%';
+        if (p.health < 30) hBar.style.background = '#ff3366';
+        else if (p.health < 60) hBar.style.background = '#ffcc00';
+        else hBar.style.background = '#00ffcc';
+    }
+
+    function createFireParticles(p, trackAreaWidth) {
+        if (!p.isStarPowerActive) return;
+        const centerX = (p.id * trackAreaWidth) + trackAreaWidth / 2;
+        const bottomY = canvas.height - 70;
+
+        for (let i = 0; i < 3; i++) {
+            p.fireParticles.push({
+                x: centerX + (Math.random() - 0.5) * (trackAreaWidth * 0.6),
+                y: bottomY,
+                vx: (Math.random() - 0.5) * 2,
+                vy: -Math.random() * 5 - 2,
+                size: Math.random() * 6 + 3,
+                life: 20,
+                color: Math.random() < 0.5 ? '#00ffff' : '#ff00ff'
+            });
+        }
+    }
+
+    function update() {
+        if (!isPlaying || isPaused || isCountingDown) return;
+
+        songCurrentFrame++;
+        const songPercent = Math.min(100, (songCurrentFrame / currentSong.durationFrames) * 100);
+        songProgressBar.style.width = songPercent + '%';
+
+        if (songCurrentFrame >= currentSong.durationFrames) {
+            triggerVictory();
+            return;
+        }
+
+        hueOffset = (hueOffset + 3) % 360;
+        const trackAreaWidth = canvas.width / numPlayers;
+
+        playersData.forEach(p => {
+            p.songTimer++;
+            if (p.songTimer % (currentSong.spawnFreq + (p.id * 2)) === 0 && songCurrentFrame < currentSong.durationFrames - 120) {
+                const isHold = Math.random() < currentSong.holdChance;
+                p.notes.push({
+                    lane: Math.floor(Math.random() * 4), // 4 Pistas
+                    progress: 0,
+                    lengthProgress: isHold ? 0.2 + Math.random() * 0.15 : 0,
+                    isHold: isHold,
+                    holding: false
+                });
+            }
+
+            if (p.isStarPowerActive) {
+                p.starpower -= 0.25;
+                createFireParticles(p, trackAreaWidth);
+                if (p.starpower <= 0) {
+                    p.starpower = 0;
+                    p.isStarPowerActive = false;
+                }
+            }
+
+            for (let i = p.notes.length - 1; i >= 0; i--) {
+                const note = p.notes[i];
+                const keyName = p.keys[note.lane];
+                const currentMultiplier = p.isStarPowerActive ? p.multiplier * 2 : p.multiplier;
+
+                if (note.holding) {
+                    if (keyStates[keyName]) {
+                        note.lengthProgress -= currentSong.speed;
+                        p.score += 2 * currentMultiplier;
+                        p.health = Math.min(100, p.health + 0.3);
+
+                        if (note.lengthProgress <= 0) {
+                            p.notes.splice(i, 1);
+                            continue;
+                        }
+                    } else {
+                        showRating(p, 'SOLTOU!', '#ff3366');
+                        p.combo = 0;
+                        p.multiplier = 1;
+                        p.health -= 10;
+                        p.stats.miss++;
+                        p.notes.splice(i, 1);
+                        updatePlayerHUD(p);
+                        continue;
+                    }
+                } else {
+                    note.progress += currentSong.speed;
+                }
+
+                if (note.progress - note.lengthProgress > 1.12 && !note.holding) {
+                    p.notes.splice(i, 1);
+                    showRating(p, 'ERROU!', '#ff3366');
+                    p.combo = 0;
+                    p.multiplier = 1;
+                    p.health -= 12;
+                    p.stats.miss++;
+                    updatePlayerHUD(p);
+
+                    if (p.health <= 0) triggerGameOver();
+                }
+            }
+
+            for (let i = p.fireParticles.length - 1; i >= 0; i--) {
+                const fp = p.fireParticles[i];
+                fp.x += fp.vx;
+                fp.y += fp.vy;
+                fp.size *= 0.92;
+                fp.life--;
+                if (fp.life <= 0) p.fireParticles.splice(i, 1);
+            }
+        });
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const trackAreaWidth = canvas.width / numPlayers;
+        const scaleFactor = Math.max(1.1, 2.1 - (numPlayers * 0.25));
+
+        playersData.forEach((p, index) => {
+            const offsetX = index * trackAreaWidth;
+
+            const topY = 110;
+            const bottomY = canvas.height - 70;
+            const topW = trackAreaWidth * 0.40;
+            const botW = trackAreaWidth * 0.88;
+            const centerX = offsetX + trackAreaWidth / 2;
+
+            ctx.fillStyle = p.isStarPowerActive ? 'rgba(10, 30, 50, 0.92)' : 'rgba(15, 15, 25, 0.88)';
+            ctx.beginPath();
+            ctx.moveTo(centerX - topW / 2, topY);
+            ctx.lineTo(centerX + topW / 2, topY);
+            ctx.lineTo(centerX + botW / 2, bottomY);
+            ctx.lineTo(centerX - botW / 2, bottomY);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.strokeStyle = p.isStarPowerActive ? '#00ffff' : '#333355';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // BARRA LATERAL STAR POWER
+            const spWidth = 8;
+            const spHeight = (bottomY - topY) * 0.8;
+            const spX = centerX - botW / 2 - 14;
+            const spY = topY + 20;
+
+            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            ctx.strokeStyle = '#00d9ff';
+            ctx.lineWidth = 1.5;
+            ctx.fillRect(spX, spY, spWidth, spHeight);
+            ctx.strokeRect(spX, spY, spWidth, spHeight);
+
+            const fillH = (p.starpower / 100) * spHeight;
+            ctx.fillStyle = p.isStarPowerActive ? '#00ffff' : '#00d9ff';
+            ctx.fillRect(spX, spY + spHeight - fillH, spWidth, fillH);
+
+            const get3d = (prog, laneIdx) => {
+                const cy = topY + (bottomY - topY) * prog;
+                const cw = topW + (botW - topW) * prog;
+                const lw = cw / 4; // Dividido em 4 Pistas
+                const sx = centerX - cw / 2;
+                return { x: sx + lw * laneIdx + lw / 2, y: cy, scale: (0.4 + prog * 0.6) * scaleFactor };
+            };
+
+            // Linhas divisórias das 4 Pistas
+            for (let l = 0; l <= 4; l++) {
+                const topLx = (centerX - topW / 2) + (topW / 4) * l;
+                const botLx = (centerX - botW / 2) + (botW / 4) * l;
+
+                ctx.strokeStyle = p.isStarPowerActive ? 'rgba(0,255,255,0.2)' : 'rgba(255,255,255,0.1)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(topLx, topY);
+                ctx.lineTo(botLx, bottomY);
+                ctx.stroke();
+            }
+
+            p.fireParticles.forEach(fp => {
+                ctx.fillStyle = fp.color;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = fp.color;
+                ctx.beginPath();
+                ctx.arc(fp.x, fp.y, fp.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Botões de destino (4 teclas)
+            for (let l = 0; l < 4; l++) {
+                const posEnd = get3d(1.0, l);
+                const isPressed = keyStates[p.keys[l]];
+                const col = p.isStarPowerActive ? '#00ffff' : laneColors[l];
+
+                const radiusX = 28 * posEnd.scale;
+                const radiusY = 15 * posEnd.scale;
+
+                ctx.fillStyle = isPressed ? col : 'rgba(0,0,0,0.6)';
+                ctx.strokeStyle = col;
+                ctx.lineWidth = isPressed ? 5 : 2.5;
+                ctx.beginPath();
+                ctx.ellipse(posEnd.x, posEnd.y, radiusX, radiusY, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = isPressed ? '#000' : col;
+                ctx.font = `bold ${Math.max(13, Math.floor(14 * scaleFactor))}px Segoe UI`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(p.keys[l].toUpperCase(), posEnd.x, posEnd.y);
+            }
+
+            // Notas
+            p.notes.forEach(note => {
+                const pHead = note.holding ? 1.0 : note.progress;
+                const pTail = Math.max(0, pHead - note.lengthProgress);
+
+                const headPos = get3d(pHead, note.lane);
+                const tailPos = get3d(pTail, note.lane);
+
+                const noteColor = p.isStarPowerActive ? `hsl(${(hueOffset + note.lane * 50) % 360}, 100%, 65%)` : laneColors[note.lane];
+
+                if (note.isHold && note.lengthProgress > 0) {
+                    ctx.strokeStyle = noteColor;
+                    ctx.lineWidth = 20 * headPos.scale;
+                    ctx.globalAlpha = 0.7;
+                    ctx.beginPath();
+                    ctx.moveTo(headPos.x, headPos.y);
+                    ctx.lineTo(tailPos.x, tailPos.y);
+                    ctx.stroke();
+                    ctx.globalAlpha = 1.0;
+                }
+
+                if (pHead <= 1.05) {
+                    const rx = 29 * headPos.scale;
+                    const ry = 15 * headPos.scale;
+
+                    ctx.shadowBlur = (p.isStarPowerActive ? 22 : 12) * headPos.scale;
+                    ctx.shadowColor = noteColor;
+
+                    ctx.fillStyle = '#000000';
+                    ctx.beginPath();
+                    ctx.ellipse(headPos.x, headPos.y, rx + 2, ry + 2, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = noteColor;
+                    ctx.beginPath();
+                    ctx.ellipse(headPos.x, headPos.y, rx, ry, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.ellipse(headPos.x, headPos.y - (2 * headPos.scale), rx * 0.55, ry * 0.55, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.shadowBlur = 0;
+                }
+            });
+        });
+    }
+
+    function loop() {
+        update();
+        draw();
+        if (isPlaying) {
+            animationId = requestAnimationFrame(loop);
+        }
+    }
+
+    function startCountdown(callback) {
+        isCountingDown = true;
+        let count = 3;
+        countdownEl.textContent = count;
+        countdownEl.style.opacity = '1';
+        countdownEl.style.transform = 'translate(-50%, -50%) scale(1.2)';
+
+        const timer = setInterval(() => {
+            count--;
+            if (count > 0) {
+                countdownEl.textContent = count;
+            } else if (count === 0) {
+                countdownEl.textContent = 'VAI!';
+            } else {
+                clearInterval(timer);
+                countdownEl.style.opacity = '0';
+                isCountingDown = false;
+                callback();
+            }
+        }, 800);
+    }
+
+    function startGameSequence() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        initPlayersData();
+
+        mainMenu.classList.add('hidden');
+        songMenu.classList.add('hidden');
+        rankingMenu.classList.add('hidden');
+        pauseMenu.classList.add('hidden');
+        configMenu.classList.add('hidden');
+        gameoverMenu.classList.add('hidden');
+        victoryMenu.classList.add('hidden');
+
+        hudsContainer.classList.remove('hidden');
+        songProgressContainer.classList.remove('hidden');
+
+        isPaused = false;
+        draw();
+
+        startCountdown(() => {
+            isPlaying = true;
+            loop();
+        });
+    }
+
+    function togglePause() {
+        if (!isPlaying || isCountingDown) return;
+
+        isPaused = !isPaused;
+        if (isPaused) {
+            pauseMenu.classList.remove('hidden');
+        } else {
+            pauseMenu.classList.add('hidden');
+            startCountdown(() => {});
+        }
+    }
+
+    function triggerVictory() {
+        isPlaying = false;
+        cancelAnimationFrame(animationId);
+
+        document.getElementById('victory-song-title').textContent = `Música: ${currentSong.title} (${currentSong.genre})`;
+
+        const gridEl = document.getElementById('victory-results-grid');
+        gridEl.innerHTML = '';
+
+        playersData.forEach(p => {
+            gridEl.innerHTML += `
+                <div class="result-card">
+                    <h3>${p.name}</h3>
+                    <div class="stat-row"><span>Pontuação:</span> <b>${Math.floor(p.score)} Pts</b></div>
+                    <div class="stat-row"><span style="color:#00ffcc;">PERFEITO:</span> <b>${p.stats.perfect}</b></div>
+                    <div class="stat-row"><span style="color:#ffcc00;">MUITO BOM:</span> <b>${p.stats.good}</b></div>
+                    <div class="stat-row"><span style="color:#ffffff;">OKAY:</span> <b>${p.stats.okay}</b></div>
+                    <div class="stat-row"><span style="color:#ff3366;">ERROS:</span> <b>${p.stats.miss}</b></div>
+                </div>
+            `;
+        });
+
+        btnSaveScore.disabled = false;
+        btnSaveScore.textContent = "SALVAR NO RANKING";
+
+        hudsContainer.classList.add('hidden');
+        songProgressContainer.classList.add('hidden');
+        victoryMenu.classList.remove('hidden');
+    }
+
+    function triggerGameOver() {
+        isPlaying = false;
+        cancelAnimationFrame(animationId);
+
+        const listEl = document.getElementById('final-scores-list');
+        listEl.innerHTML = '';
+        playersData.forEach(p => {
+            listEl.innerHTML += `<div>${p.name}: <b>${Math.floor(p.score)} Pts</b></div>`;
+        });
+
+        hudsContainer.classList.add('hidden');
+        songProgressContainer.classList.add('hidden');
+        gameoverMenu.classList.remove('hidden');
+    }
+
+    function returnToMainMenu() {
+        isPlaying = false;
+        isPaused = false;
+        cancelAnimationFrame(animationId);
+
+        pauseMenu.classList.add('hidden');
+        songMenu.classList.add('hidden');
+        rankingMenu.classList.add('hidden');
+        configMenu.classList.add('hidden');
+        gameoverMenu.classList.add('hidden');
+        victoryMenu.classList.add('hidden');
+        hudsContainer.classList.add('hidden');
+        songProgressContainer.classList.add('hidden');
+
+        mainMenu.classList.remove('hidden');
+    }
+
+    // Teclado
+    window.addEventListener('keydown', e => {
+        const key = e.key.toLowerCase();
+
+        if (e.key === 'Escape') {
+            togglePause();
+            return;
+        }
+
+        if (!keyStates[key]) {
+            keyStates[key] = true;
+
+            if (!isPlaying || isPaused || isCountingDown) return;
+
+            playersData.forEach(p => {
+                const laneIndex = p.keys.indexOf(key);
+                if (laneIndex !== -1) {
+                    triggerHit(p, laneIndex);
+                }
+            });
+        }
+    });
+
+    window.addEventListener('keyup', e => {
+        keyStates[e.key.toLowerCase()] = false;
+    });
+
+    // Eventos dos Botões
+    btnPlay.addEventListener('click', () => {
+        renderSongListUI();
+        mainMenu.classList.add('hidden');
+        songMenu.classList.remove('hidden');
+    });
+
+    btnBackSong.addEventListener('click', () => {
+        songMenu.classList.add('hidden');
+        mainMenu.classList.remove('hidden');
+    });
+
+    btnRanking.addEventListener('click', () => {
+        renderRankingUI();
+        mainMenu.classList.add('hidden');
+        rankingMenu.classList.remove('hidden');
+    });
+
+    btnBackRanking.addEventListener('click', () => {
+        rankingMenu.classList.add('hidden');
+        mainMenu.classList.remove('hidden');
+    });
+
+    btnConfig.addEventListener('click', () => {
+        renderKeyConfigUI();
+        mainMenu.classList.add('hidden');
+        configMenu.classList.remove('hidden');
+    });
+    btnBackConfig.addEventListener('click', () => {
+        configMenu.classList.add('hidden');
+        mainMenu.classList.remove('hidden');
+    });
+
+    btnSaveScore.addEventListener('click', () => {
+        const input = document.getElementById('player-nick-input');
+        const nick = input.value.trim() || 'Jogador';
+
+        let bestScore = 0;
+        playersData.forEach(p => {
+            if (p.score > bestScore) bestScore = p.score;
+        });
+
+        saveToGlobalRanking(nick, bestScore);
+        btnSaveScore.disabled = true;
+        btnSaveScore.textContent = "SALVO! 🏆";
+    });
+
+    // Botões do Menu de Pausa
+    btnResume.addEventListener('click', togglePause);
+    btnRestartPause.addEventListener('click', startGameSequence);
+    btnHomePause.addEventListener('click', returnToMainMenu);
+
+    // Botões da Vitória
+    btnRestartVictory.addEventListener('click', startGameSequence);
+    btnHomeVictory.addEventListener('click', returnToMainMenu);
+
+    // Botões do GameOver
+    btnRestartGameover.addEventListener('click', startGameSequence);
+    btnHomeGameover.addEventListener('click', returnToMainMenu);
+
+    renderKeyConfigUI();
+    draw();
+</script>
+</body>
+</html>
