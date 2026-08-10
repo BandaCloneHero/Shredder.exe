@@ -8,7 +8,7 @@ Revision: 0.0.1
         Jogo de Ritmo em Banda / Contesto de Bandas / Cyberpunk
         
         Mecânicas Gerais
-           Acertar as notas
+           Acertar as notas,progredir de música/dificuldade a cada partida.
         
         Plataforma
           Clone Hero ou YARG, em um Computador com 4 entradas USB
@@ -18,25 +18,24 @@ Revision: 0.0.1
           Jogar músicas "reais" > Paga tijolinhos
 
         Material/Custos
-          - Sensores toque/vib. piezoelétrico para BATERIA: R$ 10 cada => 5 tambores = R$ 50
+          - Sensores de toque piezoelétrico para BATERIA: R$ 10 cada => 5 peças = R$ 50
           - Canos PVC: R$ 40 (já tem uma parte)
           - Madeira para tambores e instrumentos
           - 4 Placas No-Delay
           - EVA bateria: R$ 10 
+          - Controles Guitarra e Baixo (5 botões)
+          - Controle Teclado (6 teclas)
         
         Project Scope
           360 no scope
         
         Influences (Brief)
             <Guitar Hero>
-            <Scott Pilgrim VS The World>
+            <Rock Band>
             <Osu Mania>
             
         The elevator Pitch
             Quer jogar um jogo resenha 67? Jogue Shredder.exe
-            
-        Descrição do Projeto:
-            Fodase  
         
         O que torna esse projeto diferente? Jogo de ritmo com hardware e com 4 jogadores simultâneos.
         
@@ -45,10 +44,11 @@ Revision: 0.0.1
             <Ultrapassar a pontuação do ínimigo>
             <Combos de acertos precisos>
             <Multiplicadores de pontos por combos>
+            <Cadastro de jogador para  desbloquear novas músicas>
     
     Story
         No ano de 2167, todas as músicas bla bla bla (Brief)
-        Rola Schredder (Detailed)
+        Roland Schredder (Detailed)
         
     Assets Needed
         2D: Personagens
