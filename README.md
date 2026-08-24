@@ -23,5 +23,8 @@ O jogador é parte de uma das poucas bandas humanas que quer se manter relevcant
   - Tool - Fear Inocolum
   - DOOM Eternal Soundtrack
 
-- ## Menção não tão honrosa
-- Marcão Davião Correião
+- ## Menção honrosa
+- Marcão Davi Correia
+
+- ## Menção muito honrosa
+- Vinícius Anjos
