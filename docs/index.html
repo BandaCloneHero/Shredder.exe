@@ -3,33 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shredder.exe</title>
+    <title>Shredder.exe - Login</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
-            text-align: center;
-            padding: 50px;
-        }
-        h1 { color: #4CAF50; }
-        p { font-size: 1.2rem; }
-        .btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        }
+        body { font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; text-align: center; padding: 100px; }
+        .box { background: #2a2a2a; padding: 40px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        input { padding: 10px; font-size: 1rem; border-radius: 5px; border: none; margin-right: 10px; width: 200px; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        button:hover { background-color: #45a049; }
     </style>
 </head>
 <body>
-    <h1>Shredder.exe</h1>
-    <p>Uma banda em quarteto com instrumentos/controles implementados no estilo YARG (Yet Another Rhythm Game).</p>
-    
-    <a class="btn" href="https://github.com/BandaCloneHero/Shredder.exe/releases">Baixar o Jogo</a>
+    <div class="box">
+        <h1>Shredder.exe</h1>
+        <p>Insira seu ID para entrar:</p>
+        <form onsubmit="fazerLogin(event)">
+            <input type="text" id="userId" placeholder="Ex: jogador123" required>
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+
+    <script>
+        function fazerLogin(event) {
+            event.preventDefault();
+            const id = document.getElementById('userId').value;
+            localStorage.setItem('shredder_user_id', id);
+            window.location.href = 'instrumentos.html';
+        }
+    </script>
 </body>
 </html>

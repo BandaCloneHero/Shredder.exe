@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shredder.exe - Pronto para Jogar</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; text-align: center; padding: 60px; }
+        .info { background: #2a2a2a; padding: 30px; border-radius: 10px; display: inline-block; margin-bottom: 20px; text-align: left; }
+        .btn { display: inline-block; margin-top: 20px; padding: 15px 30px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+    <h1>Tudo Pronto!</h1>
+    
+    <div class="info">
+        <p><strong>ID:</strong> <span id="resId">-</span></p>
+        <p><strong>Instrumento:</strong> <span id="resInst">-</span></p>
+        <p><strong>Modo:</strong> <span id="resModo">-</span></p>
+    </div>
+
+    <div>
+        <br>
+        <a class="btn" href="https://github.com/BandaCloneHero/Shredder.exe/releases">Baixar / Jogar Agora</a>
+    </div>
+
+    <script>
+        document.getElementById('resId').innerText = localStorage.getItem('shredder_user_id') || 'Convidado';
+        document.getElementById('resInst').innerText = localStorage.getItem('shredder_instrumento') || 'Não escolhido';
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const modo = urlParams.get('modo');
+        document.getElementById('resModo').innerText = modo === 'historia' ? 'Modo História' : 'Freeplay';
+    </script>
+</body>
+</html>
