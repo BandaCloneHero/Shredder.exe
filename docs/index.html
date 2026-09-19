@@ -1,34 +1,17 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shredder.exe - Login</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; text-align: center; padding: 100px; }
-        .box { background: #2a2a2a; padding: 40px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        input { padding: 10px; font-size: 1rem; border-radius: 5px; border: none; margin-right: 10px; width: 200px; }
-        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        button:hover { background-color: #45a049; }
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shredder.exe // Acesso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="box">
-        <h1>Shredder.exe</h1>
-        <p>Insira seu ID para entrar:</p>
-        <form onsubmit="fazerLogin(event)">
-            <input type="text" id="userId" placeholder="Ex: jogador123" required>
-            <button type="submit">Entrar</button>
-        </form>
-    </div>
-
-    <script>
-        function fazerLogin(event) {
-            event.preventDefault();
-            const id = document.getElementById('userId').value;
-            localStorage.setItem('shredder_user_id', id);
-            window.location.href = 'instrumentos.html';
-        }
-    </script>
-</body>
-</html>
+<body class="page-login" data-page="login">
+<main class="login-shell"><section class="login-panel panel-cut" aria-labelledby="login-title">
+<div class="brand-lockup"><span class="brand-mark">//</span> SHREDDER<span class="brand-accent">.exe</span></div>
+<p class="eyebrow">REDE DE PERFORMANCE // NÓ 01</p><h1 id="login-title">Conecte-se à<br><span>frequência humana.</span></h1>
+<p class="lede">Entre na sessão local e monte sua banda para desafiar o ruído corporativo.</p>
+<form id="login-form" class="stack-form" novalidate><label for="player-id">ID DE OPERADOR</label><div class="input-wrap"><span class="input-prefix">ID:</span><input id="player-id" name="id" autocomplete="username" maxlength="24" required></div><label for="player-name">NOME DE EXIBIÇÃO</label><div class="input-wrap"><span class="input-prefix">OP:</span><input id="player-name" name="name" autocomplete="nickname" maxlength="24" placeholder="Como a rede deve te chamar?" required></div><p id="login-error" class="form-error" role="alert"></p><button class="button button-primary button-wide" type="submit"><span>INICIAR UPLINK</span><b>↗</b></button></form>
+<p class="microcopy"><span class="status-dot"></span> SESSÃO LOCAL // CRIPTOGRAFIA OFFLINE</p></section>
+<aside class="login-aside"><div class="signal-lines"></div><span class="aside-label">LIVE FEED / 2167</span><div class="waveform" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>O futuro foi masterizado.<br><strong>Agora toque por ele.</strong></p><span class="aside-code">SYS.ENTRY_//_HUMAN_BAND</span></aside></main>
+<script src="app.js"></script></body></html>

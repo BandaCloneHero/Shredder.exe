@@ -3,25 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shredder.exe - Pronto para Jogar</title>
+    <title>Shredder.exe - Partida</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; text-align: center; padding: 60px; }
-        .info { background: #2a2a2a; padding: 30px; border-radius: 10px; display: inline-block; margin-bottom: 20px; text-align: left; }
-        .btn { display: inline-block; margin-top: 20px; padding: 15px 30px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1rem; }
+        body { font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; text-align: center; padding: 50px; }
+        .box { background: #2a2a2a; padding: 30px; border-radius: 10px; display: inline-block; max-width: 400px; }
+        .btn { display: inline-block; margin-top: 20px; padding: 12px 25px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; cursor: pointer; border: none; font-size: 1rem; }
+        .btn:hover { background-color: #45a049; }
+        .voltar { background-color: #666; margin-left: 10px; }
+        .voltar:hover { background-color: #555; }
     </style>
 </head>
 <body>
-    <h1>Tudo Pronto!</h1>
-    
-    <div class="info">
-        <p><strong>ID:</strong> <span id="resId">-</span></p>
+    <div class="box">
+        <h1 id="tituloModo">Partida</h1>
+        <p><strong>Jogador ID:</strong> <span id="resId">-</span></p>
         <p><strong>Instrumento:</strong> <span id="resInst">-</span></p>
-        <p><strong>Modo:</strong> <span id="resModo">-</span></p>
-    </div>
-
-    <div>
-        <br>
-        <a class="btn" href="https://github.com/BandaCloneHero/Shredder.exe/releases">Baixar / Jogar Agora</a>
+        <hr style="border: 0; border-top: 1px solid #444; margin: 20px 0;">
+        <p id="statusJogo">Tocando música...</p>
+        
+        <div id="acoes" style="display:none;">
+            <button class="btn" onclick="concluirMusica()">Finalizar Música</button>
+        </div>
+        
+        <div>
+            <a href="modos.html" class="btn voltar">Voltar aos Modos</a>
+        </div>
     </div>
 
     <script>
@@ -30,7 +36,28 @@
         
         const urlParams = new URLSearchParams(window.location.search);
         const modo = urlParams.get('modo');
-        document.getElementById('resModo').innerText = modo === 'historia' ? 'Modo História' : 'Freeplay';
+        
+        const isHistoria = modo === 'historia';
+        document.getElementById('tituloModo').innerText = isHistoria ? 'Modo História' : 'Freeplay (Ficha Ativa)';
+
+        // Simula o término da música após 3 segundos para teste
+        setTimeout(() => {
+            document.getElementById('statusJogo').innerText = 'Música pronta para ser concluída!';
+            document.getElementById('acoes').style.display = 'block';
+        }, 2000);
+
+        function concluirMusica() {
+            if (isHistoria) {
+                // Modo história recompensa com 3 tijolinhos
+                let tijolos = parseInt(localStorage.getItem('shredder_tijolinhos') || '0');
+                tijolos += 3;
+                localStorage.setItem('shredder_tijolinhos', tijolos);
+                alert('Parabéns! Você completou a música no Modo História e ganhou 3 tijolinhos 🧱!');
+            } else {
+                alert('Partida de Freeplay concluída com sucesso!');
+            }
+            window.location.href = 'modos.html';
+        }
     </script>
 </body>
 </html>
