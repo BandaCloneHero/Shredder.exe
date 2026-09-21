@@ -1,12 +1,150 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Shredder.exe // Instrumento</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"></head>
-<body data-page="instrumentos"><header class="topbar"><a class="brand-lockup" href="index.html"><span class="brand-mark">//</span> SHREDDER<span class="brand-accent">.exe</span></a><div class="top-status"><span class="status-dot"></span> UPLINK ESTÁVEL <span class="top-divider"></span><span id="top-player">OPERADOR</span></div></header>
-<main class="page-shell"><div class="stepper"><span class="step active">01 <b>INSTRUMENTO</b></span><span class="step-line"></span><span class="step">02 <b>FASE</b></span><span class="step-line"></span><span class="step">03 <b>TICKET</b></span></div><section class="section-heading"><div><p class="eyebrow">LOADOUT // ESCOLHA DE SINAL</p><h1>Qual é a sua <span>frequência?</span></h1></div><div class="operator-chip"><span>OPERADOR</span><strong id="operator-name">---</strong></div></section><p class="section-intro">Selecione uma estação. Cada instrumento pode ser ocupado por apenas um operador nesta sessão.</p>
-<section id="instrument-grid" class="instrument-grid" aria-label="Instrumentos disponíveis">
-<button class="instrument-card" data-instrument="Guitarra" type="button"><span class="instrument-index">01 / STRING</span><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M72 21 87 6m-9 7 9 9M68 26 45 49m-6 0c-7-7-19-3-25 5-6 7-4 17 3 23 7 6 16 8 23 1 7-6 11-18 4-25l-4-4 23-23 5 5z"/><path d="m28 73 12-12m-2-14 12 12"/></svg><span class="instrument-name">GUITARRA</span><span class="instrument-status">DISPONÍVEL</span></button>
-<button class="instrument-card" data-instrument="Baixo" type="button"><span class="instrument-index">02 / LOW END</span><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M72 20 88 4m-10 8 9 9M67 26 46 47m-7 2c-8-7-18-3-24 5-6 8-4 17 3 23 7 7 17 7 24 0 7-6 10-17 4-24l-4-4 22-22 5 5z"/><path d="M35 58 25 68m14-26 12 12M88 4 93 9"/></svg><span class="instrument-name">BAIXO</span><span class="instrument-status">DISPONÍVEL</span></button>
-<button class="instrument-card" data-instrument="Bateria" type="button"><span class="instrument-index">03 / PERCUSSION</span><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="54" r="25"/><path d="M50 29V11M40 11h20M25 54H8m67 0h17M32 36 18 22m50 14 14-14M35 72 22 86m43-14 14 14"/><circle cx="50" cy="54" r="9"/></svg><span class="instrument-name">BATERIA</span><span class="instrument-status">DISPONÍVEL</span></button>
-<button class="instrument-card" data-instrument="Teclado" type="button"><span class="instrument-index">04 / SYNTH</span><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="12" y="28" width="76" height="45" rx="2"/><path d="M23 28v45m11-45v45m11-45v45m11-45v45m11-45v45m11-45v45M12 58h76"/></svg><span class="instrument-name">TECLADO</span><span class="instrument-status">DISPONÍVEL</span></button></section>
-<section class="lobby-console panel-cut"><div class="console-head"><span>LOBBY COLETIVO</span><span class="console-live"><i></i> LIVE / LOCAL</span></div><div class="console-content"><div><p class="eyebrow">NÓ DE CONVITE</p><h2>Envie o sinal.</h2><p>Escaneie para abrir este lobby em outro dispositivo e entrar na mesma sessão local.</p><span class="console-url" id="lobby-url">---</span></div><div class="qr-frame"><div id="qrcode" aria-label="QR Code do lobby"></div><span>SCAN // JOIN</span></div><div class="lobby-roster"><p class="eyebrow">OPERADORES CONECTADOS</p><div id="lobby-list"></div></div></div></section>
-<div class="page-actions"><a class="text-link" href="index.html">← REINICIAR IDENTIDADE</a><button id="continue-instrument" class="button button-primary" type="button" disabled>ESCOLHER FASE <b>→</b></button></div></main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><script src="app.js"></script></body></html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shredder.exe // Instrumento</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="instrumentos">
+    <header class="topbar">
+        <a class="brand-lockup" href="index.html"><span class="brand-mark">//</span> SHREDDER<span class="brand-accent">.exe</span></a>
+        <div class="top-status"><span class="status-dot"></span> UPLINK ESTÁVEL <span class="top-divider"></span><span id="top-player">OPERADOR</span></div>
+    </header>
+    
+    <main class="page-shell">
+        <div class="stepper">
+            <span class="step active">01 <b>INSTRUMENTO</b></span>
+            <span class="step-line"></span>
+            <span class="step">02 <b>FASE</b></span>
+            <span class="step-line"></span>
+            <span class="step">03 <b>TICKET</b></span>
+        </div>
+        
+        <section class="section-heading">
+            <div>
+                <p class="eyebrow">LOADOUT // ESCOLHA DE SINAL</p>
+                <h1>Qual é a sua <span>frequência?</span></h1>
+            </div>
+            <div class="operator-chip">
+                <span>OPERADOR</span>
+                <strong id="operator-name">---</strong>
+            </div>
+        </section>
+        
+        <p class="section-intro">Selecione uma estação. Cada instrumento pode ser ocupado por apenas um operador nesta sessão.</p>
+        
+        <section id="instrument-grid" class="instrument-grid" aria-label="Instrumentos disponíveis">
+            <!-- GUITARRA ATUALIZADA COM IMAGEM -->
+            <button class="instrument-card" data-instrument="Guitarra" type="button">
+                <span class="instrument-index">01 / STRING</span>
+                <img src="images/Guitarra.png" alt="Guitarra" class="instrument-icon">
+                <span class="instrument-name">GUITARRA</span>
+                <span class="instrument-status">DISPONÍVEL</span>
+            </button>
+            
+            <!-- BAIXO ATUALIZADO COM IMAGEM -->
+        <button class="instrument-card" data-instrument="Baixo" type="button">
+            <span class="instrument-index">02 / LOW END</span>
+            <img src="images/Baixo.png" alt="Baixo" class="instrument-icon">
+            <span class="instrument-name">BAIXO</span>
+            <span class="instrument-status">DISPONÍVEL</span>
+        </button>
+            
+            <button class="instrument-card" data-instrument="Bateria" type="button">
+                <span class="instrument-index">03 / PERCUSSION</span>
+                <img src="images/Bateria.png" alt="Bateria" class="instrument-icon">
+                <span class="instrument-name">BATERIA</span>
+                <span class="instrument-status">DISPONÍVEL</span>
+            </button>
+            
+            <button class="instrument-card" data-instrument="Teclado" type="button">
+                <span class="instrument-index">04 / SYNTH</span>
+                <img src="images/Teclado.png" alt="Teclado" class="instrument-icon">
+                <span class="instrument-name">TECLADO</span>
+                <span class="instrument-status">DISPONÍVEL</span>
+            </button>
+        </section>
+        
+        <section class="lobby-console panel-cut">
+            <div class="console-head">
+                <span>LOBBY COLETIVO</span>
+                <span class="console-live"><i></i> LIVE / LOCAL</span>
+            </div>
+            <div class="console-content">
+                <div>
+                    <p class="eyebrow">NÓ DE CONVITE</p>
+                    <h2>Envie o sinal.</h2>
+                    <p>Escaneie para abrir este lobby em outro dispositivo e entrar na mesma sessão local.</p>
+                    <span class="console-url" id="lobby-url">---</span>
+                </div>
+                <div class="qr-frame">
+                    <img id="qr-code-img" src="" alt="Scan to Join">
+                    <span>SCAN // JOIN</span>
+                </div>
+                <div class="lobby-roster">
+                    <p class="eyebrow">OPERADORES CONECTADOS</p>
+                    <div id="lobby-list"></div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="page-actions">
+            <a class="text-link" href="index.html">← REINICIAR IDENTIDADE</a>
+            <button id="continue-instrument" class="button button-primary" type="button" disabled>ESCOLHER FASE <b>→</b></button>
+        </div>
+    </main>
+    
+    <script src="app.js"></script>
+
+        <!-- Importa o cliente do Socket.io -->
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+        <script>
+            const socket = io('http://localhost:3000');
+            const meuNomeOperador = "6do7";
+
+            socket.on('atualizar_estado', (estado) => {
+                for (const [nomeInstrumento, operadorQueEscolheu] of Object.entries(estado.instrumentos)) {
+                    document.querySelectorAll('.instrument-card').forEach((card) => {
+                        if (card.dataset.instrument.toLowerCase() !== nomeInstrumento) return;
+
+                        const statusText = card.querySelector('.instrument-status');
+                        card.classList.toggle('ocupado', operadorQueEscolheu !== null && operadorQueEscolheu !== meuNomeOperador);
+                        card.classList.toggle('selecionado', operadorQueEscolheu === meuNomeOperador);
+                        card.disabled = operadorQueEscolheu !== null && operadorQueEscolheu !== meuNomeOperador;
+
+                        if (statusText) {
+                            statusText.textContent = operadorQueEscolheu === null
+                                ? 'DISPONÍVEL'
+                                : operadorQueEscolheu === meuNomeOperador
+                                    ? 'SELECIONADO // VOCÊ'
+                                    : `OCUPADO // ${operadorQueEscolheu}`;
+                        }
+                    });
+                }
+            });
+
+            function tentarEscolherInstrumento(nomeInstrumento) {
+                socket.emit('escolher_instrumento', {
+                    instrumento: nomeInstrumento.toLowerCase(),
+                    operadorNome: meuNomeOperador
+                });
+            }
+
+            document.querySelectorAll('.instrument-card').forEach((card) => {
+                card.addEventListener('click', () => tentarEscolherInstrumento(card.dataset.instrument));
+            });
+        </script>
+
+        <script>
+            // Usa a URL pública atual da página para gerar o QR Code.
+            const urlAtual = window.location.href;
+            const apiQrCode = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(urlAtual)}`;
+            document.getElementById('qr-code-img').src = apiQrCode;
+        </script>
+</body>
+</html>

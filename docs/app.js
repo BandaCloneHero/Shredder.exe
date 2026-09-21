@@ -144,19 +144,6 @@ function initializeInstruments() {
     });
     renderLobby(player);
 
-    // Garante que o QR Code aponte para o link público do GitHub Pages se você já publicou lá,
-    // ou mantém o link atual ajustando para o IP da rede se preferir testar no celular via Wi-Fi.
-    let qrTargetUrl = window.location.href;
-    if (qrTargetUrl.includes('localhost') || qrTargetUrl.includes('127.0.0.1')) {
-        // Dica: Se for testar no celular na mesma rede, substitua o localhost pelo IP do seu PC (ex: 192.168.X.X)
-        qrTargetUrl = qrTargetUrl.replace('127.0.0.1', '192.168.1.10'); // Ajuste para o seu IP se precisar
-    }
-
-    if (window.QRCode) {
-        const qrContainer = document.querySelector('#qrcode');
-        qrContainer.innerHTML = ''; // Limpa anterior se houver
-        new QRCode(qrContainer, { text: qrTargetUrl, width: 140, height: 140, colorDark: '#071017', colorLight: '#eef9f5' });
-    }
 }
 
 function getProgress() {
