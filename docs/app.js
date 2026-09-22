@@ -42,7 +42,7 @@ function setLobby(lobby) {
 function ensurePlayer() {
     const player = getPlayer();
     if (!player || !player.id || !player.nome) {
-        window.location.href = 'index.html';
+        window.location.href = `index.html${window.location.search}`;
         return null;
     }
     return player;
@@ -89,7 +89,7 @@ function initializeLogin() {
         const player = { id, nome, instrumento: previous?.instrumento || null };
         writeJson(STORAGE.player, player);
         upsertPlayer(player);
-        window.location.href = 'instrumentos.html';
+        window.location.href = `instrumentos.html${window.location.search}`;
     });
 }
 
@@ -105,45 +105,6 @@ function initializeInstruments() {
     if (!player) return;
     document.querySelector('#top-player').textContent = player.nome;
     document.querySelector('#operator-name').textContent = player.nome;
-    document.querySelector('#lobby-url').textContent = window.location.href;
-    const occupiedBy = Object.fromEntries(getLobby().filter(item => item.id !== player.id && item.instrumento).map(item => [item.instrumento, item]));
-    const continueButton = document.querySelector('#continue-instrument');
-    let selected = player.instrumento;
-
-    document.querySelectorAll('.instrument-card').forEach(card => {
-        const instrument = card.dataset.instrument;
-        const status = card.querySelector('.instrument-status');
-        const owner = occupiedBy[instrument];
-        if (owner) {
-            card.classList.add('occupied');
-            card.disabled = true;
-            status.textContent = `OCUPADO // ${owner.nome}`;
-        } else if (instrument === selected) {
-            card.classList.add('selected');
-            status.textContent = 'SELECIONADO // VOCÊ';
-        }
-        card.addEventListener('click', () => {
-            if (card.disabled) return;
-            document.querySelectorAll('.instrument-card').forEach(item => {
-                item.classList.remove('selected');
-                if (!item.classList.contains('occupied')) item.querySelector('.instrument-status').textContent = 'DISPONÍVEL';
-            });
-            selected = instrument;
-            card.classList.add('selected');
-            status.textContent = 'SELECIONADO // VOCÊ';
-            const updated = { ...player, instrumento: selected };
-            writeJson(STORAGE.player, updated);
-            upsertPlayer(updated);
-            renderLobby(updated);
-            continueButton.disabled = false;
-        });
-    });
-    continueButton.disabled = !selected;
-    continueButton.addEventListener('click', () => {
-        if (selected) window.location.href = 'modos.html';
-    });
-    renderLobby(player);
-
 }
 
 function getProgress() {

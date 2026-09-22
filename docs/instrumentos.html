@@ -38,30 +38,28 @@
         <p class="section-intro">Selecione uma estação. Cada instrumento pode ser ocupado por apenas um operador nesta sessão.</p>
         
         <section id="instrument-grid" class="instrument-grid" aria-label="Instrumentos disponíveis">
-            <!-- GUITARRA ATUALIZADA COM IMAGEM -->
-            <button class="instrument-card" data-instrument="Guitarra" type="button">
+            <button id="guitarra" class="instrument-card" data-instrument="Guitarra" type="button" onclick="tentarEscolherInstrumento('guitarra')">
                 <span class="instrument-index">01 / STRING</span>
                 <img src="images/Guitarra.png" alt="Guitarra" class="instrument-icon">
                 <span class="instrument-name">GUITARRA</span>
                 <span class="instrument-status">DISPONÍVEL</span>
             </button>
             
-            <!-- BAIXO ATUALIZADO COM IMAGEM -->
-        <button class="instrument-card" data-instrument="Baixo" type="button">
+        <button id="baixo" class="instrument-card" data-instrument="Baixo" type="button" onclick="tentarEscolherInstrumento('baixo')">
             <span class="instrument-index">02 / LOW END</span>
             <img src="images/Baixo.png" alt="Baixo" class="instrument-icon">
             <span class="instrument-name">BAIXO</span>
             <span class="instrument-status">DISPONÍVEL</span>
         </button>
             
-            <button class="instrument-card" data-instrument="Bateria" type="button">
+            <button id="bateria" class="instrument-card" data-instrument="Bateria" type="button" onclick="tentarEscolherInstrumento('bateria')">
                 <span class="instrument-index">03 / PERCUSSION</span>
                 <img src="images/Bateria.png" alt="Bateria" class="instrument-icon">
                 <span class="instrument-name">BATERIA</span>
                 <span class="instrument-status">DISPONÍVEL</span>
             </button>
             
-            <button class="instrument-card" data-instrument="Teclado" type="button">
+            <button id="teclado" class="instrument-card" data-instrument="Teclado" type="button" onclick="tentarEscolherInstrumento('teclado')">
                 <span class="instrument-index">04 / SYNTH</span>
                 <img src="images/Teclado.png" alt="Teclado" class="instrument-icon">
                 <span class="instrument-name">TECLADO</span>
@@ -82,7 +80,8 @@
                     <span class="console-url" id="lobby-url">---</span>
                 </div>
                 <div class="qr-frame">
-                    <img id="qr-code-img" src="" alt="Scan to Join">
+                    <div id="qr-code-container" style="display: flex; justify-content: center; align-items: center; width: 140px; height: 140px; background: #fff; padding: 5px;">
+                    </div>
                     <span>SCAN // JOIN</span>
                 </div>
                 <div class="lobby-roster">
@@ -100,51 +99,117 @@
     
     <script src="app.js"></script>
 
-        <!-- Importa o cliente do Socket.io -->
         <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-
+        <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
         <script>
-            const socket = io('http://localhost:3000');
-            const meuNomeOperador = "6do7";
+            const socket = io();
+            const player = JSON.parse(localStorage.getItem('shredder_player'));
+            if (!player || !player.nome) {
+                window.location.href = `index.html${window.location.search}`;
+            }
+            const meuNomeOperador = player?.id || player?.nome;
 
-            socket.on('atualizar_estado', (estado) => {
-                for (const [nomeInstrumento, operadorQueEscolheu] of Object.entries(estado.instrumentos)) {
-                    document.querySelectorAll('.instrument-card').forEach((card) => {
-                        if (card.dataset.instrument.toLowerCase() !== nomeInstrumento) return;
+            let minhaSalaId = null;
+            let estadoAtualSala = {};
+            const salaUrl = new URLSearchParams(window.location.search).get('sala');
 
-                        const statusText = card.querySelector('.instrument-status');
-                        card.classList.toggle('ocupado', operadorQueEscolheu !== null && operadorQueEscolheu !== meuNomeOperador);
-                        card.classList.toggle('selecionado', operadorQueEscolheu === meuNomeOperador);
-                        card.disabled = operadorQueEscolheu !== null && operadorQueEscolheu !== meuNomeOperador;
-
-                        if (statusText) {
-                            statusText.textContent = operadorQueEscolheu === null
-                                ? 'DISPONÍVEL'
-                                : operadorQueEscolheu === meuNomeOperador
-                                    ? 'SELECIONADO // VOCÊ'
-                                    : `OCUPADO // ${operadorQueEscolheu}`;
+            function gerarQrCode(salaId) {
+                const urlDaSala = `${window.location.protocol}//${window.location.host}/instrumentos.html?sala=${salaId}`;
+                document.getElementById('lobby-url').textContent = urlDaSala;
+                const containerQr = document.getElementById('qr-code-container');
+                if (containerQr) {
+                    containerQr.innerHTML = '';
+                    QRCode.toCanvas(urlDaSala, { width: 130, margin: 1 }, (error, canvas) => {
+                        if (error) {
+                            console.error('Erro ao gerar QR Code:', error);
+                        } else {
+                            containerQr.appendChild(canvas);
+                            console.log('> QR Code gerado e injetado com sucesso!');
                         }
                     });
+                }
+            }
+
+            if (salaUrl) {
+                minhaSalaId = salaUrl;
+                socket.emit('entrar_sala', { salaId: minhaSalaId, operadorNome: meuNomeOperador });
+                gerarQrCode(minhaSalaId);
+            } else {
+                socket.emit('criar_sala', (resposta) => {
+                    minhaSalaId = resposta.salaId;
+                    window.history.replaceState({}, '', `${window.location.pathname}?sala=${minhaSalaId}`);
+                    socket.emit('entrar_sala', { salaId: minhaSalaId, operadorNome: meuNomeOperador });
+                    gerarQrCode(minhaSalaId);
+                });
+            }
+
+            socket.on('atualizar_estado', (estado) => {
+                console.log('Estado recebido:', estado);
+                estadoAtualSala = estado;
+
+                const containerOperadores = document.getElementById('lobby-list');
+                if (containerOperadores && estado.operadores) {
+                    containerOperadores.innerHTML = '';
+                    estado.operadores.forEach(opName => {
+                        const divOp = document.createElement('div');
+                        divOp.className = 'roster-row';
+                        if (opName === meuNomeOperador) divOp.classList.add('current');
+                        divOp.innerText = opName === meuNomeOperador ? `${opName} / VOCÊ` : opName;
+                        containerOperadores.appendChild(divOp);
+                    });
+                    if (estado.operadores.length === 0) {
+                        const vazio = document.createElement('div');
+                        vazio.className = 'roster-row';
+                        vazio.innerText = 'Nenhum operador conectado.';
+                        containerOperadores.appendChild(vazio);
+                    }
+                }
+
+                for (const [nomeInstrumento, operadorQueEscolheu] of Object.entries(estado.instrumentos)) {
+                    const card = document.getElementById(nomeInstrumento);
+                    if (!card) continue;
+
+                    const statusEl = card.querySelector('.instrument-status');
+                    if (operadorQueEscolheu === null) {
+                        card.classList.remove('ocupado', 'selecionado-por-outro', 'selecionado');
+                        card.style.pointerEvents = 'auto';
+                        card.style.opacity = '1';
+                        if (statusEl) {
+                            statusEl.innerText = 'DISPONÍVEL';
+                            statusEl.style.color = '';
+                        }
+                    } else if (operadorQueEscolheu === meuNomeOperador) {
+                        card.classList.add('selecionado');
+                        card.classList.remove('ocupado', 'selecionado-por-outro');
+                        card.style.pointerEvents = 'auto';
+                        card.style.opacity = '1';
+                        if (statusEl) {
+                            statusEl.innerText = 'SELECIONADO // VOCÊ';
+                            statusEl.style.color = '#00ffcc';
+                        }
+                    } else {
+                        card.classList.add('ocupado');
+                        card.classList.remove('selecionado', 'selecionado-por-outro');
+                        card.style.pointerEvents = 'none';
+                        card.style.opacity = '0.5';
+                        if (statusEl) {
+                            statusEl.innerText = `OCUPADO // ${operadorQueEscolheu}`;
+                            statusEl.style.color = '#ff3333';
+                        }
+                    }
                 }
             });
 
             function tentarEscolherInstrumento(nomeInstrumento) {
+                if (!minhaSalaId) return;
+                console.log(`Tentando escolher o instrumento: ${nomeInstrumento}`);
                 socket.emit('escolher_instrumento', {
-                    instrumento: nomeInstrumento.toLowerCase(),
+                    salaId: minhaSalaId,
+                    instrumento: nomeInstrumento,
                     operadorNome: meuNomeOperador
                 });
             }
 
-            document.querySelectorAll('.instrument-card').forEach((card) => {
-                card.addEventListener('click', () => tentarEscolherInstrumento(card.dataset.instrument));
-            });
-        </script>
-
-        <script>
-            // Usa a URL pública atual da página para gerar o QR Code.
-            const urlAtual = window.location.href;
-            const apiQrCode = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(urlAtual)}`;
-            document.getElementById('qr-code-img').src = apiQrCode;
         </script>
 </body>
 </html>
