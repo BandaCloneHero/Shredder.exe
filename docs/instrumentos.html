@@ -38,37 +38,45 @@
         <p class="section-intro">Selecione uma estação. Cada instrumento pode ser ocupado por apenas um operador nesta sessão.</p>
         
         <section id="instrument-grid" class="instrument-grid" aria-label="Instrumentos disponíveis">
-            <button id="guitarra" class="instrument-card" data-instrument="Guitarra" type="button" onclick="tentarEscolherInstrumento('guitarra')">
-                <span class="instrument-index">01 / STRING</span>
+            <div class="instrument-slot">
+                <button id="guitarra" class="instrument-card" data-instrument="Guitarra" type="button" onclick="tentarEscolherInstrumento('guitarra')">
                 <img src="images/Guitarra.png" alt="Guitarra" class="instrument-icon">
                 <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
+                <img src="images/Ocupado.png" alt="" class="instrument-occupied" aria-hidden="true" hidden>
                 <span class="instrument-name">GUITARRA</span>
+                </button>
                 <span class="instrument-status">DISPONÍVEL</span>
-            </button>
+            </div>
             
-        <button id="baixo" class="instrument-card" data-instrument="Baixo" type="button" onclick="tentarEscolherInstrumento('baixo')">
-            <span class="instrument-index">02 / LOW END</span>
-            <img src="images/Baixo.png" alt="Baixo" class="instrument-icon">
-            <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
-            <span class="instrument-name">BAIXO</span>
-            <span class="instrument-status">DISPONÍVEL</span>
-        </button>
-            
-            <button id="bateria" class="instrument-card" data-instrument="Bateria" type="button" onclick="tentarEscolherInstrumento('bateria')">
-                <span class="instrument-index">03 / PERCUSSION</span>
-                <img src="images/Bateria.png" alt="Bateria" class="instrument-icon">
-                <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
-                <span class="instrument-name">BATERIA</span>
+            <div class="instrument-slot">
+                <button id="baixo" class="instrument-card" data-instrument="Baixo" type="button" onclick="tentarEscolherInstrumento('baixo')">
+                    <img src="images/Baixo.png" alt="Baixo" class="instrument-icon">
+                    <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
+                    <img src="images/Ocupado.png" alt="" class="instrument-occupied" aria-hidden="true" hidden>
+                    <span class="instrument-name">BAIXO</span>
+                </button>
                 <span class="instrument-status">DISPONÍVEL</span>
-            </button>
+            </div>
             
-            <button id="teclado" class="instrument-card" data-instrument="Teclado" type="button" onclick="tentarEscolherInstrumento('teclado')">
-                <span class="instrument-index">04 / SYNTH</span>
-                <img src="images/Teclado.png" alt="Teclado" class="instrument-icon">
-                <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
-                <span class="instrument-name">TECLADO</span>
+            <div class="instrument-slot">
+                <button id="bateria" class="instrument-card" data-instrument="Bateria" type="button" onclick="tentarEscolherInstrumento('bateria')">
+                    <img src="images/Bateria.png" alt="Bateria" class="instrument-icon">
+                    <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
+                    <img src="images/Ocupado.png" alt="" class="instrument-occupied" aria-hidden="true" hidden>
+                    <span class="instrument-name">BATERIA</span>
+                </button>
                 <span class="instrument-status">DISPONÍVEL</span>
-            </button>
+            </div>
+            
+            <div class="instrument-slot">
+                <button id="teclado" class="instrument-card" data-instrument="Teclado" type="button" onclick="tentarEscolherInstrumento('teclado')">
+                    <img src="images/Teclado.png" alt="Teclado" class="instrument-icon">
+                    <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
+                    <img src="images/Ocupado.png" alt="" class="instrument-occupied" aria-hidden="true" hidden>
+                    <span class="instrument-name">TECLADO</span>
+                </button>
+                <span class="instrument-status">DISPONÍVEL</span>
+            </div>
         </section>
         
         <section class="lobby-console panel-cut">
@@ -188,10 +196,12 @@
                     const card = document.getElementById(nomeInstrumento);
                     if (!card) continue;
 
-                    const statusEl = card.querySelector('.instrument-status');
+                    const statusEl = card.parentElement.querySelector('.instrument-status');
                     const frameEl = card.querySelector('.instrument-frame');
+                    const occupiedEl = card.querySelector('.instrument-occupied');
                     if (operadorQueEscolheu === null) {
                         if (frameEl) frameEl.src = 'images/Moldura-livre.png';
+                        if (occupiedEl) occupiedEl.hidden = true;
                         card.classList.remove('ocupado', 'selecionado-por-outro', 'selecionado');
                         card.style.pointerEvents = 'auto';
                         card.style.opacity = '1';
@@ -201,6 +211,7 @@
                         }
                     } else if (operadorQueEscolheu === meuNomeOperador) {
                         if (frameEl) frameEl.src = 'images/Moldura-ocupada.png';
+                        if (occupiedEl) occupiedEl.hidden = false;
                         meuInstrumentoEscolhido = card.dataset.instrument;
                         card.classList.add('selecionado');
                         card.classList.remove('ocupado', 'selecionado-por-outro');
@@ -212,6 +223,7 @@
                         }
                     } else {
                         if (frameEl) frameEl.src = 'images/Moldura-ocupada.png';
+                        if (occupiedEl) occupiedEl.hidden = false;
                         card.classList.add('ocupado');
                         card.classList.remove('selecionado', 'selecionado-por-outro');
                         card.style.pointerEvents = 'none';
@@ -243,6 +255,18 @@
                     operadorNome: meuNomeOperador
                 });
             }
+
+            document.querySelectorAll('.instrument-card').forEach(card => {
+                card.addEventListener('pointerdown', () => {
+                    if (card.classList.contains('occupied')) return;
+                    card.classList.remove('is-pressing');
+                    void card.offsetWidth;
+                    card.classList.add('is-pressing');
+                });
+                card.addEventListener('animationend', event => {
+                    if (event.animationName === 'instrument-press') card.classList.remove('is-pressing');
+                });
+            });
 
             btnContinuar.addEventListener('click', () => {
                 window.location.href = `modos.html?sala=${minhaSalaId}`;
