@@ -1,115 +1,112 @@
-const express = require('express');
 const http = require('http');
-const { Server } = require('socket.io');
+const express = require('express');
 const path = require('path');
+const { Server } = require('socket.io');
 
 const app = express();
 const server = http.createServer(app);
+const io = new Server(server);
 
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }
-});
+app.use(express.static(path.join(__dirname, '../docs'))); // Serve os ficheiros da sua pasta de front-end
 
-// Libera os arquivos da sua pasta 'docs'
-app.use(express.static(path.join(__dirname, '../docs')));
-
-// Memória de salas ativas
+// Salas ativas guardadas em memória (como o Map de salas deles)
 const salas = {};
 
 io.on('connection', (socket) => {
   console.log(`> Novo cliente conectado: ${socket.id}`);
 
-  // Criar nova sala
+  // Criar uma nova sala com ID único
   socket.on('criar_sala', (callback) => {
     const salaId = Math.random().toString(36).substring(2, 8).toUpperCase();
-
     salas[salaId] = {
       instrumentos: { guitarra: null, baixo: null, bateria: null, teclado: null },
       operadores: {}
     };
-
-    callback?.({ salaId });
-    console.log(`> Sala criada: ${salaId}`);
+    callback({ salaId });
   });
 
-  // Entrar em uma sala existente (via QR Code)
-  socket.on('entrar_sala', ({ salaId, operadorNome }, callback) => {
-    salaId = String(salaId || '').trim().toUpperCase();
-    operadorNome = String(operadorNome || '').trim();
-    if (!salaId || !operadorNome || !salas[salaId]) {
-      callback?.({ ok: false, erro: 'Sala não encontrada.' });
-      return;
+  // Entrar na sala existente
+  socket.on('entrar_sala', ({ salaId, operadorNome }) => {
+    const operadorId = operadorNome;
+    if (!salas[salaId]) {
+      salas[salaId] = {
+        instrumentos: { guitarra: null, baixo: null, bateria: null, teclado: null },
+        operadores: {}
+      };
     }
 
     socket.join(salaId);
     socket.data.salaId = salaId;
+    socket.data.operadorId = operadorId;
     socket.data.operadorNome = operadorNome;
-    salas[salaId].operadores[socket.id] = operadorNome;
 
-    callback?.({ ok: true });
-    console.log(`> Operador ${operadorNome} (${socket.id}) entrou na sala ${salaId}`);
-    enviarEstadoAtualizado(salaId);
+    // Regista o operador na sala
+    salas[salaId].operadores[operadorId] = { socketId: socket.id, nome: operadorNome };
+
+    enviarEstadoSala(salaId);
   });
 
-  // Escolher ou liberar um instrumento dentro da sala
+  // Escolher ou soltar instrumento (Mutuamente exclusivo)
   socket.on('escolher_instrumento', ({ salaId, instrumento, operadorNome }) => {
-    salaId = String(salaId || '').trim().toUpperCase();
-    instrumento = String(instrumento || '').trim().toLowerCase();
-    operadorNome = String(operadorNome || '').trim();
+    const operadorId = operadorNome;
     const sala = salas[salaId];
-    if (!sala || socket.data.salaId !== salaId || socket.data.operadorNome !== operadorNome || !Object.hasOwn(sala.instrumentos, instrumento)) return;
+    if (!sala) return;
 
-    if (sala.instrumentos[instrumento] === operadorNome) {
+    // Se já for dele, desmarca (liberta)
+    if (sala.instrumentos[instrumento] === operadorId) {
       sala.instrumentos[instrumento] = null;
-    } else if (sala.instrumentos[instrumento] === null) {
-      for (const inst in sala.instrumentos) {
-        if (sala.instrumentos[inst] === operadorNome) sala.instrumentos[inst] = null;
+    } else {
+      // Retira de qualquer outro instrumento que ele estivesse a usar antes
+      for (let inst in sala.instrumentos) {
+        if (sala.instrumentos[inst] === operadorId) {
+          sala.instrumentos[inst] = null;
+        }
       }
-      sala.instrumentos[instrumento] = operadorNome;
+      // Ocupa o novo instrumento se estiver livre
+      if (!sala.instrumentos[instrumento]) {
+        sala.instrumentos[instrumento] = operadorId;
+      }
     }
 
-    enviarEstadoAtualizado(salaId);
+    enviarEstadoSala(salaId);
   });
 
-  // Desconexão limpa o operador e a sala vazia
+  // Desconexão limpa (Garante que sai da lista e liberta o instrumento)
   socket.on('disconnect', () => {
-    const salaId = socket.data.salaId;
-    const operadorNome = socket.data.operadorNome;
-
+    const { salaId, operadorId } = socket.data;
     if (salaId && salas[salaId]) {
       const sala = salas[salaId];
-      delete sala.operadores[socket.id];
+      
+      delete sala.operadores[operadorId];
 
-      for (const inst in sala.instrumentos) {
-        if (sala.instrumentos[inst] === operadorNome) sala.instrumentos[inst] = null;
+      for (let inst in sala.instrumentos) {
+        if (sala.instrumentos[inst] === operadorId) {
+          sala.instrumentos[inst] = null;
+        }
       }
 
+      // Se a sala esvaziou completamente, apaga da memória
       const socketsNaSala = io.sockets.adapter.rooms.get(salaId);
       if (!socketsNaSala || socketsNaSala.size === 0) {
         delete salas[salaId];
-        console.log(`> Sala ${salaId} esvaziou e foi apagada.`);
+        console.log(`> Sala vazia ${salaId} removida da memória.`);
       } else {
-        enviarEstadoAtualizado(salaId);
+        enviarEstadoSala(salaId);
       }
     }
-
-    console.log(`> Cliente desconectado: ${socket.id}`);
   });
 });
 
-function enviarEstadoAtualizado(salaId) {
+function enviarEstadoSala(salaId) {
   const sala = salas[salaId];
   if (!sala) return;
 
   io.to(salaId).emit('atualizar_estado', {
     instrumentos: sala.instrumentos,
-    operadores: Object.values(sala.operadores)
+    operadores: Object.values(sala.operadores).map(op => op.nome)
   });
 }
 
 server.listen(3000, () => {
-  console.log('Servidor rodando na porta 3000');
+  console.log('Servidor de instrumentos rodando na porta 3000');
 });
