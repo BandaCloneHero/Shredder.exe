@@ -328,6 +328,23 @@ button, input {
     filter: drop-shadow(0 0 12px rgba(0,240,255,.55));
 }
 
+.instrument-card img.instrument-frame {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    pointer-events: none;
+}
+
+.instrument-card .instrument-index,
+.instrument-card .instrument-name,
+.instrument-card .instrument-status {
+    position: relative;
+    z-index: 3;
+}
+
 .instrument-index, .instrument-status {
     font-size: .62rem;
     color: var(--muted);

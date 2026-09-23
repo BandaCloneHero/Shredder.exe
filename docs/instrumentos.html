@@ -41,6 +41,7 @@
             <button id="guitarra" class="instrument-card" data-instrument="Guitarra" type="button" onclick="tentarEscolherInstrumento('guitarra')">
                 <span class="instrument-index">01 / STRING</span>
                 <img src="images/Guitarra.png" alt="Guitarra" class="instrument-icon">
+                <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
                 <span class="instrument-name">GUITARRA</span>
                 <span class="instrument-status">DISPONÍVEL</span>
             </button>
@@ -48,6 +49,7 @@
         <button id="baixo" class="instrument-card" data-instrument="Baixo" type="button" onclick="tentarEscolherInstrumento('baixo')">
             <span class="instrument-index">02 / LOW END</span>
             <img src="images/Baixo.png" alt="Baixo" class="instrument-icon">
+            <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
             <span class="instrument-name">BAIXO</span>
             <span class="instrument-status">DISPONÍVEL</span>
         </button>
@@ -55,6 +57,7 @@
             <button id="bateria" class="instrument-card" data-instrument="Bateria" type="button" onclick="tentarEscolherInstrumento('bateria')">
                 <span class="instrument-index">03 / PERCUSSION</span>
                 <img src="images/Bateria.png" alt="Bateria" class="instrument-icon">
+                <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
                 <span class="instrument-name">BATERIA</span>
                 <span class="instrument-status">DISPONÍVEL</span>
             </button>
@@ -62,6 +65,7 @@
             <button id="teclado" class="instrument-card" data-instrument="Teclado" type="button" onclick="tentarEscolherInstrumento('teclado')">
                 <span class="instrument-index">04 / SYNTH</span>
                 <img src="images/Teclado.png" alt="Teclado" class="instrument-icon">
+                <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
                 <span class="instrument-name">TECLADO</span>
                 <span class="instrument-status">DISPONÍVEL</span>
             </button>
@@ -100,7 +104,7 @@
     <script src="app.js"></script>
 
         <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+        <script src="vendor/qrcode.min.js"></script>
         <script>
             const socket = io();
             const player = JSON.parse(localStorage.getItem('shredder_player'));
@@ -112,6 +116,7 @@
             let minhaSalaId = null;
             let estadoAtualSala = {};
             const salaUrl = new URLSearchParams(window.location.search).get('sala');
+            const btnContinuar = document.getElementById('continue-instrument');
 
             function gerarQrCode(salaId) {
                 const urlDaSala = `${window.location.protocol}//${window.location.host}/instrumentos.html?sala=${salaId}`;
@@ -130,17 +135,30 @@
                 }
             }
 
-            if (salaUrl) {
-                minhaSalaId = salaUrl;
-                socket.emit('entrar_sala', { salaId: minhaSalaId, operadorNome: meuNomeOperador });
-                gerarQrCode(minhaSalaId);
-            } else {
+            function entrarNaSala(salaId) {
+                socket.emit('entrar_sala', { salaId, operadorNome: meuNomeOperador }, (resposta) => {
+                    if (!resposta.ok) {
+                        alert(resposta.erro);
+                        criarSalaNova();
+                    }
+                });
+            }
+
+            function criarSalaNova() {
                 socket.emit('criar_sala', (resposta) => {
                     minhaSalaId = resposta.salaId;
                     window.history.replaceState({}, '', `${window.location.pathname}?sala=${minhaSalaId}`);
-                    socket.emit('entrar_sala', { salaId: minhaSalaId, operadorNome: meuNomeOperador });
+                    entrarNaSala(minhaSalaId);
                     gerarQrCode(minhaSalaId);
                 });
+            }
+
+            if (salaUrl) {
+                minhaSalaId = salaUrl;
+                entrarNaSala(minhaSalaId);
+                gerarQrCode(minhaSalaId);
+            } else {
+                criarSalaNova();
             }
 
             socket.on('atualizar_estado', (estado) => {
@@ -165,12 +183,15 @@
                     }
                 }
 
+                let meuInstrumentoEscolhido = null;
                 for (const [nomeInstrumento, operadorQueEscolheu] of Object.entries(estado.instrumentos)) {
                     const card = document.getElementById(nomeInstrumento);
                     if (!card) continue;
 
                     const statusEl = card.querySelector('.instrument-status');
+                    const frameEl = card.querySelector('.instrument-frame');
                     if (operadorQueEscolheu === null) {
+                        if (frameEl) frameEl.src = 'images/Moldura-livre.png';
                         card.classList.remove('ocupado', 'selecionado-por-outro', 'selecionado');
                         card.style.pointerEvents = 'auto';
                         card.style.opacity = '1';
@@ -179,6 +200,8 @@
                             statusEl.style.color = '';
                         }
                     } else if (operadorQueEscolheu === meuNomeOperador) {
+                        if (frameEl) frameEl.src = 'images/Moldura-ocupada.png';
+                        meuInstrumentoEscolhido = card.dataset.instrument;
                         card.classList.add('selecionado');
                         card.classList.remove('ocupado', 'selecionado-por-outro');
                         card.style.pointerEvents = 'auto';
@@ -188,6 +211,7 @@
                             statusEl.style.color = '#00ffcc';
                         }
                     } else {
+                        if (frameEl) frameEl.src = 'images/Moldura-ocupada.png';
                         card.classList.add('ocupado');
                         card.classList.remove('selecionado', 'selecionado-por-outro');
                         card.style.pointerEvents = 'none';
@@ -197,6 +221,16 @@
                             statusEl.style.color = '#ff3333';
                         }
                     }
+                }
+
+                if (meuInstrumentoEscolhido) {
+                    player.instrumento = meuInstrumentoEscolhido;
+                    localStorage.setItem('shredder_player', JSON.stringify(player));
+                    btnContinuar.disabled = false;
+                } else {
+                    player.instrumento = null;
+                    localStorage.setItem('shredder_player', JSON.stringify(player));
+                    btnContinuar.disabled = true;
                 }
             });
 
@@ -209,6 +243,10 @@
                     operadorNome: meuNomeOperador
                 });
             }
+
+            btnContinuar.addEventListener('click', () => {
+                window.location.href = `modos.html?sala=${minhaSalaId}`;
+            });
 
         </script>
 </body>
