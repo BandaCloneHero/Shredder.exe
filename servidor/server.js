@@ -152,7 +152,19 @@ app.post('/api/auth/register', async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
   const key = normalizeUsername(username);
-  const account = accountStore.accounts[key];
+
+  // LÊ O ARQUIVO DO DISCO NA HORA (Garante que se você resetou via script, ele pega a alteração)
+  let accountStore;
+  try {
+    const rawData = fs.readFileSync(path.join(__dirname, 'accounts.json'), 'utf8');
+    accountStore = JSON.parse(rawData);
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: 'Erro ao ler banco de dados.' });
+  }
+
+  const accounts = accountStore.accounts || accountStore;
+  const account = accounts[key];
+
   if (!account || typeof password !== 'string') {
     return res.status(401).json({ ok: false, error: 'Usuário ou senha inválidos.' });
   }

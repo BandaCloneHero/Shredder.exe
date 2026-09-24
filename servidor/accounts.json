@@ -14,8 +14,8 @@
     },
     "davitest123": {
       "username": "davitest123",
-      "salt": "974ca59617e0917ee6a3a834c6f2ca97",
-      "passwordHash": "6ed614914626fa141435cb979ba39af498c8603d80b4fc8a66163569a5219ef68a30b456eba47865dce1fa018d9d2286591cf65685e475f2e7aec5fd743713e7",
+      "salt": "e5575950f3f0cfb6a2284849c4f53541",
+      "passwordHash": "540ab08113d7a32b030f7b693e96fd29c89d26e97164f49a01d82850ccaa56bfb2b079b1e0257ae22864bada9e745c31b4eb145dbb19edc3773a3494a0b80a33",
       "createdAt": "2026-09-24T11:50:27.069Z"
     },
     "davi12345": {
