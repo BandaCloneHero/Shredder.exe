@@ -69,6 +69,23 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <script src="js/account.js"></script>
+    <script src="js/account-ui.js"></script>
+    <script>
+        window.shredderAccount = new ShredderAccount();
+        window.shredderUI = new ShredderAccountUI(window.shredderAccount);
+        let sessionWasActive = false;
+        window.shredderAccount.onChange((state) => {
+            if (state.isLoggedIn) {
+                sessionWasActive = true;
+            } else if (sessionWasActive) {
+                const currentPage = window.location.pathname.split('/').pop();
+                if (currentPage !== 'index.html' && currentPage !== '') {
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+    </script>
     <script src="app.js"></script>
 </body>
 </html>

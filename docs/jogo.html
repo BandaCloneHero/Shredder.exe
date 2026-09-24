@@ -59,5 +59,22 @@
             window.location.href = 'modos.html';
         }
     </script>
+    <script src="js/account.js"></script>
+    <script src="js/account-ui.js"></script>
+    <script>
+        window.shredderAccount = new ShredderAccount();
+        window.shredderUI = new ShredderAccountUI(window.shredderAccount);
+        let sessionWasActive = false;
+        window.shredderAccount.onChange((state) => {
+            if (state.isLoggedIn) {
+                sessionWasActive = true;
+            } else if (sessionWasActive) {
+                const currentPage = window.location.pathname.split('/').pop();
+                if (currentPage !== 'index.html' && currentPage !== '') {
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

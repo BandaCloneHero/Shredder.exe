@@ -109,12 +109,31 @@
         </div>
     </main>
     
+    <script src="js/account.js"></script>
+    <script src="js/account-ui.js"></script>
+    <script>
+        window.shredderAccount = new ShredderAccount();
+        window.shredderUI = new ShredderAccountUI(window.shredderAccount);
+        let sessionWasActive = false;
+        window.shredderAccount.onChange((state) => {
+            if (state.isLoggedIn) {
+                sessionWasActive = true;
+            } else if (sessionWasActive) {
+                const currentPage = window.location.pathname.split('/').pop();
+                if (currentPage !== 'index.html' && currentPage !== '') {
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+    </script>
     <script src="app.js"></script>
 
         <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
         <script src="vendor/qrcode.min.js"></script>
         <script>
-            const socket = io();
+            window.socket = io();
+            const socket = window.socket;
+            window.setupKickListener();
             const player = JSON.parse(localStorage.getItem('shredder_player'));
             if (!player || !player.nome) {
                 window.location.href = `index.html${window.location.search}`;
@@ -172,24 +191,7 @@
             socket.on('atualizar_estado', (estado) => {
                 console.log('Estado recebido:', estado);
                 estadoAtualSala = estado;
-
-                const containerOperadores = document.getElementById('lobby-list');
-                if (containerOperadores && estado.operadores) {
-                    containerOperadores.innerHTML = '';
-                    estado.operadores.forEach(opName => {
-                        const divOp = document.createElement('div');
-                        divOp.className = 'roster-row';
-                        if (opName === meuNomeOperador) divOp.classList.add('current');
-                        divOp.innerText = opName === meuNomeOperador ? `${opName} / VOCÊ` : opName;
-                        containerOperadores.appendChild(divOp);
-                    });
-                    if (estado.operadores.length === 0) {
-                        const vazio = document.createElement('div');
-                        vazio.className = 'roster-row';
-                        vazio.innerText = 'Nenhum operador conectado.';
-                        containerOperadores.appendChild(vazio);
-                    }
-                }
+                window.renderLobbyPlayers({ ...estado, id: minhaSalaId }, meuNomeOperador);
 
                 let meuInstrumentoEscolhido = null;
                 for (const [nomeInstrumento, operadorQueEscolheu] of Object.entries(estado.instrumentos)) {
@@ -258,7 +260,7 @@
 
             document.querySelectorAll('.instrument-card').forEach(card => {
                 card.addEventListener('pointerdown', () => {
-                    if (card.classList.contains('occupied')) return;
+                    if (card.classList.contains('ocupado')) return;
                     card.classList.remove('is-pressing');
                     void card.offsetWidth;
                     card.classList.add('is-pressing');

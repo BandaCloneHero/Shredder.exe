@@ -64,33 +64,53 @@ function formatInstrument(instrument) {
 
 function initializeLogin() {
     const idField = document.querySelector('#player-id');
-    const nameField = document.querySelector('#player-name');
-    const form = document.querySelector('#login-form');
+    const playerNameInput = document.querySelector('#player-name');
+    const loginForm = document.querySelector('#login-form');
     const error = document.querySelector('#login-error');
     const existing = getPlayer();
 
     idField.value = existing?.id || makePlayerId();
-    nameField.value = existing?.nome || '';
-    form.addEventListener('submit', event => {
+    playerNameInput.value = existing?.nome || '';
+
+    if (!loginForm) return;
+    loginForm.addEventListener('submit', event => {
         event.preventDefault();
-        const id = idField.value.trim();
-        const nome = nameField.value.trim();
-        if (!nome) {
-            error.textContent = 'NOME DE EXIBIÇÃO É OBRIGATÓRIO.';
-            nameField.focus();
+        const accountState = window.shredderAccount
+            ? window.shredderAccount.snapshot()
+            : { isLoggedIn: false };
+
+        if (!accountState.isLoggedIn) {
+            alert('Acesso restrito: faça login ou crie uma conta para iniciar o uplink.');
+            window.shredderUI?.openModal();
             return;
         }
-        if (!id) {
-            error.textContent = 'ID DE OPERADOR INVÁLIDO.';
-            idField.focus();
-            return;
-        }
+
+        playerNameInput.value = accountState.user;
+        const finalPlayerName = playerNameInput.value.trim();
         const previous = getPlayer();
-        const player = { id, nome, instrumento: previous?.instrumento || null };
+        const player = {
+            id: idField.value.trim(),
+            nome: finalPlayerName,
+            instrumento: previous?.instrumento || null
+        };
         writeJson(STORAGE.player, player);
         upsertPlayer(player);
+        localStorage.setItem('shredder_player_name', finalPlayerName);
         window.location.href = `instrumentos.html${window.location.search}`;
     });
+
+    if (window.shredderAccount) {
+        window.shredderAccount.onChange(state => {
+            if (state.isLoggedIn && playerNameInput) {
+                playerNameInput.value = state.user;
+                playerNameInput.readOnly = true;
+                playerNameInput.style.opacity = '0.7';
+            } else if (playerNameInput) {
+                playerNameInput.readOnly = false;
+                playerNameInput.style.opacity = '';
+            }
+        });
+    }
 }
 
 function renderLobby(player) {
@@ -99,6 +119,66 @@ function renderLobby(player) {
     const lobby = getLobby();
     list.innerHTML = lobby.length ? lobby.map(item => `<div class="roster-row ${item.id === player.id ? 'current' : ''}"><span>${item.nome}${item.id === player.id ? ' / VOCÊ' : ''}</span><strong>${formatInstrument(item.instrumento)}</strong></div>`).join('') : '<div class="roster-row">Nenhum operador conectado.</div>';
 }
+
+window.kickPlayer = function(targetUsername, roomId) {
+    if (confirm(`Tem certeza de que deseja expulsar o operador ${targetUsername}?`)) {
+        if (window.socket) {
+            window.socket.emit('kick_player', { roomId, targetUsername });
+        }
+    }
+};
+
+window.setupKickListener = function() {
+    if (window.socket) {
+        window.socket.off('player_kicked');
+        window.socket.on('player_kicked', data => {
+            alert(data.message || 'Você foi expulso da sala pelo criador.');
+            if (window.shredderAccount && typeof window.shredderAccount.logout === 'function') {
+                window.shredderAccount.logout();
+            }
+            window.location.href = 'index.html';
+        });
+    }
+};
+
+window.renderLobbyPlayers = function(roomData, currentUsername) {
+    const container = document.querySelector('#operadores-conectados, .operadores-conectados, .connected-players, #lobby-list');
+    if (!container) return;
+
+    const players = roomData.players || roomData.operadores || [];
+    const isHost = roomData.host === currentUsername;
+    container.replaceChildren();
+
+    players.forEach(player => {
+        const playerRow = document.createElement('div');
+        playerRow.className = 'player-row roster-row';
+        const isMe = player === currentUsername;
+
+        const playerName = document.createElement('span');
+        playerName.textContent = `${player}${isMe ? ' / VOCÊ' : ''}`;
+        playerRow.appendChild(playerName);
+
+        if (isHost && !isMe) {
+            const kickButton = document.createElement('button');
+            kickButton.type = 'button';
+            kickButton.className = 'kick-player-button';
+            kickButton.textContent = 'EXPULSAR';
+            kickButton.addEventListener('click', () => {
+                window.kickPlayer(player, roomData.id);
+            });
+            playerRow.appendChild(kickButton);
+        }
+
+        container.appendChild(playerRow);
+    });
+
+    if (players.length === 0) {
+        const emptyState = document.createElement('div');
+        emptyState.className = 'roster-row';
+        emptyState.textContent = 'Nenhum operador conectado.';
+        container.appendChild(emptyState);
+    }
+};
 
 function initializeInstruments() {
     const player = ensurePlayer();

@@ -308,6 +308,10 @@ button, input {
     animation: instrument-press .36s cubic-bezier(.2, .8, .35, 1);
 }
 
+.instrument-card:active {
+    transform: translateY(4px) scale(.96);
+}
+
 @keyframes instrument-press {
     0%, 100% {
         transform: translateY(-3px) scale(1);
@@ -320,6 +324,23 @@ button, input {
 .instrument-card.occupied {
     cursor: not-allowed;
     opacity: .43;
+}
+
+.kick-player-button {
+    margin-left: .5rem;
+    padding: .2rem .45rem;
+    border: 1px solid #ff5555;
+    border-radius: 3px;
+    background: transparent;
+    color: #ff5555;
+    cursor: pointer;
+    font: inherit;
+    font-size: .7rem;
+}
+
+.kick-player-button:hover {
+    background: #ff5555;
+    color: #111;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1249,5 +1270,9 @@ button, input {
     *, *:before, *:after {
         animation: none !important;
         transition: none !important;
+    }
+
+    .instrument-card.is-pressing {
+        animation: instrument-press .36s cubic-bezier(.2, .8, .35, 1) !important;
     }
 }

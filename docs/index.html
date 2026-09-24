@@ -55,6 +55,12 @@
     </aside>
   </main>
   
+  <script src="js/account.js"></script>
+  <script src="js/account-ui.js"></script>
+  <script>
+    window.shredderAccount = new ShredderAccount();
+    window.shredderUI = new ShredderAccountUI(window.shredderAccount);
+  </script>
   <script src="app.js"></script>
 </body>
 </html>

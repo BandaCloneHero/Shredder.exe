@@ -1,0 +1,28 @@
+{
+  "accounts": {
+    "davijohann": {
+      "username": "DaviJohann",
+      "salt": "89b0990a4d83aeedd9fcf93bd0b9702b",
+      "passwordHash": "12219bcb8fa8643c8725da05c7bbc7dacb10085840e85f550332d217cb6c22280f0e223c498e2263608f6558cf9e1ebe71b36305d6aedc1df99184e4bf12fffe",
+      "createdAt": "2026-09-24T11:34:46.356Z"
+    },
+    "daviteste123": {
+      "username": "daviteste123",
+      "salt": "e9630b319e668910b2d83dfc3fecf47b",
+      "passwordHash": "48ee3d2d76b2234118d3f8b7006387ac41ff850619f5c469f1e316a8ae29f93f20d73fbdb4f9dc7ae04cb081f844a016289de1ad93d65badc4c618b85faf22e5",
+      "createdAt": "2026-09-24T11:36:04.127Z"
+    },
+    "davitest123": {
+      "username": "davitest123",
+      "salt": "974ca59617e0917ee6a3a834c6f2ca97",
+      "passwordHash": "6ed614914626fa141435cb979ba39af498c8603d80b4fc8a66163569a5219ef68a30b456eba47865dce1fa018d9d2286591cf65685e475f2e7aec5fd743713e7",
+      "createdAt": "2026-09-24T11:50:27.069Z"
+    },
+    "davi12345": {
+      "username": "davi12345",
+      "salt": "fddf50c60b864e57d46f54bc5bfaf0dc",
+      "passwordHash": "728f65be2b0ec5d650c5d349391b34632bbe23c3219e30e26366b05cc5800e6b0b7a4e697ef3d203211ad23ec5cf61813837f20f1a4e39d799f1ae6d599af2de",
+      "createdAt": "2026-09-24T12:21:54.015Z"
+    }
+  }
+}
