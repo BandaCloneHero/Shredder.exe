@@ -11,8 +11,8 @@
     --cyan: #00f0ff;
     --magenta: #ff007f;
     --lime: #c9ff43;
-    --mono: 'Share Tech Mono', monospace;
-    --tech: 'Orbitron', monospace;
+    --mono: "Share Tech Mono", monospace;
+    --tech: "Orbitron", monospace;
 }
 
 * {
@@ -29,7 +29,7 @@ body {
     background: radial-gradient(ellipse at 75% 0%, #151a29 0, #090a0f 48%);
     color: var(--text);
     font-family: var(--mono);
-    letter-spacing: .03em;
+    letter-spacing: 0.03em;
 }
 
 body:before {
@@ -38,8 +38,12 @@ body:before {
     z-index: 10;
     inset: 0;
     pointer-events: none;
-    opacity: .14;
-    background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.06) 4px);
+    opacity: 0.14;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent 0 3px,
+        rgba(255, 255, 255, 0.06) 4px
+    );
 }
 
 body:after {
@@ -48,7 +52,12 @@ body:after {
     z-index: 9;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(110deg, transparent 0 49%, rgba(0,240,255,.025) 50%, transparent 51%);
+    background: linear-gradient(
+        110deg,
+        transparent 0 49%,
+        rgba(0, 240, 255, 0.025) 50%,
+        transparent 51%
+    );
 }
 
 a {
@@ -56,40 +65,48 @@ a {
     text-decoration: none;
 }
 
-button, input {
+button,
+input {
     font: inherit;
     color: inherit;
 }
 
 .panel-cut {
-    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    clip-path: polygon(
+        0 0,
+        calc(100% - 16px) 0,
+        100% 16px,
+        100% 100%,
+        16px 100%,
+        0 calc(100% - 16px)
+    );
 }
-
 
 /* ==========================================================================
    2. TIPOGRAFIA E ELEMENTOS COMUNS
    ========================================================================== */
 .brand-lockup {
     font: 700 1rem var(--tech);
-    letter-spacing: .11em;
+    letter-spacing: 0.11em;
 }
 
-.brand-mark, .brand-accent {
+.brand-mark,
+.brand-accent {
     color: var(--magenta);
 }
 
 .eyebrow {
     margin: 0 0 1rem;
     color: var(--cyan);
-    font-size: .68rem;
-    letter-spacing: .15em;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
 }
 
-.lede, .section-intro {
+.lede,
+.section-intro {
     color: var(--muted);
     line-height: 1.7;
 }
-
 
 /* ==========================================================================
    3. BOTÕES E COMPONENTES DE INTERAÇÃO
@@ -104,10 +121,10 @@ button, input {
     border: 1px solid var(--cyan);
     background: transparent;
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
-    font: 700 .74rem var(--tech);
-    letter-spacing: .08em;
+    font: 700 0.74rem var(--tech);
+    letter-spacing: 0.08em;
     cursor: pointer;
-    transition: .2s;
+    transition: 0.2s;
 }
 
 .button b {
@@ -119,17 +136,18 @@ button, input {
     background: var(--cyan);
     color: #061015;
     border-color: var(--cyan);
-    box-shadow: 0 0 20px rgba(0,240,255,.22);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.22);
 }
 
-.button:hover, .button:focus-visible {
+.button:hover,
+.button:focus-visible {
     transform: translateY(-2px);
-    box-shadow: 0 0 26px rgba(0,240,255,.48);
+    box-shadow: 0 0 26px rgba(0, 240, 255, 0.48);
     outline: 0;
 }
 
 .button:disabled {
-    opacity: .34;
+    opacity: 0.34;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -140,7 +158,8 @@ button, input {
     color: var(--magenta);
 }
 
-.status-dot, .console-live i {
+.status-dot,
+.console-live i {
     display: inline-block;
     width: 7px;
     height: 7px;
@@ -148,7 +167,6 @@ button, input {
     background: var(--lime);
     box-shadow: 0 0 10px var(--lime);
 }
-
 
 /* ==========================================================================
    4. ESTRUTURA E LAYOUT DE PÁGINAS
@@ -166,9 +184,9 @@ button, input {
 .top-status {
     display: flex;
     align-items: center;
-    gap: .6rem;
+    gap: 0.6rem;
     color: var(--muted);
-    font-size: .68rem;
+    font-size: 0.68rem;
 }
 
 .top-divider {
@@ -176,7 +194,8 @@ button, input {
     border-left: 1px solid var(--line);
 }
 
-.page-shell, .ticket-shell {
+.page-shell,
+.ticket-shell {
     width: min(1180px, calc(100% - 2rem));
     margin: 0 auto;
     padding: 2.5rem 0 5rem;
@@ -185,16 +204,16 @@ button, input {
 .stepper {
     display: flex;
     align-items: center;
-    gap: .8rem;
+    gap: 0.8rem;
     color: #4d5666;
-    font-size: .65rem;
-    letter-spacing: .08em;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
 }
 
 .step {
     display: flex;
     align-items: center;
-    gap: .35rem;
+    gap: 0.35rem;
     white-space: nowrap;
 }
 
@@ -203,7 +222,8 @@ button, input {
     display: none;
 }
 
-.step.active, .step.done {
+.step.active,
+.step.done {
     color: var(--cyan);
 }
 
@@ -225,15 +245,17 @@ button, input {
     margin-top: 4rem;
 }
 
-.section-heading h1, .ticket-shell h1 {
-    margin: .2rem 0 0;
+.section-heading h1,
+.ticket-shell h1 {
+    margin: 0.2rem 0 0;
     font: 700 clamp(1.8rem, 5vw, 3.5rem) var(--tech);
-    letter-spacing: .01em;
+    letter-spacing: 0.01em;
 }
 
-.section-heading h1 span, .ticket-shell h1 span {
+.section-heading h1 span,
+.ticket-shell h1 span {
     color: var(--magenta);
-    text-shadow: 0 0 18px rgba(255,0,127,.3);
+    text-shadow: 0 0 18px rgba(255, 0, 127, 0.3);
 }
 
 .operator-chip {
@@ -245,11 +267,11 @@ button, input {
 .operator-chip span {
     display: block;
     color: var(--muted);
-    font-size: .62rem;
+    font-size: 0.62rem;
 }
 
 .operator-chip strong {
-    font: 600 .9rem var(--tech);
+    font: 600 0.9rem var(--tech);
     color: var(--text);
 }
 
@@ -258,6 +280,141 @@ button, input {
     margin: 1rem 0 2rem;
 }
 
+.lobby-status {
+    margin: 2rem 0 1rem;
+    color: var(--lime);
+    font-size: 0.7rem;
+    text-shadow: 0 0 8px rgba(201, 255, 67, 0.35);
+}
+
+.lobby-status.is-error {
+    color: var(--magenta);
+    text-shadow: 0 0 8px rgba(255, 0, 127, 0.35);
+}
+
+.lobby-create {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(280px, 1.2fr);
+    gap: 2rem;
+    align-items: end;
+    margin: 1rem 0 4rem;
+    padding: 1.5rem;
+    border: 1px solid var(--cyan);
+    background: rgba(14, 17, 24, 0.88);
+    box-shadow: 0 0 22px rgba(0, 240, 255, 0.08);
+}
+
+.lobby-create h2 {
+    margin: 0.2rem 0;
+    font: 600 1.35rem var(--tech);
+}
+
+.lobby-create p:not(.eyebrow) {
+    margin-bottom: 0;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.room-form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.7rem;
+    align-items: end;
+}
+
+.room-form label {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+}
+
+.room-form .input-wrap {
+    min-width: 0;
+}
+
+.room-form input {
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    outline: 0;
+}
+
+.room-form input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 14px rgba(0, 240, 255, 0.16);
+}
+
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.room-card {
+    display: flex;
+    min-height: 150px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--text);
+    text-align: left;
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.room-card:hover:not(:disabled) {
+    border-color: var(--cyan);
+    box-shadow: 0 0 18px rgba(0, 240, 255, 0.16);
+    transform: translateY(-3px);
+}
+
+.room-card-kicker {
+    margin-bottom: auto;
+    color: var(--cyan);
+    font-size: 0.62rem;
+}
+
+.room-card strong {
+    width: 100%;
+    overflow: hidden;
+    font: 600 1rem var(--tech);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.room-card small,
+.room-card b {
+    margin-top: 0.45rem;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 400;
+}
+
+.room-card b {
+    color: var(--magenta);
+}
+
+.room-card.is-full {
+    border-color: #4c263b;
+    cursor: not-allowed;
+    opacity: 0.48;
+}
+
+.room-card.is-full .room-card-kicker {
+    color: var(--magenta);
+}
+
+.lobby-empty {
+    padding: 1rem 0;
+    color: var(--muted);
+    font-size: 0.78rem;
+}
 
 /* ==========================================================================
    5. CARDS DE INSTRUMENTOS (GRID E ÍCONES)
@@ -287,11 +444,12 @@ button, input {
     clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
     cursor: pointer;
     text-align: left;
-    transition: .2s;
+    transition: 0.2s;
     -webkit-tap-highlight-color: transparent;
 }
 
-.instrument-card:hover, .instrument-card.selected {
+.instrument-card:hover,
+.instrument-card.selected {
     transform: translateY(-3px);
 }
 
@@ -305,37 +463,38 @@ button, input {
 }
 
 .instrument-card.is-pressing {
-    animation: instrument-press .36s cubic-bezier(.2, .8, .35, 1);
+    animation: instrument-press 0.36s cubic-bezier(0.2, 0.8, 0.35, 1);
 }
 
 .instrument-card:active {
-    transform: translateY(4px) scale(.96);
+    transform: translateY(4px) scale(0.96);
 }
 
 @keyframes instrument-press {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateY(-3px) scale(1);
     }
     45% {
-        transform: translateY(4px) scale(.96);
+        transform: translateY(4px) scale(0.96);
     }
 }
 
 .instrument-card.occupied {
     cursor: not-allowed;
-    opacity: .43;
+    opacity: 0.43;
 }
 
 .kick-player-button {
-    margin-left: .5rem;
-    padding: .2rem .45rem;
+    margin-left: 0.5rem;
+    padding: 0.2rem 0.45rem;
     border: 1px solid #ff5555;
     border-radius: 3px;
     background: transparent;
     color: #ff5555;
     cursor: pointer;
     font: inherit;
-    font-size: .7rem;
+    font-size: 0.7rem;
 }
 
 .kick-player-button:hover {
@@ -365,7 +524,7 @@ button, input {
     stroke-linejoin: round;
     stroke-width: 2;
     transform: translate(-50%, -50%);
-    filter: drop-shadow(0 0 7px rgba(0,240,255,.45));
+    filter: drop-shadow(0 0 7px rgba(0, 240, 255, 0.45));
 }
 
 /* AJUSTE PARA AS NOVAS IMAGENS (PNG CUSTOMIZADO) */
@@ -378,7 +537,7 @@ button, input {
     max-width: 95%;
     object-fit: contain;
     transform: translate(-50%, -50%);
-    filter: drop-shadow(0 0 12px rgba(0,240,255,.55));
+    filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.55));
 }
 
 .instrument-card img.instrument-frame {
@@ -409,14 +568,14 @@ button, input {
 
 .instrument-status {
     display: block;
-    margin-top: .6rem;
-    font-size: .62rem;
+    margin-top: 0.6rem;
+    font-size: 0.62rem;
     color: var(--muted);
     text-align: center;
 }
 
 .instrument-name {
-    margin: .35rem 0;
+    margin: 0.35rem 0;
     width: 100%;
     font: 600 1rem var(--tech);
     text-align: center;
@@ -424,13 +583,12 @@ button, input {
 
 .instrument-status {
     color: var(--cyan);
-    font-size: .75rem;
+    font-size: 0.75rem;
 }
 
 .instrument-card.occupied + .instrument-status {
     color: var(--magenta);
 }
-
 
 /* ==========================================================================
    6. CONSOLE E LOBBY COLETIVO
@@ -438,17 +596,17 @@ button, input {
 .lobby-console {
     margin-top: 4rem;
     border: 1px solid #29313d;
-    background: rgba(14,17,24,.88);
+    background: rgba(14, 17, 24, 0.88);
 }
 
 .console-head {
     display: flex;
     justify-content: space-between;
-    padding: .9rem 1.2rem;
+    padding: 0.9rem 1.2rem;
     border-bottom: 1px solid var(--line);
     color: var(--cyan);
-    font: 600 .68rem var(--tech);
-    letter-spacing: .08em;
+    font: 600 0.68rem var(--tech);
+    letter-spacing: 0.08em;
 }
 
 .console-live {
@@ -462,20 +620,20 @@ button, input {
 }
 
 .console-content h2 {
-    margin: .2rem 0;
+    margin: 0.2rem 0;
     font: 600 1.35rem var(--tech);
 }
 
 .console-content p:not(.eyebrow) {
     max-width: 340px;
     color: var(--muted);
-    font-size: .85rem;
+    font-size: 0.85rem;
     line-height: 1.6;
 }
 
 .console-url {
     color: var(--magenta);
-    font-size: .72rem;
+    font-size: 0.72rem;
 }
 
 .qr-frame {
@@ -483,15 +641,15 @@ button, input {
     padding: 1rem;
     border: 1px solid var(--cyan);
     background: #eef9f5;
-    box-shadow: 0 0 22px rgba(0,240,255,.25);
+    box-shadow: 0 0 22px rgba(0, 240, 255, 0.25);
     text-align: center;
 }
 
 .qr-frame span {
     display: block;
-    margin-top: .7rem;
+    margin-top: 0.7rem;
     color: #101a20;
-    font-size: .62rem;
+    font-size: 0.62rem;
 }
 
 .qr-frame img {
@@ -505,16 +663,16 @@ button, input {
 }
 
 .lobby-roster .eyebrow {
-    margin-bottom: .7rem;
+    margin-bottom: 0.7rem;
 }
 
 .roster-row {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid #222734;
-    padding: .55rem 0;
+    padding: 0.55rem 0;
     color: var(--muted);
-    font-size: .75rem;
+    font-size: 0.75rem;
 }
 
 .roster-row.current {
@@ -536,13 +694,23 @@ button, input {
 
 .text-link {
     color: var(--muted);
-    font-size: .7rem;
+    font-size: 0.7rem;
 }
 
 .text-link:hover {
     color: var(--cyan);
 }
 
+@media (max-width: 700px) {
+    .lobby-create,
+    .room-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .room-form {
+        grid-template-columns: 1fr;
+    }
+}
 
 /* ==========================================================================
    7. MODOS DE JOGO E SELEÇÃO DE FASES
@@ -557,7 +725,7 @@ button, input {
     justify-content: space-between;
     gap: 1rem;
     border-bottom: 1px solid var(--line);
-    padding-bottom: .8rem;
+    padding-bottom: 0.8rem;
 }
 
 .block-heading h2 {
@@ -567,18 +735,18 @@ button, input {
 
 .heading-number {
     color: var(--magenta);
-    margin-right: .5rem;
+    margin-right: 0.5rem;
 }
 
 .block-note {
     color: var(--muted);
-    font-size: .65rem;
+    font-size: 0.65rem;
 }
 
 .stage-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: .75rem;
+    gap: 0.75rem;
 }
 
 .stage-card {
@@ -589,16 +757,17 @@ button, input {
     text-align: left;
     cursor: pointer;
     clip-path: polygon(0 0, calc(100% - 11px) 0, 100% 11px, 100% 100%, 0 100%);
-    transition: .2s;
+    transition: 0.2s;
 }
 
-.stage-card:hover:not(.locked), .stage-card.complete {
+.stage-card:hover:not(.locked),
+.stage-card.complete {
     border-color: var(--cyan);
-    box-shadow: 0 0 18px rgba(0,240,255,.15);
+    box-shadow: 0 0 18px rgba(0, 240, 255, 0.15);
 }
 
 .stage-card.locked {
-    opacity: .38;
+    opacity: 0.38;
     cursor: not-allowed;
 }
 
@@ -610,20 +779,20 @@ button, input {
 
 .stage-card strong {
     display: block;
-    margin: .5rem 0;
-    font: 600 .82rem var(--tech);
+    margin: 0.5rem 0;
+    font: 600 0.82rem var(--tech);
 }
 
 .stage-card small {
     color: var(--muted);
-    font-size: .7rem;
+    font-size: 0.7rem;
 }
 
 .stage-card em {
     display: block;
-    margin-top: .8rem;
+    margin-top: 0.8rem;
     color: var(--lime);
-    font-size: .62rem;
+    font-size: 0.62rem;
     font-style: normal;
 }
 
@@ -634,14 +803,14 @@ button, input {
     width: 100%;
     padding: 1.2rem;
     border: 1px solid var(--magenta);
-    background: rgba(255,0,127,.05);
+    background: rgba(255, 0, 127, 0.05);
     text-align: left;
     cursor: pointer;
-    transition: .2s;
+    transition: 0.2s;
 }
 
 .freeplay-card:hover {
-    box-shadow: 0 0 22px rgba(255,0,127,.22);
+    box-shadow: 0 0 22px rgba(255, 0, 127, 0.22);
     transform: translateX(4px);
 }
 
@@ -650,18 +819,19 @@ button, input {
     color: var(--magenta);
 }
 
-.freeplay-card strong, .freeplay-card small {
+.freeplay-card strong,
+.freeplay-card small {
     display: block;
 }
 
 .freeplay-card strong {
-    font: 600 .9rem var(--tech);
+    font: 600 0.9rem var(--tech);
 }
 
 .freeplay-card small {
-    margin-top: .35rem;
+    margin-top: 0.35rem;
     color: var(--muted);
-    font-size: .76rem;
+    font-size: 0.76rem;
 }
 
 .freeplay-card > b {
@@ -669,7 +839,6 @@ button, input {
     color: var(--magenta);
     font-size: 1.5rem;
 }
-
 
 /* ==========================================================================
    8. RANKINGS E PAINÉIS DE PONTUAÇÃO
@@ -681,33 +850,34 @@ button, input {
     width: min(290px, calc(100% - 2rem));
     z-index: 5;
     border: 1px solid var(--magenta);
-    background: rgba(10,11,17,.94);
-    box-shadow: 0 0 22px rgba(255,0,127,.15);
+    background: rgba(10, 11, 17, 0.94);
+    box-shadow: 0 0 22px rgba(255, 0, 127, 0.15);
 }
 
-.ranking-caption, .ranking-footer {
+.ranking-caption,
+.ranking-footer {
     display: block;
     padding: 0 1rem;
     color: var(--muted);
-    font-size: .6rem;
+    font-size: 0.6rem;
 }
 
 .ranking-list {
-    padding: .3rem 1rem 1rem;
+    padding: 0.3rem 1rem 1rem;
 }
 
 .ranking-row {
     display: grid;
     grid-template-columns: 1.5rem 1fr auto;
-    gap: .7rem;
-    padding: .45rem 0;
+    gap: 0.7rem;
+    padding: 0.45rem 0;
     border-bottom: 1px solid #222633;
-    font-size: .7rem;
+    font-size: 0.7rem;
 }
 
 .ranking-row.current {
     color: var(--cyan);
-    text-shadow: 0 0 8px rgba(0,240,255,.5);
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
 }
 
 .ranking-row b {
@@ -730,14 +900,14 @@ button, input {
 .ranking-status {
     margin: 2rem 0 1rem;
     color: var(--lime);
-    font-size: .7rem;
-    text-shadow: 0 0 8px rgba(201,255,67,.35);
+    font-size: 0.7rem;
+    text-shadow: 0 0 8px rgba(201, 255, 67, 0.35);
 }
 
 .ranking-tabs {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: .35rem;
+    gap: 0.35rem;
     margin: 2rem 0 1rem;
 }
 
@@ -746,70 +916,76 @@ button, input {
     border: 1px solid var(--line);
     background: var(--panel);
     color: var(--muted);
-    font: 600 .65rem var(--tech);
+    font: 600 0.65rem var(--tech);
     cursor: pointer;
     clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
-    transition: .2s;
+    transition: 0.2s;
 }
 
-.ranking-tab:hover, .ranking-tab.active {
+.ranking-tab:hover,
+.ranking-tab.active {
     border-color: var(--cyan);
     color: var(--cyan);
-    box-shadow: inset 0 -2px var(--cyan), 0 0 16px rgba(0,240,255,.12);
+    box-shadow:
+        inset 0 -2px var(--cyan),
+        0 0 16px rgba(0, 240, 255, 0.12);
 }
 
 .ranking-tab-bands {
     border-color: var(--magenta);
     color: var(--magenta);
-    box-shadow: 0 0 12px rgba(255,0,127,.12);
+    box-shadow: 0 0 12px rgba(255, 0, 127, 0.12);
 }
 
-.ranking-tab-bands:hover, .ranking-tab-bands.active {
+.ranking-tab-bands:hover,
+.ranking-tab-bands.active {
     border-color: var(--magenta);
     color: var(--magenta);
-    box-shadow: inset 0 -2px var(--magenta), 0 0 20px rgba(255,0,127,.25);
+    box-shadow:
+        inset 0 -2px var(--magenta),
+        0 0 20px rgba(255, 0, 127, 0.25);
 }
 
 .ranking-console {
     border: 1px solid var(--cyan);
-    background: rgba(10,12,18,.88);
-    box-shadow: 0 0 30px rgba(0,240,255,.1);
+    background: rgba(10, 12, 18, 0.88);
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
 }
 
 .ranking-header {
     display: flex;
     justify-content: space-between;
-    padding: .9rem 1.2rem;
+    padding: 0.9rem 1.2rem;
     color: var(--muted);
-    font-size: .6rem;
+    font-size: 0.6rem;
     border-bottom: 1px solid var(--line);
 }
 
 .ranking-console #ranking-list {
-    padding: .25rem 1.2rem;
+    padding: 0.25rem 1.2rem;
 }
 
 .ranking-console .ranking-row {
     grid-template-columns: 3rem 1fr auto;
     align-items: center;
     min-height: 54px;
-    padding: .7rem 0;
-    font-size: .82rem;
+    padding: 0.7rem 0;
+    font-size: 0.82rem;
 }
 
 .ranking-console .ranking-row b {
-    font: 600 .8rem var(--tech);
+    font: 600 0.8rem var(--tech);
 }
 
 .ranking-console .ranking-row span {
     display: flex;
     flex-direction: column;
-    gap: .2rem;
+    gap: 0.2rem;
 }
 
 .ranking-console .ranking-row small {
     color: var(--muted);
-    font-size: .65rem;
+    font-size: 0.65rem;
 }
 
 .ranking-console .ranking-row strong {
@@ -820,7 +996,7 @@ button, input {
 .ranking-empty {
     padding: 2rem 0;
     color: var(--muted);
-    font-size: .75rem;
+    font-size: 0.75rem;
 }
 
 .my-ranking {
@@ -828,24 +1004,23 @@ button, input {
     padding: 1rem;
     border: 1px solid var(--magenta);
     color: var(--text);
-    box-shadow: 0 0 18px rgba(255,0,127,.14);
+    box-shadow: 0 0 18px rgba(255, 0, 127, 0.14);
 }
 
 .my-ranking span {
     display: block;
-    margin-bottom: .4rem;
+    margin-bottom: 0.4rem;
     color: var(--magenta);
-    font-size: .6rem;
+    font-size: 0.6rem;
 }
 
 .my-ranking strong {
-    font: 600 .8rem var(--tech);
+    font: 600 0.8rem var(--tech);
 }
 
 .ranking-back {
     margin-top: 1.5rem;
 }
-
 
 /* ==========================================================================
    9. TELAS DE LOGIN E TICKETS DE DADOS
@@ -861,9 +1036,9 @@ button, input {
     width: min(100% - 2rem, 560px);
     margin: 2rem auto;
     padding: 2rem;
-    background: rgba(15,17,25,.9);
+    background: rgba(15, 17, 25, 0.9);
     border: 1px solid var(--line);
-    box-shadow: 0 0 50px rgba(0,240,255,.06);
+    box-shadow: 0 0 50px rgba(0, 240, 255, 0.06);
 }
 
 .login-panel h1 {
@@ -878,14 +1053,14 @@ button, input {
 
 .stack-form {
     display: grid;
-    gap: .65rem;
+    gap: 0.65rem;
     margin-top: 2rem;
 }
 
 .stack-form label {
     color: var(--muted);
-    font-size: .66rem;
-    letter-spacing: .12em;
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
 }
 
 .input-wrap {
@@ -893,23 +1068,23 @@ button, input {
     align-items: center;
     border: 1px solid var(--line);
     background: #0a0c12;
-    transition: .2s;
+    transition: 0.2s;
 }
 
 .input-wrap:focus-within {
     border-color: var(--cyan);
-    box-shadow: 0 0 18px rgba(0,240,255,.17);
+    box-shadow: 0 0 18px rgba(0, 240, 255, 0.17);
 }
 
 .input-prefix {
-    padding-left: .9rem;
+    padding-left: 0.9rem;
     color: var(--magenta);
-    font-size: .8rem;
+    font-size: 0.8rem;
 }
 
 .input-wrap input {
     width: 100%;
-    padding: .85rem;
+    padding: 0.85rem;
     background: none;
     border: 0;
     outline: 0;
@@ -924,22 +1099,22 @@ button, input {
     height: 1rem;
     margin: 0;
     color: var(--magenta);
-    font-size: .7rem;
+    font-size: 0.7rem;
 }
 
 .button-wide {
     width: 100%;
-    margin-top: .5rem;
+    margin-top: 0.5rem;
 }
 
 .microcopy {
     margin: 2rem 0 0;
     color: var(--muted);
-    font-size: .6rem;
+    font-size: 0.6rem;
 }
 
 .microcopy .status-dot {
-    margin-right: .4rem;
+    margin-right: 0.4rem;
 }
 
 .login-aside {
@@ -949,17 +1124,22 @@ button, input {
 .data-ticket {
     margin-top: 2.5rem;
     border: 1px solid var(--cyan);
-    background: linear-gradient(135deg, rgba(17,29,36,.97), rgba(14,16,25,.97));
-    box-shadow: 0 0 35px rgba(0,240,255,.12);
+    background: linear-gradient(
+        135deg,
+        rgba(17, 29, 36, 0.97),
+        rgba(14, 16, 25, 0.97)
+    );
+    box-shadow: 0 0 35px rgba(0, 240, 255, 0.12);
 }
 
-.ticket-top, .ticket-bottom {
+.ticket-top,
+.ticket-bottom {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
     padding: 1rem 1.25rem;
     color: var(--muted);
-    font-size: .63rem;
+    font-size: 0.63rem;
     border-bottom: 1px solid var(--line);
 }
 
@@ -982,13 +1162,13 @@ button, input {
 }
 
 .ticket-emblem span {
-    font-size: .6rem;
+    font-size: 0.6rem;
     align-self: flex-end;
-    margin: 0 0 .3rem .2rem;
+    margin: 0 0 0.3rem 0.2rem;
 }
 
 .ticket-summary h2 {
-    margin: .3rem 0 1.4rem;
+    margin: 0.3rem 0 1.4rem;
     font: 600 1.25rem var(--tech);
 }
 
@@ -998,19 +1178,20 @@ button, input {
     gap: 1rem;
 }
 
-.ticket-meta span, .ticket-meta strong {
+.ticket-meta span,
+.ticket-meta strong {
     display: block;
 }
 
 .ticket-meta span {
     color: var(--muted);
-    font-size: .58rem;
+    font-size: 0.58rem;
 }
 
 .ticket-meta strong {
-    margin-top: .25rem;
+    margin-top: 0.25rem;
     color: var(--cyan);
-    font-size: .72rem;
+    font-size: 0.72rem;
 }
 
 .ticket-stamp {
@@ -1040,9 +1221,9 @@ button, input {
 .roster-heading {
     display: flex;
     justify-content: space-between;
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
     color: var(--cyan);
-    font-size: .68rem;
+    font-size: 0.68rem;
 }
 
 .roster-heading strong {
@@ -1051,7 +1232,7 @@ button, input {
 }
 
 .ticket-roster .roster-row {
-    padding: .75rem 0;
+    padding: 0.75rem 0;
 }
 
 .ticket-bottom {
@@ -1063,94 +1244,99 @@ button, input {
     margin-bottom: 0;
 }
 
-
 /* ==========================================================================
    10. ANIMAÇÕES E MEDIA QUERIES (RESPONSIVIDADE)
    ========================================================================== */
 @media (min-width: 700px) {
-    .page-shell, .ticket-shell {
+    .page-shell,
+    .ticket-shell {
         padding-top: 3.5rem;
     }
-    
+
     .step b {
         display: inline;
     }
-    
+
     .instrument-grid {
         grid-template-columns: repeat(4, 1fr);
     }
-    
+
     .instrument-card {
         min-height: 280px;
     }
-    
+
     .console-content {
         grid-template-columns: 1fr auto 1fr;
         align-items: center;
         padding: 2rem;
     }
-    
+
     .stage-grid {
         grid-template-columns: repeat(5, 1fr);
     }
-    
+
     .stage-card {
         min-height: 175px;
     }
-    
+
     .ticket-main {
         grid-template-columns: auto 1fr auto;
         padding: 2.5rem;
     }
-    
+
     .ticket-stamp {
         display: block;
         align-self: center;
         color: var(--lime);
-        font: 700 .85rem var(--tech);
+        font: 700 0.85rem var(--tech);
         line-height: 1.5;
         text-align: center;
         transform: rotate(-10deg);
         border: 1px solid var(--lime);
-        padding: .6rem;
+        padding: 0.6rem;
     }
-    
+
     .login-shell {
         grid-template-columns: minmax(450px, 1fr) minmax(300px, 1fr);
     }
-    
+
     .login-panel {
         margin: 0 auto;
     }
-    
+
     .login-aside {
         display: flex;
         min-height: 100vh;
         flex-direction: column;
         justify-content: center;
         padding: 10%;
-        background: linear-gradient(140deg, transparent 30%, rgba(255,0,127,.08));
+        background: linear-gradient(
+            140deg,
+            transparent 30%,
+            rgba(255, 0, 127, 0.08)
+        );
         border-left: 1px solid #1f2330;
     }
-    
+
     .login-aside p {
         font: 600 clamp(1.5rem, 3vw, 2.8rem) var(--tech);
         line-height: 1.35;
     }
-    
+
     .login-aside p strong {
         color: var(--cyan);
     }
-    
-    .aside-label, .aside-code {
+
+    .aside-label,
+    .aside-code {
         color: var(--muted);
-        font-size: .65rem;
+        font-size: 0.65rem;
     }
-    
+
     .aside-code {
         margin-top: 5rem;
     }
-    
+
     .waveform {
         display: flex;
         align-items: center;
@@ -1158,7 +1344,7 @@ button, input {
         gap: 5px;
         margin: 3rem 0 1rem;
     }
-    
+
     .waveform i {
         width: 4px;
         height: 25%;
@@ -1166,28 +1352,28 @@ button, input {
         box-shadow: 0 0 8px var(--magenta);
         animation: pulse 1.4s ease-in-out infinite alternate;
     }
-    
+
     .waveform i:nth-child(2n) {
         height: 70%;
         background: var(--cyan);
         box-shadow: 0 0 8px var(--cyan);
-        animation-delay: .2s;
+        animation-delay: 0.2s;
     }
-    
+
     .waveform i:nth-child(3n) {
         height: 45%;
-        animation-delay: .4s;
+        animation-delay: 0.4s;
     }
-    
+
     .waveform i:nth-child(4n) {
         height: 90%;
-        animation-delay: .6s;
+        animation-delay: 0.6s;
     }
 }
 
 @keyframes pulse {
     to {
-        transform: scaleY(.45);
+        transform: scaleY(0.45);
     }
 }
 
@@ -1195,21 +1381,21 @@ button, input {
     .ranking-tabs {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .ranking-tab-bands {
         grid-column: span 2;
     }
-    
+
     .ranking-header {
-        font-size: .54rem;
+        font-size: 0.54rem;
     }
-    
+
     .ranking-console .ranking-row {
         grid-template-columns: 2.5rem 1fr auto;
     }
-    
+
     .ranking-console .ranking-row strong {
-        font-size: .75rem;
+        font-size: 0.75rem;
     }
 }
 
@@ -1217,29 +1403,29 @@ button, input {
     .top-status {
         font-size: 0;
     }
-    
+
     .top-status .status-dot {
         font-size: initial;
     }
-    
+
     .section-heading {
         align-items: start;
         flex-direction: column;
     }
-    
+
     .operator-chip {
         align-self: start;
     }
-    
+
     .page-actions {
         align-items: stretch;
         flex-direction: column;
     }
-    
+
     .page-actions .button {
         justify-content: center;
     }
-    
+
     .ranking-panel {
         position: relative;
         bottom: auto;
@@ -1247,19 +1433,20 @@ button, input {
         margin: 0 1rem 2rem;
         width: calc(100% - 2rem);
     }
-    
+
     .modes-shell {
         padding-bottom: 2rem;
     }
-    
-    .ticket-top, .ticket-bottom {
-        font-size: .55rem;
+
+    .ticket-top,
+    .ticket-bottom {
+        font-size: 0.55rem;
     }
-    
+
     .ticket-bottom {
         flex-direction: column;
     }
-    
+
     .block-heading {
         align-items: start;
         flex-direction: column;
@@ -1267,12 +1454,14 @@ button, input {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    *, *:before, *:after {
+    *,
+    *:before,
+    *:after {
         animation: none !important;
         transition: none !important;
     }
 
     .instrument-card.is-pressing {
-        animation: instrument-press .36s cubic-bezier(.2, .8, .35, 1) !important;
+        animation: instrument-press 0.36s cubic-bezier(0.2, 0.8, 0.35, 1) !important;
     }
 }

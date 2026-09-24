@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Shredder.exe // Lobby</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body data-page="lobby">
+        <header class="topbar">
+            <a class="brand-lockup" href="index.html"
+                ><span class="brand-mark">//</span> SHREDDER<span
+                    class="brand-accent"
+                    >.exe</span
+                ></a
+            >
+            <div class="top-status">
+                <span class="status-dot"></span> <span>UPLINK ESTÁVEL</span
+                ><span class="top-divider"></span
+                ><span id="lobby-player">OPERADOR</span>
+            </div>
+        </header>
+
+        <main class="page-shell lobby-shell">
+            <div class="stepper">
+                <span class="step active">01 <b>SALA</b></span>
+                <span class="step-line"></span>
+                <span class="step">02 <b>INSTRUMENTO</b></span>
+                <span class="step-line"></span>
+                <span class="step">03 <b>FASE</b></span>
+            </div>
+
+            <section class="section-heading">
+                <div>
+                    <p class="eyebrow">REDE // ENCONTRE SUA FREQUÊNCIA</p>
+                    <h1>Escolha uma <span>sala.</span></h1>
+                </div>
+                <div class="operator-chip">
+                    <span>LOGADO COMO</span>
+                    <strong id="lobby-player-chip">OPERADOR</strong>
+                </div>
+            </section>
+
+            <p id="lobby-status" class="lobby-status">
+                SINAL ONLINE // SALAS EM TEMPO REAL
+            </p>
+
+            <section class="lobby-create panel-cut">
+                <div>
+                    <p class="eyebrow">NOVA TRANSMISSÃO</p>
+                    <h2>Crie uma sala.</h2>
+                    <p>Abra uma frequência para até quatro operadores.</p>
+                </div>
+                <form id="form-criar-sala" class="room-form" novalidate>
+                    <label for="room-name">NOME DA SALA</label>
+                    <div class="input-wrap">
+                        <span class="input-prefix">//</span>
+                        <input
+                            id="room-name"
+                            name="roomName"
+                            maxlength="40"
+                            placeholder="Ex.: PALCO PRINCIPAL"
+                            required
+                        />
+                    </div>
+                    <button
+                        id="btn-criar-sala"
+                        class="button button-primary"
+                        type="submit"
+                    >
+                        <span>CRIAR NOVA SALA</span><b>↗</b>
+                    </button>
+                </form>
+            </section>
+
+            <section
+                class="room-directory"
+                aria-labelledby="room-directory-title"
+            >
+                <div class="block-heading">
+                    <h2 id="room-directory-title">
+                        <span class="heading-number">01</span> SALAS ABERTAS
+                    </h2>
+                    <span class="block-note">// LIMITE DE 4 OPERADORES</span>
+                </div>
+                <div id="room-list" class="room-grid"></div>
+                <p id="lobby-empty" class="lobby-empty">
+                    &gt; Nenhuma sala ativa. Crie a primeira.
+                </p>
+            </section>
+
+            <div class="page-actions">
+                <a class="text-link" href="index.html"
+                    >← REINICIAR IDENTIDADE</a
+                >
+            </div>
+        </main>
+
+        <script src="js/account.js"></script>
+        <script src="js/account-ui.js"></script>
+        <script>
+            window.shredderAccount = new ShredderAccount();
+            window.shredderUI = new ShredderAccountUI(window.shredderAccount);
+            window.shredderAccount.onChange((state) => {
+                if (state.isLoggedIn) {
+                    document.querySelector("#lobby-player-chip").textContent =
+                        state.user;
+                }
+            });
+        </script>
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+        <script>
+            window.socket = io();
+        </script>
+        <script src="app.js"></script>
+    </body>
+</html>
+

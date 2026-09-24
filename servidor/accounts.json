@@ -14,8 +14,8 @@
     },
     "davitest123": {
       "username": "davitest123",
-      "salt": "e5575950f3f0cfb6a2284849c4f53541",
-      "passwordHash": "540ab08113d7a32b030f7b693e96fd29c89d26e97164f49a01d82850ccaa56bfb2b079b1e0257ae22864bada9e745c31b4eb145dbb19edc3773a3494a0b80a33",
+      "salt": "38c9ba76c94ab094b0cf070769eb4ecc",
+      "passwordHash": "ef41b756280b245e18ad988ac29b604981fb4e8f9f98035df07e7dd404f111125df9d68565ff5905dcd3ff5d97ef04e74ac1fbd3b40bde52da3382391ba7fbd4",
       "createdAt": "2026-09-24T11:50:27.069Z"
     },
     "davi12345": {
@@ -23,6 +23,12 @@
       "salt": "fddf50c60b864e57d46f54bc5bfaf0dc",
       "passwordHash": "728f65be2b0ec5d650c5d349391b34632bbe23c3219e30e26366b05cc5800e6b0b7a4e697ef3d203211ad23ec5cf61813837f20f1a4e39d799f1ae6d599af2de",
       "createdAt": "2026-09-24T12:21:54.015Z"
+    },
+    "alparenga": {
+      "username": "alparenga",
+      "salt": "1de339fb2080d307e7445754e93f4556",
+      "passwordHash": "debe524cdeebe2615b331c4c9846af95bfe103306fc3323a3b297d6fa917855984e5071e8c892667fac491f4680e5114b27d0607f57f16b7deb7062f1757a69a",
+      "createdAt": "2026-09-24T19:47:17.031Z"
     }
   }
 }

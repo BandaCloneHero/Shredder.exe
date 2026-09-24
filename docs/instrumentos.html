@@ -1,132 +1,259 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shredder.exe // Instrumento</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body data-page="instrumentos">
-    <header class="topbar">
-        <a class="brand-lockup" href="index.html"><span class="brand-mark">//</span> SHREDDER<span class="brand-accent">.exe</span></a>
-        <div class="top-status"><span class="status-dot"></span> UPLINK ESTÁVEL <span class="top-divider"></span><span id="top-player">OPERADOR</span></div>
-    </header>
-    
-    <main class="page-shell">
-        <div class="stepper">
-            <span class="step active">01 <b>INSTRUMENTO</b></span>
-            <span class="step-line"></span>
-            <span class="step">02 <b>FASE</b></span>
-            <span class="step-line"></span>
-            <span class="step">03 <b>TICKET</b></span>
-        </div>
-        
-        <section class="section-heading">
-            <div>
-                <p class="eyebrow">LOADOUT // ESCOLHA DE SINAL</p>
-                <h1>Qual é a sua <span>frequência?</span></h1>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Shredder.exe // Instrumento</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body data-page="instrumentos">
+        <header class="topbar">
+            <a class="brand-lockup" href="index.html"
+                ><span class="brand-mark">//</span> SHREDDER<span
+                    class="brand-accent"
+                    >.exe</span
+                ></a
+            >
+            <div class="top-status">
+                <span class="status-dot"></span> UPLINK ESTÁVEL
+                <span class="top-divider"></span
+                ><span id="top-player">OPERADOR</span>
             </div>
-            <div class="operator-chip">
-                <span>OPERADOR</span>
-                <strong id="operator-name">---</strong>
+        </header>
+
+        <main class="page-shell">
+            <div class="stepper">
+                <span class="step active">01 <b>INSTRUMENTO</b></span>
+                <span class="step-line"></span>
+                <span class="step">02 <b>FASE</b></span>
+                <span class="step-line"></span>
+                <span class="step">03 <b>TICKET</b></span>
             </div>
-        </section>
-        
-        <p class="section-intro">Selecione uma estação. Cada instrumento pode ser ocupado por apenas um operador nesta sessão.</p>
-        
-        <section id="instrument-grid" class="instrument-grid" aria-label="Instrumentos disponíveis">
-            <div class="instrument-slot">
-                <button id="guitarra" class="instrument-card" data-instrument="Guitarra" type="button" onclick="tentarEscolherInstrumento('guitarra')">
-                <img src="images/Guitarra.png" alt="Guitarra" class="instrument-icon">
-                <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
-                <img src="images/Ocupado.png" alt="" class="instrument-occupied" aria-hidden="true" hidden>
-                <span class="instrument-name">GUITARRA</span>
-                </button>
-                <span class="instrument-status">DISPONÍVEL</span>
-            </div>
-            
-            <div class="instrument-slot">
-                <button id="baixo" class="instrument-card" data-instrument="Baixo" type="button" onclick="tentarEscolherInstrumento('baixo')">
-                    <img src="images/Baixo.png" alt="Baixo" class="instrument-icon">
-                    <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
-                    <img src="images/Ocupado.png" alt="" class="instrument-occupied" aria-hidden="true" hidden>
-                    <span class="instrument-name">BAIXO</span>
-                </button>
-                <span class="instrument-status">DISPONÍVEL</span>
-            </div>
-            
-            <div class="instrument-slot">
-                <button id="bateria" class="instrument-card" data-instrument="Bateria" type="button" onclick="tentarEscolherInstrumento('bateria')">
-                    <img src="images/Bateria.png" alt="Bateria" class="instrument-icon">
-                    <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
-                    <img src="images/Ocupado.png" alt="" class="instrument-occupied" aria-hidden="true" hidden>
-                    <span class="instrument-name">BATERIA</span>
-                </button>
-                <span class="instrument-status">DISPONÍVEL</span>
-            </div>
-            
-            <div class="instrument-slot">
-                <button id="teclado" class="instrument-card" data-instrument="Teclado" type="button" onclick="tentarEscolherInstrumento('teclado')">
-                    <img src="images/Teclado.png" alt="Teclado" class="instrument-icon">
-                    <img src="images/Moldura-livre.png" alt="" class="instrument-frame" aria-hidden="true">
-                    <img src="images/Ocupado.png" alt="" class="instrument-occupied" aria-hidden="true" hidden>
-                    <span class="instrument-name">TECLADO</span>
-                </button>
-                <span class="instrument-status">DISPONÍVEL</span>
-            </div>
-        </section>
-        
-        <section class="lobby-console panel-cut">
-            <div class="console-head">
-                <span>LOBBY COLETIVO</span>
-                <span class="console-live"><i></i> LIVE / LOCAL</span>
-            </div>
-            <div class="console-content">
+
+            <section class="section-heading">
                 <div>
-                    <p class="eyebrow">NÓ DE CONVITE</p>
-                    <h2>Envie o sinal.</h2>
-                    <p>Escaneie para abrir este lobby em outro dispositivo e entrar na mesma sessão local.</p>
-                    <span class="console-url" id="lobby-url">---</span>
+                    <p class="eyebrow">LOADOUT // ESCOLHA DE SINAL</p>
+                    <h1>Qual é a sua <span>frequência?</span></h1>
                 </div>
-                <div class="qr-frame">
-                    <div id="qr-code-container" style="display: flex; justify-content: center; align-items: center; width: 140px; height: 140px; background: #fff; padding: 5px;">
+                <div class="operator-chip">
+                    <span>OPERADOR</span>
+                    <strong id="operator-name">---</strong>
+                </div>
+            </section>
+
+            <p class="section-intro">
+                Selecione uma estação. Cada instrumento pode ser ocupado por
+                apenas um operador nesta sessão.
+            </p>
+
+            <section
+                id="instrument-grid"
+                class="instrument-grid"
+                aria-label="Instrumentos disponíveis"
+            >
+                <div class="instrument-slot">
+                    <button
+                        id="guitarra"
+                        class="instrument-card"
+                        data-instrument="Guitarra"
+                        type="button"
+                        onclick="tentarEscolherInstrumento('guitarra')"
+                    >
+                        <img
+                            src="images/Guitarra.png"
+                            alt="Guitarra"
+                            class="instrument-icon"
+                        />
+                        <img
+                            src="images/Moldura-livre.png"
+                            alt=""
+                            class="instrument-frame"
+                            aria-hidden="true"
+                        />
+                        <img
+                            src="images/Ocupado.png"
+                            alt=""
+                            class="instrument-occupied"
+                            aria-hidden="true"
+                            hidden
+                        />
+                        <span class="instrument-name">GUITARRA</span>
+                    </button>
+                    <span class="instrument-status">DISPONÍVEL</span>
+                </div>
+
+                <div class="instrument-slot">
+                    <button
+                        id="baixo"
+                        class="instrument-card"
+                        data-instrument="Baixo"
+                        type="button"
+                        onclick="tentarEscolherInstrumento('baixo')"
+                    >
+                        <img
+                            src="images/Baixo.png"
+                            alt="Baixo"
+                            class="instrument-icon"
+                        />
+                        <img
+                            src="images/Moldura-livre.png"
+                            alt=""
+                            class="instrument-frame"
+                            aria-hidden="true"
+                        />
+                        <img
+                            src="images/Ocupado.png"
+                            alt=""
+                            class="instrument-occupied"
+                            aria-hidden="true"
+                            hidden
+                        />
+                        <span class="instrument-name">BAIXO</span>
+                    </button>
+                    <span class="instrument-status">DISPONÍVEL</span>
+                </div>
+
+                <div class="instrument-slot">
+                    <button
+                        id="bateria"
+                        class="instrument-card"
+                        data-instrument="Bateria"
+                        type="button"
+                        onclick="tentarEscolherInstrumento('bateria')"
+                    >
+                        <img
+                            src="images/Bateria.png"
+                            alt="Bateria"
+                            class="instrument-icon"
+                        />
+                        <img
+                            src="images/Moldura-livre.png"
+                            alt=""
+                            class="instrument-frame"
+                            aria-hidden="true"
+                        />
+                        <img
+                            src="images/Ocupado.png"
+                            alt=""
+                            class="instrument-occupied"
+                            aria-hidden="true"
+                            hidden
+                        />
+                        <span class="instrument-name">BATERIA</span>
+                    </button>
+                    <span class="instrument-status">DISPONÍVEL</span>
+                </div>
+
+                <div class="instrument-slot">
+                    <button
+                        id="teclado"
+                        class="instrument-card"
+                        data-instrument="Teclado"
+                        type="button"
+                        onclick="tentarEscolherInstrumento('teclado')"
+                    >
+                        <img
+                            src="images/Teclado.png"
+                            alt="Teclado"
+                            class="instrument-icon"
+                        />
+                        <img
+                            src="images/Moldura-livre.png"
+                            alt=""
+                            class="instrument-frame"
+                            aria-hidden="true"
+                        />
+                        <img
+                            src="images/Ocupado.png"
+                            alt=""
+                            class="instrument-occupied"
+                            aria-hidden="true"
+                            hidden
+                        />
+                        <span class="instrument-name">TECLADO</span>
+                    </button>
+                    <span class="instrument-status">DISPONÍVEL</span>
+                </div>
+            </section>
+
+            <section class="lobby-console panel-cut">
+                <div class="console-head">
+                    <span>LOBBY COLETIVO</span>
+                    <span class="console-live"><i></i> LIVE / LOCAL</span>
+                </div>
+                <div class="console-content">
+                    <div>
+                        <p class="eyebrow">NÓ DE CONVITE</p>
+                        <h2>Envie o sinal.</h2>
+                        <p>
+                            Escaneie para abrir este lobby em outro dispositivo
+                            e entrar na mesma sessão local.
+                        </p>
+                        <span class="console-url" id="lobby-url">---</span>
                     </div>
-                    <span>SCAN // JOIN</span>
+                    <div class="qr-frame">
+                        <div
+                            id="qr-code-container"
+                            style="
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                width: 140px;
+                                height: 140px;
+                                background: #fff;
+                                padding: 5px;
+                            "
+                        ></div>
+                        <span>SCAN // JOIN</span>
+                    </div>
+                    <div class="lobby-roster">
+                        <p class="eyebrow">OPERADORES CONECTADOS</p>
+                        <div id="lobby-list"></div>
+                    </div>
                 </div>
-                <div class="lobby-roster">
-                    <p class="eyebrow">OPERADORES CONECTADOS</p>
-                    <div id="lobby-list"></div>
-                </div>
+            </section>
+
+            <div class="page-actions">
+                <a class="text-link" href="index.html"
+                    >← REINICIAR IDENTIDADE</a
+                >
+                <button
+                    id="continue-instrument"
+                    class="button button-primary"
+                    type="button"
+                    disabled
+                >
+                    ESCOLHER FASE <b>→</b>
+                </button>
             </div>
-        </section>
-        
-        <div class="page-actions">
-            <a class="text-link" href="index.html">← REINICIAR IDENTIDADE</a>
-            <button id="continue-instrument" class="button button-primary" type="button" disabled>ESCOLHER FASE <b>→</b></button>
-        </div>
-    </main>
-    
-    <script src="js/account.js"></script>
-    <script src="js/account-ui.js"></script>
-    <script>
-        window.shredderAccount = new ShredderAccount();
-        window.shredderUI = new ShredderAccountUI(window.shredderAccount);
-        let sessionWasActive = false;
-        window.shredderAccount.onChange((state) => {
-            if (state.isLoggedIn) {
-                sessionWasActive = true;
-            } else if (sessionWasActive) {
-                const currentPage = window.location.pathname.split('/').pop();
-                if (currentPage !== 'index.html' && currentPage !== '') {
-                    window.location.href = 'index.html';
+        </main>
+
+        <script src="js/account.js"></script>
+        <script src="js/account-ui.js"></script>
+        <script>
+            window.shredderAccount = new ShredderAccount();
+            window.shredderUI = new ShredderAccountUI(window.shredderAccount);
+            let sessionWasActive = false;
+            window.shredderAccount.onChange((state) => {
+                if (state.isLoggedIn) {
+                    sessionWasActive = true;
+                } else if (sessionWasActive) {
+                    const currentPage = window.location.pathname
+                        .split("/")
+                        .pop();
+                    if (currentPage !== "index.html" && currentPage !== "") {
+                        window.location.href = "index.html";
+                    }
                 }
-            }
-        });
-    </script>
-    <script src="app.js"></script>
+            });
+        </script>
+        <script src="app.js"></script>
 
         <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
         <script src="vendor/qrcode.min.js"></script>
@@ -134,7 +261,7 @@
             window.socket = io();
             const socket = window.socket;
             window.setupKickListener();
-            const player = JSON.parse(localStorage.getItem('shredder_player'));
+            const player = JSON.parse(localStorage.getItem("shredder_player"));
             if (!player || !player.nome) {
                 window.location.href = `index.html${window.location.search}`;
             }
@@ -142,138 +269,196 @@
 
             let minhaSalaId = null;
             let estadoAtualSala = {};
-            const salaUrl = new URLSearchParams(window.location.search).get('sala');
-            const btnContinuar = document.getElementById('continue-instrument');
+            const btnContinuar = document.getElementById("continue-instrument");
 
             function gerarQrCode(salaId) {
-                const urlDaSala = `${window.location.protocol}//${window.location.host}/instrumentos.html?sala=${salaId}`;
-                document.getElementById('lobby-url').textContent = urlDaSala;
-                const containerQr = document.getElementById('qr-code-container');
+                const urlDaSala = `${window.location.protocol}//${window.location.host}/lobby.html?roomId=${salaId}`;
+                document.getElementById("lobby-url").textContent = urlDaSala;
+                const containerQr =
+                    document.getElementById("qr-code-container");
                 if (containerQr) {
-                    containerQr.innerHTML = '';
-                    QRCode.toCanvas(urlDaSala, { width: 130, margin: 1 }, (error, canvas) => {
-                        if (error) {
-                            console.error('Erro ao gerar QR Code:', error);
-                        } else {
-                            containerQr.appendChild(canvas);
-                            console.log('> QR Code gerado e injetado com sucesso!');
-                        }
-                    });
+                    containerQr.innerHTML = "";
+                    QRCode.toCanvas(
+                        urlDaSala,
+                        { width: 130, margin: 1 },
+                        (error, canvas) => {
+                            if (error) {
+                                console.error("Erro ao gerar QR Code:", error);
+                            } else {
+                                containerQr.appendChild(canvas);
+                                console.log(
+                                    "> QR Code gerado e injetado com sucesso!",
+                                );
+                            }
+                        },
+                    );
                 }
             }
 
-            function entrarNaSala(salaId) {
-                socket.emit('entrar_sala', { salaId, operadorNome: meuNomeOperador }, (resposta) => {
-                    if (!resposta.ok) {
-                        alert(resposta.erro);
-                        criarSalaNova();
-                    }
-                });
-            }
-
-            function criarSalaNova() {
-                socket.emit('criar_sala', (resposta) => {
-                    minhaSalaId = resposta.salaId;
-                    window.history.replaceState({}, '', `${window.location.pathname}?sala=${minhaSalaId}`);
-                    entrarNaSala(minhaSalaId);
-                    gerarQrCode(minhaSalaId);
-                });
-            }
-
-            if (salaUrl) {
-                minhaSalaId = salaUrl;
-                entrarNaSala(minhaSalaId);
-                gerarQrCode(minhaSalaId);
+            // O estado dos instrumentos é recebido somente da sala persistida pelo lobby.
+            minhaSalaId = localStorage.getItem("shredder_room_id");
+            if (!minhaSalaId) {
+                window.location.href = "lobby.html";
             } else {
-                criarSalaNova();
+                localStorage.setItem("shredder_room_id", minhaSalaId);
+                gerarQrCode(minhaSalaId);
             }
 
-            socket.on('atualizar_estado', (estado) => {
-                console.log('Estado recebido:', estado);
+            socket.on("atualizar_estado", (estado) => {
+                console.log("Estado recebido:", estado);
                 estadoAtualSala = estado;
-                window.renderLobbyPlayers({ ...estado, id: minhaSalaId }, meuNomeOperador);
+                window.renderLobbyPlayers(
+                    { ...estado, id: minhaSalaId },
+                    meuNomeOperador,
+                );
 
                 let meuInstrumentoEscolhido = null;
-                for (const [nomeInstrumento, operadorQueEscolheu] of Object.entries(estado.instrumentos)) {
+                for (const [
+                    nomeInstrumento,
+                    operadorQueEscolheu,
+                ] of Object.entries(estado.instrumentos)) {
                     const card = document.getElementById(nomeInstrumento);
                     if (!card) continue;
 
-                    const statusEl = card.parentElement.querySelector('.instrument-status');
-                    const frameEl = card.querySelector('.instrument-frame');
-                    const occupiedEl = card.querySelector('.instrument-occupied');
+                    const statusEl =
+                        card.parentElement.querySelector(".instrument-status");
+                    const frameEl = card.querySelector(".instrument-frame");
+                    const occupiedEl = card.querySelector(
+                        ".instrument-occupied",
+                    );
                     if (operadorQueEscolheu === null) {
-                        if (frameEl) frameEl.src = 'images/Moldura-livre.png';
+                        if (frameEl) frameEl.src = "images/Moldura-livre.png";
                         if (occupiedEl) occupiedEl.hidden = true;
-                        card.classList.remove('ocupado', 'selecionado-por-outro', 'selecionado');
-                        card.style.pointerEvents = 'auto';
-                        card.style.opacity = '1';
+                        card.classList.remove(
+                            "ocupado",
+                            "selecionado-por-outro",
+                            "selecionado",
+                        );
+                        card.style.pointerEvents = "auto";
+                        card.style.opacity = "1";
                         if (statusEl) {
-                            statusEl.innerText = 'DISPONÍVEL';
-                            statusEl.style.color = '';
+                            statusEl.innerText = "DISPONÍVEL";
+                            statusEl.style.color = "";
                         }
                     } else if (operadorQueEscolheu === meuNomeOperador) {
-                        if (frameEl) frameEl.src = 'images/Moldura-ocupada.png';
+                        if (frameEl) frameEl.src = "images/Moldura-ocupada.png";
                         if (occupiedEl) occupiedEl.hidden = false;
                         meuInstrumentoEscolhido = card.dataset.instrument;
-                        card.classList.add('selecionado');
-                        card.classList.remove('ocupado', 'selecionado-por-outro');
-                        card.style.pointerEvents = 'auto';
-                        card.style.opacity = '1';
+                        card.classList.add("selecionado");
+                        card.classList.remove(
+                            "ocupado",
+                            "selecionado-por-outro",
+                        );
+                        card.style.pointerEvents = "auto";
+                        card.style.opacity = "1";
                         if (statusEl) {
-                            statusEl.innerText = 'SELECIONADO // VOCÊ';
-                            statusEl.style.color = '#00ffcc';
+                            statusEl.innerText = "SELECIONADO // VOCÊ";
+                            statusEl.style.color = "#00ffcc";
                         }
                     } else {
-                        if (frameEl) frameEl.src = 'images/Moldura-ocupada.png';
+                        if (frameEl) frameEl.src = "images/Moldura-ocupada.png";
                         if (occupiedEl) occupiedEl.hidden = false;
-                        card.classList.add('ocupado');
-                        card.classList.remove('selecionado', 'selecionado-por-outro');
-                        card.style.pointerEvents = 'none';
-                        card.style.opacity = '0.5';
+                        card.classList.add("ocupado");
+                        card.classList.remove(
+                            "selecionado",
+                            "selecionado-por-outro",
+                        );
+                        card.style.pointerEvents = "none";
+                        card.style.opacity = "0.5";
                         if (statusEl) {
                             statusEl.innerText = `OCUPADO // ${operadorQueEscolheu}`;
-                            statusEl.style.color = '#ff3333';
+                            statusEl.style.color = "#ff3333";
                         }
                     }
                 }
 
                 if (meuInstrumentoEscolhido) {
                     player.instrumento = meuInstrumentoEscolhido;
-                    localStorage.setItem('shredder_player', JSON.stringify(player));
+                    localStorage.setItem(
+                        "shredder_player",
+                        JSON.stringify(player),
+                    );
                     btnContinuar.disabled = false;
                 } else {
                     player.instrumento = null;
-                    localStorage.setItem('shredder_player', JSON.stringify(player));
+                    localStorage.setItem(
+                        "shredder_player",
+                        JSON.stringify(player),
+                    );
                     btnContinuar.disabled = true;
                 }
             });
 
+            socket.on("sala_avancou_fase", () => {
+                window.location.href = "modos.html";
+            });
+
+            // Registra o listener antes de pedir o estado, pois o servidor responde imediatamente.
+            if (minhaSalaId) {
+                socket.emit(
+                    "entrarSala",
+                    {
+                        roomId: minhaSalaId,
+                        operadorId: player.id,
+                        username: meuNomeOperador,
+                    },
+                    (response) => {
+                        if (!response?.ok) {
+                            console.error(
+                                "Não foi possível reentrar na sala:",
+                                response?.erro,
+                            );
+                            window.location.href = "lobby.html";
+                        }
+                    },
+                );
+            }
+
             function tentarEscolherInstrumento(nomeInstrumento) {
                 if (!minhaSalaId) return;
-                console.log(`Tentando escolher o instrumento: ${nomeInstrumento}`);
-                socket.emit('escolher_instrumento', {
+                console.log(
+                    `Tentando escolher o instrumento: ${nomeInstrumento}`,
+                );
+                socket.emit("escolher_instrumento", {
                     salaId: minhaSalaId,
                     instrumento: nomeInstrumento,
-                    operadorNome: meuNomeOperador
+                    operadorNome: meuNomeOperador,
                 });
             }
 
-            document.querySelectorAll('.instrument-card').forEach(card => {
-                card.addEventListener('pointerdown', () => {
-                    if (card.classList.contains('ocupado')) return;
-                    card.classList.remove('is-pressing');
+            document.querySelectorAll(".instrument-card").forEach((card) => {
+                card.addEventListener("pointerdown", () => {
+                    if (card.classList.contains("ocupado")) return;
+                    card.classList.remove("is-pressing");
                     void card.offsetWidth;
-                    card.classList.add('is-pressing');
+                    card.classList.add("is-pressing");
                 });
-                card.addEventListener('animationend', event => {
-                    if (event.animationName === 'instrument-press') card.classList.remove('is-pressing');
+                card.addEventListener("animationend", (event) => {
+                    if (event.animationName === "instrument-press")
+                        card.classList.remove("is-pressing");
                 });
             });
 
-            btnContinuar.addEventListener('click', () => {
-                window.location.href = `modos.html?sala=${minhaSalaId}`;
-            });
+            btnContinuar.addEventListener("click", () => {
+                if (estadoAtualSala.host !== player.id) return;
 
+                socket.emit(
+                    "owner_avancar_fase",
+                    {
+                        roomId: minhaSalaId,
+                        operadorId: player.id,
+                    },
+                    (response) => {
+                        if (!response?.ok) {
+                            console.error(
+                                "Não foi possível avançar a sala:",
+                                response?.erro,
+                            );
+                        }
+                    },
+                );
+            });
         </script>
-</body>
+    </body>
 </html>
+
