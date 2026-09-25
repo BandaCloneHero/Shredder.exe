@@ -25,6 +25,205 @@ function readJson(key, fallback) {
     }
 }
 
+const PROFILE_INSTRUMENTS = [
+    ["guitarra", "GUITARRA"],
+    ["baixo", "BAIXO"],
+    ["bateria", "BATERIA"],
+    ["teclado", "TECLADO"],
+];
+
+// Adicione novos IDs e rótulos nesta lista quando o evento ganhar badges novas.
+const PROFILE_ACHIEVEMENTS = [
+    ["primeiros_acordes", "PRIMEIROS ACORDES", "◆"],
+    ["on_fire", "ON FIRE", "◇"],
+    ["cirurgico", "CIRÚRGICO", "✦"],
+    ["perfeccionista", "PERFECCIONISTA", "◈"],
+    ["lenda_viva", "LENDA VIVA", "★"],
+    ["desafinador_profissional", "DESAFINADOR PROFISSIONAL", "⊗"],
+];
+
+function profileNumber(value) {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function profilePercent(value) {
+    return `${profileNumber(value).toFixed(1)}%`;
+}
+
+function profileInstrumentMarkup(profile, instrumentId) {
+    const stats = profile.instrumentStats?.[instrumentId] || {};
+    return `
+        <div class="profile-stat"><span>MAX SCORE</span><strong>${formatScore(profileNumber(stats.maxScore))}</strong></div>
+        <div class="profile-stat"><span>MAX COMBO</span><strong>${formatScore(profileNumber(stats.maxCombo))}</strong></div>
+        <div class="profile-stat"><span>MELHOR PRECISÃO</span><strong>${profilePercent(stats.bestAccuracy)}</strong></div>
+        <div class="profile-stat"><span>MÚSICAS CONCLUÍDAS</span><strong>${formatScore(profileNumber(stats.songsCompleted))}</strong></div>
+        <div class="profile-stat"><span>FULL COMBOS</span><strong>${formatScore(profileNumber(stats.fullCombos))}</strong></div>`;
+}
+
+function renderProfile(profile, isOwnProfile) {
+    const hit = profileNumber(profile.lifetimeStats?.totalNotesHit);
+    const misses = profileNumber(profile.lifetimeStats?.totalMisses);
+    const totalNotes = hit + misses;
+    const hitRatio = totalNotes ? (hit / totalNotes) * 100 : 0;
+    const achievements = new Set(profile.achievements || []);
+    const favorite = String(
+        profile.favoriteInstrument || "nenhum",
+    ).toLowerCase();
+
+    document.querySelector("#profile-nickname").textContent = profile.nickname;
+    document.querySelector("#profile-username").textContent =
+        `// ${profile.username}`;
+    document.querySelector("#profile-title").textContent =
+        profile.tituloEquipado;
+    document.querySelector("#profile-currency").textContent = formatScore(
+        profileNumber(profile.moedas),
+    );
+    document.querySelector("#profile-games").textContent = formatScore(
+        profileNumber(profile.gamesPlayed),
+    );
+    document.querySelector("#profile-hit").textContent = formatScore(hit);
+    document.querySelector("#profile-misses").textContent = formatScore(misses);
+    document.querySelector("#profile-hit-bar").style.width = `${hitRatio}%`;
+    document.querySelector("#profile-hit-rate").textContent =
+        profilePercent(hitRatio);
+    document.querySelector("#profile-viewing").textContent = isOwnProfile
+        ? "SEU PERFIL // DADOS SINCRONIZADOS"
+        : `VISUALIZANDO: ${profile.username}`;
+    document.querySelector("#profile-back").hidden = isOwnProfile;
+
+    const tabs = document.querySelector("#profile-instrument-tabs");
+    const panel = document.querySelector("#profile-instrument-panel");
+    tabs.innerHTML = PROFILE_INSTRUMENTS.map(([id, label], index) => {
+        const isFavorite = favorite === id;
+        return `<button class="profile-tab${index === 0 ? " active" : ""}${isFavorite ? " is-favorite" : ""}" type="button" data-profile-instrument="${id}">${label}${isFavorite ? " <small>FAVORITO</small>" : ""}</button>`;
+    }).join("");
+
+    const selectInstrument = (instrumentId) => {
+        const instrument = PROFILE_INSTRUMENTS.find(
+            ([id]) => id === instrumentId,
+        );
+        if (!instrument) return;
+        tabs.querySelectorAll(".profile-tab").forEach((tab) => {
+            tab.classList.toggle(
+                "active",
+                tab.dataset.profileInstrument === instrumentId,
+            );
+        });
+        panel.innerHTML = `<div class="profile-panel-kicker">${instrument[1]} // REGISTRO DE PERFORMANCE</div><div class="profile-stats-grid">${profileInstrumentMarkup(profile, instrumentId)}</div>`;
+    };
+    tabs.querySelectorAll(".profile-tab").forEach((tab) => {
+        tab.addEventListener("click", () =>
+            selectInstrument(tab.dataset.profileInstrument),
+        );
+    });
+    selectInstrument(PROFILE_INSTRUMENTS[0][0]);
+
+    const records = Array.isArray(profile.songRecords)
+        ? profile.songRecords
+        : [];
+    document.querySelector("#profile-songs").innerHTML = records.length
+        ? records
+              .map(
+                  (record) =>
+                      `<div class="profile-song-row"><strong>${escapeHtml(record.musica || "SEM TÍTULO")}</strong><span>${formatScore(profileNumber(record.vezesJogada))}x</span><span>${formatScore(profileNumber(record.melhorPontuacao))}</span><span>${formatScore(profileNumber(record.melhorCombo))}</span><span>${profilePercent(record.melhorPrecisao)}</span></div>`,
+              )
+              .join("")
+        : '<p class="profile-empty">NENHUMA FREQUÊNCIA REGISTRADA.</p>';
+
+    document.querySelector("#profile-achievements").innerHTML =
+        PROFILE_ACHIEVEMENTS.map(([id, label, icon]) => {
+            const unlocked = achievements.has(id);
+            return `<article class="profile-badge${unlocked ? " is-unlocked" : " is-locked"}"><b>${unlocked ? icon : "?"}</b><strong>${label}</strong><small>${unlocked ? "DESBLOQUEADA" : "BLOQUEADA // SINAL INSUFICIENTE"}</small></article>`;
+        }).join("");
+}
+
+async function loadProfile(username, isOwnProfile) {
+    const status = document.querySelector("#profile-status");
+    const searchError = document.querySelector("#profile-search-error");
+    status.textContent = "SINCRONIZANDO DADOS...";
+    status.className = "profile-status is-loading";
+    searchError.hidden = true;
+    try {
+        const response = await fetch(
+            `/api/perfil/${encodeURIComponent(username)}`,
+        );
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !payload.profile) {
+            if (response.status === 404) {
+                searchError.textContent = "JOGADOR NÃO EXISTE NA REDE.";
+                searchError.hidden = false;
+            }
+            throw new Error(
+                payload.error || "Não foi possível acessar este perfil.",
+            );
+        }
+        renderProfile(payload.profile, isOwnProfile);
+        status.textContent = "SINAL ONLINE // PERFIL ATUALIZADO";
+        status.className = "profile-status is-online";
+        return true;
+    } catch (error) {
+        status.textContent =
+            error.message === "Operador não encontrado na rede."
+                ? "CONSULTA ENCERRADA // NENHUM OPERADOR CORRESPONDE AO SINAL."
+                : `SEM SINAL COM O SERVIDOR // ${error.message}`;
+        status.className = "profile-status is-error";
+        return false;
+    }
+}
+
+function initializeProfile() {
+    const searchForm = document.querySelector("#profile-search-form");
+    const searchInput = document.querySelector("#profile-search");
+    const requestedUsername = new URLSearchParams(window.location.search)
+        .get("username")
+        ?.trim();
+    const sessionUsername =
+        window.shredderAccount?.snapshot().user || getPlayer()?.nome;
+    const username = requestedUsername || sessionUsername;
+
+    searchForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const searchUsername = searchInput.value.trim();
+        if (!searchUsername) return;
+
+        const loaded = await loadProfile(
+            searchUsername,
+            String(sessionUsername || "").toLowerCase() ===
+                searchUsername.toLowerCase(),
+        );
+        if (loaded) {
+            window.history.pushState(
+                {},
+                "",
+                `perfil.html?username=${encodeURIComponent(searchUsername)}`,
+            );
+        }
+    });
+
+    document
+        .querySelector("#profile-back")
+        .addEventListener("click", async () => {
+            if (!sessionUsername) return;
+            const loaded = await loadProfile(sessionUsername, true);
+            if (loaded) {
+                searchInput.value = "";
+                window.history.pushState({}, "", "perfil.html");
+            }
+        });
+
+    if (!username) {
+        document.querySelector("#profile-status").textContent =
+            "IDENTIDADE AUSENTE // RETORNE AO LOGIN.";
+        return;
+    }
+
+    const ownUsername =
+        String(sessionUsername || "").toLowerCase() === username.toLowerCase();
+    searchInput.value = requestedUsername || "";
+    loadProfile(username, ownUsername);
+}
+
 function writeJson(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
 }
@@ -706,6 +905,7 @@ if (currentPage === "instrumentos") initializeInstruments();
 if (currentPage === "modos") initializeModes();
 if (currentPage === "ticket") initializeTicket();
 if (currentPage === "ranking") initializeRanking();
+if (currentPage === "perfil") initializeProfile();
 
 // O jogo Phaser pode consumir as mesmas chaves ao abrir jogo.html. Ao concluir uma fase,
 // marque progress[fase - 1] = true e persista com writeJson(STORAGE.progress, progress).

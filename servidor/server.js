@@ -146,11 +146,55 @@ app.post("/api/auth/register", async (req, res) => {
 
     const salt = randomBytes(16).toString("hex");
     const hash = await passwordHash(password, salt);
+    const timestamp = new Date().toISOString();
     accountStore.accounts[key] = {
         username: cleanUsername,
         salt,
         passwordHash: hash,
-        createdAt: new Date().toISOString(),
+        nickname: cleanUsername,
+        avatar: "",
+        currency: 0,
+        gamesPlayed: 0,
+        currentTitle: "Novato do Rock",
+        lifetimeStats: {
+            totalNotesHit: 0,
+            totalMisses: 0,
+        },
+        instrumentStats: {
+            guitarra: {
+                maxScore: 0,
+                maxCombo: 0,
+                bestAccuracy: 0,
+                songsCompleted: 0,
+                fullCombos: 0,
+            },
+            baixo: {
+                maxScore: 0,
+                maxCombo: 0,
+                bestAccuracy: 0,
+                songsCompleted: 0,
+                fullCombos: 0,
+            },
+            bateria: {
+                maxScore: 0,
+                maxCombo: 0,
+                bestAccuracy: 0,
+                songsCompleted: 0,
+                fullCombos: 0,
+            },
+            teclado: {
+                maxScore: 0,
+                maxCombo: 0,
+                bestAccuracy: 0,
+                songsCompleted: 0,
+                fullCombos: 0,
+            },
+            favoriteInstrument: "nenhum",
+        },
+        songRecords: {},
+        achievements: [],
+        createdAt: timestamp,
+        updatedAt: timestamp,
     };
     saveAccounts();
     const token = createSession(key);
@@ -200,6 +244,82 @@ app.post("/api/auth/login", async (req, res) => {
 
     const token = createSession(key);
     return res.json({ ok: true, token, username: account.username });
+});
+
+app.get("/api/perfil/:username", (req, res) => {
+    // O perfil é lido diretamente do disco para refletir partidas e badges recentes.
+    let rootData;
+    try {
+        rootData = JSON.parse(fs.readFileSync(ACCOUNTS_FILE, "utf8"));
+    } catch (error) {
+        return res
+            .status(500)
+            .json({ ok: false, error: "Erro ao ler banco de dados." });
+    }
+
+    const accounts = rootData.accounts || rootData;
+    const account = accounts[normalizeUsername(req.params.username)];
+    if (!account) {
+        return res.status(404).json({
+            ok: false,
+            error: "Operador não encontrado na rede.",
+        });
+    }
+
+    const emptyInstrumentStats = () => ({
+        maxScore: 0,
+        maxCombo: 0,
+        bestAccuracy: 0,
+        songsCompleted: 0,
+        fullCombos: 0,
+    });
+    const storedInstrumentStats = account.instrumentStats || {};
+    const instrumentStats = {};
+    for (const instrument of ["guitarra", "baixo", "bateria", "teclado"]) {
+        instrumentStats[instrument] = {
+            ...emptyInstrumentStats(),
+            ...(storedInstrumentStats[instrument] || {}),
+        };
+    }
+
+    const storedSongRecords = account.songRecords || {};
+    const songRecords = Array.isArray(storedSongRecords)
+        ? storedSongRecords
+        : Object.entries(storedSongRecords).map(([musica, record]) => ({
+              musica,
+              vezesJogada: record.plays || 0,
+              melhorPontuacao: record.bestScore || 0,
+              melhorCombo: record.bestCombo || 0,
+              melhorPrecisao: record.bestAccuracy || 0,
+          }));
+
+    return res.json({
+        ok: true,
+        profile: {
+            username:
+                account.username || normalizeUsername(req.params.username),
+            nickname: account.nickname || account.username || "OPERADOR",
+            tituloEquipado:
+                account.tituloEquipado ||
+                account.currentTitle ||
+                "Novato do Rock",
+            moedas: account.moedas ?? account.currency ?? 0,
+            gamesPlayed: account.gamesPlayed || 0,
+            lifetimeStats: {
+                totalNotesHit: account.lifetimeStats?.totalNotesHit || 0,
+                totalMisses: account.lifetimeStats?.totalMisses || 0,
+            },
+            instrumentStats,
+            favoriteInstrument:
+                account.favoriteInstrument ||
+                storedInstrumentStats.favoriteInstrument ||
+                "nenhum",
+            songRecords,
+            achievements: Array.isArray(account.achievements)
+                ? account.achievements
+                : [],
+        },
+    });
 });
 
 app.get("/api/auth/session", (req, res) => {

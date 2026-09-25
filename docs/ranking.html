@@ -1,91 +1,134 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shredder.exe // Ranking</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body data-page="ranking">
-
-    <header class="topbar">
-        <a class="brand-lockup" href="index.html">
-            <span class="brand-mark">//</span> SHREDDER<span class="brand-accent">.exe</span>
-        </a>
-        <div class="top-status">
-            <span class="status-dot"></span>
-            <span id="ranking-player">OPERADOR</span>
-            <span class="top-divider"></span>
-            <a href="modos.html">VOLTAR À FASE</a>
-        </div>
-    </header>
-
-    <main class="page-shell ranking-shell">
-        <section class="section-heading">
-            <div>
-                <p class="eyebrow">PLACAR // SINAL GLOBAL</p>
-                <h1>Ranking <span>real.</span></h1>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Shredder.exe // Ranking</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body data-page="ranking">
+        <header class="topbar">
+            <a class="brand-lockup" href="index.html">
+                <span class="brand-mark">//</span> SHREDDER<span
+                    class="brand-accent"
+                    >.exe</span
+                >
+            </a>
+            <div class="top-status">
+                <span class="status-dot"></span>
+                <span id="ranking-player">OPERADOR</span>
+                <span class="top-divider"></span>
+                <a href="modos.html">VOLTAR À FASE</a>
+                <span class="top-divider"></span>
+                <a class="top-profile-link" href="perfil.html"
+                    >MEU PERFIL <b>↗</b></a
+                >
             </div>
-            <div class="operator-chip">
-                <span>REGISTRO</span>
-                <strong>TOP 100</strong>
-            </div>
-        </section>
+        </header>
 
-        <p id="ranking-status" class="ranking-status">SINCRONIZANDO DADOS...</p>
+        <main class="page-shell ranking-shell">
+            <section class="section-heading">
+                <div>
+                    <p class="eyebrow">PLACAR // SINAL GLOBAL</p>
+                    <h1>Ranking <span>real.</span></h1>
+                </div>
+                <div class="operator-chip">
+                    <span>REGISTRO</span>
+                    <strong>TOP 100</strong>
+                </div>
+            </section>
 
-        <nav class="ranking-tabs" aria-label="Categorias do ranking">
-            <button class="ranking-tab" data-ranking-tab="Guitarra" type="button">GUITARRA</button>
-            <button class="ranking-tab" data-ranking-tab="Baixo" type="button">BAIXO</button>
-            <button class="ranking-tab" data-ranking-tab="Bateria" type="button">BATERIA</button>
-            <button class="ranking-tab" data-ranking-tab="Teclado" type="button">TECLADO</button>
-            <button class="ranking-tab ranking-tab-bands" data-ranking-tab="bandas" type="button">BANDAS</button>
-        </nav>
+            <p id="ranking-status" class="ranking-status">
+                SINCRONIZANDO DADOS...
+            </p>
 
-        <section class="ranking-console panel-cut">
-            <div class="console-head">
-                <span>LEADERBOARD // PARTIDAS FINALIZADAS</span>
-                <span>FONTE: FIRESTORE</span>
-            </div>
-            <div class="ranking-header">
-                <span>POSIÇÃO / OPERADOR</span>
-                <span>PONTUAÇÃO</span>
-            </div>
-            <div id="ranking-list" aria-live="polite">
-                <p class="ranking-empty">SINCRONIZANDO...</p>
-            </div>
-            <div id="my-ranking" class="my-ranking" hidden></div>
-        </section>
+            <nav class="ranking-tabs" aria-label="Categorias do ranking">
+                <button
+                    class="ranking-tab"
+                    data-ranking-tab="Guitarra"
+                    type="button"
+                >
+                    GUITARRA
+                </button>
+                <button
+                    class="ranking-tab"
+                    data-ranking-tab="Baixo"
+                    type="button"
+                >
+                    BAIXO
+                </button>
+                <button
+                    class="ranking-tab"
+                    data-ranking-tab="Bateria"
+                    type="button"
+                >
+                    BATERIA
+                </button>
+                <button
+                    class="ranking-tab"
+                    data-ranking-tab="Teclado"
+                    type="button"
+                >
+                    TECLADO
+                </button>
+                <button
+                    class="ranking-tab ranking-tab-bands"
+                    data-ranking-tab="bandas"
+                    type="button"
+                >
+                    BANDAS
+                </button>
+            </nav>
 
-        <a class="button button-ghost ranking-back" href="modos.html">
-            <span>← RETORNAR À SELEÇÃO</span>
-            <b>↗</b>
-        </a>
-    </main>
+            <section class="ranking-console panel-cut">
+                <div class="console-head">
+                    <span>LEADERBOARD // PARTIDAS FINALIZADAS</span>
+                    <span>FONTE: FIRESTORE</span>
+                </div>
+                <div class="ranking-header">
+                    <span>POSIÇÃO / OPERADOR</span>
+                    <span>PONTUAÇÃO</span>
+                </div>
+                <div id="ranking-list" aria-live="polite">
+                    <p class="ranking-empty">SINCRONIZANDO...</p>
+                </div>
+                <div id="my-ranking" class="my-ranking" hidden></div>
+            </section>
 
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="js/account.js"></script>
-    <script src="js/account-ui.js"></script>
-    <script>
-        window.shredderAccount = new ShredderAccount();
-        window.shredderUI = new ShredderAccountUI(window.shredderAccount);
-        let sessionWasActive = false;
-        window.shredderAccount.onChange((state) => {
-            if (state.isLoggedIn) {
-                sessionWasActive = true;
-            } else if (sessionWasActive) {
-                const currentPage = window.location.pathname.split('/').pop();
-                if (currentPage !== 'index.html' && currentPage !== '') {
-                    window.location.href = 'index.html';
+            <a class="button button-ghost ranking-back" href="modos.html">
+                <span>← RETORNAR À SELEÇÃO</span>
+                <b>↗</b>
+            </a>
+        </main>
+
+        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+        <script src="firebase-config.js"></script>
+        <script src="js/account.js"></script>
+        <script src="js/account-ui.js"></script>
+        <script>
+            window.shredderAccount = new ShredderAccount();
+            window.shredderUI = new ShredderAccountUI(window.shredderAccount);
+            let sessionWasActive = false;
+            window.shredderAccount.onChange((state) => {
+                if (state.isLoggedIn) {
+                    sessionWasActive = true;
+                } else if (sessionWasActive) {
+                    const currentPage = window.location.pathname
+                        .split("/")
+                        .pop();
+                    if (currentPage !== "index.html" && currentPage !== "") {
+                        window.location.href = "index.html";
+                    }
                 }
-            }
-        });
-    </script>
-    <script src="app.js"></script>
-</body>
+            });
+        </script>
+        <script src="app.js"></script>
+    </body>
 </html>

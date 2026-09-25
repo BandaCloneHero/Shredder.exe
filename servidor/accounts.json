@@ -1,5 +1,75 @@
 {
   "accounts": {
+    "123456": {
+      "username": "123456",
+      "salt": "e04b95b4821f3b42f5772c9ab71d6df8",
+      "passwordHash": "4eb028669b684a9ba6c00d02869e69608131540757ab380c8cf787e4d949137f3f3b65f6d98dccf6d8d702bccfc7e0e145a3a4539488d435c89c0737dbcbef13",
+      "nickname": "123456",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 7,
+      "currentTitle": "Novato do Rock",
+      "lifetimeStats": {
+        "totalNotesHit": 3150,
+        "totalMisses": 84
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 128450,
+          "maxCombo": 186,
+          "bestAccuracy": 96.2,
+          "songsCompleted": 1,
+          "fullCombos": 1
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 128500,
+          "maxCombo": 250,
+          "bestAccuracy": 96.2,
+          "songsCompleted": 6,
+          "fullCombos": 6
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "bateria"
+      },
+      "songRecords": {
+        "B.G.d.N.": {
+          "plays": 1,
+          "bestScore": 128450,
+          "bestCombo": 186,
+          "bestAccuracy": 96.2
+        },
+        "aura676769": {
+          "plays": 6,
+          "bestScore": 128500,
+          "bestCombo": 250,
+          "bestAccuracy": 96.2
+        }
+      },
+      "achievements": [
+        "primeiros_acordes",
+        "on_fire",
+        "cirurgico",
+        "perfeccionista",
+        "imparavel",
+        "Lenda",
+        "67"
+      ],
+      "createdAt": "2026-09-25T17:18:10.276Z",
+      "updatedAt": "2026-09-25T17:57:19.600Z"
+    },
     "davijohann": {
       "username": "DaviJohann",
       "salt": "89b0990a4d83aeedd9fcf93bd0b9702b",

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Shredder.exe // Perfil</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body data-page="perfil">
+        <header class="topbar">
+            <a class="brand-lockup" href="index.html">
+                <span class="brand-mark">//</span> SHREDDER<span
+                    class="brand-accent"
+                    >.exe</span
+                >
+            </a>
+            <div class="top-status">
+                <span class="status-dot"></span>
+                <span id="profile-viewing">SINCRONIZANDO IDENTIDADE</span>
+                <span class="top-divider"></span>
+                <a href="modos.html">VOLTAR À FASE</a>
+            </div>
+        </header>
+
+        <main class="page-shell profile-shell">
+            <section class="section-heading profile-heading">
+                <div>
+                    <p class="eyebrow">IDENTIDADE // DASHBOARD DO OPERADOR</p>
+                    <h1 id="profile-nickname">
+                        Sincronizando <span>perfil.</span>
+                    </h1>
+                    <p id="profile-username" class="profile-username">
+                        // AGUARDE O SINAL
+                    </p>
+                </div>
+                <div class="profile-title-chip">
+                    <span>TÍTULO EQUIPADO</span>
+                    <strong id="profile-title">---</strong>
+                </div>
+            </section>
+
+            <p
+                id="profile-status"
+                class="profile-status is-loading"
+                role="status"
+            >
+                SINCRONIZANDO DADOS...
+            </p>
+
+            <section class="profile-search-panel panel-cut">
+                <div>
+                    <p class="eyebrow">REDE // BUSCA DE OPERADORES</p>
+                    <h2>Rastrear outro perfil</h2>
+                </div>
+                <form id="profile-search-form" class="profile-search-form">
+                    <label class="profile-search-input">
+                        <span aria-hidden="true">&gt;_</span>
+                        <input
+                            id="profile-search"
+                            type="search"
+                            autocomplete="off"
+                            placeholder="username"
+                            aria-label="Username do operador"
+                        />
+                    </label>
+                    <button class="button button-primary" type="submit">
+                        <span>CONSULTAR SINAL</span><b>↗</b>
+                    </button>
+                </form>
+                <button
+                    id="profile-back"
+                    class="button button-ghost profile-back"
+                    type="button"
+                    hidden
+                >
+                    VOLTAR AO MEU PERFIL
+                </button>
+                <p
+                    id="profile-search-error"
+                    class="profile-search-error"
+                    role="alert"
+                    hidden
+                ></p>
+            </section>
+
+            <section class="profile-summary-grid">
+                <article class="profile-summary-card panel-cut">
+                    <span class="profile-card-label">MOEDAS // CRÉDITO</span>
+                    <strong id="profile-currency">0</strong>
+                    <small>◈ saldo do operador</small>
+                </article>
+                <article class="profile-summary-card panel-cut">
+                    <span class="profile-card-label">PARTIDAS // TOTAL</span>
+                    <strong id="profile-games">0</strong>
+                    <small>◈ sessões registradas</small>
+                </article>
+                <article
+                    class="profile-summary-card profile-summary-wide panel-cut"
+                >
+                    <div class="profile-card-label-row">
+                        <span class="profile-card-label"
+                            >PRECISÃO GLOBAL // NOTAS PROCESSADAS</span
+                        >
+                        <strong id="profile-hit-rate">0.0%</strong>
+                    </div>
+                    <div class="profile-hitbar">
+                        <i id="profile-hit-bar"></i>
+                    </div>
+                    <div class="profile-global-totals">
+                        <span><b id="profile-hit">0</b> ACERTOS</span>
+                        <span><b id="profile-misses">0</b> ERROS</span>
+                    </div>
+                </article>
+            </section>
+
+            <section class="profile-section">
+                <div class="profile-section-heading">
+                    <div>
+                        <p class="eyebrow">LOADOUT // PERFORMANCE</p>
+                        <h2>Leitura por instrumento</h2>
+                    </div>
+                    <span class="profile-section-note"
+                        >FAVORITO = SINAL PRINCIPAL</span
+                    >
+                </div>
+                <nav
+                    id="profile-instrument-tabs"
+                    class="profile-tabs"
+                    aria-label="Estatísticas por instrumento"
+                ></nav>
+                <div
+                    id="profile-instrument-panel"
+                    class="profile-instrument-panel panel-cut"
+                ></div>
+            </section>
+
+            <section class="profile-section">
+                <div class="profile-section-heading">
+                    <div>
+                        <p class="eyebrow">ARQUIVO // SETLIST</p>
+                        <h2>Histórico de músicas</h2>
+                    </div>
+                </div>
+                <div class="profile-songs panel-cut">
+                    <div class="profile-song-header">
+                        <span>MÚSICA</span><span>PLAYS</span
+                        ><span>MELHOR SCORE</span><span>COMBO</span
+                        ><span>PRECISÃO</span>
+                    </div>
+                    <div id="profile-songs">
+                        <p class="profile-empty">SINCRONIZANDO...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="profile-section">
+                <div class="profile-section-heading">
+                    <div>
+                        <p class="eyebrow">CONQUISTAS // SINAL DE PRESTÍGIO</p>
+                        <h2>Galeria de badges</h2>
+                    </div>
+                </div>
+                <div
+                    id="profile-achievements"
+                    class="profile-achievements"
+                ></div>
+            </section>
+        </main>
+
+        <script src="js/account.js"></script>
+        <script src="js/account-ui.js"></script>
+        <script>
+            window.shredderAccount = new ShredderAccount();
+            window.shredderUI = new ShredderAccountUI(window.shredderAccount);
+            let sessionWasActive = false;
+            window.shredderAccount.onChange((state) => {
+                if (state.isLoggedIn) {
+                    sessionWasActive = true;
+                } else if (sessionWasActive) {
+                    window.location.href = "index.html";
+                }
+            });
+        </script>
+        <script src="app.js"></script>
+    </body>
+</html>
+
