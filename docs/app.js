@@ -1,7 +1,7 @@
 /*
  * Lobby local do Shredder.exe.
  * Estas chaves hoje vivem apenas neste navegador. Em uma versão multiplayer real,
- * substitua as leituras/escritas por eventos WebSocket ou Firebase e trate o
+ * use eventos WebSocket e trate o
  * servidor como fonte de verdade para lobby, instrumentos e progresso.
  */
 const STORAGE = {
@@ -415,6 +415,14 @@ function saveRoom(room) {
     localStorage.setItem(STORAGE.roomName, room.roomName || "SALA SEM NOME");
 }
 
+window.updateOwnerControls = function (roomState) {
+    const socket = window.socket;
+    const isOwner = Boolean(socket?.connected && socket.id && roomState?.donoId === getPlayer()?.id && roomState?.socketDonoId === socket.id);
+    document.querySelectorAll("#painel-do-dono, [data-owner-control]").forEach((control) => {
+        control.style.display = isOwner ? "" : "none";
+    });
+};
+
 function initializeRoomPresence(player) {
     const roomId = localStorage.getItem(STORAGE.roomId);
     const socket = window.socket;
@@ -424,6 +432,8 @@ function initializeRoomPresence(player) {
     }
 
     const enterCurrentRoom = () => {
+        window.shredderRoomState = null;
+        window.updateOwnerControls(null);
         socket.emit("entrarSala", {
             roomId,
             username: player.nome,
@@ -432,10 +442,15 @@ function initializeRoomPresence(player) {
     };
 
     socket.on("connect", enterCurrentRoom);
+    socket.on("disconnect", () => {
+        window.shredderRoomState = null;
+        window.updateOwnerControls(null);
+    });
     if (socket.connected) enterCurrentRoom();
 
     socket.on("atualizar_estado", (roomState) => {
         window.shredderRoomState = roomState;
+        window.updateOwnerControls(roomState);
         const players = roomState.operadores || [];
         const roster = document.querySelector("#ticket-lobby");
         const count = document.querySelector("#ticket-count");
@@ -668,7 +683,7 @@ function chooseMode(tipo, fase) {
     const player = getPlayer();
     const roomId = localStorage.getItem(STORAGE.roomId);
     const roomState = window.shredderRoomState;
-    if (!player || !roomId || !window.socket || roomState?.host !== player.id) {
+    if (!player || !roomId || !window.socket?.connected || roomState?.donoId !== player.id || roomState?.socketDonoId !== window.socket.id) {
         return;
     }
 
@@ -688,41 +703,48 @@ function chooseMode(tipo, fase) {
     );
 }
 
-function getFirebaseDatabase() {
-    if (
-        !window.firebase ||
-        !window.SHREDDER_FIREBASE_CONFIG ||
-        window.SHREDDER_FIREBASE_CONFIG.apiKey === "COLE_SUA_API_KEY_AQUI"
-    ) {
-        throw new Error("Firebase ainda não foi configurado.");
-    }
-    if (!firebase.apps.length)
-        firebase.initializeApp(window.SHREDDER_FIREBASE_CONFIG);
-    return firebase.firestore();
+// Uma conexão por página; reutiliza window.socket quando já foi inicializado.
+function getGameSocket() {
+    if (!window.socket) window.socket = io();
+    return window.socket;
 }
 
-/** Persiste uma partida finalizada; o Phaser deve chamar isto no callback de fim de partida. */
-async function enviarPontuacaoParaRanking(dados) {
+const PENDING_RESULTS_KEY = "shredder_resultados_pendentes";
+const resultadosEmEnvio = new Map();
+
+/** O callback real de fim de música do Phaser chama concluirMusica(estatisticas). */
+function enviarPontuacaoParaRanking(dados) {
     const player = getPlayer();
-    const pontuacao = Number(dados?.pontuacao);
-    if (
-        !player?.id ||
-        !player.nome ||
-        !Number.isFinite(pontuacao) ||
-        pontuacao < 0
-    )
-        throw new Error("Dados de pontuação inválidos.");
-    const database = getFirebaseDatabase();
-    const registro = {
-        jogadorId: player.id,
-        nome: player.nome,
-        instrumento: dados.instrumento || player.instrumento || null,
-        pontuacao,
-        banda: dados.banda || null,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    if (!player?.id || !player.nome) return Promise.reject(new Error("Jogador não identificado."));
+    const resultado = {
+        ...dados,
+        partidaId: dados.partidaId || crypto.randomUUID(),
+        operadorId: dados.operadorId || player.id,
+        username: dados.username || player.nome,
+        instrumento: dados.instrumento || player.instrumento,
+        banda: dados.banda ?? normalizeBand(player.banda),
     };
-    // TODO: chamar esta função no Phaser quando a partida terminar de verdade.
-    return database.collection("scores").add(registro);
+    if (resultadosEmEnvio.has(resultado.partidaId)) return resultadosEmEnvio.get(resultado.partidaId);
+    const pendentes = readJson(PENDING_RESULTS_KEY, {});
+    pendentes[resultado.partidaId] = resultado;
+    // Grava antes de enviar. Falhas/timeout preservam o mesmo ID para reenvio idempotente.
+    writeJson(PENDING_RESULTS_KEY, pendentes);
+    const promise = new Promise((resolve, reject) => {
+        getGameSocket().timeout(10000).emit("partidaFinalizada", resultado, (error, resposta) => {
+            if (error || !resposta?.ok) {
+                reject(new Error(resposta?.erro || "Servidor sem confirmação. Tente sincronizar novamente."));
+                return;
+            }
+            try {
+                const atuais = readJson(PENDING_RESULTS_KEY, {});
+                delete atuais[resultado.partidaId];
+                writeJson(PENDING_RESULTS_KEY, atuais);
+                resolve(resposta);
+            } catch (storageError) { reject(storageError); }
+        });
+    }).finally(() => resultadosEmEnvio.delete(resultado.partidaId));
+    resultadosEmEnvio.set(resultado.partidaId, promise);
+    return promise;
 }
 
 function normalizeBand(banda) {
@@ -735,7 +757,7 @@ function normalizeBand(banda) {
 function aggregateRanking(records, tab) {
     const groups = new Map();
     records.forEach((record) => {
-        const score = Number(record.pontuacao);
+        const score = Number(tab === "bandas" ? record.pontuacao : (record.pontuacaoIndividual ?? record.pontuacao));
         if (!record.jogadorId || !record.nome || !Number.isFinite(score))
             return;
         const band = normalizeBand(record.banda);
@@ -751,7 +773,7 @@ function aggregateRanking(records, tab) {
             groups.set(band.id, current);
             return;
         }
-        if (record.instrumento !== tab) return;
+        if (record.instrumento?.toLowerCase() !== tab.toLowerCase()) return;
         const current = groups.get(record.jogadorId);
         if (!current || score > current.pontuacao)
             groups.set(record.jogadorId, {
@@ -792,7 +814,7 @@ function renderRankingTab(records, tab, player) {
     const ranking = aggregateRanking(records, tab);
     const top = ranking.slice(0, 100);
     const playerId =
-        tab === "bandas" ? normalizeBand(player?.banda)?.id : player?.id;
+        tab === "bandas" ? normalizeBand(player?.banda)?.id : player?.nome?.toLowerCase();
     const playerPosition = playerId
         ? ranking.findIndex((item) => item.id === playerId)
         : -1;
@@ -804,7 +826,7 @@ function renderRankingTab(records, tab, player) {
               )
               .join("")
         : '<p class="ranking-empty">NENHUM RESULTADO REAL REGISTRADO.</p>';
-    if (playerPosition >= 10) {
+    if (playerPosition >= top.length) {
         const item = ranking[playerPosition];
         mine.hidden = false;
         mine.innerHTML = `<span>SEU SINAL</span><strong>${playerPosition + 1}º — ${escapeHtml(item.nome)} — ${formatScore(item.pontuacao)}</strong>`;
@@ -841,22 +863,28 @@ async function initializeRanking() {
         ),
     );
     selectTab("Guitarra");
-    try {
-        status.textContent = "SINCRONIZANDO DADOS...";
-        const snapshot = await getFirebaseDatabase().collection("scores").get();
-        records = snapshot.docs.map((document) => document.data());
+    const socket = getGameSocket();
+    const atualizar = (payload) => {
+        records = payload.records;
         dataAvailable = true;
-        status.textContent = `SINAL ONLINE // ${records.length} PARTIDA(S) FINALIZADA(S)`;
-        selectTab(
-            document.querySelector(".ranking-tab.active")?.dataset.rankingTab ||
-                "Guitarra",
-        );
-    } catch (error) {
-        status.textContent = `SEM SINAL COM O SERVIDOR // ${error.message}`;
-        list.innerHTML =
-            '<p class="ranking-empty">RANKING INDISPONÍVEL. NENHUM DADO FICTÍCIO SERÁ EXIBIDO.</p>';
-        document.querySelector("#my-ranking").hidden = true;
-    }
+        status.textContent = `SINAL ONLINE // ${records.length} REGISTRO(S) SINCRONIZADO(S)`;
+        selectTab(document.querySelector(".ranking-tab.active")?.dataset.rankingTab || "Guitarra");
+    };
+    socket.on("rankingAtualizado", atualizar);
+    const entrar = () => {
+        status.textContent = "SINCRONIZANDO DADOS...";
+        socket.timeout(10000).emit("entrarRanking", {}, (error, resposta) => {
+            if (error || !resposta?.ok) {
+                status.textContent = "FALHA AO SINCRONIZAR RANKING // TENTE RECONECTAR";
+                return;
+            }
+            atualizar(resposta);
+        });
+    };
+    socket.on("connect", entrar);
+    socket.on("disconnect", () => { status.textContent = "SEM SINAL // AGUARDANDO RECONEXÃO"; });
+    socket.on("connect_error", () => { status.textContent = "FALHA AO CONECTAR // TENTANDO NOVAMENTE"; });
+    if (socket.connected) entrar();
 }
 
 function initializeTicket() {
@@ -909,4 +937,3 @@ if (currentPage === "perfil") initializeProfile();
 
 // O jogo Phaser pode consumir as mesmas chaves ao abrir jogo.html. Ao concluir uma fase,
 // marque progress[fase - 1] = true e persista com writeJson(STORAGE.progress, progress).
-

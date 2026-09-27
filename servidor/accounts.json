@@ -7,11 +7,11 @@
       "nickname": "123456",
       "avatar": "",
       "currency": 0,
-      "gamesPlayed": 7,
+      "gamesPlayed": 8,
       "currentTitle": "Novato do Rock",
       "lifetimeStats": {
-        "totalNotesHit": 3150,
-        "totalMisses": 84
+        "totalNotesHit": 5002,
+        "totalMisses": 183
       },
       "instrumentStats": {
         "guitarra": {
@@ -36,13 +36,13 @@
           "fullCombos": 6
         },
         "teclado": {
-          "maxScore": 0,
-          "maxCombo": 0,
-          "bestAccuracy": 0,
-          "songsCompleted": 0,
+          "maxScore": 965385,
+          "maxCombo": 564,
+          "bestAccuracy": 99.7,
+          "songsCompleted": 1,
           "fullCombos": 0
         },
-        "favoriteInstrument": "bateria"
+        "favoriteInstrument": "teclado"
       },
       "songRecords": {
         "B.G.d.N.": {
@@ -56,6 +56,12 @@
           "bestScore": 128500,
           "bestCombo": 250,
           "bestAccuracy": 96.2
+        },
+        "supersonic": {
+          "plays": 1,
+          "bestScore": 965385,
+          "bestCombo": 564,
+          "bestAccuracy": 99.7
         }
       },
       "achievements": [
@@ -68,37 +74,380 @@
         "67"
       ],
       "createdAt": "2026-09-25T17:18:10.276Z",
-      "updatedAt": "2026-09-25T17:57:19.600Z"
+      "updatedAt": "2026-09-27T13:27:30.374Z",
+      "resultadosPartidas": {}
     },
     "davijohann": {
       "username": "DaviJohann",
       "salt": "89b0990a4d83aeedd9fcf93bd0b9702b",
       "passwordHash": "12219bcb8fa8643c8725da05c7bbc7dacb10085840e85f550332d217cb6c22280f0e223c498e2263608f6558cf9e1ebe71b36305d6aedc1df99184e4bf12fffe",
-      "createdAt": "2026-09-24T11:34:46.356Z"
+      "createdAt": "2026-09-24T11:34:46.356Z",
+      "nickname": "DaviJohann",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 0,
+      "currentTitle": "Novato do Rock",
+      "updatedAt": "2026-09-27T14:48:46.391Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "achievements": []
     },
     "daviteste123": {
       "username": "daviteste123",
       "salt": "e9630b319e668910b2d83dfc3fecf47b",
       "passwordHash": "48ee3d2d76b2234118d3f8b7006387ac41ff850619f5c469f1e316a8ae29f93f20d73fbdb4f9dc7ae04cb081f844a016289de1ad93d65badc4c618b85faf22e5",
-      "createdAt": "2026-09-24T11:36:04.127Z"
+      "createdAt": "2026-09-24T11:36:04.127Z",
+      "nickname": "daviteste123",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 0,
+      "currentTitle": "Novato do Rock",
+      "updatedAt": "2026-09-27T14:48:46.391Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "achievements": []
     },
     "davitest123": {
       "username": "davitest123",
       "salt": "38c9ba76c94ab094b0cf070769eb4ecc",
       "passwordHash": "ef41b756280b245e18ad988ac29b604981fb4e8f9f98035df07e7dd404f111125df9d68565ff5905dcd3ff5d97ef04e74ac1fbd3b40bde52da3382391ba7fbd4",
-      "createdAt": "2026-09-24T11:50:27.069Z"
+      "createdAt": "2026-09-24T11:50:27.069Z",
+      "nickname": "davitest123",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 0,
+      "currentTitle": "Novato do Rock",
+      "updatedAt": "2026-09-27T14:48:46.391Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "achievements": []
     },
     "davi12345": {
       "username": "davi12345",
       "salt": "fddf50c60b864e57d46f54bc5bfaf0dc",
       "passwordHash": "728f65be2b0ec5d650c5d349391b34632bbe23c3219e30e26366b05cc5800e6b0b7a4e697ef3d203211ad23ec5cf61813837f20f1a4e39d799f1ae6d599af2de",
-      "createdAt": "2026-09-24T12:21:54.015Z"
+      "createdAt": "2026-09-24T12:21:54.015Z",
+      "nickname": "davi12345",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 0,
+      "currentTitle": "Novato do Rock",
+      "updatedAt": "2026-09-27T14:48:46.391Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "achievements": []
     },
     "alparenga": {
       "username": "alparenga",
       "salt": "1de339fb2080d307e7445754e93f4556",
       "passwordHash": "debe524cdeebe2615b331c4c9846af95bfe103306fc3323a3b297d6fa917855984e5071e8c892667fac491f4680e5114b27d0607f57f16b7deb7062f1757a69a",
-      "createdAt": "2026-09-24T19:47:17.031Z"
+      "createdAt": "2026-09-24T19:47:17.031Z",
+      "nickname": "alparenga",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 0,
+      "currentTitle": "Novato do Rock",
+      "updatedAt": "2026-09-27T14:48:46.391Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "achievements": []
+    },
+    "davijohannbecker": {
+      "username": "DAVIJOHANNBECKER",
+      "salt": "59580c3b07f5a379e210f82f8863565d",
+      "passwordHash": "c79d01f88afdc31ff62269d51ccbd3a640de22e1e25d64349ba6e6d3a024832138da89a8b311e26167bb14a50405ebeb9679e01b3a8954bc6fb9ce33e6aa3734",
+      "nickname": "DAVIJOHANNBECKER",
+      "avatar": "",
+      "currency": 67676767676763,
+      "gamesPlayed": 2,
+      "currentTitle": "resenhex chocolex",
+      "lifetimeStats": {
+        "totalNotesHit": 3074,
+        "totalMisses": 184
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 646235,
+          "maxCombo": 362,
+          "bestAccuracy": 98.5,
+          "songsCompleted": 1,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 642253,
+          "maxCombo": 1753,
+          "bestAccuracy": 100,
+          "songsCompleted": 1,
+          "fullCombos": 1
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {
+        "psychosocial": {
+          "instrumentosCompletados": [
+            "guitarra"
+          ],
+          "plays": 1,
+          "bestScore": 646235,
+          "bestCombo": 362,
+          "bestAccuracy": 98.5
+        },
+        "The Last Goodbye": {
+          "instrumentosCompletados": [
+            "bateria"
+          ],
+          "plays": 1,
+          "bestScore": 642253,
+          "bestCombo": 1753,
+          "bestAccuracy": 100,
+          "partidaId": "evt_ee6e8e68-e369-45ee-83d2-d43ca6c55d0b",
+          "operadorId": "admin-web-panel",
+          "username": "DAVIJOHANNBECKER",
+          "pontuacao": 642253,
+          "precisao": 100,
+          "maiorCombo": 1753,
+          "fullCombo": true,
+          "notasAcertadas": 1753,
+          "notasErradas": 0,
+          "musica": "The Last Goodbye",
+          "instrumento": "bateria",
+          "banda": null,
+          "nickname": "DAVIJOHANNBECKER",
+          "currentTitle": "resenhex chocolex",
+          "updatedAt": "2026-09-27T14:56:17.933Z"
+        }
+      },
+      "achievements": [
+        "primeiros_acordes",
+        "on_fire",
+        "cirurgico",
+        "perfeccionista",
+        "lenda_viva",
+        "desafinador_profissional"
+      ],
+      "createdAt": "2026-09-27T13:26:28.094Z",
+      "updatedAt": "2026-09-27T15:09:41.567Z",
+      "resultadosPartidas": {
+        "evt_fabc3aa1-5410-4deb-95f1-f5cbc6538efc": {
+          "partidaId": "evt_fabc3aa1-5410-4deb-95f1-f5cbc6538efc",
+          "operadorId": "admin-web-panel",
+          "username": "DAVIJOHANNBECKER",
+          "pontuacao": 646235,
+          "precisao": 98.5,
+          "maiorCombo": 362,
+          "fullCombo": false,
+          "notasAcertadas": 1321,
+          "notasErradas": 184,
+          "musica": "psychosocial",
+          "instrumento": "guitarra",
+          "banda": null
+        },
+        "evt_ee6e8e68-e369-45ee-83d2-d43ca6c55d0b": {
+          "partidaId": "evt_ee6e8e68-e369-45ee-83d2-d43ca6c55d0b",
+          "operadorId": "admin-web-panel",
+          "username": "DAVIJOHANNBECKER",
+          "pontuacao": 642253,
+          "precisao": 100,
+          "maiorCombo": 1753,
+          "fullCombo": true,
+          "notasAcertadas": 1753,
+          "notasErradas": 0,
+          "musica": "The Last Goodbye",
+          "instrumento": "bateria",
+          "banda": null,
+          "nickname": "DAVIJOHANNBECKER",
+          "currentTitle": "resenhex chocolex"
+        }
+      }
     }
   }
 }

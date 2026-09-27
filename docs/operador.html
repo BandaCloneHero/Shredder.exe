@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shredder.exe // Painel do Operador</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .operator-shell { max-width: 1040px; margin: auto; padding: 36px 24px 64px; }
+        .operator-shell h1 { font-size: clamp(1.6rem, 5vw, 2.6rem); }
+        .operator-intro { color: var(--muted); line-height: 1.6; }
+        .operator-form { padding: clamp(20px, 4vw, 36px); background: var(--panel); border: 1px solid var(--line); }
+        .operator-mode { margin-bottom: 28px; }
+        .operator-mode > summary { cursor: pointer; padding: 20px 0; color: var(--cyan); font: 600 1rem var(--tech); }
+        .operator-load { display: flex; gap: 12px; align-items: end; margin-bottom: 24px; flex-wrap: wrap; }
+        .operator-load .operator-field { flex: 1; min-width: 220px; }
+        .operator-load button { width: auto; margin: 0; }
+        .achievement-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+        .achievement-option { display: flex; gap: 12px; align-items: center; padding: 14px; background: var(--bg); border: 1px solid var(--line); cursor: pointer; }
+        .achievement-option input { width: 20px; height: 20px; accent-color: var(--magenta); }
+        .profile-instrument { border: 1px solid var(--line); padding: 18px; margin-top: 16px; }
+        .profile-instrument summary { color: var(--cyan); cursor: pointer; padding-bottom: 12px; }
+        #profile-editor[hidden] { display: none; }
+        .operator-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+        .operator-block { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+        .operator-block h2 { margin: 0 0 12px; font: 600 1rem var(--tech); color: var(--text); }
+        .operator-block h2 span { color: var(--magenta); margin-right: 10px; }
+        .operator-block > p { margin: 0 0 20px; }
+        .operator-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+        .operator-field { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+        .operator-field label { color: var(--cyan); }
+        .operator-field input, .operator-field select {
+            width: 100%; min-height: 48px; padding: 12px; border: 1px solid var(--line);
+            border-radius: 4px; background: var(--bg); color: var(--text); font: inherit;
+        }
+        .operator-field input:focus-visible, .operator-field select:focus-visible,
+        .operator-check input:focus-visible, .operator-form button:focus-visible {
+            outline: 2px solid var(--cyan); outline-offset: 3px;
+        }
+        .operator-field small, .operator-help { color: #a5afbd; line-height: 1.5; }
+        .operator-wide { grid-column: 1 / -1; }
+        .operator-check { display: flex; align-items: center; gap: 12px; cursor: pointer; margin: 28px 0 8px; }
+        .operator-check input { width: 20px; height: 20px; accent-color: var(--magenta); }
+        .operator-form button { width: 100%; margin-top: 20px; white-space: normal; }
+        .operator-fields:disabled { opacity: .65; }
+        .operator-status { margin: 24px 0 0; padding: 16px; border: 1px solid var(--line); line-height: 1.5; overflow-wrap: anywhere; }
+        .operator-status:empty { display: none; }
+        .operator-status[data-state="success"] { color: #75efa0; border-color: #35975b; background: #11251a; }
+        .operator-status[data-state="error"] { color: #ff9aab; border-color: #c84d65; background: #2b141b; }
+        .operator-status[data-state="pending"] { color: var(--cyan); }
+        @media (max-width: 560px) { .operator-grid { grid-template-columns: 1fr; } .operator-shell { padding-inline: 16px; } }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand-lockup" href="lobby.html"><span class="brand-mark">//</span> SHREDDER<span class="brand-accent">.exe</span></a>
+        <a class="top-profile-link" href="ranking.html">RANKING GLOBAL ↗</a>
+    </header>
+    <main class="operator-shell">
+        <p class="eyebrow">ESTAÇÃO // REGISTRO DE RESULTADOS</p>
+        <h1>Painel do <span>Operador.</span></h1>
+        <p class="operator-intro">Transcreva os resultados exibidos no YARG ao final da música. Use o username da conta cadastrada do jogador. Preencha os dados da partida e, se necessário, ajuste o perfil. Os campos opcionais estão identificados.</p>
+        <details class="operator-mode" open>
+            <summary>Editar perfil e conquistas</summary>
+            <form id="profile-form" class="operator-form panel-cut">
+                <div class="operator-load">
+                    <div class="operator-field">
+                        <label for="profile-username">Username da conta</label>
+                        <input id="profile-username" type="text" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Digite para carregar o perfil">
+                    </div>
+                    <button id="load-profile" class="button button-ghost" type="button">Carregar perfil</button>
+                </div>
+                <fieldset id="profile-editor" class="operator-fields" hidden disabled>
+                    <section class="operator-block" aria-labelledby="account-heading">
+                        <h2 id="account-heading">Perfil do jogador</h2>
+                        <p class="operator-help">Aqui você ajusta os valores atuais. O saldo informado substitui o saldo da conta.</p>
+                        <div id="profile-main-fields" class="operator-grid"></div>
+                        <div class="operator-field" style="margin-top: 22px">
+                            <label for="profile-password">Nova senha (opcional)</label>
+                            <input id="profile-password" type="password" minlength="6" maxlength="256" autocomplete="new-password" aria-describedby="password-help">
+                            <small id="password-help">Em branco, mantém a senha atual. Alterar username ou senha encerra as sessões da conta.</small>
+                        </div>
+                    </section>
+                    <section class="operator-block" aria-labelledby="achievements-heading">
+                        <h2 id="achievements-heading">Conquistas</h2>
+                        <p class="operator-help">Marcada: concedida. Desmarcada: removida ao salvar. As conquistas atuais são carregadas automaticamente.</p>
+                        <div id="profile-achievements" class="achievement-grid"></div>
+                    </section>
+                    <section class="operator-block" aria-labelledby="totals-heading">
+                        <h2 id="totals-heading">Estatísticas acumuladas</h2>
+                        <p class="operator-help">Use para corrigir os totais do perfil. Esse ajuste não cria uma partida.</p>
+                        <div id="profile-total-fields" class="operator-grid"></div>
+                        <div id="profile-instruments"></div>
+                    </section>
+                    <p id="profile-metadata" class="operator-help"></p>
+                    <button id="save-profile" class="button button-primary" type="submit">Salvar perfil e conquistas</button>
+                </fieldset>
+            </form>
+            <p id="profile-status" class="operator-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </details>
+        <details class="operator-mode">
+        <summary>Registrar resultado de uma partida</summary>
+        <form id="operator-form" class="operator-form panel-cut">
+            <fieldset class="operator-fields" id="operator-fields" aria-label="Resultado da partida">
+                <section class="operator-block" aria-labelledby="profile-heading">
+                <h2 id="profile-heading"><span>01</span> Jogador e perfil</h2>
+                <p class="operator-help">Use a conta cadastrada. Apelido e título em branco mantêm os valores atuais.</p>
+                <div class="operator-grid">
+                    <div class="operator-field">
+                        <label for="username">Username do jogador</label>
+                        <input id="username" name="username" type="text" maxlength="24" required autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ex.: rockstar_01">
+                    </div>
+                    <div class="operator-field">
+                        <label for="nickname">Apelido visível <small>(opcional)</small></label>
+                        <input id="nickname" name="nickname" type="text" maxlength="40" placeholder="Manter apelido atual" autocomplete="off">
+                    </div>
+                    <div class="operator-field">
+                        <label for="currentTitle">Título atual <small>(opcional)</small></label>
+                        <input id="currentTitle" name="currentTitle" type="text" maxlength="80" placeholder="Ex.: Novato do Rock" autocomplete="off">
+                    </div>
+                    <div class="operator-field">
+                        <label for="currency">Moedas ganhas na sessão <small>(opcional)</small></label>
+                        <input id="currency" name="currency" type="number" min="0" max="1000000000" step="1" inputmode="numeric" placeholder="0" aria-describedby="currency-help">
+                        <small id="currency-help">Somadas ao saldo existente. Em branco ou zero: nenhum ganho.</small>
+                    </div>
+                </div>
+                </section>
+                <section class="operator-block" aria-labelledby="match-heading">
+                <h2 id="match-heading"><span>02</span> Música e pontuação</h2>
+                <div class="operator-grid">
+                    <div class="operator-field">
+                        <label for="instrumento">Instrumento</label>
+                        <select id="instrumento" name="instrumento" required>
+                            <option value="" selected disabled>Selecione o instrumento</option>
+                            <option value="guitarra">Guitarra</option>
+                            <option value="baixo">Baixo</option>
+                            <option value="bateria">Bateria</option>
+                            <option value="teclado">Teclado</option>
+                        </select>
+                    </div>
+                    <div class="operator-field operator-wide">
+                        <label for="musica">Nome da música</label>
+                        <input id="musica" name="musica" type="text" maxlength="200" required placeholder="Digite o nome da música">
+                    </div>
+                    <div class="operator-field">
+                        <label for="pontuacao">Pontuação</label>
+                        <input id="pontuacao" name="pontuacao" type="number" min="0" max="1000000000" step="1" required inputmode="numeric" placeholder="15000">
+                    </div>
+                </div>
+                </section>
+                <section class="operator-block" aria-labelledby="notes-heading">
+                <h2 id="notes-heading"><span>03</span> Precisão, combo e notas</h2>
+                <div class="operator-grid">
+                    <div class="operator-field">
+                        <label for="comboMaximo">Combo máximo</label>
+                        <input id="comboMaximo" name="comboMaximo" type="number" min="0" max="1000000" step="1" required inputmode="numeric" placeholder="120">
+                    </div>
+                    <div class="operator-field">
+                        <label for="precisao">Precisão (%)</label>
+                        <input id="precisao" name="precisao" type="number" min="0" max="100" step="any" required inputmode="decimal" placeholder="98.5">
+                    </div>
+                    <div class="operator-field">
+                        <label for="notasAcertadas">Notas acertadas</label>
+                        <input id="notasAcertadas" name="notasAcertadas" type="number" min="0" max="1000000" step="1" required inputmode="numeric" placeholder="197">
+                    </div>
+                    <div class="operator-field">
+                        <label for="notasErradas">Notas erradas</label>
+                        <input id="notasErradas" name="notasErradas" type="number" min="0" max="1000000" step="1" required inputmode="numeric" placeholder="3">
+                    </div>
+                </div>
+                <label class="operator-check" for="fullCombo">
+                    <input id="fullCombo" name="fullCombo" type="checkbox" aria-describedby="full-combo-help">
+                    Full Combo
+                </label>
+                <p id="full-combo-help" class="operator-help">Marque somente quando não houver notas erradas e o combo máximo for igual ao total de notas acertadas, maior que zero.</p>
+                </section>
+                <button class="button button-primary" id="save-result" type="submit">Salvar e Atualizar Ranking</button>
+            </fieldset>
+        </form>
+        <p id="operator-status" class="operator-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </details>
+    </main>
+    <script>
+        const form = document.getElementById("operator-form");
+        const fields = document.getElementById("operator-fields");
+        const status = document.getElementById("operator-status");
+        const button = document.getElementById("save-result");
+        let sending = false;
+
+        function showStatus(state, message) {
+            status.dataset.state = state;
+            status.textContent = message;
+        }
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            if (sending || !form.reportValidity()) return;
+            const value = (name) => form.elements.namedItem(name).value;
+            const number = (name) => form.elements.namedItem(name).valueAsNumber;
+            const payload = {
+                username: value("username").trim(),
+                instrumento: value("instrumento"),
+                musica: value("musica").trim(),
+                pontuacao: number("pontuacao"),
+                comboMaximo: number("comboMaximo"),
+                precisao: number("precisao"),
+                notasAcertadas: number("notasAcertadas"),
+                notasErradas: number("notasErradas"),
+                fullCombo: form.elements.namedItem("fullCombo").checked,
+            };
+            for (const name of ["nickname", "currentTitle"]) {
+                const text = value(name).trim();
+                if (text) payload[name] = text;
+            }
+            if (value("currency").trim() !== "") payload.currency = number("currency");
+            if (!payload.username || !payload.musica) {
+                showStatus("error", "ERRO // Informe o username e o nome da música.");
+                return;
+            }
+            if (payload.comboMaximo > payload.notasAcertadas ||
+                (payload.fullCombo && (payload.notasErradas !== 0 || payload.notasAcertadas === 0 || payload.comboMaximo !== payload.notasAcertadas))) {
+                showStatus("error", "ERRO // Confira o combo máximo e as notas. O combo não pode superar as notas acertadas; full combo exige todas acertadas em um único combo.");
+                return;
+            }
+            sending = true;
+            fields.disabled = true;
+            form.setAttribute("aria-busy", "true");
+            button.textContent = "Salvando...";
+            showStatus("pending", "SALVANDO // Aguarde a confirmação do servidor.");
+            try {
+                const response = await fetch("/api/operador/salvar-pontuacao", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+                const contentType = response.headers.get("content-type") || "";
+                if (!contentType.toLowerCase().includes("application/json")) {
+                    throw new Error(`A API retornou uma página em vez de JSON (HTTP ${response.status}). Abra o painel pelo servidor Node.js em /operador.html, na porta configurada (padrão 3000). Se já está nesse endereço, reinicie o backend atualizado. Live Server e hospedagem estática não executam essa API.`);
+                }
+                let result;
+                try {
+                    result = await response.json();
+                } catch {
+                    throw new Error("A API retornou uma resposta JSON inválida. Verifique o terminal do servidor Node.js.");
+                }
+                if (!result || typeof result !== "object") {
+                    throw new Error("A API retornou uma resposta inesperada. Verifique se o backend está atualizado.");
+                }
+                if (!response.ok || !result.ok) throw new Error(result.erro || "Não foi possível salvar o resultado.");
+                form.reset();
+                showStatus("success", `SUCESSO // Resultado de ${payload.username} salvo. Perfil e ranking atualizados.`);
+            } catch (error) {
+                showStatus("error", `ERRO // ${error.message} Os campos foram mantidos. Se a conexão caiu, confira o ranking antes de reenviar.`);
+            } finally {
+                sending = false;
+                fields.disabled = false;
+                form.removeAttribute("aria-busy");
+                button.textContent = "Salvar e Atualizar Ranking";
+                if (status.dataset.state === "success") document.getElementById("username").focus();
+            }
+        });
+    </script>
+    <script src="js/operador-perfil.js"></script>
+</body>
+</html>

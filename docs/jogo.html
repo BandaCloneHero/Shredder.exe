@@ -1,64 +1,26 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shredder.exe - Partida</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; text-align: center; padding: 50px; }
-        .box { background: #2a2a2a; padding: 30px; border-radius: 10px; display: inline-block; max-width: 400px; }
-        .btn { display: inline-block; margin-top: 20px; padding: 12px 25px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; cursor: pointer; border: none; font-size: 1rem; }
-        .btn:hover { background-color: #45a049; }
-        .voltar { background-color: #666; margin-left: 10px; }
-        .voltar:hover { background-color: #555; }
-    </style>
+    <title>Shredder.exe // Partida</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="box">
-        <h1 id="tituloModo">Partida</h1>
-        <p><strong>Jogador ID:</strong> <span id="resId">-</span></p>
-        <p><strong>Instrumento:</strong> <span id="resInst">-</span></p>
-        <hr style="border: 0; border-top: 1px solid #444; margin: 20px 0;">
-        <p id="statusJogo">Tocando música...</p>
-        
-        <div id="acoes" style="display:none;">
-            <button class="btn" onclick="concluirMusica()">Finalizar Música</button>
+<body data-page="jogo">
+    <main class="page-shell">
+        <section class="section-heading">
+            <div><p class="eyebrow">PARTIDA // SINAL AO VIVO</p><h1>Shredder<span>.exe</span></h1></div>
+        </section>
+        <div id="phaser-game"></div>
+        <p id="statusJogo" class="lobby-status" role="status" aria-live="polite">AGUARDANDO RESULTADO DA PARTIDA...</p>
+        <div class="page-actions">
+            <a href="lobby.html" class="button button-ghost">VOLTAR AO LOBBY</a>
+            <button id="sincronizar-resultado" class="button button-primary" type="button" hidden>TENTAR SINCRONIZAR NOVAMENTE</button>
         </div>
-        
-        <div>
-            <a href="modos.html" class="btn voltar">Voltar aos Modos</a>
-        </div>
-    </div>
-
-    <script>
-        document.getElementById('resId').innerText = localStorage.getItem('shredder_user_id') || 'Convidado';
-        document.getElementById('resInst').innerText = localStorage.getItem('shredder_instrumento') || 'Não escolhido';
-        
-        const urlParams = new URLSearchParams(window.location.search);
-        const modo = urlParams.get('modo');
-        
-        const isHistoria = modo === 'historia';
-        document.getElementById('tituloModo').innerText = isHistoria ? 'Modo História' : 'Freeplay (Ficha Ativa)';
-
-        // Simula o término da música após 3 segundos para teste
-        setTimeout(() => {
-            document.getElementById('statusJogo').innerText = 'Música pronta para ser concluída!';
-            document.getElementById('acoes').style.display = 'block';
-        }, 2000);
-
-        function concluirMusica() {
-            if (isHistoria) {
-                // Modo história recompensa com 3 tijolinhos
-                let tijolos = parseInt(localStorage.getItem('shredder_tijolinhos') || '0');
-                tijolos += 3;
-                localStorage.setItem('shredder_tijolinhos', tijolos);
-                alert('Parabéns! Você completou a música no Modo História e ganhou 3 tijolinhos 🧱!');
-            } else {
-                alert('Partida de Freeplay concluída com sucesso!');
-            }
-            window.location.href = 'modos.html';
-        }
-    </script>
+    </main>
     <script src="js/account.js"></script>
     <script src="js/account-ui.js"></script>
     <script>
@@ -66,15 +28,12 @@
         window.shredderUI = new ShredderAccountUI(window.shredderAccount);
         let sessionWasActive = false;
         window.shredderAccount.onChange((state) => {
-            if (state.isLoggedIn) {
-                sessionWasActive = true;
-            } else if (sessionWasActive) {
-                const currentPage = window.location.pathname.split('/').pop();
-                if (currentPage !== 'index.html' && currentPage !== '') {
-                    window.location.href = 'index.html';
-                }
-            }
+            if (state.isLoggedIn) sessionWasActive = true;
+            else if (sessionWasActive) window.location.href = 'index.html';
         });
     </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+    <script src="js/resultado-partida.js"></script>
 </body>
 </html>

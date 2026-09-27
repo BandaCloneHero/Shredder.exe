@@ -3,8 +3,9 @@ const express = require("express");
 const { Server } = require("socket.io");
 const fs = require("fs");
 const path = require("path");
-const { scrypt, randomBytes, timingSafeEqual, createHash } = require("crypto");
+const { scrypt, randomBytes, randomUUID, timingSafeEqual, createHash } = require("crypto");
 const { promisify } = require("util");
+const { criarPersistenciaPartidas, validarResultado, inicializarPerfil } = require("./partidas");
 
 const scryptAsync = promisify(scrypt);
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.static(path.join(__dirname, "../docs")));
 
 const ACCOUNTS_FILE = path.join(__dirname, "accounts.json");
 const SESSIONS_FILE = path.join(__dirname, "sessions.json");
+const partidas = criarPersistenciaPartidas(ACCOUNTS_FILE);
 let accountStore = { accounts: {} };
 let sessions = new Map();
 const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
@@ -23,10 +25,16 @@ const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 function loadAccounts() {
     try {
         if (fs.existsSync(ACCOUNTS_FILE)) {
-            accountStore = JSON.parse(fs.readFileSync(ACCOUNTS_FILE, "utf8"));
+            const migracao = partidas.migrarContas();
+            accountStore = migracao.raiz.accounts ? migracao.raiz : { accounts: migracao.raiz };
+            console.log(`> Arquivo de contas: ${ACCOUNTS_FILE}`);
+            console.log(`> Perfis completados: ${migracao.atualizadas}`);
+            if (migracao.backup) console.log(`> Backup das contas: ${migracao.backup}`);
         }
     } catch (error) {
         console.error("> Erro ao carregar accounts.json:", error);
+        // Não iniciar com store vazio se a leitura/migração falhar.
+        throw error;
     }
 }
 
@@ -146,56 +154,11 @@ app.post("/api/auth/register", async (req, res) => {
 
     const salt = randomBytes(16).toString("hex");
     const hash = await passwordHash(password, salt);
-    const timestamp = new Date().toISOString();
-    accountStore.accounts[key] = {
+    accountStore.accounts[key] = inicializarPerfil({
         username: cleanUsername,
         salt,
         passwordHash: hash,
-        nickname: cleanUsername,
-        avatar: "",
-        currency: 0,
-        gamesPlayed: 0,
-        currentTitle: "Novato do Rock",
-        lifetimeStats: {
-            totalNotesHit: 0,
-            totalMisses: 0,
-        },
-        instrumentStats: {
-            guitarra: {
-                maxScore: 0,
-                maxCombo: 0,
-                bestAccuracy: 0,
-                songsCompleted: 0,
-                fullCombos: 0,
-            },
-            baixo: {
-                maxScore: 0,
-                maxCombo: 0,
-                bestAccuracy: 0,
-                songsCompleted: 0,
-                fullCombos: 0,
-            },
-            bateria: {
-                maxScore: 0,
-                maxCombo: 0,
-                bestAccuracy: 0,
-                songsCompleted: 0,
-                fullCombos: 0,
-            },
-            teclado: {
-                maxScore: 0,
-                maxCombo: 0,
-                bestAccuracy: 0,
-                songsCompleted: 0,
-                fullCombos: 0,
-            },
-            favoriteInstrument: "nenhum",
-        },
-        songRecords: {},
-        achievements: [],
-        createdAt: timestamp,
-        updatedAt: timestamp,
-    };
+    });
     saveAccounts();
     const token = createSession(key);
     return res.status(201).json({ ok: true, token, username: cleanUsername });
@@ -341,15 +304,99 @@ app.post("/api/auth/logout", (req, res) => {
     return res.json({ ok: true });
 });
 
+app.get("/api/operador/perfil/:username", (req, res) => {
+    try {
+        return res.json({ ok: true, ...partidas.lerPerfilOperador(req.params.username) });
+    } catch (error) {
+        return res.status(error.status || 500).json({ ok: false, erro: error.status ? error.message : "Falha ao carregar o perfil." });
+    }
+});
+
+app.post("/api/operador/salvar-perfil", async (req, res) => {
+    try {
+        const { username, alteracoes, revisao, novaSenha } = req.body || {};
+        let credenciais;
+        if (novaSenha !== undefined && novaSenha !== '') {
+            if (typeof novaSenha !== 'string' || novaSenha.length < 6 || novaSenha.length > 256) {
+                return res.status(400).json({ ok: false, erro: "A nova senha deve ter de 6 a 256 caracteres." });
+            }
+            const salt = randomBytes(16).toString("hex");
+            credenciais = { salt, passwordHash: await passwordHash(novaSenha, salt) };
+        }
+        // O método relê o disco e verifica a revisão após o await do scrypt.
+        const salvo = partidas.editarPerfilOperador(username, alteracoes, revisao, credenciais);
+        accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
+        if (salvo.encerrarSessoes) {
+            for (const [token, session] of sessions) {
+                if (session.accountKey === salvo.encerrarSessoes) sessions.delete(token);
+            }
+            saveSessions();
+        }
+        io.emit("rankingAtualizado", { records: salvo.records });
+        return res.json({ ok: true, perfil: salvo.perfil, revisao: salvo.revisao, conquistas: salvo.conquistas });
+    } catch (error) {
+        return res.status(error.status || 500).json({ ok: false, erro: error.status ? error.message : "Falha ao salvar o perfil. Os campos foram preservados." });
+    }
+});
+
+app.post("/api/operador/salvar-pontuacao", (req, res) => {
+    const dados = req.body || {};
+    let resultado;
+    try {
+        resultado = validarResultado({
+            partidaId: `evt_${randomUUID()}`,
+            operadorId: "admin-web-panel",
+            username: dados.username,
+            instrumento: dados.instrumento,
+            musica: dados.musica,
+            pontuacao: dados.pontuacao,
+            maiorCombo: dados.comboMaximo ?? dados.maiorCombo,
+            precisao: dados.precisao,
+            notasAcertadas: dados.notasAcertadas,
+            notasErradas: dados.notasErradas,
+            fullCombo: dados.fullCombo,
+            nickname: dados.nickname,
+            currentTitle: dados.currentTitle,
+            currency: dados.currency,
+        });
+    } catch (error) {
+        return res.status(400).json({ ok: false, erro: error.message });
+    }
+
+    try {
+        const salvo = partidas.salvar(resultado);
+        accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
+        // O ranking existente espera { records }, tanto na carga inicial como ao vivo.
+        io.emit("rankingAtualizado", { records: salvo.records });
+        return res.status(201).json({
+            ok: true,
+            partidaId: resultado.partidaId,
+            mensagem: "Resultado salvo. Perfil e ranking atualizados.",
+        });
+    } catch (error) {
+        if (error.message === "Conta não encontrada.") {
+            return res.status(404).json({ ok: false, erro: error.message });
+        }
+        console.error("> Falha ao salvar resultado do painel:", error);
+        return res.status(500).json({
+            ok: false,
+            erro: "Falha ao salvar o resultado. Os campos foram preservados para nova tentativa.",
+        });
+    }
+});
+
 const salas = {};
 const MAX_JOGADORES_SALA = 4;
-const RESERVA_SALA_VAZIA_MS = 2 * 60 * 1000;
 
-function criarEstruturaSala(roomId, roomName, criadorUsername) {
+function criarEstruturaSala(roomId, roomName, criadorUsername, donoId, socketDonoId) {
     return {
         roomId,
         roomName,
         criadorUsername,
+        donoId,
+        socketDonoId,
+        etapa: "lobby",
+        mapa: null,
         criadoEm: new Date().toISOString(),
         jogadores: [],
         host: null,
@@ -384,6 +431,8 @@ function enviarEstadoSala(salaId) {
     if (!sala) return;
     io.to(salaId).emit("atualizar_estado", {
         host: sala.host,
+        donoId: sala.donoId,
+        socketDonoId: sala.socketDonoId,
         instrumentos: sala.instrumentos,
         operadores: Object.values(sala.operadores).map(
             (operador) => operador.nome,
@@ -396,30 +445,12 @@ function criarSala() {
     return salaId;
 }
 
-function cancelarRemocaoSala(sala) {
-    if (!sala.remocaoTimer) return;
-    clearTimeout(sala.remocaoTimer);
-    sala.remocaoTimer = null;
-}
-
-function agendarRemocaoSala(salaId) {
-    const sala = salas[salaId];
-    if (!sala || sala.remocaoTimer) return;
-
-    sala.remocaoTimer = setTimeout(() => {
-        const salaAtual = salas[salaId];
-        if (salaAtual && salaAtual.jogadores.length === 0) {
-            delete salas[salaId];
-            transmitirSalas();
-        }
-    }, RESERVA_SALA_VAZIA_MS);
-}
-
 function removerJogadorDaSala(socket) {
     const { salaId, operadorId } = socket.data;
     const sala = salas[salaId];
-    if (!sala) return;
+    if (!sala || sala.operadores[operadorId]?.socketId !== socket.id) return;
 
+    if (sala.socketDonoId === socket.id) sala.socketDonoId = null;
     delete sala.operadores[operadorId];
     sala.jogadores = sala.jogadores.filter(
         (jogador) => jogador.id !== operadorId,
@@ -432,16 +463,41 @@ function removerJogadorDaSala(socket) {
     if (sala.host === operadorId)
         sala.host = Object.keys(sala.operadores)[0] || null;
     if (sala.jogadores.length === 0) {
-        // Mantém a sala disponível durante a troca de página do criador.
-        agendarRemocaoSala(salaId);
+        delete salas[salaId];
+        console.log(`> Sala ${salaId} foi excluída por estar vazia (0/${MAX_JOGADORES_SALA}).`);
     } else {
-        cancelarRemocaoSala(sala);
         enviarEstadoSala(salaId);
     }
     transmitirSalas();
 }
 
 io.on("connection", (socket) => {
+    socket.on("entrarRanking", (_dados, callback) => {
+        try {
+            const records = partidas.ranking();
+            socket.join("ranking");
+            if (typeof callback === "function") callback({ ok: true, records });
+        } catch (error) {
+            console.error("> Falha ao carregar ranking:", error);
+            if (typeof callback === "function") callback({ ok: false, erro: "Falha ao carregar ranking." });
+        }
+    });
+
+    socket.on("partidaFinalizada", (resultado, callback) => {
+        try {
+            // Identidade leve existente: username/operadorId informados pelo cliente.
+            // Isto não constitui validação antitrapaça nem altera a autenticação.
+            const salvo = partidas.salvar(resultado);
+            // Mantém compatibilidade com os consumidores antigos do store em memória.
+            accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
+            io.to("ranking").emit("rankingAtualizado", { records: salvo.records });
+            if (typeof callback === "function") callback({ ok: true, partidaId: resultado.partidaId });
+        } catch (error) {
+            console.error("> Falha ao sincronizar resultado:", error);
+            if (typeof callback === "function") callback({ ok: false, erro: error.code ? "Falha ao gravar resultado em disco." : error.message });
+        }
+    });
+
     console.log(`> Cliente conectado: ${socket.id}`);
     socket.emit("salas_atualizadas", resumoSalas());
 
@@ -465,7 +521,7 @@ io.on("connection", (socket) => {
             }
 
             const roomId = criarSala();
-            salas[roomId] = criarEstruturaSala(roomId, nomeSala, nomeUsuario);
+            salas[roomId] = criarEstruturaSala(roomId, nomeSala, nomeUsuario, id, socket.id);
             entrarNaSala(socket, roomId, id, nomeUsuario, callback);
         },
     );
@@ -484,9 +540,32 @@ io.on("connection", (socket) => {
         },
     );
 
-    socket.on("owner_avancar_fase", ({ roomId, operadorId } = {}, callback) => {
+    socket.on("mudar-etapa", ({ salaId, novaEtapa } = {}) => {
+        const sala = salas[salaId];
+        if (!sala || sala.donoId !== socket.data.operadorId || sala.socketDonoId !== socket.id || socket.data.salaId !== salaId) {
+            socket.emit("erro", "Apenas o dono da sala pode avançar as etapas!");
+            return;
+        }
+
+        sala.etapa = novaEtapa;
+        io.to(salaId).emit("etapa-atualizada", novaEtapa);
+    });
+
+    socket.on("mudar-mapa", ({ salaId, novoMapa } = {}) => {
+        const sala = salas[salaId];
+        if (!sala || sala.donoId !== socket.data.operadorId || sala.socketDonoId !== socket.id || socket.data.salaId !== salaId) {
+            socket.emit("erro", "Apenas o dono da sala pode mudar o mapa!");
+            return;
+        }
+
+        sala.mapa = novoMapa;
+        io.to(salaId).emit("mapa-atualizado", novoMapa);
+    });
+
+    socket.on("owner_avancar_fase", ({ roomId } = {}, callback) => {
         const sala = salas[roomId];
-        if (!sala || sala.host !== operadorId) {
+        if (!sala || sala.donoId !== socket.data.operadorId || sala.socketDonoId !== socket.id || socket.data.salaId !== roomId) {
+            socket.emit("erro", "Apenas o dono da sala pode avançar as etapas!");
             if (typeof callback === "function") {
                 callback({
                     ok: false,
@@ -502,9 +581,10 @@ io.on("connection", (socket) => {
 
     socket.on(
         "owner_emitir_ticket",
-        ({ roomId, operadorId, modo } = {}, callback) => {
+        ({ roomId, modo } = {}, callback) => {
             const sala = salas[roomId];
-            if (!sala || sala.host !== operadorId) {
+            if (!sala || sala.donoId !== socket.data.operadorId || sala.socketDonoId !== socket.id || socket.data.salaId !== roomId) {
+                socket.emit("erro", "Apenas o dono da sala pode emitir o ticket!");
                 if (typeof callback === "function") {
                     callback({
                         ok: false,
@@ -535,12 +615,13 @@ io.on("connection", (socket) => {
 
         if (cliente.data.salaId && cliente.data.salaId !== salaId)
             removerJogadorDaSala(cliente);
-        cancelarRemocaoSala(sala);
         cliente.join(salaId);
         cliente.data.salaId = salaId;
         cliente.data.operadorId = operadorId;
         cliente.data.operadorNome = operadorNome;
         cliente.username = operadorNome;
+        if (sala.donoId === operadorId) sala.socketDonoId = cliente.id;
+        if (jogadorExistente) jogadorExistente.socketId = cliente.id;
         if (!sala.host) sala.host = operadorId;
         sala.operadores[operadorId] = {
             socketId: cliente.id,
@@ -635,7 +716,7 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log(`> Cliente desconectado: ${socket.id}`);
 
-        // Centraliza a remoção e preserva a sala durante a troca de página.
+        // Centraliza a remoção e exclui imediatamente as salas vazias.
         removerJogadorDaSala(socket);
     });
 });
@@ -644,4 +725,3 @@ const PORT = Number(process.env.PORT) || 3000;
 server.listen(PORT, () => {
     console.log(`> Servidor rodando na porta ${PORT}`);
 });
-

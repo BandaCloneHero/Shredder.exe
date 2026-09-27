@@ -229,6 +229,8 @@
                 >
                 <button
                     id="continue-instrument"
+                    data-owner-control
+                    style="display: none"
                     class="button button-primary"
                     type="button"
                     disabled
@@ -311,6 +313,7 @@
             socket.on("atualizar_estado", (estado) => {
                 console.log("Estado recebido:", estado);
                 estadoAtualSala = estado;
+                window.updateOwnerControls(estado);
                 window.renderLobbyPlayers(
                     { ...estado, id: minhaSalaId },
                     meuNomeOperador,
@@ -382,7 +385,7 @@
                         "shredder_player",
                         JSON.stringify(player),
                     );
-                    btnContinuar.disabled = false;
+                    btnContinuar.disabled = estado.donoId !== player.id || estado.socketDonoId !== socket.id;
                 } else {
                     player.instrumento = null;
                     localStorage.setItem(
@@ -397,8 +400,15 @@
                 window.location.href = "modos.html";
             });
 
+            socket.on("disconnect", () => {
+                estadoAtualSala = {};
+                btnContinuar.disabled = true;
+                window.updateOwnerControls(null);
+            });
+
             // Registra o listener antes de pedir o estado, pois o servidor responde imediatamente.
-            if (minhaSalaId) {
+            function entrarNaSalaAtual() {
+                if (!minhaSalaId) return;
                 socket.emit(
                     "entrarSala",
                     {
@@ -417,6 +427,9 @@
                     },
                 );
             }
+
+            socket.on("connect", entrarNaSalaAtual);
+            if (socket.connected) entrarNaSalaAtual();
 
             function tentarEscolherInstrumento(nomeInstrumento) {
                 if (!minhaSalaId) return;
@@ -444,7 +457,7 @@
             });
 
             btnContinuar.addEventListener("click", () => {
-                if (estadoAtualSala.host !== player.id) return;
+                if (!socket.connected || estadoAtualSala.donoId !== player.id || estadoAtualSala.socketDonoId !== socket.id) return;
 
                 socket.emit(
                     "owner_avancar_fase",
@@ -465,4 +478,3 @@
         </script>
     </body>
 </html>
-
