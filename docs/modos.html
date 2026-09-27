@@ -25,10 +25,6 @@
                 <span id="mode-player">OPERADOR</span>
                 <span class="top-divider"></span>
                 <span id="mode-instrument">SEM LOADOUT</span>
-                <span class="top-divider"></span>
-                <a class="top-profile-link" href="perfil.html"
-                    >MEU PERFIL <b>↗</b></a
-                >
             </div>
         </header>
 
@@ -51,6 +47,7 @@
                     <strong id="progress-count">02 / 03</strong>
                 </div>
             </section>
+            <p id="mode-status" class="section-intro" role="status" aria-live="polite"></p>
 
             <section class="mode-block" id="painel-do-dono" style="display: none">
                 <div class="block-heading">
@@ -110,5 +107,6 @@
             window.socket = io();
         </script>
         <script src="app.js"></script>
+        <script src="js/achievement-live.js"></script>
     </body>
 </html>

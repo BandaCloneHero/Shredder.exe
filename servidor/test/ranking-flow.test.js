@@ -60,4 +60,7 @@ test('ranking individual usa o recorde corrigido e bandas mantêm a pontuação 
     ctx.records = [{ jogadorId: 'ana', nome: 'Ana', instrumento: 'Guitarra', pontuacao: 1000, pontuacaoIndividual: 500, banda: { id: 'band', nome: 'Band' } }];
     assert.equal(vm.runInContext('aggregateRanking(records, "Guitarra")[0].pontuacao', ctx), 500);
     assert.equal(vm.runInContext('aggregateRanking(records, "bandas")[0].pontuacao', ctx), 1000);
+    ctx.records = [{ jogadorId: null, nome: 'Banda', instrumento: null, pontuacao: 4000000, banda: { id: 'banda', nome: 'Banda' } }];
+    assert.equal(vm.runInContext('aggregateRanking(records, "bandas")[0].pontuacao', ctx), 4000000);
+    assert.equal(vm.runInContext('aggregateRanking(records, "Guitarra").length', ctx), 0);
 });

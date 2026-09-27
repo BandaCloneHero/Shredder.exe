@@ -22,7 +22,7 @@ test('leitura não expõe credenciais e preserva conquistas fora do catálogo', 
     const result = store.lerPerfilOperador('ANA');
     assert.equal(result.perfil.username, 'Ana');
     assert.deepEqual(result.perfil.achievements, ['on_fire', 'custom_badge']);
-    assert.equal(result.conquistas.length, 6);
+    assert.equal(result.conquistas.length, 29);
     assert.equal(JSON.stringify(result).includes('original-hash'), false);
     assert.equal(JSON.stringify(result).includes('original-salt'), false);
 });
@@ -44,6 +44,22 @@ test('edição concede e remove conquistas sem criar partida e preserva outros c
     assert.equal(account.instrumentStats.guitarra.maxScore, 456);
 });
 
+test('operador consulta e corrige desbloqueios e favoritos sem apagar o histórico de fases', t => {
+    const { store, read } = fixture(t);
+    store.salvar({ partidaId: 'match', operadorId: 'op', username: 'Ana', instrumento: 'guitarra', musica: 'Song', pontuacao: 1000, precisao: 100, maiorCombo: 10, notasAcertadas: 10, notasErradas: 0, fullCombo: true, fase: 2, favorita: true });
+    const perfil = store.lerPerfilOperador('Ana');
+    assert.deepEqual(perfil.perfil.fases.desbloqueadas, [1, 2, 3]);
+    assert.equal(perfil.perfil.totalFasesDesbloqueadas, 3);
+    store.editarPerfilOperador('Ana', {
+        fases: { desbloqueadas: [1, 2, 3, 5], favoritas: [3, 5], selecionada: 5 },
+    }, perfil.revisao);
+    const fases = read().ana.fases;
+    assert.deepEqual(fases.desbloqueadas, [1, 2, 3, 4, 5]);
+    assert.deepEqual(fases.favoritas, [3, 5]);
+    assert.equal(fases.selecionada, 5);
+    assert.equal(fases.historicoSelecionadas.length, 1);
+});
+
 test('revisão antiga não sobrescreve uma edição concorrente', t => {
     const { store, file } = fixture(t);
     const { revisao } = store.lerPerfilOperador('Ana');
@@ -57,7 +73,7 @@ test('validação rejeita campos protegidos, conquistas desconhecidas e valores 
     const { store, file } = fixture(t);
     const { revisao } = store.lerPerfilOperador('Ana');
     const saved = fs.readFileSync(file, 'utf8');
-    for (const changes of [{ salt: 'hack' }, { passwordHash: 'hack' }, { currency: -1 }, { achievements: ['inventada'] }, { achievements: 'on_fire' }, { 'instrumentStats.guitarra.bestAccuracy': 101 }, { avatar: 'javascript:alert(1)' }, { username: 'bad name' }]) {
+    for (const changes of [{ salt: 'hack' }, { passwordHash: 'hack' }, { currency: -1 }, { achievements: ['inventada'] }, { achievements: 'on_fire' }, { 'instrumentStats.guitarra.bestAccuracy': 101 }, { avatar: 'javascript:alert(1)' }, { username: 'bad name' }, { fases: { desbloqueadas: [1], favoritas: [2], selecionada: null } }]) {
         assert.throws(() => store.editarPerfilOperador('Ana', changes, revisao), error => error.status === 400);
         assert.equal(fs.readFileSync(file, 'utf8'), saved);
     }

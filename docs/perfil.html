@@ -165,6 +165,7 @@
                         <p class="eyebrow">CONQUISTAS // SINAL DE PRESTÍGIO</p>
                         <h2>Galeria de badges</h2>
                     </div>
+                    <button id="open-achievements" class="button button-ghost" type="button">VER TODAS <b>↗</b></button>
                 </div>
                 <div
                     id="profile-achievements"
@@ -172,6 +173,16 @@
                 ></div>
             </section>
         </main>
+        <dialog id="achievement-dialog" class="achievement-dialog" aria-labelledby="achievement-dialog-title">
+            <div class="achievement-dialog-head">
+                <div>
+                    <p class="eyebrow">ARQUIVO // CONQUISTAS</p>
+                    <h2 id="achievement-dialog-title">Todos os <span>desafios.</span></h2>
+                </div>
+                <button id="close-achievements" class="achievement-close" type="button" aria-label="Fechar conquistas">×</button>
+            </div>
+            <div id="achievement-details" class="achievement-details"></div>
+        </dialog>
 
         <script src="js/account.js"></script>
         <script src="js/account-ui.js"></script>
@@ -188,6 +199,7 @@
             });
         </script>
         <script src="app.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/achievement-live.js"></script>
     </body>
 </html>
-

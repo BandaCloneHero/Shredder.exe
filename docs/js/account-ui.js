@@ -30,7 +30,8 @@ class ShredderAccountUI {
       .shredder-auth-btn { background: #111; color: #00ffcc; border: 1px solid #00ffcc; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.2s; box-shadow: 0 0 10px rgba(0, 255, 204, 0.2); }
       .shredder-auth-btn:hover { background: #00ffcc; color: #111; box-shadow: 0 0 15px rgba(0, 255, 204, 0.5); }
       .shredder-auth-user { display: flex; align-items: center; gap: 10px; background: rgba(17, 17, 17, 0.9); border: 1px solid #333; padding: 6px 12px; border-radius: 6px; color: #fff; font-size: 14px; }
-      .shredder-auth-user span { color: #00ffcc; font-weight: bold; }
+      .shredder-profile-btn { color: #00ffcc; font-weight: bold; text-decoration: none; }
+      .shredder-profile-btn:hover, .shredder-profile-btn:focus-visible { color: #fff; text-decoration: underline; }
       .shredder-logout-btn { background: transparent; border: 1px solid #ff4444; color: #ff4444; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
       .shredder-logout-btn:hover { background: #ff4444; color: #fff; }
       .shredder-modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
@@ -131,17 +132,17 @@ class ShredderAccountUI {
       this.statusContainerEl.replaceChildren();
       const userBox = document.createElement('div');
       userBox.className = 'shredder-auth-user';
-      const label = document.createElement('div');
-      label.append('Operador: ');
-      const username = document.createElement('span');
-      username.textContent = state.user;
-      label.appendChild(username);
+      const profileLink = document.createElement('a');
+      profileLink.className = 'shredder-profile-btn';
+      profileLink.href = 'perfil.html';
+      profileLink.textContent = state.user;
+      profileLink.setAttribute('aria-label', `Abrir perfil de ${state.user}`);
       const logoutBtn = document.createElement('button');
       logoutBtn.id = 'shredder-do-logout';
       logoutBtn.className = 'shredder-logout-btn';
       logoutBtn.textContent = 'Sair';
       logoutBtn.addEventListener('click', () => this.account.logout());
-      userBox.append(label, logoutBtn);
+      userBox.append(profileLink, logoutBtn);
       this.statusContainerEl.appendChild(userBox);
     } else {
       this.statusContainerEl.innerHTML = '<button id="shredder-do-login" class="shredder-auth-btn" type="button">Entrar / Conta</button>';

@@ -25,10 +25,6 @@
                 <span id="ranking-player">OPERADOR</span>
                 <span class="top-divider"></span>
                 <a href="lobby.html">VOLTAR AO LOBBY</a>
-                <span class="top-divider"></span>
-                <a class="top-profile-link" href="perfil.html"
-                    >MEU PERFIL <b>↗</b></a
-                >
             </div>
         </header>
 
@@ -36,7 +32,7 @@
             <section class="section-heading">
                 <div>
                     <p class="eyebrow">PLACAR // SINAL GLOBAL</p>
-                    <h1>Ranking <span>real.</span></h1>
+                    <h1>Ranking <span>GLOBAL.</span></h1>
                 </div>
                 <div class="operator-chip">
                     <span>REGISTRO</span>
@@ -47,6 +43,19 @@
             <p id="ranking-status" class="ranking-status">
                 SINCRONIZANDO DADOS...
             </p>
+
+            <section class="ranking-award panel-cut" aria-labelledby="ranking-award-title">
+                <div class="ranking-award-visual">
+                    <img class="ranking-award-image" src="images/premiação.png" alt="Miniaturas dos prêmios para os primeiros colocados">
+                </div>
+                <div class="ranking-award-copy">
+                    <p class="eyebrow">FEIRA // PRÊMIO OFICIAL</p>
+                    <h2 id="ranking-award-title">Prêmios dos <span>campeões.</span></h2>
+                    <p>A premiação dos primeiros colocados de cada instrumento será entregue ao final da feira.</p>
+                </div>
+            </section>
+
+            <section id="ranking-champions" class="ranking-champions" aria-label="Campeões por instrumento" hidden></section>
 
             <nav class="ranking-tabs" aria-label="Categorias do ranking">
                 <button
@@ -86,7 +95,7 @@
                 </button>
             </nav>
 
-            <section class="ranking-console panel-cut">
+            <section class="ranking-console">
                 <div class="console-head">
                     <span>LEADERBOARD // PARTIDAS FINALIZADAS</span>
                     <span>FONTE: SERVIDOR LOCAL</span>
@@ -128,5 +137,6 @@
         </script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="app.js"></script>
+        <script src="js/achievement-live.js"></script>
     </body>
 </html>

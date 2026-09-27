@@ -19,7 +19,7 @@ test('persiste perfil, recordes, conquistas e ranking após reinicializar', t =>
     assert.equal(account.gamesPlayed, 1);
     assert.equal(account.lifetimeStats.totalNotesHit, 10);
     assert.deepEqual(account.instrumentStats.guitarra, { maxScore: 1000, maxCombo: 10, bestAccuracy: 100, fullCombos: 1, songsCompleted: 1 });
-    assert.deepEqual(account.achievements, ['on_fire']);
+    assert.deepEqual(account.achievements, ['primeiros_acordes', 'on_fire', 'cirurgico', 'rei_do_ranking']);
     assert.equal(account.passwordHash, 'unchanged');
     assert.equal(criarPersistenciaPartidas(file).ranking()[0].pontuacao, 1000);
 });
@@ -35,6 +35,37 @@ test('reenvio idempotente, conflito e recordes sem regressão', t => {
     assert.equal(account.instrumentStats.guitarra.maxScore, 1000);
     assert.equal(account.instrumentStats.guitarra.songsCompleted, 1);
     assert.equal(account.instrumentStats.guitarra.fullCombos, 1);
+});
+test('partida em fase persiste seleção, favoritos, histórico e próximo desbloqueio', t => {
+    const { store, read } = fixture(t);
+    const dados = result({ fase: 3, favorita: true });
+    store.salvar(dados);
+    const fases = read().accounts.ana.fases;
+    assert.deepEqual(fases.desbloqueadas, [1, 2, 3, 4]);
+    assert.deepEqual(fases.favoritas, [3]);
+    assert.equal(fases.selecionada, 3);
+    assert.equal(fases.historicoSelecionadas.length, 1);
+    assert.equal(fases.historicoSelecionadas[0].fase, 3);
+    assert.equal(read().accounts.ana.resultadosPartidas.one.fase, 3);
+    assert.equal(store.salvar(dados).duplicado, true);
+    assert.equal(read().accounts.ana.fases.historicoSelecionadas.length, 1);
+});
+test('seleção de fase persiste antes da partida sem alterar estatísticas', t => {
+    const { store, read } = fixture(t);
+    store.selecionarFase('Ana', 2);
+    const account = read().accounts.ana;
+    assert.equal(account.gamesPlayed, 0);
+    assert.deepEqual(account.fases.desbloqueadas, [1, 2]);
+    assert.equal(account.fases.selecionada, 2);
+    assert.equal(account.fases.historicoSelecionadas.length, 1);
+});
+test('migração completa fases anteriores de um progresso legado esparso', t => {
+    const { store, file, read } = fixture(t);
+    const root = read();
+    root.accounts.ana.fases = { desbloqueadas: [1, 4], favoritas: [4], selecionada: 4, historicoSelecionadas: [] };
+    fs.writeFileSync(file, JSON.stringify(root));
+    store.migrarContas();
+    assert.deepEqual(read().accounts.ana.fases.desbloqueadas, [1, 2, 3, 4]);
 });
 test('payload inválido não altera disco', t => {
     const { store, file } = fixture(t); const before = fs.readFileSync(file, 'utf8');
@@ -76,7 +107,7 @@ test('conta parcial recebe todos os padrões e histórico detalhado na nova part
     const startedAt = Date.now();
     store.salvar(result());
     const account = read().accounts.ana;
-    for (const key of ['username', 'salt', 'passwordHash', 'nickname', 'avatar', 'currency', 'gamesPlayed', 'currentTitle', 'lifetimeStats', 'instrumentStats', 'songRecords', 'achievements', 'createdAt', 'updatedAt', 'resultadosPartidas']) {
+    for (const key of ['username', 'salt', 'passwordHash', 'nickname', 'avatar', 'currency', 'gamesPlayed', 'currentTitle', 'lifetimeStats', 'instrumentStats', 'songRecords', 'achievements', 'fases', 'createdAt', 'updatedAt', 'resultadosPartidas']) {
         assert.ok(Object.hasOwn(account, key), `Campo ausente: ${key}`);
     }
     assert.equal(account.nickname, 'Ana');
@@ -84,6 +115,7 @@ test('conta parcial recebe todos os padrões e histórico detalhado na nova part
     assert.equal(account.currency, 0);
     assert.equal(account.currentTitle, 'Novato do Rock');
     assert.equal(account.instrumentStats.favoriteInstrument, 'nenhum');
+    assert.deepEqual(account.fases, { desbloqueadas: [1], favoritas: [], selecionada: null, historicoSelecionadas: [] });
     for (const instrument of ['baixo', 'bateria', 'teclado']) {
         assert.deepEqual(account.instrumentStats[instrument], { maxScore: 0, maxCombo: 0, bestAccuracy: 0, songsCompleted: 0, fullCombos: 0 });
     }
@@ -117,7 +149,7 @@ test('novas partidas preservam cosméticos, credenciais, campos extras e histór
     assert.equal(account.instrumentStats.baixo.custom, true);
     assert.equal(account.instrumentStats.baixo.songsCompleted, 0);
     assert.equal(account.lifetimeStats.customCounter, 7);
-    assert.deepEqual(account.achievements, ['lenda_viva', 'cirurgico', 'on_fire']);
+    assert.deepEqual(account.achievements, ['lenda_viva', 'cirurgico', 'primeiros_acordes', 'on_fire', 'rei_do_ranking', 'quase_la']);
     assert.equal(account.gamesPlayed, 2);
     assert.notEqual(account.updatedAt, original.updatedAt);
     assert.deepEqual(account.resultadosPartidas.one, first.resultadosPartidas.one);

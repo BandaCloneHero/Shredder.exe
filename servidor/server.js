@@ -281,6 +281,12 @@ app.get("/api/perfil/:username", (req, res) => {
             achievements: Array.isArray(account.achievements)
                 ? account.achievements
                 : [],
+            fases: account.fases || {
+                desbloqueadas: [1],
+                favoritas: [],
+                selecionada: null,
+                historicoSelecionadas: [],
+            },
         },
     });
 });
@@ -302,6 +308,21 @@ app.post("/api/auth/logout", (req, res) => {
         saveSessions();
     }
     return res.json({ ok: true });
+});
+
+app.post("/api/fases/selecionar", (req, res) => {
+    const session = getAuthenticatedSession(req);
+    if (!session) return res.status(401).json({ ok: false, error: "Sessão expirada ou inválida." });
+    try {
+        const salvo = partidas.selecionarFase(session.accountKey, req.body?.fase);
+        accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
+        return res.json({ ok: true, fases: salvo.fases });
+    } catch (error) {
+        return res.status(error.status || 500).json({
+            ok: false,
+            error: error.status ? error.message : "Falha ao registrar a fase.",
+        });
+    }
 });
 
 app.get("/api/operador/perfil/:username", (req, res) => {
@@ -333,7 +354,18 @@ app.post("/api/operador/salvar-perfil", async (req, res) => {
             saveSessions();
         }
         io.emit("rankingAtualizado", { records: salvo.records });
-        return res.json({ ok: true, perfil: salvo.perfil, revisao: salvo.revisao, conquistas: salvo.conquistas });
+        if (salvo.novasConquistas?.length) {
+            io.to?.(`conquistas:${normalizeUsername(salvo.perfil.username)}`).emit("conquistaDesbloqueada", {
+                ids: salvo.novasConquistas,
+            });
+        }
+        return res.json({
+            ok: true,
+            perfil: salvo.perfil,
+            revisao: salvo.revisao,
+            conquistas: salvo.conquistas,
+            novasConquistas: salvo.novasConquistas || [],
+        });
     } catch (error) {
         return res.status(error.status || 500).json({ ok: false, erro: error.status ? error.message : "Falha ao salvar o perfil. Os campos foram preservados." });
     }
@@ -358,6 +390,8 @@ app.post("/api/operador/salvar-pontuacao", (req, res) => {
             nickname: dados.nickname,
             currentTitle: dados.currentTitle,
             currency: dados.currency,
+            fase: dados.fase,
+            favorita: dados.favorita,
         });
     } catch (error) {
         return res.status(400).json({ ok: false, erro: error.message });
@@ -368,10 +402,16 @@ app.post("/api/operador/salvar-pontuacao", (req, res) => {
         accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
         // O ranking existente espera { records }, tanto na carga inicial como ao vivo.
         io.emit("rankingAtualizado", { records: salvo.records });
+        if (salvo.novasConquistas?.length) {
+            io.to?.(`conquistas:${normalizeUsername(resultado.username)}`).emit("conquistaDesbloqueada", {
+                ids: salvo.novasConquistas,
+            });
+        }
         return res.status(201).json({
             ok: true,
             partidaId: resultado.partidaId,
             mensagem: "Resultado salvo. Perfil e ranking atualizados.",
+            novasConquistas: salvo.novasConquistas || [],
         });
     } catch (error) {
         if (error.message === "Conta não encontrada.") {
@@ -381,6 +421,32 @@ app.post("/api/operador/salvar-pontuacao", (req, res) => {
         return res.status(500).json({
             ok: false,
             erro: "Falha ao salvar o resultado. Os campos foram preservados para nova tentativa.",
+        });
+    }
+});
+
+app.post("/api/operador/salvar-pontuacao-banda", (req, res) => {
+    const dados = req.body || {};
+    const nome = typeof dados.nome === "string" ? dados.nome.trim() : dados.nome;
+    const idInformado = typeof dados.id === "string" ? dados.id.trim() : dados.id;
+    const idGerado = typeof nome === "string"
+        ? nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 100)
+        : undefined;
+    try {
+        const salvo = partidas.salvarPontuacaoBanda({
+            partidaId: "band_" + randomUUID(),
+            banda: { id: idInformado || idGerado, nome },
+            pontuacao: dados.pontuacao,
+            membros: dados.membros,
+        });
+        accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
+        io.emit("rankingAtualizado", { records: salvo.records });
+        return res.status(201).json({ ok: true, mensagem: "Pontuação da banda salva." });
+    } catch (error) {
+        return res.status(error.status || 500).json({
+            ok: false,
+            erro: error.status ? error.message : "Falha ao salvar a pontuação da banda.",
         });
     }
 });
@@ -472,6 +538,16 @@ function removerJogadorDaSala(socket) {
 }
 
 io.on("connection", (socket) => {
+    socket.on("inscreverConquistas", ({ token } = {}, callback) => {
+        const session = sessions.get(sessionKey(token));
+        if (!session) {
+            if (typeof callback === "function") callback({ ok: false });
+            return;
+        }
+        socket.join(`conquistas:${session.accountKey}`);
+        if (typeof callback === "function") callback({ ok: true });
+    });
+
     socket.on("entrarRanking", (_dados, callback) => {
         try {
             const records = partidas.ranking();
@@ -491,7 +567,16 @@ io.on("connection", (socket) => {
             // Mantém compatibilidade com os consumidores antigos do store em memória.
             accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
             io.to("ranking").emit("rankingAtualizado", { records: salvo.records });
-            if (typeof callback === "function") callback({ ok: true, partidaId: resultado.partidaId });
+            if (salvo.novasConquistas?.length) {
+                io.to(`conquistas:${normalizeUsername(resultado.username)}`).emit("conquistaDesbloqueada", {
+                    ids: salvo.novasConquistas,
+                });
+            }
+            if (typeof callback === "function") callback({
+                ok: true,
+                partidaId: resultado.partidaId,
+                novasConquistas: salvo.novasConquistas || [],
+            });
         } catch (error) {
             console.error("> Falha ao sincronizar resultado:", error);
             if (typeof callback === "function") callback({ ok: false, erro: error.code ? "Falha ao gravar resultado em disco." : error.message });

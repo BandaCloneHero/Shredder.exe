@@ -89,6 +89,25 @@
                         <p class="operator-help">Marcada: concedida. Desmarcada: removida ao salvar. As conquistas atuais são carregadas automaticamente.</p>
                         <div id="profile-achievements" class="achievement-grid"></div>
                     </section>
+                    <section class="operator-block" aria-labelledby="phases-heading">
+                        <h2 id="phases-heading">Fases e músicas</h2>
+                        <p class="operator-help">Informe os números separados por vírgula. A última fase selecionada é mantida no histórico do jogador; o histórico abaixo é somente para consulta.</p>
+                        <div class="operator-grid">
+                            <div class="operator-field operator-wide">
+                                <label for="profile-unlocked-phases">Fases desbloqueadas</label>
+                                <input id="profile-unlocked-phases" type="text" inputmode="numeric" placeholder="Ex.: 1, 2, 3">
+                            </div>
+                            <div class="operator-field">
+                                <label for="profile-favorite-phases">Fases favoritas</label>
+                                <input id="profile-favorite-phases" type="text" inputmode="numeric" placeholder="Ex.: 2, 5">
+                            </div>
+                            <div class="operator-field">
+                                <label for="profile-selected-phase">Última fase selecionada</label>
+                                <input id="profile-selected-phase" type="number" min="1" max="100000" step="1" inputmode="numeric" placeholder="Nenhuma">
+                            </div>
+                        </div>
+                        <p id="profile-phase-history" class="operator-help"></p>
+                    </section>
                     <section class="operator-block" aria-labelledby="totals-heading">
                         <h2 id="totals-heading">Estatísticas acumuladas</h2>
                         <p class="operator-help">Use para corrigir os totais do perfil. Esse ajuste não cria uma partida.</p>
@@ -146,6 +165,15 @@
                         <input id="musica" name="musica" type="text" maxlength="200" required placeholder="Digite o nome da música">
                     </div>
                     <div class="operator-field">
+                        <label for="fase">Fase <small>(opcional)</small></label>
+                        <input id="fase" name="fase" type="number" min="1" max="100000" step="1" inputmode="numeric" placeholder="Ex.: 3">
+                        <small>Ao salvar, registra a seleção e desbloqueia a próxima fase.</small>
+                    </div>
+                    <label class="operator-check" for="favorita">
+                        <input id="favorita" name="favorita" type="checkbox">
+                        Marcar fase como favorita
+                    </label>
+                    <div class="operator-field">
                         <label for="pontuacao">Pontuação</label>
                         <input id="pontuacao" name="pontuacao" type="number" min="0" max="1000000000" step="1" required inputmode="numeric" placeholder="15000">
                     </div>
@@ -182,7 +210,40 @@
         </form>
         <p id="operator-status" class="operator-status" role="status" aria-live="polite" aria-atomic="true"></p>
         </details>
+        <details class="operator-mode">
+            <summary>Registrar pontuação de uma banda</summary>
+            <form id="band-form" class="operator-form panel-cut">
+                <fieldset id="band-fields" class="operator-fields" aria-label="Pontuação da banda">
+                    <section class="operator-block">
+                        <h2><span>01</span> Banda</h2>
+                        <p class="operator-help">Este registro afeta somente a categoria Bandas. Não cria partida, recorde ou estatística para jogadores individuais.</p>
+                        <div class="operator-grid">
+                            <div class="operator-field">
+                                <label for="band-name">Nome da banda</label>
+                                <input id="band-name" name="nome" type="text" maxlength="100" required autocomplete="off" placeholder="Ex.: Os Shredders">
+                            </div>
+                            <div class="operator-field">
+                                <label for="band-id">ID da banda <small>(opcional)</small></label>
+                                <input id="band-id" name="id" type="text" maxlength="100" autocomplete="off" placeholder="Gerado pelo nome se vazio">
+                            </div>
+                            <div class="operator-field">
+                                <label for="band-score">Pontuação da banda</label>
+                                <input id="band-score" name="pontuacao" type="number" min="0" max="1000000000" step="1" required inputmode="numeric" placeholder="4000000">
+                            </div>
+                        </div>
+                        <div class="operator-block" style="margin-top: 24px; margin-bottom: 0; padding-bottom: 0">
+                            <h2><span>02</span> Integrantes <small>(opcional)</small></h2>
+                            <p class="operator-help">Registre os participantes e suas pontuações somente para detalhar o resultado da banda. Isso não altera rankings individuais.</p>
+                            <div id="band-members" class="operator-grid"></div>
+                        </div>
+                    </section>
+                    <button id="save-band-score" class="button button-primary" type="submit">Salvar pontuação da banda</button>
+                </fieldset>
+            </form>
+            <p id="band-status" class="operator-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </details>
     </main>
+    <script src="app.js"></script>
     <script>
         const form = document.getElementById("operator-form");
         const fields = document.getElementById("operator-fields");
@@ -211,6 +272,10 @@
                 notasErradas: number("notasErradas"),
                 fullCombo: form.elements.namedItem("fullCombo").checked,
             };
+            if (value("fase").trim() !== "") {
+                payload.fase = number("fase");
+                payload.favorita = form.elements.namedItem("favorita").checked;
+            }
             for (const name of ["nickname", "currentTitle"]) {
                 const text = value(name).trim();
                 if (text) payload[name] = text;
@@ -250,6 +315,7 @@
                     throw new Error("A API retornou uma resposta inesperada. Verifique se o backend está atualizado.");
                 }
                 if (!response.ok || !result.ok) throw new Error(result.erro || "Não foi possível salvar o resultado.");
+                globalThis.exibirConquistasDesbloqueadas?.(result.novasConquistas);
                 form.reset();
                 showStatus("success", `SUCESSO // Resultado de ${payload.username} salvo. Perfil e ranking atualizados.`);
             } catch (error) {
@@ -262,6 +328,91 @@
                 if (status.dataset.state === "success") document.getElementById("username").focus();
             }
         });
+
+        const bandForm = document.getElementById("band-form");
+        if (bandForm) {
+            const bandFields = document.getElementById("band-fields");
+            const bandStatus = document.getElementById("band-status");
+            const bandButton = document.getElementById("save-band-score");
+            const bandMembers = document.getElementById("band-members");
+            let savingBand = false;
+            const instrumentos = [["guitarra", "Guitarra"], ["baixo", "Baixo"], ["bateria", "Bateria"], ["teclado", "Teclado"]];
+            instrumentos.forEach(([instrumento, label], index) => {
+                const position = index + 1;
+                const nameField = document.createElement("div");
+                nameField.className = "operator-field";
+                nameField.innerHTML = '<label for="band-member-' + position + '-name">' + label + '</label><input id="band-member-' + position + '-name" name="membro' + position + 'Nome" type="text" maxlength="100" autocomplete="off" placeholder="Nome do integrante">';
+                const scoreField = document.createElement("div");
+                scoreField.className = "operator-field";
+                scoreField.innerHTML = '<label for="band-member-' + position + '-score">Pontuação de ' + label + '</label><input id="band-member-' + position + '-score" name="membro' + position + 'Pontuacao" type="number" min="0" max="1000000000" step="1" inputmode="numeric" placeholder="Opcional">';
+                const instrument = document.createElement("input");
+                instrument.type = "hidden";
+                instrument.name = "membro" + position + "Instrumento";
+                instrument.value = instrumento;
+                scoreField.appendChild(instrument);
+                bandMembers.append(nameField, scoreField);
+            });
+            bandForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                if (savingBand || !bandForm.reportValidity()) return;
+                const value = (name) => bandForm.elements.namedItem(name).value.trim();
+                const membros = [];
+                for (let index = 1; index <= instrumentos.length; index++) {
+                    const nome = value("membro" + index + "Nome");
+                    const scoreInput = bandForm.elements.namedItem("membro" + index + "Pontuacao");
+                    if (!nome && scoreInput.value === "") continue;
+                    if (!nome || scoreInput.value === "") {
+                        bandStatus.dataset.state = "error";
+                        bandStatus.textContent = "ERRO // Informe nome e pontuação para cada integrante preenchido.";
+                        return;
+                    }
+                    membros.push({
+                        nome,
+                        instrumento: value("membro" + index + "Instrumento"),
+                        pontuacao: scoreInput.valueAsNumber,
+                    });
+                }
+                const payload = {
+                    nome: value("nome"),
+                    id: value("id") || undefined,
+                    pontuacao: bandForm.elements.namedItem("pontuacao").valueAsNumber,
+                    membros,
+                };
+                savingBand = true;
+                bandFields.disabled = true;
+                bandButton.textContent = "Salvando...";
+                bandStatus.dataset.state = "pending";
+                bandStatus.textContent = "SALVANDO PONTUAÇÃO DA BANDA...";
+                try {
+                    const response = await fetch("/api/operador/salvar-pontuacao-banda", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", Accept: "application/json" },
+                        body: JSON.stringify(payload),
+                    });
+                    const contentType = response.headers.get("content-type") || "";
+                    if (!contentType.toLowerCase().includes("application/json")) {
+                        throw new Error("A API de bandas retornou uma página em vez de JSON. Abra o painel pelo servidor Node.js e reinicie o backend para carregar a nova rota.");
+                    }
+                    let result;
+                    try {
+                        result = await response.json();
+                    } catch {
+                        throw new Error("A API de bandas retornou JSON inválido. Reinicie o backend.");
+                    }
+                    if (!response.ok || !result?.ok) throw new Error(result?.erro || "Não foi possível salvar a pontuação da banda.");
+                    bandForm.reset();
+                    bandStatus.dataset.state = "success";
+                    bandStatus.textContent = "SUCESSO // Pontuação da banda salva no ranking de Bandas.";
+                } catch (error) {
+                    bandStatus.dataset.state = "error";
+                    bandStatus.textContent = "ERRO // " + error.message;
+                } finally {
+                    savingBand = false;
+                    bandFields.disabled = false;
+                    bandButton.textContent = "Salvar pontuação da banda";
+                }
+            });
+        }
     </script>
     <script src="js/operador-perfil.js"></script>
 </body>

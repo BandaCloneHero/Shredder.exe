@@ -48,6 +48,11 @@
                     notasAcertadas: estatisticas.notasAcertadas,
                     notasErradas: estatisticas.notasErradas, musica: estatisticas.musica,
                     banda: estatisticas.banda ?? normalizeBand(player.banda),
+                    // A cena pode informar estes dados opcionais para as
+                    // conquistas contextuais, sem afetar jogos antigos.
+                    pausada: estatisticas.pausada,
+                    energiaFinal: estatisticas.energiaFinal,
+                    dificuldade: estatisticas.dificuldade,
                 };
             }
             const pendentes = readJson(PENDING_RESULTS_KEY, {});

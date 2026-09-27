@@ -34,13 +34,111 @@ const PROFILE_INSTRUMENTS = [
 
 // Adicione novos IDs e rótulos nesta lista quando o evento ganhar badges novas.
 const PROFILE_ACHIEVEMENTS = [
-    ["primeiros_acordes", "PRIMEIROS ACORDES", "◆"],
-    ["on_fire", "ON FIRE", "◇"],
-    ["cirurgico", "CIRÚRGICO", "✦"],
-    ["perfeccionista", "PERFECCIONISTA", "◈"],
-    ["lenda_viva", "LENDA VIVA", "★"],
-    ["desafinador_profissional", "DESAFINADOR PROFISSIONAL", "⊗"],
+    { id: "primeiros_acordes", label: "PRIMEIROS ACORDES", icon: "◆", rarity: "Comum", rarityKey: "common", difficulty: "Iniciante", how: "Conclua sua primeira partida." },
+    { id: "aquecimento", label: "AQUECIMENTO", icon: "◌", rarity: "Comum", rarityKey: "common", difficulty: "Iniciante", how: "Jogue cinco partidas." },
+    { id: "ritmo_de_ferro", label: "RITMO DE FERRO", icon: "≋", rarity: "Incomum", rarityKey: "uncommon", difficulty: "Intermediária", how: "Jogue dez partidas no mesmo dia." },
+    { id: "sem_errar_o_compasso", label: "SEM ERRAR O COMPASSO", icon: "♩", rarity: "Incomum", rarityKey: "uncommon", difficulty: "Intermediária", how: "Conclua uma música sem pausá-la." },
+    { id: "on_fire", label: "ON FIRE", icon: "◇", rarity: "Incomum", rarityKey: "uncommon", difficulty: "Intermediária", how: "Conclua uma partida com Full Combo." },
+    { id: "cirurgico", label: "CIRÚRGICO", icon: "✦", rarity: "Rara", rarityKey: "rare", difficulty: "Avançada", how: "Alcance 100% de precisão em uma partida." },
+    { id: "no_limite", label: "NO LIMITE", icon: "≈", rarity: "Rara", rarityKey: "rare", difficulty: "Avançada", how: "Termine uma partida entre 99% e 99,9% de precisão." },
+    { id: "virada_insana", label: "VIRADA INSANA", icon: "↯", rarity: "Rara", rarityKey: "rare", difficulty: "Avançada", how: "Termine com até 10% de energia." },
+    { id: "especialista", label: "ESPECIALISTA", icon: "✹", rarity: "Épica", rarityKey: "epic", difficulty: "Especialista", how: "Faça Full Combo em dez músicas diferentes." },
+    { id: "multi_instrumentista", label: "MULTI-INSTRUMENTISTA", icon: "✣", rarity: "Rara", rarityKey: "rare", difficulty: "Avançada", how: "Conclua músicas com os quatro instrumentos." },
+    { id: "perfeccionista", label: "PERFECCIONISTA", icon: "◈", rarity: "Épica", rarityKey: "epic", difficulty: "Especialista", how: "Faça cinco Full Combos no mesmo instrumento." },
+    { id: "mestre_guitarra", label: "MESTRE DA GUITARRA", icon: "𝄞", rarity: "Épica", rarityKey: "epic", difficulty: "Especialista", how: "Faça cinco Full Combos na guitarra." },
+    { id: "mestre_baixo", label: "MESTRE DO BAIXO", icon: "♬", rarity: "Épica", rarityKey: "epic", difficulty: "Especialista", how: "Faça cinco Full Combos no baixo." },
+    { id: "mestre_bateria", label: "MESTRE DA BATERIA", icon: "◉", rarity: "Épica", rarityKey: "epic", difficulty: "Especialista", how: "Faça cinco Full Combos na bateria." },
+    { id: "mestre_teclado", label: "MESTRE DO TECLADO", icon: "⌘", rarity: "Épica", rarityKey: "epic", difficulty: "Especialista", how: "Faça cinco Full Combos no teclado." },
+    { id: "banda_afinada", label: "BANDA AFINADA", icon: "♜", rarity: "Rara", rarityKey: "rare", difficulty: "Avançada", how: "Participe de uma banda completa, com os quatro instrumentos." },
+    { id: "show_perfeito", label: "SHOW PERFEITO", icon: "✺", rarity: "Lendária", rarityKey: "legendary", difficulty: "Mestre", how: "Conclua um show de banda com todos acima de 95% de precisão." },
+    { id: "colecionador_de_fases", label: "COLECIONADOR DE FASES", icon: "▣", rarity: "Épica", rarityKey: "epic", difficulty: "Especialista", how: "Desbloqueie as cinco fases da campanha." },
+    { id: "dono_do_palco", label: "DONO DO PALCO", icon: "♛", rarity: "Lendária", rarityKey: "legendary", difficulty: "Mestre", how: "Conclua as cinco fases na dificuldade máxima." },
+    { id: "favorita_da_casa", label: "FAVORITA DA CASA", icon: "♥", rarity: "Comum", rarityKey: "common", difficulty: "Iniciante", how: "Marque as cinco fases como favoritas." },
+    { id: "maratonista", label: "MARATONISTA", icon: "➜", rarity: "Épica", rarityKey: "epic", difficulty: "Especialista", how: "Jogue 50 partidas." },
+    { id: "incansavel", label: "INCANSÁVEL", icon: "∞", rarity: "Lendária", rarityKey: "legendary", difficulty: "Mestre", how: "Jogue 100 partidas." },
+    { id: "lenda_viva", label: "LENDA VIVA", icon: "★", rarity: "Lendária", rarityKey: "legendary", difficulty: "Mestre", how: "Conclua 50 partidas." },
+    { id: "rei_do_ranking", label: "REI DO RANKING", icon: "♕", rarity: "Lendária", rarityKey: "legendary", difficulty: "Mestre", how: "Alcance o primeiro lugar em um instrumento." },
+    { id: "estrela_da_feira", label: "ESTRELA DA FEIRA", icon: "✧", rarity: "Oculta", rarityKey: "hidden", difficulty: "Evento", how: "Fique em primeiro em qualquer ranking no encerramento da feira." },
+    { id: "tentativa_corajosa", label: "TENTATIVA CORAJOSA", icon: "⚑", rarity: "Oculta", rarityKey: "hidden", difficulty: "Curiosa", how: "Conclua uma música com menos de 50% de precisão." },
+    { id: "quase_la", label: "QUASE LÁ", icon: "!", rarity: "Oculta", rarityKey: "hidden", difficulty: "Curiosa", how: "Perca um Full Combo por apenas uma nota." },
+    { id: "volta_por_cima", label: "VOLTA POR CIMA", icon: "↑", rarity: "Rara", rarityKey: "rare", difficulty: "Avançada", how: "Supere seu recorde anterior em pelo menos 25%." },
+    { id: "desafinador_profissional", label: "DESAFINADOR PROFISSIONAL", icon: "⊗", rarity: "Oculta", rarityKey: "hidden", difficulty: "Curiosa", how: "Acumule 100 notas erradas." },
 ];
+
+function achievementRarityClass(rarityKey) {
+    const knownRarities = new Set(["common", "uncommon", "rare", "epic", "legendary", "hidden"]);
+    return `rarity-${knownRarities.has(rarityKey) ? rarityKey : "common"}`;
+}
+
+const ACHIEVEMENT_RARITY_ORDER = {
+    common: 0,
+    uncommon: 1,
+    rare: 2,
+    epic: 3,
+    legendary: 4,
+    hidden: 5,
+};
+
+const ORDERED_PROFILE_ACHIEVEMENTS = [...PROFILE_ACHIEVEMENTS].sort(
+    (left, right) =>
+        (ACHIEVEMENT_RARITY_ORDER[left.rarityKey] ?? Infinity) -
+        (ACHIEVEMENT_RARITY_ORDER[right.rarityKey] ?? Infinity),
+);
+
+const achievementNotificationQueue = [];
+const recentlyNotifiedAchievements = new Map();
+let achievementNotificationVisible = false;
+let achievementNotificationTimer = null;
+const ACHIEVEMENT_NOTIFICATION_DELAY_MS = 5000;
+
+function showNextAchievementNotification() {
+    if (achievementNotificationVisible || !achievementNotificationQueue.length) return;
+    achievementNotificationVisible = true;
+    const achievement = achievementNotificationQueue.shift();
+    const notice = document.createElement("aside");
+    notice.className = `achievement-toast ${achievementRarityClass(achievement.rarityKey)}`;
+    notice.setAttribute("role", "status");
+    notice.innerHTML = `<div class="achievement-toast-icon">${achievement.icon}</div><div><span>CONQUISTA DESBLOQUEADA</span><strong>${achievement.label}</strong><small>${achievement.rarity.toUpperCase()} · ${achievement.difficulty.toUpperCase()}</small></div>`;
+    document.body.append(notice);
+    // Força o navegador a pintar a posição inicial fora da tela antes de
+    // aplicar a classe visível; sem isso a transição pode ser ignorada.
+    void notice.offsetWidth;
+    window.setTimeout(() => notice.classList.add("is-visible"), 50);
+    window.setTimeout(() => {
+        notice.classList.add("is-leaving");
+        window.setTimeout(() => {
+            notice.remove();
+            achievementNotificationVisible = false;
+            // O atraso é só para o primeiro troféu da rodada. Os seguintes
+            // entram imediatamente quando o anterior deixar a tela.
+            showNextAchievementNotification();
+        }, 2100);
+    }, 6050);
+}
+
+function scheduleNextAchievementNotification() {
+    if (achievementNotificationVisible || achievementNotificationTimer || !achievementNotificationQueue.length) return;
+    achievementNotificationTimer = window.setTimeout(() => {
+        achievementNotificationTimer = null;
+        showNextAchievementNotification();
+    }, ACHIEVEMENT_NOTIFICATION_DELAY_MS);
+}
+
+window.exibirConquistasDesbloqueadas = (ids) => {
+    const unlocked = new Set(ids || []);
+    const now = Date.now();
+    for (const achievement of ORDERED_PROFILE_ACHIEVEMENTS) {
+        const lastNotification = recentlyNotifiedAchievements.get(achievement.id) || 0;
+        // A confirmação HTTP e o socket chegam quase juntos. Ignora somente
+        // essa repetição curta; se o operador remover e conceder de novo, o
+        // efeito volta a poder aparecer normalmente.
+        if (unlocked.has(achievement.id) && now - lastNotification > 2500) {
+            recentlyNotifiedAchievements.set(achievement.id, now);
+            achievementNotificationQueue.push(achievement);
+        }
+    }
+    scheduleNextAchievementNotification();
+};
 
 function profileNumber(value) {
     const parsed = Number(value);
@@ -131,11 +229,26 @@ function renderProfile(profile, isOwnProfile) {
               .join("")
         : '<p class="profile-empty">NENHUMA FREQUÊNCIA REGISTRADA.</p>';
 
+    const achievementHighlights = ORDERED_PROFILE_ACHIEVEMENTS.slice(0, 6);
     document.querySelector("#profile-achievements").innerHTML =
-        PROFILE_ACHIEVEMENTS.map(([id, label, icon]) => {
+        achievementHighlights.map(({ id, label, icon, rarityKey }) => {
             const unlocked = achievements.has(id);
-            return `<article class="profile-badge${unlocked ? " is-unlocked" : " is-locked"}"><b>${unlocked ? icon : "?"}</b><strong>${label}</strong><small>${unlocked ? "DESBLOQUEADA" : "BLOQUEADA // SINAL INSUFICIENTE"}</small></article>`;
+            return `<article class="profile-badge ${achievementRarityClass(rarityKey)}${unlocked ? " is-unlocked" : " is-locked"}"><b>${unlocked ? icon : "?"}</b><strong>${label}</strong><small>${unlocked ? "DESBLOQUEADA" : "BLOQUEADA // SINAL INSUFICIENTE"}</small></article>`;
         }).join("");
+    const achievementDialog = document.querySelector("#achievement-dialog");
+    const achievementDetails = document.querySelector("#achievement-details");
+    const achievementButton = document.querySelector("#open-achievements");
+    if (achievementDialog && achievementDetails && achievementButton) {
+        achievementDetails.innerHTML = ORDERED_PROFILE_ACHIEVEMENTS.map(({ id, label, icon, rarity, rarityKey, difficulty, how }) => {
+            const unlocked = achievements.has(id);
+            return `<article class="achievement-detail ${achievementRarityClass(rarityKey)}${unlocked ? " is-unlocked" : ""}"><b>${unlocked ? icon : "?"}</b><div><strong>${label}</strong><span class="achievement-rarity">RARIDADE: ${rarity}</span><span>DIFICULDADE: ${difficulty}</span><p>${how}</p></div><small>${unlocked ? "DESBLOQUEADA" : "BLOQUEADA"}</small></article>`;
+        }).join("");
+        achievementButton.onclick = () => achievementDialog.showModal();
+        document.querySelector("#close-achievements").onclick = () => achievementDialog.close();
+        achievementDialog.onclick = event => {
+            if (event.target === achievementDialog) achievementDialog.close();
+        };
+    }
 }
 
 async function loadProfile(username, isOwnProfile) {
@@ -633,6 +746,60 @@ function getProgress() {
     return initial;
 }
 
+const STAGES = [
+    "PULSO ZERO",
+    "CIDADE DE VIDRO",
+    "SINAL FANTASMA",
+    "SOBRECARGA",
+    "ÚLTIMA TRANSMISSÃO",
+];
+
+function fasesLocaisComoPerfil() {
+    const progress = getProgress();
+    const desbloqueadas = progress.reduce(
+        (fases, complete, index) => {
+            if (index === 0 || progress[index - 1] || complete) fases.push(index + 1);
+            return fases;
+        },
+        [],
+    );
+    return { desbloqueadas, favoritas: [], selecionada: null, historicoSelecionadas: [] };
+}
+
+function renderStages(fases) {
+    const desbloqueadas = new Set(fases.desbloqueadas || [1]);
+    const favoritas = new Set(fases.favoritas || []);
+    const grid = document.querySelector("#stage-grid");
+    document.querySelector("#progress-count").textContent =
+        `${String([...desbloqueadas].filter(fase => fase <= STAGES.length).length).padStart(2, "0")} / ${String(STAGES.length).padStart(2, "0")}`;
+    grid.innerHTML = STAGES
+        .map((stage, index) => {
+            const fase = index + 1;
+            const isUnlocked = desbloqueadas.has(fase);
+            const isComplete = fase < STAGES.length && desbloqueadas.has(fase + 1);
+            const isFavorite = favoritas.has(fase);
+            return `<button type="button" class="stage-card ${isUnlocked ? "" : "locked"} ${isComplete ? "complete" : ""}" data-stage="${fase}" ${isUnlocked ? "" : "disabled"}><span class="stage-number">0${fase}</span><strong>${stage}</strong><small>${isFavorite ? "★ FAVORITA" : isComplete ? "FREQUÊNCIA CONCLUÍDA" : isUnlocked ? "SINAL DISPONÍVEL" : "BLOQUEADA // COMPLETE A ANTERIOR"}</small>${isComplete ? "<em>✓ EXCELÊNCIA REGISTRADA</em>" : ""}</button>`;
+        })
+        .join("");
+    grid.querySelectorAll(".stage-card:not(.locked)").forEach((card) =>
+        card.addEventListener("click", () =>
+            chooseMode("historia", Number(card.dataset.stage)),
+        ),
+    );
+}
+
+async function carregarFasesDoPerfil(player) {
+    try {
+        const response = await fetch(`/api/perfil/${encodeURIComponent(player.nome)}`, { headers: { Accept: "application/json" } });
+        const data = await response.json();
+        if (!response.ok || !data?.profile?.fases) throw new Error("Perfil sem fases.");
+        return data.profile.fases;
+    } catch {
+        // Mantém a tela utilizável offline e para contas ainda não migradas.
+        return fasesLocaisComoPerfil();
+    }
+}
+
 function initializeModes() {
     const player = ensurePlayer();
     if (
@@ -646,40 +813,14 @@ function initializeModes() {
     initializeRoomPresence(player);
     document.querySelector("#mode-player").textContent = player.nome;
     document.querySelector("#mode-instrument").textContent = player.instrumento;
-    const progress = getProgress();
-    const unlocked = progress.reduce(
-        (total, complete, index) =>
-            complete || index === 0 || progress[index - 1] ? total + 1 : total,
-        0,
-    );
-    document.querySelector("#progress-count").textContent =
-        `${String(unlocked).padStart(2, "0")} / 05`;
-    const stages = [
-        "PULSO ZERO",
-        "CIDADE DE VIDRO",
-        "SINAL FANTASMA",
-        "SOBRECARGA",
-        "ÚLTIMA TRANSMISSÃO",
-    ];
-    const grid = document.querySelector("#stage-grid");
-    grid.innerHTML = stages
-        .map((stage, index) => {
-            const isUnlocked = index === 0 || progress[index - 1];
-            const isComplete = progress[index];
-            return `<button type="button" class="stage-card ${isUnlocked ? "" : "locked"} ${isComplete ? "complete" : ""}" data-stage="${index + 1}" ${isUnlocked ? "" : "disabled"}><span class="stage-number">0${index + 1}</span><strong>${stage}</strong><small>${isComplete ? "FREQUÊNCIA CONCLUÍDA" : isUnlocked ? "SINAL DISPONÍVEL" : "BLOQUEADA // COMPLETE A ANTERIOR"}</small>${isComplete ? "<em>✓ EXCELÊNCIA REGISTRADA</em>" : ""}</button>`;
-        })
-        .join("");
-    grid.querySelectorAll(".stage-card:not(.locked)").forEach((card) =>
-        card.addEventListener("click", () =>
-            chooseMode("historia", Number(card.dataset.stage)),
-        ),
-    );
+    renderStages(fasesLocaisComoPerfil());
+    carregarFasesDoPerfil(player).then(renderStages);
     document
         .querySelector("#freeplay-card")
         .addEventListener("click", () => chooseMode("freeplay", null));
 }
 
-function chooseMode(tipo, fase) {
+async function chooseMode(tipo, fase) {
     const player = getPlayer();
     const roomId = localStorage.getItem(STORAGE.roomId);
     const roomState = window.shredderRoomState;
@@ -687,6 +828,20 @@ function chooseMode(tipo, fase) {
         return;
     }
 
+    const status = document.querySelector("#mode-status");
+    if (tipo === "historia") {
+        if (status) status.textContent = "REGISTRANDO FASE...";
+        try {
+            await window.shredderAccount.request("/api/fases/selecionar", {
+                method: "POST",
+                body: { fase },
+            });
+        } catch (error) {
+            console.error("Não foi possível registrar a fase:", error);
+            if (status) status.textContent = "SEM SINAL // não foi possível registrar a fase.";
+            return;
+        }
+    }
     const modo = { tipo, fase };
     writeJson(STORAGE.mode, modo);
     window.socket.emit(
@@ -698,6 +853,9 @@ function chooseMode(tipo, fase) {
                     "Não foi possível emitir o ticket:",
                     response?.erro,
                 );
+                if (status) status.textContent = "SEM SINAL // não foi possível emitir o ticket.";
+            } else if (status) {
+                status.textContent = "";
             }
         },
     );
@@ -716,6 +874,13 @@ const resultadosEmEnvio = new Map();
 function enviarPontuacaoParaRanking(dados) {
     const player = getPlayer();
     if (!player?.id || !player.nome) return Promise.reject(new Error("Jogador não identificado."));
+    const modo = readJson(
+        typeof STORAGE === "undefined" ? "shredder_modo" : STORAGE.mode,
+        { tipo: "freeplay", fase: null },
+    );
+    const faseDaCampanha = modo.tipo === "historia" && Number.isSafeInteger(modo.fase) && modo.fase > 0
+        ? modo.fase
+        : undefined;
     const resultado = {
         ...dados,
         partidaId: dados.partidaId || crypto.randomUUID(),
@@ -723,6 +888,9 @@ function enviarPontuacaoParaRanking(dados) {
         username: dados.username || player.nome,
         instrumento: dados.instrumento || player.instrumento,
         banda: dados.banda ?? normalizeBand(player.banda),
+        // A tela de fases escolhe o modo antes de abrir o jogo. Ao concluir a
+        // música, a mesma fase segue junto do resultado para o perfil remoto.
+        ...(dados.fase === undefined && faseDaCampanha !== undefined ? { fase: faseDaCampanha } : {}),
     };
     if (resultadosEmEnvio.has(resultado.partidaId)) return resultadosEmEnvio.get(resultado.partidaId);
     const pendentes = readJson(PENDING_RESULTS_KEY, {});
@@ -739,6 +907,9 @@ function enviarPontuacaoParaRanking(dados) {
                 const atuais = readJson(PENDING_RESULTS_KEY, {});
                 delete atuais[resultado.partidaId];
                 writeJson(PENDING_RESULTS_KEY, atuais);
+                // A própria aba da partida recebe o troféu pela confirmação.
+                // As demais abas abertas recebem o mesmo evento pelo socket.
+                window.exibirConquistasDesbloqueadas?.(resposta.novasConquistas);
                 resolve(resposta);
             } catch (storageError) { reject(storageError); }
         });
@@ -758,8 +929,10 @@ function aggregateRanking(records, tab) {
     const groups = new Map();
     records.forEach((record) => {
         const score = Number(tab === "bandas" ? record.pontuacao : (record.pontuacaoIndividual ?? record.pontuacao));
-        if (!record.jogadorId || !record.nome || !Number.isFinite(score))
-            return;
+        if (!record.nome || !Number.isFinite(score)) return;
+        // Registros de banda não pertencem a um jogador individual e, por isso,
+        // não têm jogadorId. Eles são válidos exclusivamente na aba Bandas.
+        if (tab !== "bandas" && !record.jogadorId) return;
         const band = normalizeBand(record.banda);
         if (tab === "bandas") {
             if (!band) return;
@@ -768,8 +941,10 @@ function aggregateRanking(records, tab) {
                 nome: band.nome,
                 pontuacao: 0,
                 instrumento: null,
+                membros: [],
             };
             current.pontuacao += score;
+            if (Array.isArray(record.membros) && record.membros.length) current.membros = record.membros;
             groups.set(band.id, current);
             return;
         }
@@ -788,6 +963,30 @@ function aggregateRanking(records, tab) {
             right.pontuacao - left.pontuacao ||
             left.nome.localeCompare(right.nome),
     );
+}
+
+function renderRankingChampions(records) {
+    const container = document.querySelector("#ranking-champions");
+    if (!container) return;
+    const instrumentos = ["Guitarra", "Baixo", "Bateria", "Teclado"];
+    const campeoes = instrumentos
+        .map((instrumento) => ({
+            instrumento,
+            jogador: aggregateRanking(records, instrumento)[0],
+        }))
+        .filter(({ jogador }) => jogador);
+    container.hidden = campeoes.length === 0;
+    container.innerHTML = campeoes
+        .map(({ instrumento, jogador }) =>
+            '<article class="ranking-champion"><span>' +
+            escapeHtml(instrumento.toUpperCase()) +
+            ' // 1º LUGAR</span><strong>' +
+            escapeHtml(jogador.nome) +
+            '</strong><small>' +
+            formatScore(jogador.pontuacao) +
+            ' PONTOS</small></article>'
+        )
+        .join("");
 }
 
 function formatScore(score) {
@@ -820,10 +1019,25 @@ function renderRankingTab(records, tab, player) {
         : -1;
     list.innerHTML = top.length
         ? top
-              .map(
-                  (item, index) =>
-                      `<div class="ranking-row ${item.id === playerId ? "current" : ""}"><b>${String(index + 1).padStart(2, "0")}</b><span>${escapeHtml(item.nome)}${tab === "bandas" ? "" : `<small>${escapeHtml(formatInstrument(item.instrumento))}</small>`}</span><strong>${formatScore(item.pontuacao)}</strong></div>`,
-              )
+              .map((item, index) => {
+                  const detalhe = item.membros?.length
+                      ? item.membros.map(membro =>
+                          '<li><b>' + escapeHtml(formatInstrument(membro.instrumento)) +
+                          '</b><span>' + escapeHtml(membro.nome) + '</span><strong>' +
+                          formatScore(membro.pontuacao) + '</strong></li>'
+                      ).join('')
+                      : '<li class="band-members-empty">Sem integrantes detalhados.</li>';
+                  const nome = tab === "bandas"
+                      ? '<div class="ranking-band-cell"><button type="button" class="band-members-trigger" aria-expanded="false">' +
+                          escapeHtml(item.nome) + '<small>TOQUE / SEGURE PARA VER A BANDA</small></button>' +
+                          '<div class="band-members-popover"><span>INTEGRANTES // PONTUAÇÃO</span><ul>' +
+                          detalhe + '</ul></div></div>'
+                      : '<span>' + escapeHtml(item.nome) + '<small>' +
+                          escapeHtml(formatInstrument(item.instrumento)) + '</small></span>';
+                  return '<div class="ranking-row ' + (item.id === playerId ? 'current' : '') +
+                      '"><b>' + String(index + 1).padStart(2, "0") + '</b>' + nome + '<strong>' +
+                      formatScore(item.pontuacao) + '</strong></div>';
+              })
               .join("")
         : '<p class="ranking-empty">NENHUM RESULTADO REAL REGISTRADO.</p>';
     if (playerPosition >= top.length) {
@@ -848,6 +1062,51 @@ async function initializeRanking() {
     const tabs = document.querySelectorAll("[data-ranking-tab]");
     let records = [];
     let dataAvailable = false;
+    let holdTimer;
+    let heldBandCell = null;
+    const posicionarDetalhesDaBanda = (cell) => {
+        const popover = cell.querySelector(".band-members-popover");
+        if (!popover) return;
+        cell.classList.remove("popover-up");
+        const verificar = () => {
+            if (popover.getBoundingClientRect().bottom > window.innerHeight - 8) {
+                cell.classList.add("popover-up");
+            }
+        };
+        if (typeof requestAnimationFrame === "function") requestAnimationFrame(verificar);
+        else verificar();
+    };
+    const setBandDetails = (cell, aberto) => {
+        cell.classList.toggle("is-open", aberto);
+        cell.querySelector(".band-members-trigger")?.setAttribute("aria-expanded", String(aberto));
+        if (aberto) posicionarDetalhesDaBanda(cell);
+    };
+    list?.addEventListener?.("pointerover", (event) => {
+        const cell = event.target.closest?.(".ranking-band-cell");
+        if (cell) posicionarDetalhesDaBanda(cell);
+    });
+    list?.addEventListener?.("click", (event) => {
+        const trigger = event.target.closest?.(".band-members-trigger");
+        if (!trigger) return;
+        const cell = trigger.closest(".ranking-band-cell");
+        if (heldBandCell === cell) {
+            heldBandCell = null;
+            return;
+        }
+        setBandDetails(cell, !cell.classList.contains("is-open"));
+    });
+    list?.addEventListener?.("pointerdown", (event) => {
+        if (event.pointerType !== "touch") return;
+        const cell = event.target.closest?.(".ranking-band-cell");
+        if (!cell) return;
+        holdTimer = setTimeout(() => {
+            heldBandCell = cell;
+            setBandDetails(cell, true);
+        }, 450);
+    });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(eventName =>
+        list?.addEventListener?.(eventName, () => clearTimeout(holdTimer))
+    );
     const selectTab = (tab) => {
         tabs.forEach((button) =>
             button.classList.toggle(
@@ -868,6 +1127,7 @@ async function initializeRanking() {
         records = payload.records;
         dataAvailable = true;
         status.textContent = `SINAL ONLINE // ${records.length} REGISTRO(S) SINCRONIZADO(S)`;
+        renderRankingChampions(records);
         selectTab(document.querySelector(".ranking-tab.active")?.dataset.rankingTab || "Guitarra");
     };
     socket.on("rankingAtualizado", atualizar);

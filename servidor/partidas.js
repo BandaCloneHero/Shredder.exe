@@ -3,6 +3,45 @@ const path = require('path');
 const { randomUUID } = require('crypto');
 const { CONQUISTAS, perfilPublico, revisaoPerfil, aplicarAjustesPerfil, erroPerfil } = require('./perfil-operador');
 const INSTRUMENTOS = ['guitarra', 'baixo', 'bateria', 'teclado'];
+const MAX_FASE = 100000;
+const TOTAL_FASES_CAMPANHA = 5;
+
+function validarListaFases(valor, campo) {
+    if (!Array.isArray(valor) || valor.some(fase => !Number.isSafeInteger(fase) || fase < 1 || fase > MAX_FASE)) {
+        throw new Error(`Estrutura de perfil inválida: fases.${campo}.`);
+    }
+}
+
+function completarFasesAnteriores(fases) {
+    const maiorFase = Math.max(1, ...fases);
+    return Array.from({ length: maiorFase }, (_, index) => index + 1);
+}
+
+// A estrutura fica no perfil, separada dos recordes de músicas. Assim uma música
+// pode ter vários recordes sem que a seleção/progresso de campanha seja perdida.
+function inicializarFases(conta) {
+    conta.fases ??= {};
+    if (typeof conta.fases !== 'object' || Array.isArray(conta.fases)) {
+        throw new Error('Estrutura de perfil inválida: fases.');
+    }
+    conta.fases.desbloqueadas ??= [1];
+    conta.fases.favoritas ??= [];
+    conta.fases.selecionada ??= null;
+    conta.fases.historicoSelecionadas ??= [];
+    validarListaFases(conta.fases.desbloqueadas, 'desbloqueadas');
+    validarListaFases(conta.fases.favoritas, 'favoritas');
+    // Progresso de campanha é sequencial: liberar a fase N também implica que
+    // todas as fases anteriores já foram liberadas.
+    conta.fases.desbloqueadas = completarFasesAnteriores(conta.fases.desbloqueadas);
+    if (conta.fases.selecionada !== null && (!Number.isSafeInteger(conta.fases.selecionada) || conta.fases.selecionada < 1 || conta.fases.selecionada > MAX_FASE)) {
+        throw new Error('Estrutura de perfil inválida: fases.selecionada.');
+    }
+    if (!Array.isArray(conta.fases.historicoSelecionadas) || conta.fases.historicoSelecionadas.some(item =>
+        !item || typeof item !== 'object' || !Number.isSafeInteger(item.fase) || item.fase < 1 || item.fase > MAX_FASE || typeof item.selecionadaEm !== 'string')) {
+        throw new Error('Estrutura de perfil inválida: fases.historicoSelecionadas.');
+    }
+    return conta.fases;
+}
 
 // Compartilhado pelo cadastro e pelo salvamento de partidas de contas antigas.
 // Completa apenas campos ausentes/nulos; não recria a conta nem suas credenciais.
@@ -41,6 +80,14 @@ function inicializarPerfil(conta, username = conta.username, timestamp = new Dat
     if (!Array.isArray(conta.achievements)) {
         throw new Error('Estrutura de perfil inválida: achievements.');
     }
+    const progressoConquistas = objeto(conta, 'achievementProgress');
+    // Diário compacto usado por conquistas de sequência. As partidas completas
+    // continuam em resultadosPartidas; aqui só guardamos o total por dia.
+    progressoConquistas.gamesByDay ??= {};
+    if (typeof progressoConquistas.gamesByDay !== 'object' || Array.isArray(progressoConquistas.gamesByDay)) {
+        throw new Error('Estrutura de perfil inválida: achievementProgress.gamesByDay.');
+    }
+    inicializarFases(conta);
     return conta;
 }
 
@@ -78,23 +125,84 @@ function validarResultado(dados) {
         }
         perfil.currency = dados.currency;
     }
-    return { ...Object.fromEntries(['partidaId', 'operadorId', 'username', 'pontuacao', 'precisao', 'maiorCombo', 'fullCombo', 'notasAcertadas', 'notasErradas', 'musica'].map(k => [k, dados[k]])), instrumento, banda, ...perfil };
+    if (dados.fase !== undefined && (!Number.isSafeInteger(dados.fase) || dados.fase < 1 || dados.fase > MAX_FASE)) {
+        throw new Error('Fase inválida.');
+    }
+    if (dados.favorita !== undefined && typeof dados.favorita !== 'boolean') throw new Error('Favorito de fase inválido.');
+    if (dados.favorita !== undefined && dados.fase === undefined) throw new Error('Informe a fase ao alterar o favorito.');
+    if (dados.pausada !== undefined && typeof dados.pausada !== 'boolean') throw new Error('Estado de pausa inválido.');
+    if (dados.energiaFinal !== undefined && (!Number.isFinite(dados.energiaFinal) || dados.energiaFinal < 0 || dados.energiaFinal > 100)) throw new Error('Energia final inválida (0–100).');
+    if (dados.dificuldade !== undefined && !['maxima'].includes(dados.dificuldade)) throw new Error('Dificuldade inválida.');
+    return {
+        ...Object.fromEntries(['partidaId', 'operadorId', 'username', 'pontuacao', 'precisao', 'maiorCombo', 'fullCombo', 'notasAcertadas', 'notasErradas', 'musica'].map(k => [k, dados[k]])),
+        instrumento, banda, ...perfil,
+        ...(dados.pausada === undefined ? {} : { pausada: dados.pausada }),
+        ...(dados.energiaFinal === undefined ? {} : { energiaFinal: dados.energiaFinal }),
+        ...(dados.dificuldade === undefined ? {} : { dificuldade: dados.dificuldade }),
+        ...(dados.fase === undefined ? {} : { fase: dados.fase }),
+        ...(dados.favorita === undefined ? {} : { favorita: dados.favorita }),
+    };
 }
 
-// TODO(produto): formalizar os critérios dos cinco IDs abaixo antes de ativá-los.
-// on_fire segue o exemplo solicitado: full combo nesta partida.
+function registrarFase(conta, fase, favorita, timestamp, desbloquearProxima = false) {
+    if (fase === undefined) return;
+    const fases = inicializarFases(conta);
+    const desbloquear = valor => {
+        if (!fases.desbloqueadas.includes(valor)) fases.desbloqueadas.push(valor);
+    };
+    desbloquear(fase);
+    if (desbloquearProxima && fase < MAX_FASE) desbloquear(fase + 1);
+    fases.desbloqueadas = completarFasesAnteriores(fases.desbloqueadas);
+    fases.selecionada = fase;
+    fases.historicoSelecionadas.push({ fase, selecionadaEm: timestamp });
+    // Mantém um histórico útil sem permitir que uma conta cresça indefinidamente.
+    if (fases.historicoSelecionadas.length > 50) fases.historicoSelecionadas.splice(0, fases.historicoSelecionadas.length - 50);
+    if (favorita === true && !fases.favoritas.includes(fase)) fases.favoritas.push(fase);
+    if (favorita === false) fases.favoritas = fases.favoritas.filter(item => item !== fase);
+    fases.favoritas.sort((a, b) => a - b);
+}
+
 const CRITERIOS_ACHIEVEMENTS = {
-    primeiros_acordes: null,
+    primeiros_acordes: conta => conta.gamesPlayed >= 1,
+    aquecimento: conta => conta.gamesPlayed >= 5,
+    ritmo_de_ferro: conta => Object.values(conta.achievementProgress.gamesByDay).some(total => total >= 10),
+    sem_errar_o_compasso: (_conta, resultado) => resultado.pausada === false,
     on_fire: (_conta, resultado) => resultado.fullCombo,
-    cirurgico: null,
-    perfeccionista: null,
-    lenda_viva: null,
-    desafinador_profissional: null,
+    cirurgico: (_conta, resultado) => resultado.precisao === 100,
+    no_limite: (_conta, resultado) => resultado.precisao >= 99 && resultado.precisao < 100,
+    virada_insana: (_conta, resultado) => resultado.energiaFinal > 0 && resultado.energiaFinal <= 10,
+    especialista: (conta, resultado) => {
+        const partidas = [...Object.values(conta.resultadosPartidas || {}), resultado];
+        return new Set(partidas.filter(partida => partida.fullCombo).map(partida => partida.musica)).size >= 10;
+    },
+    multi_instrumentista: conta => INSTRUMENTOS.every(instrumento => conta.instrumentStats[instrumento].songsCompleted >= 1),
+    perfeccionista: (conta, resultado) => conta.instrumentStats[resultado.instrumento].fullCombos >= 5,
+    mestre_guitarra: conta => conta.instrumentStats.guitarra.fullCombos >= 5,
+    mestre_baixo: conta => conta.instrumentStats.baixo.fullCombos >= 5,
+    mestre_bateria: conta => conta.instrumentStats.bateria.fullCombos >= 5,
+    mestre_teclado: conta => conta.instrumentStats.teclado.fullCombos >= 5,
+    colecionador_de_fases: conta => conta.fases.desbloqueadas.filter(fase => fase <= TOTAL_FASES_CAMPANHA).length >= TOTAL_FASES_CAMPANHA,
+    dono_do_palco: (conta, resultado) => {
+        const fasesConcluidas = new Set([...Object.values(conta.resultadosPartidas || {}), resultado]
+            .filter(partida => partida.fase && partida.dificuldade === 'maxima')
+            .map(partida => partida.fase));
+        return fasesConcluidas.size >= TOTAL_FASES_CAMPANHA;
+    },
+    favorita_da_casa: conta => conta.fases.favoritas.length >= TOTAL_FASES_CAMPANHA,
+    maratonista: conta => conta.gamesPlayed >= 50,
+    incansavel: conta => conta.gamesPlayed >= 100,
+    lenda_viva: conta => conta.gamesPlayed >= 50,
+    desafinador_profissional: conta => conta.lifetimeStats.totalMisses >= 100,
+    tentativa_corajosa: (_conta, resultado) => resultado.precisao < 50,
+    quase_la: (_conta, resultado) => !resultado.fullCombo && resultado.notasErradas === 1,
+    volta_por_cima: (_conta, resultado, contexto) => contexto.pontuacaoAnterior > 0 && resultado.pontuacao >= contexto.pontuacaoAnterior * 1.25,
 };
 
 function criarPersistenciaPartidas(arquivo) {
     const ler = () => JSON.parse(fs.readFileSync(arquivo, 'utf8'));
-    const contas = raiz => raiz.accounts || raiz;
+    const contas = raiz => raiz.accounts || Object.fromEntries(
+        Object.entries(raiz).filter(([chave]) => chave !== 'bandRecords'),
+    );
     const gravar = raiz => {
         const temporario = `${arquivo}.${randomUUID()}.tmp`;
         try {
@@ -104,7 +212,8 @@ function criarPersistenciaPartidas(arquivo) {
             if (fs.existsSync(temporario)) fs.unlinkSync(temporario);
         }
     };
-    const registros = raiz => Object.entries(contas(raiz)).flatMap(([username, conta]) => {
+    const registros = raiz => {
+        const individuais = Object.entries(contas(raiz)).flatMap(([username, conta]) => {
         const identidade = { jogadorId: username.toLowerCase(), nome: conta.username || username };
         const partidas = Object.values(conta.resultadosPartidas || {}).map(r => ({
             ...identidade,
@@ -124,6 +233,16 @@ function criarPersistenciaPartidas(arquivo) {
         }
         return partidas;
     });
+        const bandas = Object.values(raiz.bandRecords || {}).map(registro => ({
+            jogadorId: null,
+            nome: registro.banda.nome,
+            instrumento: null,
+            pontuacao: registro.pontuacao,
+            banda: registro.banda,
+            membros: registro.membros || [],
+        }));
+        return [...individuais, ...bandas];
+    };
     return {
         lerPerfilOperador(username) {
             const raiz = ler();
@@ -144,6 +263,7 @@ function criarPersistenciaPartidas(arquivo) {
                 throw erroPerfil('O perfil mudou desde a leitura. Carregue novamente antes de salvar.', 409);
             }
             inicializarPerfil(conta, key);
+            const conquistasAnteriores = new Set(conta.achievements);
             aplicarAjustesPerfil(conta, alteracoes);
             const novaKey = conta.username.toLowerCase();
             if (novaKey !== key && Object.hasOwn(contas(raiz), novaKey)) throw erroPerfil('Esse username já existe.', 409);
@@ -158,7 +278,15 @@ function criarPersistenciaPartidas(arquivo) {
             }
             conta.updatedAt = new Date().toISOString();
             gravar(raiz);
-            return { raiz, records: registros(raiz), perfil: perfilPublico(conta), revisao: revisaoPerfil(conta), conquistas: CONQUISTAS, encerrarSessoes: credenciais || Object.hasOwn(alteracoes, 'username') ? key : null };
+            return {
+                raiz,
+                records: registros(raiz),
+                perfil: perfilPublico(conta),
+                revisao: revisaoPerfil(conta),
+                conquistas: CONQUISTAS,
+                novasConquistas: conta.achievements.filter(id => !conquistasAnteriores.has(id)),
+                encerrarSessoes: credenciais || Object.hasOwn(alteracoes, 'username') ? key : null,
+            };
         },
         migrarContas() {
             const original = fs.readFileSync(arquivo, 'utf8');
@@ -186,6 +314,53 @@ function criarPersistenciaPartidas(arquivo) {
             return { raiz, atualizadas, backup };
         },
         ranking: () => registros(ler()),
+        selecionarFase(username, fase) {
+            if (!Number.isSafeInteger(fase) || fase < 1 || fase > MAX_FASE) throw erroPerfil('Fase inválida.');
+            const raiz = ler();
+            const key = String(username || '').trim().toLowerCase();
+            if (!Object.hasOwn(contas(raiz), key)) throw erroPerfil('Conta não encontrada.', 404);
+            const conta = contas(raiz)[key];
+            const timestamp = new Date().toISOString();
+            inicializarPerfil(conta, key, timestamp);
+            registrarFase(conta, fase, undefined, timestamp);
+            conta.updatedAt = timestamp;
+            gravar(raiz);
+            return { raiz, fases: conta.fases };
+        },
+        salvarPontuacaoBanda(payload) {
+            if (!payload || typeof payload !== 'object') throw erroPerfil('Pontuação de banda inválida.');
+            const texto = (valor, max) => typeof valor === 'string' && valor.trim().length > 0 && valor.length <= max;
+            if (!texto(payload.partidaId, 100) || !texto(payload.banda?.id, 100) || !texto(payload.banda?.nome, 100)) {
+                throw erroPerfil('Banda inválida.');
+            }
+            if (!Number.isSafeInteger(payload.pontuacao) || payload.pontuacao < 0 || payload.pontuacao > 1e9) {
+                throw erroPerfil('Pontuação de banda inválida.');
+            }
+            const membrosEnviados = payload.membros ?? [];
+            if (!Array.isArray(membrosEnviados) || membrosEnviados.length > INSTRUMENTOS.length) {
+                throw erroPerfil('Integrantes da banda inválidos.');
+            }
+            const membros = membrosEnviados.map(membro => {
+                if (!texto(membro?.nome, 100) || !INSTRUMENTOS.includes(membro.instrumento) ||
+                    !Number.isSafeInteger(membro.pontuacao) || membro.pontuacao < 0 || membro.pontuacao > 1e9) {
+                    throw erroPerfil('Integrante da banda inválido.');
+                }
+                return { nome: membro.nome.trim(), instrumento: membro.instrumento, pontuacao: membro.pontuacao };
+            });
+            const raiz = ler();
+            raiz.bandRecords ??= {};
+            if (typeof raiz.bandRecords !== 'object' || Array.isArray(raiz.bandRecords)) throw erroPerfil('Registros de bandas inválidos.');
+            if (Object.hasOwn(raiz.bandRecords, payload.partidaId)) throw erroPerfil('ID de pontuação de banda já usado.', 409);
+            raiz.bandRecords[payload.partidaId] = {
+                partidaId: payload.partidaId,
+                banda: { id: payload.banda.id.trim(), nome: payload.banda.nome.trim() },
+                pontuacao: payload.pontuacao,
+                membros,
+                createdAt: new Date().toISOString(),
+            };
+            gravar(raiz);
+            return { raiz, records: registros(raiz) };
+        },
         salvar(payload) {
             const resultado = validarResultado(payload);
             // Região crítica síncrona, sem await: no único processo Node, duas partidas
@@ -198,10 +373,13 @@ function criarPersistenciaPartidas(arquivo) {
             const resultados = conta.resultadosPartidas || {};
             if (Object.hasOwn(resultados, resultado.partidaId)) {
                 if (JSON.stringify(resultados[resultado.partidaId]) !== JSON.stringify(resultado)) throw new Error('ID de partida já usado com outro resultado.');
-                return { raiz, records: registros(raiz), duplicado: true };
+                return { raiz, records: registros(raiz), duplicado: true, novasConquistas: [] };
             }
             const timestamp = new Date().toISOString();
             inicializarPerfil(conta, resultado.username.trim(), timestamp);
+            // Uma partida concluída em uma fase registra a escolha e libera a
+            // próxima. Partidas em modo livre continuam compatíveis ao omitir fase.
+            registrarFase(conta, resultado.fase, resultado.favorita, timestamp, true);
             if (resultado.nickname !== undefined) conta.nickname = resultado.nickname;
             if (resultado.currentTitle !== undefined) {
                 conta.currentTitle = resultado.currentTitle;
@@ -221,8 +399,11 @@ function criarPersistenciaPartidas(arquivo) {
             conta.lifetimeStats ||= {};
             conta.lifetimeStats.totalNotesHit = (conta.lifetimeStats.totalNotesHit || 0) + resultado.notasAcertadas;
             conta.lifetimeStats.totalMisses = (conta.lifetimeStats.totalMisses || 0) + resultado.notasErradas;
+            const diaDaPartida = timestamp.slice(0, 10);
+            conta.achievementProgress.gamesByDay[diaDaPartida] = (conta.achievementProgress.gamesByDay[diaDaPartida] || 0) + 1;
             conta.instrumentStats ||= {};
             const stats = conta.instrumentStats[resultado.instrumento] ||= {};
+            const pontuacaoAnterior = stats.maxScore || 0;
             stats.maxScore = Math.max(stats.maxScore || 0, resultado.pontuacao);
             stats.maxCombo = Math.max(stats.maxCombo || 0, resultado.maiorCombo);
             stats.bestAccuracy = Math.max(stats.bestAccuracy || 0, resultado.precisao);
@@ -252,15 +433,28 @@ function criarPersistenciaPartidas(arquivo) {
             for (const campo of ['nickname', 'currentTitle', 'currency']) delete record[campo];
             Object.assign(record, resultado, { updatedAt: timestamp });
             Object.defineProperty(conta.songRecords, resultado.musica, { value: record, enumerable: true, configurable: true, writable: true });
-            const achievements = new Set(conta.achievements || []);
-            for (const [id, criterio] of Object.entries(CRITERIOS_ACHIEVEMENTS)) if (criterio?.(conta, resultado)) achievements.add(id);
-            conta.achievements = [...achievements];
-            conta.updatedAt = timestamp;
+            // Inclui a partida atual na consulta das conquistas que olham o
+            // histórico, sem modificar seu formato público no accounts.json.
             Object.defineProperty(resultados, resultado.partidaId, { value: resultado, enumerable: true, configurable: true, writable: true });
             conta.resultadosPartidas = resultados;
+            const achievementsAnteriores = new Set(conta.achievements || []);
+            const achievements = new Set(achievementsAnteriores);
+            for (const [id, criterio] of Object.entries(CRITERIOS_ACHIEVEMENTS)) {
+                if (criterio?.(conta, resultado, { pontuacaoAnterior })) achievements.add(id);
+            }
+            const melhorDoInstrumento = Math.max(
+                0,
+                ...registros(raiz)
+                    .filter(registro => registro.jogadorId && registro.instrumento?.toLowerCase() === resultado.instrumento)
+                    .map(registro => registro.pontuacaoIndividual ?? registro.pontuacao),
+            );
+            if (resultado.pontuacao >= melhorDoInstrumento) achievements.add('rei_do_ranking');
+            conta.achievements = [...achievements];
+            const novasConquistas = conta.achievements.filter(id => !achievementsAnteriores.has(id));
+            conta.updatedAt = timestamp;
             gravar(raiz);
-            return { raiz, records: registros(raiz), duplicado: false };
+            return { raiz, records: registros(raiz), duplicado: false, novasConquistas };
         },
     };
 }
-module.exports = { criarPersistenciaPartidas, validarResultado, inicializarPerfil };
+module.exports = { criarPersistenciaPartidas, validarResultado, inicializarPerfil, inicializarFases };

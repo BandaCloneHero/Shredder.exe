@@ -14,16 +14,20 @@ function setup(t) {
     fs.writeFileSync(file, JSON.stringify({ accounts: { ana: { username: 'Ana' } } }));
     const partidas = criarPersistenciaPartidas(file);
     const broadcasts = [];
-    let handler;
+    const handlers = {};
     const source = fs.readFileSync(path.join(__dirname, '../server.js'), 'utf8');
-    const ctx = vm.createContext({ app: { post: (route, fn) => { assert.equal(route, '/api/operador/salvar-pontuacao'); handler = fn; } }, partidas, validarResultado, randomUUID, accountStore: {}, io: { emit: (event, data) => broadcasts.push({ event, data }) }, console: { error() {} } });
+    const ctx = vm.createContext({ app: { post: (route, fn) => { handlers[route] = fn; } }, partidas, validarResultado, randomUUID, accountStore: {}, io: { emit: (event, data) => broadcasts.push({ event, data }) }, console: { error() {} } });
     vm.runInContext(source.slice(source.indexOf('app.post("/api/operador/salvar-pontuacao"'), source.indexOf('const salas = {};')), ctx);
-    function post(body) {
+    function request(route, body) {
         const response = { statusCode: 200, status(code) { this.statusCode = code; return this; }, json(data) { this.body = data; return this; } };
-        handler({ body }, response);
+        handlers[route]({ body }, response);
         return response;
     }
-    return { post, broadcasts, file, partidas, read: () => JSON.parse(fs.readFileSync(file)) };
+    return {
+        post: body => request('/api/operador/salvar-pontuacao', body),
+        postBand: body => request('/api/operador/salvar-pontuacao-banda', body),
+        broadcasts, file, partidas, read: () => JSON.parse(fs.readFileSync(file)),
+    };
 }
 const payload = { username: 'Ana', instrumento: 'guitarra', musica: 'Song', pontuacao: 1500, comboMaximo: 10, precisao: 100, notasAcertadas: 10, notasErradas: 0, fullCombo: true };
 
@@ -41,6 +45,29 @@ test('painel salva, gera ID no servidor e publica no formato esperado pelo ranki
     assert.equal(broadcasts[0].data.records[0].pontuacao, 1500);
     const second = post(payload);
     assert.notEqual(second.body.partidaId, response.body.partidaId);
+});
+
+test('painel salva pontuação de banda sem criar partida ou recorde individual', t => {
+    const { post, postBand, read, broadcasts } = setup(t);
+    const individual = post({ ...payload, bandaNome: 'Ignorada', bandaId: 'ignorada' });
+    assert.equal(individual.statusCode, 201);
+    assert.equal(read().accounts.ana.resultadosPartidas[individual.body.partidaId].banda, null);
+    const membros = [
+        { nome: 'Ana', instrumento: 'guitarra', pontuacao: 1000000 },
+        { nome: 'Bia', instrumento: 'bateria', pontuacao: 1200000 },
+    ];
+    const response = postBand({ nome: 'Os Shredders', id: 'os-shredders', pontuacao: 4000000, membros });
+    assert.equal(response.statusCode, 201);
+    const bandRecord = Object.values(read().bandRecords)[0];
+    assert.deepEqual(bandRecord.banda, { id: 'os-shredders', nome: 'Os Shredders' });
+    assert.equal(bandRecord.pontuacao, 4000000);
+    assert.deepEqual(bandRecord.membros, membros);
+    assert.equal(read().accounts.ana.gamesPlayed, 1);
+    assert.ok(broadcasts.at(-1).data.records.some(record => record.banda?.id === 'os-shredders' && record.instrumento === null));
+    const automaticId = postBand({ nome: 'Banda São João', pontuacao: 50 });
+    assert.equal(automaticId.statusCode, 201);
+    assert.equal(Object.values(read().bandRecords).some(record => record.banda.id === 'banda-sao-joao'), true);
+    assert.equal(postBand({ id: 'sem-nome', pontuacao: 50 }).statusCode, 400);
 });
 
 test('painel rejeita valores inválidos e conta desconhecida sem gravar ou publicar', t => {
@@ -70,6 +97,10 @@ test('formulário envia números, mantém campos na falha e limpa somente no suc
     fieldsByName.nickname = { value: 'Apelido novo' };
     fieldsByName.currentTitle = { value: 'Lenda' };
     fieldsByName.currency = { value: '25', valueAsNumber: 25 };
+    fieldsByName.fase = { value: '', valueAsNumber: NaN };
+    fieldsByName.favorita = { checked: false };
+    fieldsByName.bandaNome = { value: '' };
+    fieldsByName.bandaId = { value: '' };
     let submit, resets = 0, focused = false, succeed = false, requests = 0, htmlResponse = false;
     const nodes = {
         'operator-form': { elements: { namedItem: name => fieldsByName[name] }, reportValidity: () => true, addEventListener: (_, fn) => submit = fn, setAttribute() {}, removeAttribute() {}, reset: () => resets++ },
