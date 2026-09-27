@@ -16,9 +16,21 @@ class ShredderAccountUI {
     this.createStatusWidget();
     this.createModal();
 
+    this.hadActiveSession = this.account.snapshot().isLoggedIn;
+    this.account.onChange((state) => {
+      this.updateUI(state);
+      if (state.isLoggedIn) {
+        this.hadActiveSession = true;
+        return;
+      }
+      const currentPage = window.location.pathname.split('/').pop();
+      if (this.hadActiveSession && currentPage !== 'index.html' && currentPage !== '') {
+        window.location.href = 'index.html';
+      }
+    });
+
     await this.account.restore();
     this.updateUI(this.account.snapshot());
-    this.account.onChange((state) => this.updateUI(state));
   }
 
   injectStyles() {

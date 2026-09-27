@@ -80,6 +80,10 @@ function inicializarPerfil(conta, username = conta.username, timestamp = new Dat
     if (!Array.isArray(conta.achievements)) {
         throw new Error('Estrutura de perfil inválida: achievements.');
     }
+    conta.achievementNotifications ??= [];
+    if (!Array.isArray(conta.achievementNotifications)) {
+        throw new Error('Estrutura de perfil inválida: achievementNotifications.');
+    }
     const progressoConquistas = objeto(conta, 'achievementProgress');
     // Diário compacto usado por conquistas de sequência. As partidas completas
     // continuam em resultadosPartidas; aqui só guardamos o total por dia.
@@ -198,6 +202,12 @@ const CRITERIOS_ACHIEVEMENTS = {
     volta_por_cima: (_conta, resultado, contexto) => contexto.pontuacaoAnterior > 0 && resultado.pontuacao >= contexto.pontuacaoAnterior * 1.25,
 };
 
+function registrarNotificacoesConquistas(conta, ids, timestamp = new Date().toISOString()) {
+    const notificacoes = ids.map(conquistaId => ({ id: randomUUID(), conquistaId, criadaEm: timestamp }));
+    conta.achievementNotifications.push(...notificacoes);
+    return notificacoes;
+}
+
 function criarPersistenciaPartidas(arquivo) {
     const ler = () => JSON.parse(fs.readFileSync(arquivo, 'utf8'));
     const contas = raiz => raiz.accounts || Object.fromEntries(
@@ -265,6 +275,8 @@ function criarPersistenciaPartidas(arquivo) {
             inicializarPerfil(conta, key);
             const conquistasAnteriores = new Set(conta.achievements);
             aplicarAjustesPerfil(conta, alteracoes);
+            const novasConquistas = conta.achievements.filter(id => !conquistasAnteriores.has(id));
+            const notificacoesConquistas = registrarNotificacoesConquistas(conta, novasConquistas);
             const novaKey = conta.username.toLowerCase();
             if (novaKey !== key && Object.hasOwn(contas(raiz), novaKey)) throw erroPerfil('Esse username já existe.', 409);
             if (credenciais) {
@@ -284,7 +296,8 @@ function criarPersistenciaPartidas(arquivo) {
                 perfil: perfilPublico(conta),
                 revisao: revisaoPerfil(conta),
                 conquistas: CONQUISTAS,
-                novasConquistas: conta.achievements.filter(id => !conquistasAnteriores.has(id)),
+                novasConquistas,
+                notificacoesConquistas,
                 encerrarSessoes: credenciais || Object.hasOwn(alteracoes, 'username') ? key : null,
             };
         },
@@ -312,6 +325,29 @@ function criarPersistenciaPartidas(arquivo) {
                 gravar(raiz);
             }
             return { raiz, atualizadas, backup };
+        },
+        conquistasPendentes(username) {
+            const raiz = ler();
+            const key = String(username || '').trim().toLowerCase();
+            const conta = contas(raiz)[key];
+            if (!conta) return [];
+            inicializarPerfil(conta, key);
+            return conta.achievementNotifications.map(notificacao => ({ ...notificacao }));
+        },
+        confirmarConquistasExibidas(username, ids) {
+            if (!Array.isArray(ids) || ids.some(id => typeof id !== 'string' || id.length > 100)) {
+                throw erroPerfil('Confirmação de conquistas inválida.');
+            }
+            const raiz = ler();
+            const key = String(username || '').trim().toLowerCase();
+            const conta = contas(raiz)[key];
+            if (!conta) return false;
+            inicializarPerfil(conta, key);
+            const confirmadas = new Set(ids);
+            const pendentes = conta.achievementNotifications;
+            conta.achievementNotifications = pendentes.filter(notificacao => !confirmadas.has(notificacao.id));
+            if (conta.achievementNotifications.length !== pendentes.length) gravar(raiz);
+            return true;
         },
         ranking: () => registros(ler()),
         selecionarFase(username, fase) {
@@ -451,9 +487,10 @@ function criarPersistenciaPartidas(arquivo) {
             if (resultado.pontuacao >= melhorDoInstrumento) achievements.add('rei_do_ranking');
             conta.achievements = [...achievements];
             const novasConquistas = conta.achievements.filter(id => !achievementsAnteriores.has(id));
+            const notificacoesConquistas = registrarNotificacoesConquistas(conta, novasConquistas, timestamp);
             conta.updatedAt = timestamp;
             gravar(raiz);
-            return { raiz, records: registros(raiz), duplicado: false, novasConquistas };
+            return { raiz, records: registros(raiz), duplicado: false, novasConquistas, notificacoesConquistas };
         },
     };
 }

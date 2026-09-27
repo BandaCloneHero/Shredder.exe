@@ -89,12 +89,19 @@ const achievementNotificationQueue = [];
 const recentlyNotifiedAchievements = new Map();
 let achievementNotificationVisible = false;
 let achievementNotificationTimer = null;
+const ACHIEVEMENT_PAGE_OPENED_AT = Date.now();
 const ACHIEVEMENT_NOTIFICATION_DELAY_MS = 5000;
 
 function showNextAchievementNotification() {
     if (achievementNotificationVisible || !achievementNotificationQueue.length) return;
     achievementNotificationVisible = true;
-    const achievement = achievementNotificationQueue.shift();
+    const pending = achievementNotificationQueue.shift();
+    const achievement = PROFILE_ACHIEVEMENTS.find(item => item.id === pending.conquistaId);
+    if (!achievement) {
+        achievementNotificationVisible = false;
+        showNextAchievementNotification();
+        return;
+    }
     const notice = document.createElement("aside");
     notice.className = `achievement-toast ${achievementRarityClass(achievement.rarityKey)}`;
     notice.setAttribute("role", "status");
@@ -108,6 +115,9 @@ function showNextAchievementNotification() {
         notice.classList.add("is-leaving");
         window.setTimeout(() => {
             notice.remove();
+            if (pending.notificationId) {
+                (window.shredderAchievementSocket || window.socket)?.emit("confirmarConquistasExibidas", { ids: [pending.notificationId] });
+            }
             achievementNotificationVisible = false;
             // O atraso é só para o primeiro troféu da rodada. Os seguintes
             // entram imediatamente quando o anterior deixar a tela.
@@ -116,28 +126,32 @@ function showNextAchievementNotification() {
     }, 6050);
 }
 
-function scheduleNextAchievementNotification() {
+function scheduleNextAchievementNotification(delay = ACHIEVEMENT_NOTIFICATION_DELAY_MS) {
     if (achievementNotificationVisible || achievementNotificationTimer || !achievementNotificationQueue.length) return;
     achievementNotificationTimer = window.setTimeout(() => {
         achievementNotificationTimer = null;
         showNextAchievementNotification();
-    }, ACHIEVEMENT_NOTIFICATION_DELAY_MS);
+    }, Math.max(0, delay));
 }
 
-window.exibirConquistasDesbloqueadas = (ids) => {
-    const unlocked = new Set(ids || []);
+window.exibirConquistasDesbloqueadas = (notificacoes, { pendentesAoEntrar = false } = {}) => {
+    const itens = Array.isArray(notificacoes) ? notificacoes : [];
     const now = Date.now();
-    for (const achievement of ORDERED_PROFILE_ACHIEVEMENTS) {
-        const lastNotification = recentlyNotifiedAchievements.get(achievement.id) || 0;
-        // A confirmação HTTP e o socket chegam quase juntos. Ignora somente
-        // essa repetição curta; se o operador remover e conceder de novo, o
-        // efeito volta a poder aparecer normalmente.
-        if (unlocked.has(achievement.id) && now - lastNotification > 2500) {
-            recentlyNotifiedAchievements.set(achievement.id, now);
-            achievementNotificationQueue.push(achievement);
+    for (const item of itens) {
+        const conquistaId = typeof item === "string" ? item : item?.conquistaId;
+        if (!PROFILE_ACHIEVEMENTS.some(achievement => achievement.id === conquistaId)) continue;
+        const notificationId = typeof item === "object" ? item.id : null;
+        const duplicateKey = notificationId || conquistaId;
+        const lastNotification = recentlyNotifiedAchievements.get(duplicateKey) || 0;
+        if (now - lastNotification > 2500) {
+            recentlyNotifiedAchievements.set(duplicateKey, now);
+            achievementNotificationQueue.push({ conquistaId, notificationId });
         }
     }
-    scheduleNextAchievementNotification();
+    const atraso = pendentesAoEntrar
+        ? ACHIEVEMENT_NOTIFICATION_DELAY_MS - (Date.now() - ACHIEVEMENT_PAGE_OPENED_AT)
+        : ACHIEVEMENT_NOTIFICATION_DELAY_MS;
+    scheduleNextAchievementNotification(atraso);
 };
 
 function profileNumber(value) {
@@ -909,7 +923,6 @@ function enviarPontuacaoParaRanking(dados) {
                 writeJson(PENDING_RESULTS_KEY, atuais);
                 // A própria aba da partida recebe o troféu pela confirmação.
                 // As demais abas abertas recebem o mesmo evento pelo socket.
-                window.exibirConquistasDesbloqueadas?.(resposta.novasConquistas);
                 resolve(resposta);
             } catch (storageError) { reject(storageError); }
         });

@@ -14,27 +14,6 @@
     let loaded = null;
     let busy = false;
 
-    function exibirConquistasEntregues(ids, catalogo) {
-        if (!Array.isArray(ids) || !ids.length) return;
-        if (typeof globalThis.exibirConquistasDesbloqueadas === 'function') {
-            globalThis.exibirConquistasDesbloqueadas(ids);
-            return;
-        }
-        // Reserva para o painel continuar exibindo a entrega mesmo quando o
-        // cache do navegador ainda não tiver carregado o app.js mais novo.
-        const labels = new Map(catalogo || []);
-        ids.forEach((id, index) => {
-            const notice = document.createElement('aside');
-            notice.className = 'achievement-toast rarity-legendary';
-            notice.setAttribute('role', 'status');
-            notice.innerHTML = `<div class="achievement-toast-icon">★</div><div><span>CONQUISTA ENTREGUE</span><strong>${labels.get(id) || id}</strong><small>CONCEDIDA PELO OPERADOR</small></div>`;
-            document.body.append(notice);
-            window.setTimeout(() => notice.classList.add('is-visible'), 5000 + index * 8150);
-            window.setTimeout(() => notice.classList.add('is-leaving'), 11050 + index * 8150);
-            window.setTimeout(() => notice.remove(), 13150 + index * 8150);
-        });
-    }
-
     function message(state, text) {
         status.dataset.state = state;
         status.textContent = text;
@@ -145,14 +124,20 @@
         editor.disabled = value || !loaded;
         form.setAttribute('aria-busy', String(value));
     }
-    async function api(url, options) {
-        const response = await fetch(url, options);
+    async function api(url, options = {}) {
+        const token = localStorage.getItem('shredder.account.token.v1');
+        const headers = { ...(options.headers || {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+        const response = await fetch(url, { ...options, headers });
         if (!(response.headers.get('content-type') || '').includes('application/json')) {
             throw new Error('A API retornou uma página. Abra /operador.html pelo servidor Node.js atualizado (porta padrão 3000).');
         }
         let data;
         try { data = await response.json(); } catch { throw new Error('Resposta inválida do servidor.'); }
-        if (!response.ok || !data?.ok) throw new Error(data?.erro || 'Não foi possível concluir a operação.');
+        if (!response.ok || !data?.ok) {
+            if (response.status === 401) throw new Error('Entre em uma conta oficial para acessar o painel do operador.');
+            if (response.status === 403) throw new Error('Acesso negado: esta conta não está autorizada como operador oficial.');
+            throw new Error(data?.erro || 'Não foi possível concluir a operação.');
+        }
         return data;
     }
     username.addEventListener('input', () => {
@@ -209,7 +194,6 @@
                 method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
                 body: JSON.stringify({ username: loaded.perfil.username, revisao: loaded.revisao, alteracoes, novaSenha: password.value || undefined }),
             });
-            exibirConquistasEntregues(data.novasConquistas, data.conquistas);
             populate(data);
             message('success', 'SUCESSO // Perfil e conquistas atualizados. Nenhuma partida foi adicionada.');
         } catch (error) { message('error', `ERRO // ${error.message} Suas edições foram mantidas na tela.`); }

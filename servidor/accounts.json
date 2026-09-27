@@ -88,15 +88,35 @@
       },
       "achievements": [
         "primeiros_acordes",
+        "aquecimento",
+        "ritmo_de_ferro",
+        "sem_errar_o_compasso",
         "on_fire",
         "cirurgico",
+        "no_limite",
+        "virada_insana",
         "perfeccionista",
+        "mestre_guitarra",
+        "mestre_baixo",
+        "mestre_teclado",
+        "banda_afinada",
+        "show_perfeito",
+        "colecionador_de_fases",
+        "dono_do_palco",
+        "maratonista",
+        "incansavel",
+        "lenda_viva",
+        "rei_do_ranking",
+        "estrela_da_feira",
+        "tentativa_corajosa",
+        "quase_la",
+        "desafinador_profissional",
         "imparavel",
         "Lenda",
         "67"
       ],
       "createdAt": "2026-09-25T17:18:10.276Z",
-      "updatedAt": "2026-09-27T20:51:07.053Z",
+      "updatedAt": "2026-09-27T22:49:55.269Z",
       "resultadosPartidas": {
         "evt_446fa935-1343-4464-be4e-2816830459c8": {
           "partidaId": "evt_446fa935-1343-4464-be4e-2816830459c8",
@@ -123,7 +143,8 @@
       },
       "achievementProgress": {
         "gamesByDay": {}
-      }
+      },
+      "achievementNotifications": []
     },
     "davijohann": {
       "username": "DaviJohann",
@@ -184,7 +205,8 @@
       "achievements": [],
       "achievementProgress": {
         "gamesByDay": {}
-      }
+      },
+      "achievementNotifications": []
     },
     "daviteste123": {
       "username": "daviteste123",
@@ -245,7 +267,8 @@
       "achievements": [],
       "achievementProgress": {
         "gamesByDay": {}
-      }
+      },
+      "achievementNotifications": []
     },
     "davitest123": {
       "username": "davitest123",
@@ -306,7 +329,8 @@
       "achievements": [],
       "achievementProgress": {
         "gamesByDay": {}
-      }
+      },
+      "achievementNotifications": []
     },
     "davi12345": {
       "username": "davi12345",
@@ -367,7 +391,8 @@
       "achievements": [],
       "achievementProgress": {
         "gamesByDay": {}
-      }
+      },
+      "achievementNotifications": []
     },
     "alparenga": {
       "username": "alparenga",
@@ -428,7 +453,8 @@
       "achievements": [],
       "achievementProgress": {
         "gamesByDay": {}
-      }
+      },
+      "achievementNotifications": []
     },
     "davijohannbecker": {
       "username": "DAVIJOHANNBECKER",
@@ -628,7 +654,8 @@
       },
       "achievementProgress": {
         "gamesByDay": {}
-      }
+      },
+      "achievementNotifications": []
     }
   },
   "bandRecords": {

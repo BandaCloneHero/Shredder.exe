@@ -1,6 +1,4 @@
-/* Mantém cada aba autenticada inscrita nas conquistas da própria conta.
-   O servidor não guarda avisos: se não houver socket conectado, não há popup
-   pendente para mostrar depois. */
+/* Mantém cada aba autenticada inscrita nas conquistas da própria conta. */
 (() => {
     const account = globalThis.shredderAccount;
     if (!account || typeof globalThis.io !== 'function') return;
@@ -14,8 +12,8 @@
     };
 
     socket.on('connect', () => inscrever());
-    socket.on('conquistaDesbloqueada', ({ ids } = {}) => {
-        globalThis.exibirConquistasDesbloqueadas?.(ids);
+    socket.on('conquistaDesbloqueada', ({ notificacoes, ids, pendentesAoEntrar = false } = {}) => {
+        globalThis.exibirConquistasDesbloqueadas?.(notificacoes || ids, { pendentesAoEntrar });
     });
     account.onChange(inscrever);
     if (socket.connected) inscrever();

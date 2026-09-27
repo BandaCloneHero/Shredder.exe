@@ -243,8 +243,22 @@
             <p id="band-status" class="operator-status" role="status" aria-live="polite" aria-atomic="true"></p>
         </details>
     </main>
-    <script src="app.js"></script>
+    <script src="js/account.js"></script>
+    <script src="js/account-ui.js"></script>
     <script>
+        window.shredderAccount = new ShredderAccount();
+        window.shredderUI = new ShredderAccountUI(window.shredderAccount);
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+    <script src="js/achievement-live.js"></script>
+    <script src="js/operador-access.js"></script>
+    <script>
+        function operatorAuthHeaders(headers = {}) {
+            const token = localStorage.getItem("shredder.account.token.v1");
+            return { ...headers, ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+        }
+
         const form = document.getElementById("operator-form");
         const fields = document.getElementById("operator-fields");
         const status = document.getElementById("operator-status");
@@ -298,7 +312,7 @@
             try {
                 const response = await fetch("/api/operador/salvar-pontuacao", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                    headers: operatorAuthHeaders({ "Content-Type": "application/json", "Accept": "application/json" }),
                     body: JSON.stringify(payload),
                 });
                 const contentType = response.headers.get("content-type") || "";
@@ -315,7 +329,6 @@
                     throw new Error("A API retornou uma resposta inesperada. Verifique se o backend está atualizado.");
                 }
                 if (!response.ok || !result.ok) throw new Error(result.erro || "Não foi possível salvar o resultado.");
-                globalThis.exibirConquistasDesbloqueadas?.(result.novasConquistas);
                 form.reset();
                 showStatus("success", `SUCESSO // Resultado de ${payload.username} salvo. Perfil e ranking atualizados.`);
             } catch (error) {
@@ -386,7 +399,7 @@
                 try {
                     const response = await fetch("/api/operador/salvar-pontuacao-banda", {
                         method: "POST",
-                        headers: { "Content-Type": "application/json", Accept: "application/json" },
+                        headers: operatorAuthHeaders({ "Content-Type": "application/json", Accept: "application/json" }),
                         body: JSON.stringify(payload),
                     });
                     const contentType = response.headers.get("content-type") || "";

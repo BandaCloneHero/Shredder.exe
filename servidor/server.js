@@ -135,6 +135,35 @@ function getAuthenticatedSession(req) {
     return { token, accountKey: session.accountKey, account };
 }
 
+function isOfficialOperator(req) {
+    const authenticated = getAuthenticatedSession(req);
+    if (!authenticated) return { ok: false, status: 401, error: "Entre em uma conta oficial para acessar o painel." };
+    let configuredAccounts = [];
+    try {
+        configuredAccounts = JSON.parse(fs.readFileSync(path.join(__dirname, "operadores-oficiais.json"), "utf8"));
+    } catch { /* ausência/erro de configuração mantém o painel fechado */ }
+    if (!Array.isArray(configuredAccounts)) configuredAccounts = [];
+    const environmentAccounts = String(process.env.SHREDDER_OPERADORES_OFICIAIS || "")
+        .split(",").map(normalizeUsername).filter(Boolean);
+    const officialAccounts = new Set(
+        [...configuredAccounts, ...environmentAccounts]
+            .filter(username => typeof username === "string")
+            .map(normalizeUsername)
+            .filter(Boolean),
+    );
+    const authenticatedNames = [authenticated.accountKey, normalizeUsername(authenticated.account.username)];
+    if (!authenticatedNames.some(username => officialAccounts.has(username))) {
+        return { ok: false, status: 403, error: "Esta conta não tem autorização para usar o painel do operador." };
+    }
+    return { ok: true, account: authenticated.account };
+}
+
+function exigirOperadorOficial(req, res) {
+    const authorization = isOfficialOperator(req);
+    if (!authorization.ok) res.status(authorization.status).json({ ok: false, erro: authorization.error });
+    return authorization.ok;
+}
+
 app.post("/api/auth/register", async (req, res) => {
     const { username, password } = req.body;
     const cleanUsername = String(username || "").trim();
@@ -326,6 +355,7 @@ app.post("/api/fases/selecionar", (req, res) => {
 });
 
 app.get("/api/operador/perfil/:username", (req, res) => {
+    if (!exigirOperadorOficial(req, res)) return;
     try {
         return res.json({ ok: true, ...partidas.lerPerfilOperador(req.params.username) });
     } catch (error) {
@@ -333,7 +363,13 @@ app.get("/api/operador/perfil/:username", (req, res) => {
     }
 });
 
+app.get("/api/operador/acesso", (req, res) => {
+    if (!exigirOperadorOficial(req, res)) return;
+    return res.json({ ok: true });
+});
+
 app.post("/api/operador/salvar-perfil", async (req, res) => {
+    if (!exigirOperadorOficial(req, res)) return;
     try {
         const { username, alteracoes, revisao, novaSenha } = req.body || {};
         let credenciais;
@@ -356,7 +392,7 @@ app.post("/api/operador/salvar-perfil", async (req, res) => {
         io.emit("rankingAtualizado", { records: salvo.records });
         if (salvo.novasConquistas?.length) {
             io.to?.(`conquistas:${normalizeUsername(salvo.perfil.username)}`).emit("conquistaDesbloqueada", {
-                ids: salvo.novasConquistas,
+                notificacoes: salvo.notificacoesConquistas,
             });
         }
         return res.json({
@@ -372,6 +408,7 @@ app.post("/api/operador/salvar-perfil", async (req, res) => {
 });
 
 app.post("/api/operador/salvar-pontuacao", (req, res) => {
+    if (!exigirOperadorOficial(req, res)) return;
     const dados = req.body || {};
     let resultado;
     try {
@@ -404,7 +441,7 @@ app.post("/api/operador/salvar-pontuacao", (req, res) => {
         io.emit("rankingAtualizado", { records: salvo.records });
         if (salvo.novasConquistas?.length) {
             io.to?.(`conquistas:${normalizeUsername(resultado.username)}`).emit("conquistaDesbloqueada", {
-                ids: salvo.novasConquistas,
+                notificacoes: salvo.notificacoesConquistas,
             });
         }
         return res.status(201).json({
@@ -426,6 +463,7 @@ app.post("/api/operador/salvar-pontuacao", (req, res) => {
 });
 
 app.post("/api/operador/salvar-pontuacao-banda", (req, res) => {
+    if (!exigirOperadorOficial(req, res)) return;
     const dados = req.body || {};
     const nome = typeof dados.nome === "string" ? dados.nome.trim() : dados.nome;
     const idInformado = typeof dados.id === "string" ? dados.id.trim() : dados.id;
@@ -545,7 +583,26 @@ io.on("connection", (socket) => {
             return;
         }
         socket.join(`conquistas:${session.accountKey}`);
+        socket.data.accountKey = session.accountKey;
+        socket.emit("conquistaDesbloqueada", {
+            notificacoes: partidas.conquistasPendentes(session.accountKey),
+            pendentesAoEntrar: true,
+        });
         if (typeof callback === "function") callback({ ok: true });
+    });
+
+    socket.on("confirmarConquistasExibidas", ({ ids } = {}, callback) => {
+        const accountKey = socket.data.accountKey;
+        if (!accountKey || !Array.isArray(ids)) {
+            if (typeof callback === "function") callback({ ok: false });
+            return;
+        }
+        try {
+            partidas.confirmarConquistasExibidas(accountKey, ids);
+            if (typeof callback === "function") callback({ ok: true });
+        } catch {
+            if (typeof callback === "function") callback({ ok: false });
+        }
     });
 
     socket.on("entrarRanking", (_dados, callback) => {
@@ -569,7 +626,7 @@ io.on("connection", (socket) => {
             io.to("ranking").emit("rankingAtualizado", { records: salvo.records });
             if (salvo.novasConquistas?.length) {
                 io.to(`conquistas:${normalizeUsername(resultado.username)}`).emit("conquistaDesbloqueada", {
-                    ids: salvo.novasConquistas,
+                    notificacoes: salvo.notificacoesConquistas,
                 });
             }
             if (typeof callback === "function") callback({

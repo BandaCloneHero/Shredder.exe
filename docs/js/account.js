@@ -76,7 +76,9 @@ class ShredderAccount {
 
   protectCurrentPage() {
     const paginaAtual = window.location.pathname.split('/').pop();
-    const paginasPublicas = ['index.html', ''];
+    // O painel verifica a autorização oficial e mostra a tela de acesso negado
+    // por conta própria; não redirecionar antes que essa verificação termine.
+    const paginasPublicas = ['index.html', 'operador.html', ''];
     if (paginasPublicas.includes(paginaAtual)) return;
 
     setTimeout(() => {
