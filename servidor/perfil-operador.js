@@ -52,6 +52,14 @@ function definirCampo(conta, caminho, valor) {
     alvo[chave] = valor;
 }
 function perfilPublico(conta) {
+    const fases = conta.fases && typeof conta.fases === 'object'
+        ? {
+            desbloqueadas: Array.isArray(conta.fases.desbloqueadas) ? conta.fases.desbloqueadas : [1],
+            favoritas: Array.isArray(conta.fases.favoritas) ? conta.fases.favoritas : [],
+            selecionada: Number.isSafeInteger(conta.fases.selecionada) ? conta.fases.selecionada : null,
+            historicoSelecionadas: Array.isArray(conta.fases.historicoSelecionadas) ? conta.fases.historicoSelecionadas : [],
+        }
+        : { desbloqueadas: [1], favoritas: [], selecionada: null, historicoSelecionadas: [] };
     const campos = {};
     for (const caminho of Object.keys(CAMPOS)) campos[caminho] = lerCampo(conta, caminho);
     // A rota pública de perfil lê estes aliases quando presentes.
@@ -60,11 +68,11 @@ function perfilPublico(conta) {
     campos['instrumentStats.favoriteInstrument'] = conta.favoriteInstrument ?? conta.instrumentStats.favoriteInstrument;
     return {
         username: conta.username, campos, achievements: conta.achievements,
-        fases: conta.fases,
+        fases,
         createdAt: conta.createdAt, updatedAt: conta.updatedAt,
         totalRegistros: Object.keys(conta.resultadosPartidas).length,
         totalMusicas: Object.keys(conta.songRecords).length,
-        totalFasesDesbloqueadas: conta.fases.desbloqueadas.length,
+        totalFasesDesbloqueadas: fases.desbloqueadas.length,
     };
 }
 

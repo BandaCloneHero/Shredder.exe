@@ -105,6 +105,14 @@
         }
     }
     function populate(data) {
+        // Aceita payloads de contas legadas ou servidores ainda sem a
+        // propriedade fases, usando o mesmo padrão criado na migração.
+        const fases = data.perfil.fases || {};
+        fases.desbloqueadas = Array.isArray(fases.desbloqueadas) ? fases.desbloqueadas : [1];
+        fases.favoritas = Array.isArray(fases.favoritas) ? fases.favoritas : [];
+        fases.selecionada = Number.isSafeInteger(fases.selecionada) ? fases.selecionada : null;
+        fases.historicoSelecionadas = Array.isArray(fases.historicoSelecionadas) ? fases.historicoSelecionadas : [];
+        data.perfil.fases = fases;
         loaded = data;
         username.value = data.perfil.username;
         password.value = '';
