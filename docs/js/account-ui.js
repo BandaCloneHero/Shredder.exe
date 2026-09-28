@@ -42,7 +42,9 @@ class ShredderAccountUI {
       .shredder-auth-btn { background: #111; color: #00ffcc; border: 1px solid #00ffcc; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.2s; box-shadow: 0 0 10px rgba(0, 255, 204, 0.2); }
       .shredder-auth-btn:hover { background: #00ffcc; color: #111; box-shadow: 0 0 15px rgba(0, 255, 204, 0.5); }
       .shredder-auth-user { display: flex; align-items: center; gap: 10px; background: rgba(17, 17, 17, 0.9); border: 1px solid #333; padding: 6px 12px; border-radius: 6px; color: #fff; font-size: 14px; }
-      .shredder-profile-btn { color: #00ffcc; font-weight: bold; text-decoration: none; }
+      .shredder-profile-btn { display: inline-flex; align-items: center; gap: 7px; color: #00ffcc; font-weight: bold; text-decoration: none; }
+      .shredder-player-icon { display: inline-grid; width: 23px; height: 23px; place-items: center; border: 1px solid rgba(0, 240, 255, 0.65); border-radius: 50%; color: #00f0ff; background: rgba(0, 240, 255, 0.08); }
+      .shredder-player-icon svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
       .shredder-profile-btn:hover, .shredder-profile-btn:focus-visible { color: #fff; text-decoration: underline; }
       .shredder-logout-btn { background: transparent; border: 1px solid #ff4444; color: #ff4444; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
       .shredder-logout-btn:hover { background: #ff4444; color: #fff; }
@@ -146,8 +148,14 @@ class ShredderAccountUI {
       userBox.className = 'shredder-auth-user';
       const profileLink = document.createElement('a');
       profileLink.className = 'shredder-profile-btn';
-      profileLink.href = 'perfil.html';
-      profileLink.textContent = state.user;
+      profileLink.href = `perfil.html?username=${encodeURIComponent(state.user)}`;
+      const playerIcon = document.createElement('span');
+      playerIcon.className = 'shredder-player-icon';
+      playerIcon.setAttribute('aria-hidden', 'true');
+      playerIcon.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 20c.4-3.6 2.8-5.6 6.5-5.6s6.1 2 6.5 5.6"></path></svg>';
+      const playerName = document.createElement('span');
+      playerName.textContent = state.user;
+      profileLink.append(playerIcon, playerName);
       profileLink.setAttribute('aria-label', `Abrir perfil de ${state.user}`);
       const logoutBtn = document.createElement('button');
       logoutBtn.id = 'shredder-do-logout';

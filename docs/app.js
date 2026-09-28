@@ -61,7 +61,7 @@ function renderProfile(profile, isOwnProfile) {
         profile.favoriteInstrument || "nenhum",
     ).toLowerCase();
 
-    document.querySelector("#profile-nickname").textContent = profile.nickname;
+    document.querySelector("#profile-nickname").innerHTML = `<span class="profile-player-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 20c.4-3.6 2.8-5.6 6.5-5.6s6.1 2 6.5 5.6"></path></svg></span><span>${escapeHtml(profile.nickname)}</span>`;
     document.querySelector("#profile-username").textContent =
         `// ${profile.username}`;
     document.querySelector("#profile-title").textContent =
@@ -69,6 +69,16 @@ function renderProfile(profile, isOwnProfile) {
     document.querySelector("#profile-currency").textContent = formatScore(
         profileNumber(profile.moedas),
     );
+    const customizationCurrency = document.querySelector("#customization-currency");
+    if (customizationCurrency) {
+        customizationCurrency.textContent = formatScore(
+            profileNumber(profile.moedas),
+        );
+    }
+    const customizationTitle = document.querySelector("#customization-current-title");
+    if (customizationTitle) {
+        customizationTitle.textContent = profile.tituloEquipado || "Novato do Rock";
+    }
     document.querySelector("#profile-games").textContent = formatScore(
         profileNumber(profile.gamesPlayed),
     );
@@ -177,7 +187,11 @@ async function loadProfile(username, isOwnProfile) {
     }
 }
 
-function initializeProfile() {
+async function initializeProfile() {
+    // Aguarda validar o token antes de decidir qual conta carregar.
+    // Sem isso, o perfil pode iniciar com o username ainda nulo e ler uma identidade local antiga.
+    if (window.shredderAccount) await window.shredderAccount.restore();
+
     const searchForm = document.querySelector("#profile-search-form");
     const searchInput = document.querySelector("#profile-search");
     const requestedUsername = new URLSearchParams(window.location.search)
