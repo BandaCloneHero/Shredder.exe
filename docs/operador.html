@@ -57,6 +57,8 @@
         .operator-status[data-state="success"] { color: #75efa0; border-color: #35975b; background: #11251a; }
         .operator-status[data-state="error"] { color: #ff9aab; border-color: #c84d65; background: #2b141b; }
         .operator-status[data-state="pending"] { color: var(--cyan); }
+        .account-inspect-data { max-height: 65vh; overflow: auto; padding: 18px; border: 1px solid var(--line); background: var(--bg); color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; font: .8rem/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; }
+        .account-inspect-data[hidden] { display: none; }
         .incoming-results { margin: 24px 0; padding: 22px; border: 1px solid var(--cyan); background: var(--panel); }
         .incoming-results h2 { margin-top: 0; color: var(--cyan); font: 600 1rem var(--tech); }
         .incoming-results-status { color: var(--muted); margin: 14px 0; }
@@ -148,6 +150,21 @@
                 </fieldset>
             </form>
             <p id="profile-status" class="operator-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </details>
+        <details class="operator-mode">
+            <summary>Consultar estado atual da conta</summary>
+            <section class="operator-form panel-cut" aria-label="Consulta de conta">
+                <div class="operator-load">
+                    <div class="operator-field">
+                        <label for="account-inspect-username">Username da conta</label>
+                        <input id="account-inspect-username" type="text" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ex.: seraquesalva">
+                    </div>
+                    <button id="account-inspect-load" class="button button-ghost" type="button">Consultar conta</button>
+                </div>
+                <p id="account-inspect-status" class="operator-status" role="status" aria-live="polite" aria-atomic="true"></p>
+                <pre id="account-inspect-data" class="account-inspect-data" aria-label="Dados atuais da conta" hidden></pre>
+                <p class="operator-help">Exibe os dados atuais salvos no servidor. Hash e salt da senha são omitidos.</p>
+            </section>
         </details>
         <details class="operator-mode">
         <summary>Registrar resultado de uma partida</summary>
@@ -303,6 +320,8 @@
         window.shredderUI = new ShredderAccountUI(window.shredderAccount);
     </script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/achievement-catalog.js"></script>
+    <script src="js/achievement-notifications.js"></script>
     <script src="app.js"></script>
     <script src="js/achievement-live.js"></script>
     <script src="js/operador-access.js"></script>
@@ -598,6 +617,7 @@
         }
     </script>
     <script src="js/operador-perfil.js"></script>
+    <script src="js/operador-conta.js"></script>
     <script src="js/operador-resultados-ao-vivo.js"></script>
 </body>
 </html>

@@ -13,6 +13,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 app.use(express.json());
+app.use(require('./site-navigation'));
 app.use(express.static(path.join(__dirname, "../docs")));
 
 const ACCOUNTS_FILE = path.join(__dirname, "accounts.json");
@@ -360,6 +361,25 @@ app.get("/api/operador/perfil/:username", (req, res) => {
         return res.json({ ok: true, ...partidas.lerPerfilOperador(req.params.username) });
     } catch (error) {
         return res.status(error.status || 500).json({ ok: false, erro: error.status ? error.message : "Falha ao carregar o perfil." });
+    }
+});
+
+app.get("/api/operador/conta/:username", (req, res) => {
+    if (!exigirOperadorOficial(req, res)) return;
+    try {
+        const rootData = JSON.parse(fs.readFileSync(ACCOUNTS_FILE, "utf8"));
+        const accounts = rootData.accounts || rootData;
+        const account = accounts[normalizeUsername(req.params.username)];
+        if (!account) {
+            return res.status(404).json({ ok: false, erro: "Conta não encontrada." });
+        }
+
+        // Exibe os dados atuais da conta, mas nunca as credenciais armazenadas.
+        const { salt, passwordHash, ...dadosConta } = account;
+        return res.json({ ok: true, conta: dadosConta });
+    } catch (error) {
+        console.error("> Erro ao consultar conta no operador:", error);
+        return res.status(500).json({ ok: false, erro: "Falha ao carregar os dados da conta." });
     }
 });
 
