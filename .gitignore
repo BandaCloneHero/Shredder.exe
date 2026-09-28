@@ -131,4 +131,5 @@ mono_crash.mem.*.blob
 /servidor/.backups/
 
 servidor/accounts.json
+servidor/accounts-servidor.json
 servidor/sessions.json

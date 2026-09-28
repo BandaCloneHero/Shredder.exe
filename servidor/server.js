@@ -383,6 +383,27 @@ app.get("/api/operador/conta/:username", (req, res) => {
     }
 });
 
+app.get("/api/operador/contas", (req, res) => {
+    if (!exigirOperadorOficial(req, res)) return;
+    try {
+        const rootData = JSON.parse(fs.readFileSync(ACCOUNTS_FILE, "utf8"));
+        const accounts = rootData.accounts || rootData;
+        const lista = Object.entries(accounts)
+            .filter(([key, account]) => account && typeof account === "object" && key !== "bandRecords")
+            .map(([key, account]) => ({
+                username: account.username || key,
+                nickname: account.nickname || "",
+                createdAt: account.createdAt || null,
+                updatedAt: account.updatedAt || null,
+            }))
+            .sort((left, right) => left.username.localeCompare(right.username, "pt-BR", { sensitivity: "base" }));
+        return res.json({ ok: true, contas: lista });
+    } catch (error) {
+        console.error("> Erro ao listar contas no operador:", error);
+        return res.status(500).json({ ok: false, erro: "Falha ao listar as contas do servidor." });
+    }
+});
+
 app.get("/api/operador/acesso", (req, res) => {
     if (!exigirOperadorOficial(req, res)) return;
     return res.json({ ok: true });

@@ -18,9 +18,22 @@ e `site.html`, além de `servidor/server.js` e `servidor/site-navigation.js`.
 Preserve os arquivos de contas e sessões existentes no servidor remoto. Depois de
 atualizar o código, reinicie a aplicação com `pm2 restart shredder`.
 
+O painel do operador lista as contas do servidor e permite abrir os dados salvos
+de cada uma. A lista mostra apenas nome e datas do perfil; o detalhe exibe o
+restante dos dados, omitindo hash e salt da senha. Ela lê o `accounts.json` do
+servidor ativo, sem sincronizar nem alterar a cópia do Codespace.
+
 A navegação persistente exige abrir o site pelo servidor Node atualizado. O
 recarregamento completo da aba (F5) reinicia o documento principal; a continuidade
 se aplica à navegação entre as telas do site.
+
+## Copiar contas do servidor para o Codespace
+
+No terminal do Codespace, execute `npm --prefix servidor run sync-server-accounts`.
+O comando baixa uma cópia privada para `servidor/accounts-servidor.json` usando a
+chave SSH local. Ele não altera `servidor/accounts.json`, não mescla bases e não
+envia alterações para o servidor. O arquivo recebido é ignorado pelo Git e salvo
+com permissão restrita. Execute o comando novamente para atualizar a cópia.
 
 ## Conferência manual
 

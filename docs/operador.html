@@ -59,6 +59,10 @@
         .operator-status[data-state="pending"] { color: var(--cyan); }
         .account-inspect-data { max-height: 65vh; overflow: auto; padding: 18px; border: 1px solid var(--line); background: var(--bg); color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; font: .8rem/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; }
         .account-inspect-data[hidden] { display: none; }
+        .account-directory { display: grid; gap: 8px; max-height: 360px; overflow: auto; margin: 16px 0; }
+        .account-directory button { display: flex; justify-content: space-between; gap: 12px; width: 100%; margin: 0; padding: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--text); text-align: left; cursor: pointer; }
+        .account-directory button:hover, .account-directory button:focus-visible { border-color: var(--cyan); }
+        .account-directory small { color: var(--muted); }
         .incoming-results { margin: 24px 0; padding: 22px; border: 1px solid var(--cyan); background: var(--panel); }
         .incoming-results h2 { margin-top: 0; color: var(--cyan); font: 600 1rem var(--tech); }
         .incoming-results-status { color: var(--muted); margin: 14px 0; }
@@ -161,6 +165,11 @@
                     </div>
                     <button id="account-inspect-load" class="button button-ghost" type="button">Consultar conta</button>
                 </div>
+                <div class="incoming-results-actions">
+                    <button id="account-directory-load" class="button button-ghost" type="button">Listar contas do servidor</button>
+                </div>
+                <p id="account-directory-status" class="operator-help" role="status" aria-live="polite"></p>
+                <div id="account-directory" class="account-directory" aria-label="Contas cadastradas no servidor"></div>
                 <p id="account-inspect-status" class="operator-status" role="status" aria-live="polite" aria-atomic="true"></p>
                 <pre id="account-inspect-data" class="account-inspect-data" aria-label="Dados atuais da conta" hidden></pre>
                 <p class="operator-help">Exibe os dados atuais salvos no servidor. Hash e salt da senha são omitidos.</p>

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
+    "sync-server-accounts": "node sync-server-accounts.js",
     "reset-password": "node reset-password.js",
     "test": "node --test test/*.test.js"
   },
