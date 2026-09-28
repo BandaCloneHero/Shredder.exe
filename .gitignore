@@ -129,3 +129,6 @@ mono_crash.mem.*.blob
 
 # Backups privados gerados na migração de perfis
 /servidor/.backups/
+
+servidor/accounts.json
+servidor/sessions.json
