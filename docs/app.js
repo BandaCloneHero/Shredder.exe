@@ -104,8 +104,34 @@ function showNextAchievementNotification() {
     }
     const notice = document.createElement("aside");
     notice.className = `achievement-toast ${achievementRarityClass(achievement.rarityKey)}`;
-    notice.setAttribute("role", "status");
+    notice.setAttribute("role", "link");
+    notice.setAttribute("tabindex", "0");
+    notice.setAttribute("aria-label", `Conquista ${achievement.label}. Clique para ver na galeria.`);
     notice.innerHTML = `<div class="achievement-toast-icon">${achievement.icon}</div><div><span>CONQUISTA DESBLOQUEADA</span><strong>${achievement.label}</strong><small>${achievement.rarity.toUpperCase()} · ${achievement.difficulty.toUpperCase()}</small></div>`;
+    const openAchievement = () => {
+        if (notice.dataset.opening === "true") return;
+        notice.dataset.opening = "true";
+        const destination = `perfil.html?conquista=${encodeURIComponent(achievement.id)}`;
+        const socket = window.shredderAchievementSocket || window.socket;
+        if (!pending.notificationId || !socket?.connected || typeof socket.timeout !== "function") {
+            window.location.assign(destination);
+            return;
+        }
+        let navigated = false;
+        const navigate = () => {
+            if (navigated) return;
+            navigated = true;
+            window.location.assign(destination);
+        };
+        socket.timeout(1000).emit("confirmarConquistasExibidas", { ids: [pending.notificationId] }, navigate);
+        window.setTimeout(navigate, 1100);
+    };
+    notice.addEventListener("click", openAchievement);
+    notice.addEventListener("keydown", event => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        openAchievement();
+    });
     document.body.append(notice);
     // Força o navegador a pintar a posição inicial fora da tela antes de
     // aplicar a classe visível; sem isso a transição pode ser ignorada.
@@ -255,7 +281,7 @@ function renderProfile(profile, isOwnProfile) {
     if (achievementDialog && achievementDetails && achievementButton) {
         achievementDetails.innerHTML = ORDERED_PROFILE_ACHIEVEMENTS.map(({ id, label, icon, rarity, rarityKey, difficulty, how }) => {
             const unlocked = achievements.has(id);
-            return `<article class="achievement-detail ${achievementRarityClass(rarityKey)}${unlocked ? " is-unlocked" : ""}"><b>${unlocked ? icon : "?"}</b><div><strong>${label}</strong><span class="achievement-rarity">RARIDADE: ${rarity}</span><span>DIFICULDADE: ${difficulty}</span><p>${how}</p></div><small>${unlocked ? "DESBLOQUEADA" : "BLOQUEADA"}</small></article>`;
+            return `<article id="achievement-detail-${id}" class="achievement-detail ${achievementRarityClass(rarityKey)}${unlocked ? " is-unlocked" : ""}" tabindex="-1"><b>${unlocked ? icon : "?"}</b><div><strong>${label}</strong><span class="achievement-rarity">RARIDADE: ${rarity}</span><span>DIFICULDADE: ${difficulty}</span><p>${how}</p></div><small>${unlocked ? "DESBLOQUEADA" : "BLOQUEADA"}</small></article>`;
         }).join("");
         achievementButton.onclick = () => achievementDialog.showModal();
         document.querySelector("#close-achievements").onclick = () => achievementDialog.close();
@@ -348,7 +374,21 @@ function initializeProfile() {
     const ownUsername =
         String(sessionUsername || "").toLowerCase() === username.toLowerCase();
     searchInput.value = requestedUsername || "";
-    loadProfile(username, ownUsername);
+    loadProfile(username, ownUsername).then(loaded => {
+        if (!loaded) return;
+        const achievementId = new URLSearchParams(window.location.search).get("conquista");
+        if (!PROFILE_ACHIEVEMENTS.some(achievement => achievement.id === achievementId)) return;
+        const dialog = document.querySelector("#achievement-dialog");
+        const target = document.getElementById(`achievement-detail-${achievementId}`);
+        if (!dialog || !target) return;
+        dialog.showModal();
+        requestAnimationFrame(() => {
+            target.scrollIntoView({ block: "center", behavior: "smooth" });
+            target.classList.add("is-targeted");
+            target.focus({ preventScroll: true });
+            window.setTimeout(() => target.classList.remove("is-targeted"), 2200);
+        });
+    });
 }
 
 function writeJson(key, value) {
@@ -545,9 +585,15 @@ function saveRoom(room) {
 window.updateOwnerControls = function (roomState) {
     const socket = window.socket;
     const isOwner = Boolean(socket?.connected && socket.id && roomState?.donoId === getPlayer()?.id && roomState?.socketDonoId === socket.id);
-    document.querySelectorAll("#painel-do-dono, [data-owner-control]").forEach((control) => {
+    document.querySelectorAll("[data-owner-control]").forEach((control) => {
         control.style.display = isOwner ? "" : "none";
     });
+    if (currentPage === "modos") {
+        document.querySelectorAll("#stage-grid .stage-card, #freeplay-card").forEach((control) => {
+            control.disabled = !isOwner || control.classList.contains("locked");
+            control.setAttribute("aria-disabled", String(control.disabled));
+        });
+    }
 };
 
 function initializeRoomPresence(player) {
@@ -682,7 +728,7 @@ function initializeLobby() {
             card.innerHTML = `<span class="room-card-kicker">${full ? "SALA CHEIA // BLOQUEADA" : "SALA DISPONÍVEL"}</span><strong></strong><small></small><b></b>`;
             card.querySelector("strong").textContent = room.roomName;
             card.querySelector("small").textContent =
-                `CRIADOR // ${room.criadorUsername}`;
+                `CRIADOR // ${room.criadorUsername} · CÓDIGO ${room.roomId}`;
             card.querySelector("b").textContent =
                 `${room.quantidadeJogadores}/${room.limiteJogadores} OPERADORES`;
             if (!full) card.addEventListener("click", () => enterRoom(room));
@@ -800,6 +846,7 @@ function renderStages(fases) {
             chooseMode("historia", Number(card.dataset.stage)),
         ),
     );
+    window.updateOwnerControls(window.shredderRoomState);
 }
 
 async function carregarFasesDoPerfil(player) {
@@ -898,6 +945,7 @@ function enviarPontuacaoParaRanking(dados) {
     const resultado = {
         ...dados,
         partidaId: dados.partidaId || crypto.randomUUID(),
+        roomId: localStorage.getItem(STORAGE.roomId) || undefined,
         operadorId: dados.operadorId || player.id,
         username: dados.username || player.nome,
         instrumento: dados.instrumento || player.instrumento,

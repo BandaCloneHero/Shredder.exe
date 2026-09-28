@@ -11,6 +11,9 @@
     let resultadoDaCena = null;
     let sincronizando = false;
     getGameSocket();
+    if (player?.id && localStorage.getItem('shredder_room_id')) {
+        initializeRoomPresence(player);
+    }
 
     async function sincronizarPendentes() {
         if (sincronizando) return;

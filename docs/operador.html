@@ -45,12 +45,31 @@
         .operator-check { display: flex; align-items: center; gap: 12px; cursor: pointer; margin: 28px 0 8px; }
         .operator-check input { width: 20px; height: 20px; accent-color: var(--magenta); }
         .operator-form button { width: 100%; margin-top: 20px; white-space: normal; }
+        .batch-player-row { margin: 20px 0; padding: 16px; border: 1px solid var(--line); background: var(--bg); }
+        .batch-player-row legend { padding: 0 8px; color: var(--cyan); font: 600 .8rem var(--tech); }
+        .batch-player-grid { grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); }
+        .batch-player-row .remove-batch-player { width: auto; margin: 12px 0 0; }
+        .batch-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+        .batch-actions button { width: auto; }
         .operator-fields:disabled { opacity: .65; }
         .operator-status { margin: 24px 0 0; padding: 16px; border: 1px solid var(--line); line-height: 1.5; overflow-wrap: anywhere; }
         .operator-status:empty { display: none; }
         .operator-status[data-state="success"] { color: #75efa0; border-color: #35975b; background: #11251a; }
         .operator-status[data-state="error"] { color: #ff9aab; border-color: #c84d65; background: #2b141b; }
         .operator-status[data-state="pending"] { color: var(--cyan); }
+        .incoming-results { margin: 24px 0; padding: 22px; border: 1px solid var(--cyan); background: var(--panel); }
+        .incoming-results h2 { margin-top: 0; color: var(--cyan); font: 600 1rem var(--tech); }
+        .incoming-results-status { color: var(--muted); margin: 14px 0; }
+        .incoming-result-list { display: grid; gap: 12px; }
+        .incoming-result { padding: 16px; border: 1px solid var(--line); background: var(--bg); }
+        .incoming-result header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; color: var(--cyan); }
+        .incoming-result dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px; margin: 14px 0; }
+        .incoming-result dt { color: var(--muted); font-size: .65rem; }
+        .incoming-result dd { margin: 3px 0 0; overflow-wrap: anywhere; }
+        .incoming-result button { width: auto; margin: 0; }
+        .incoming-subheading { margin: 24px 0 8px; color: var(--cyan); font: 600 .9rem var(--tech); }
+        .incoming-results-actions { display: flex; justify-content: flex-end; margin: 8px 0; }
+        .incoming-results-actions .button { width: auto; margin: 0; }
         @media (max-width: 560px) { .operator-grid { grid-template-columns: 1fr; } .operator-shell { padding-inline: 16px; } }
     </style>
 </head>
@@ -63,6 +82,16 @@
         <p class="eyebrow">ESTAÇÃO // REGISTRO DE RESULTADOS</p>
         <h1>Painel do <span>Operador.</span></h1>
         <p class="operator-intro">Transcreva os resultados exibidos no YARG ao final da música. Use o username da conta cadastrada do jogador. Preencha os dados da partida e, se necessário, ajuste o perfil. Os campos opcionais estão identificados.</p>
+        <section class="incoming-results" aria-labelledby="incoming-title">
+            <h2 id="incoming-title">Tickets de sessão recebidos</h2>
+            <p class="operator-help">Tickets emitidos e resultados recentes do jogo aparecem aqui automaticamente. As pontuações incluem o perfil, instrumento e música, sem precisar identificar a sala.</p>
+            <p id="incoming-results-status" class="incoming-results-status" role="status" aria-live="polite">Conectando ao servidor para localizar as salas ativas...</p>
+            <div id="incoming-ticket-list" class="incoming-result-list" aria-live="polite"></div>
+            <h3 class="incoming-subheading">Resultados individuais recentes</h3>
+            <p class="operator-help">As pontuações vêm diretamente da tela de resultados do executável e mostram o perfil local de cada jogador.</p>
+            <div class="incoming-results-actions"><button id="clear-recent-results" class="button button-ghost" type="button">Limpar resultados recentes</button></div>
+            <div id="incoming-match-list" class="incoming-result-list" aria-live="polite"></div>
+        </section>
         <details class="operator-mode" open>
             <summary>Editar perfil e conquistas</summary>
             <form id="profile-form" class="operator-form panel-cut">
@@ -211,6 +240,30 @@
         <p id="operator-status" class="operator-status" role="status" aria-live="polite" aria-atomic="true"></p>
         </details>
         <details class="operator-mode">
+            <summary>Registrar resultados de vários jogadores</summary>
+            <form id="batch-result-form" class="operator-form panel-cut">
+                <fieldset id="batch-result-fields" class="operator-fields" aria-label="Resultados individuais da mesma música">
+                    <section class="operator-block">
+                        <h2><span>01</span> Música</h2>
+                        <p class="operator-help">Informe a música uma vez. Cada jogador será salvo separadamente no próprio perfil e ranking.</p>
+                        <div class="operator-field operator-wide">
+                            <label for="batch-song">Nome da música</label>
+                            <input id="batch-song" name="musica" type="text" maxlength="200" required placeholder="Digite o nome da música">
+                        </div>
+                    </section>
+                    <section class="operator-block">
+                        <h2><span>02</span> Resultados individuais</h2>
+                        <div id="batch-player-rows"></div>
+                        <div class="batch-actions">
+                            <button id="add-batch-player" class="button button-ghost" type="button">Adicionar jogador</button>
+                            <button id="save-batch-results" class="button button-primary" type="submit">Salvar resultados individuais</button>
+                        </div>
+                    </section>
+                </fieldset>
+            </form>
+            <p id="batch-result-status" class="operator-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </details>
+        <details class="operator-mode">
             <summary>Registrar pontuação de uma banda</summary>
             <form id="band-form" class="operator-form panel-cut">
                 <fieldset id="band-fields" class="operator-fields" aria-label="Pontuação da banda">
@@ -342,6 +395,123 @@
             }
         });
 
+        const batchForm = document.getElementById("batch-result-form");
+        if (batchForm) {
+            const batchFields = document.getElementById("batch-result-fields");
+            const batchRows = document.getElementById("batch-player-rows");
+            const batchSong = document.getElementById("batch-song");
+            const batchStatus = document.getElementById("batch-result-status");
+            const batchButton = document.getElementById("save-batch-results");
+            const addBatchPlayerButton = document.getElementById("add-batch-player");
+            const batchInstruments = [["guitarra", "Guitarra"], ["baixo", "Baixo"], ["bateria", "Bateria"], ["teclado", "Teclado"]];
+            let batchPlayerNumber = 0;
+            let savingBatch = false;
+
+            function refreshBatchPlayerLabels() {
+                [...batchRows.querySelectorAll(".batch-player-row")].forEach((row, index) => {
+                    row.querySelector("legend").textContent = `JOGADOR ${index + 1}`;
+                    row.querySelector(".remove-batch-player").disabled = batchRows.querySelectorAll(".batch-player-row").length === 1;
+                });
+            }
+
+            function addBatchPlayer() {
+                const rowNumber = ++batchPlayerNumber;
+                const row = document.createElement("fieldset");
+                row.className = "batch-player-row";
+                row.innerHTML = `
+                    <legend>JOGADOR</legend>
+                    <div class="operator-grid batch-player-grid">
+                        <div class="operator-field"><label>Username</label><input data-batch="username" type="text" maxlength="24" required autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Conta do jogador"></div>
+                        <div class="operator-field"><label>Instrumento</label><select data-batch="instrumento" required><option value="" selected disabled>Selecione</option>${batchInstruments.map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}</select></div>
+                        <div class="operator-field"><label>Pontuação</label><input data-batch="pontuacao" type="number" min="0" max="1000000000" step="1" required inputmode="numeric"></div>
+                        <div class="operator-field"><label>Precisão (%)</label><input data-batch="precisao" type="number" min="0" max="100" step="any" required inputmode="decimal"></div>
+                        <div class="operator-field"><label>Combo máximo</label><input data-batch="comboMaximo" type="number" min="0" max="1000000" step="1" required inputmode="numeric"></div>
+                        <div class="operator-field"><label>Notas acertadas</label><input data-batch="notasAcertadas" type="number" min="0" max="1000000" step="1" required inputmode="numeric"></div>
+                        <div class="operator-field"><label>Notas erradas</label><input data-batch="notasErradas" type="number" min="0" max="1000000" step="1" required inputmode="numeric"></div>
+                    </div>
+                    <label class="operator-check"><input data-batch="fullCombo" type="checkbox"> Full Combo</label>
+                    <button class="button button-ghost remove-batch-player" type="button">Remover jogador</button>`;
+                row.querySelector(".remove-batch-player").addEventListener("click", () => {
+                    row.remove();
+                    refreshBatchPlayerLabels();
+                });
+                batchRows.append(row);
+                refreshBatchPlayerLabels();
+            }
+
+            addBatchPlayerButton.addEventListener("click", addBatchPlayer);
+            addBatchPlayer();
+
+            batchForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                if (savingBatch || !batchForm.reportValidity()) return;
+                const song = batchSong.value.trim();
+                const entries = [...batchRows.querySelectorAll(".batch-player-row")].map((row) => {
+                    const read = (name) => row.querySelector(`[data-batch="${name}"]`);
+                    return {
+                        row,
+                        payload: {
+                            username: read("username").value.trim(),
+                            instrumento: read("instrumento").value,
+                            musica: song,
+                            pontuacao: read("pontuacao").valueAsNumber,
+                            comboMaximo: read("comboMaximo").valueAsNumber,
+                            precisao: read("precisao").valueAsNumber,
+                            notasAcertadas: read("notasAcertadas").valueAsNumber,
+                            notasErradas: read("notasErradas").valueAsNumber,
+                            fullCombo: read("fullCombo").checked,
+                        },
+                    };
+                });
+                const invalidCombo = entries.find(({ payload }) => payload.comboMaximo > payload.notasAcertadas ||
+                    (payload.fullCombo && (payload.notasErradas !== 0 || payload.notasAcertadas === 0 || payload.comboMaximo !== payload.notasAcertadas)));
+                if (invalidCombo) {
+                    batchStatus.dataset.state = "error";
+                    batchStatus.textContent = `ERRO // Confira combo e notas de ${invalidCombo.payload.username}. Full Combo exige zero erros e combo igual às notas acertadas.`;
+                    return;
+                }
+
+                savingBatch = true;
+                batchFields.disabled = true;
+                batchButton.textContent = "Salvando resultados...";
+                batchStatus.dataset.state = "pending";
+                batchStatus.textContent = `SALVANDO // ${entries.length} resultado(s) para ${song}.`;
+                let saved = 0;
+                const failures = [];
+                try {
+                    for (const entry of entries) {
+                        try {
+                            const response = await fetch("/api/operador/salvar-pontuacao", {
+                                method: "POST",
+                                headers: operatorAuthHeaders({ "Content-Type": "application/json", Accept: "application/json" }),
+                                body: JSON.stringify(entry.payload),
+                            });
+                            const result = await response.json().catch(() => ({}));
+                            if (!response.ok || !result.ok) throw new Error(result.erro || `Falha HTTP ${response.status}`);
+                            entry.row.remove();
+                            saved++;
+                        } catch (error) {
+                            failures.push(`${entry.payload.username}: ${error.message}`);
+                        }
+                    }
+                    if (failures.length) {
+                        batchStatus.dataset.state = "error";
+                        batchStatus.textContent = `${saved} resultado(s) salvo(s). Confira e tente novamente: ${failures.join("; ")}. Os jogadores já salvos foram removidos desta lista para evitar duplicação.`;
+                    } else {
+                        batchStatus.dataset.state = "success";
+                        batchStatus.textContent = `SUCESSO // ${saved} resultado(s) individual(is) salvos para ${song}. Perfis e ranking atualizados.`;
+                        batchSong.value = "";
+                    }
+                    if (!batchRows.querySelector(".batch-player-row")) addBatchPlayer();
+                    refreshBatchPlayerLabels();
+                } finally {
+                    savingBatch = false;
+                    batchFields.disabled = false;
+                    batchButton.textContent = "Salvar resultados individuais";
+                }
+            });
+        }
+
         const bandForm = document.getElementById("band-form");
         if (bandForm) {
             const bandFields = document.getElementById("band-fields");
@@ -428,5 +598,6 @@
         }
     </script>
     <script src="js/operador-perfil.js"></script>
+    <script src="js/operador-resultados-ao-vivo.js"></script>
 </body>
 </html>

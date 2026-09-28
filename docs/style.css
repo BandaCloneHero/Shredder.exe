@@ -17,6 +17,29 @@
 
 * {
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cyan) rgba(0, 240, 255, 0.08);
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    border: 1px solid rgba(0, 240, 255, 0.14);
+    background: rgba(5, 7, 12, 0.8);
+}
+
+*::-webkit-scrollbar-thumb {
+    border: 2px solid #090a0f;
+    border-radius: 8px;
+    background: linear-gradient(180deg, var(--cyan), var(--magenta));
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.45);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #8cfcff, #ff66b2);
 }
 
 html {
@@ -974,7 +997,13 @@ input {
     overflow: hidden;
     transform: translateX(calc(100% + 2rem));
     transition: transform 2s ease-in-out;
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.achievement-toast:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 4px;
 }
 
 .achievement-toast.is-visible {
@@ -1103,6 +1132,7 @@ input {
     overflow-y: auto;
     max-height: calc(100vh - 180px);
     padding-right: 0.35rem;
+    scrollbar-gutter: stable;
 }
 
 .achievement-detail {
@@ -1166,6 +1196,12 @@ input {
     border-color: var(--achievement-color);
     box-shadow: inset 3px 0 var(--achievement-color), 0 0 16px var(--achievement-glow);
     opacity: 1;
+}
+
+.achievement-detail.is-targeted {
+    outline: 2px solid var(--achievement-color);
+    outline-offset: 3px;
+    box-shadow: 0 0 24px var(--achievement-glow);
 }
 
 .achievement-detail.is-unlocked > b,

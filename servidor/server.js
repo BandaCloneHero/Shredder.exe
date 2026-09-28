@@ -490,7 +490,59 @@ app.post("/api/operador/salvar-pontuacao-banda", (req, res) => {
 });
 
 const salas = {};
+const resultadosExecutavelRecentes = [];
+const ultimoEnvioExecutavelPorIp = new Map();
 const MAX_JOGADORES_SALA = 4;
+const ROOM_RECONNECT_GRACE_MS = 15000;
+
+// Resultados enviados diretamente pelo executável Unity. São mantidos apenas
+// em memória para aparecerem no painel, sem alterar ranking ou contas.
+app.post("/api/operador/resultados-executavel", (req, res) => {
+    const ip = req.ip || "desconhecido";
+    const ultimoEnvio = ultimoEnvioExecutavelPorIp.get(ip) || 0;
+    if (Date.now() - ultimoEnvio < 2000) {
+        return res.status(429).json({ ok: false, erro: "Aguarde antes de enviar outro resultado." });
+    }
+    const dados = req.body || {};
+    if (typeof dados.musica !== "string" || !dados.musica.trim() || dados.musica.length > 200 ||
+        !Array.isArray(dados.resultados) || dados.resultados.length > MAX_JOGADORES_SALA) {
+        return res.status(400).json({ ok: false, erro: "Dados de resultado inválidos." });
+    }
+
+    const recebidos = [];
+    for (const item of dados.resultados) {
+        if (!item || typeof item.perfilNome !== "string" || !item.perfilNome.trim() || item.perfilNome.length > 80 ||
+            typeof item.instrumento !== "string" || item.instrumento.length > 40 ||
+            typeof item.modoJogo !== "string" || item.modoJogo.length > 60 ||
+            !Number.isSafeInteger(item.pontuacao) || item.pontuacao < 0 || item.pontuacao > 1e9 ||
+            typeof item.precisao !== "number" || !Number.isFinite(item.precisao) || item.precisao < 0 || item.precisao > 100 ||
+            !Number.isSafeInteger(item.maiorCombo) || item.maiorCombo < 0 || item.maiorCombo > 1e6 ||
+            !Number.isSafeInteger(item.notasAcertadas) || item.notasAcertadas < 0 || item.notasAcertadas > 1e6 ||
+            !Number.isSafeInteger(item.notasErradas) || item.notasErradas < 0 || item.notasErradas > 1e6 ||
+            typeof item.fullCombo !== "boolean") {
+            return res.status(400).json({ ok: false, erro: "Pontuação de perfil inválida." });
+        }
+        recebidos.push({
+            partidaId: `unity_${randomUUID()}`,
+            recebidoEm: new Date().toISOString(),
+            perfil: { nome: item.perfilNome.trim(), instrumento: item.instrumento, modoJogo: item.modoJogo },
+            musica: dados.musica.trim(),
+            pontuacao: item.pontuacao,
+            precisao: item.precisao,
+            maiorCombo: item.maiorCombo,
+            notasAcertadas: item.notasAcertadas,
+            notasErradas: item.notasErradas,
+            fullCombo: item.fullCombo,
+        });
+    }
+    for (const resultado of recebidos) {
+        resultadosExecutavelRecentes.push(resultado);
+        io.to("operador-resultados-global").emit("resultado_individual_recebido", resultado);
+    }
+    ultimoEnvioExecutavelPorIp.set(ip, Date.now());
+    if (resultadosExecutavelRecentes.length > 40) resultadosExecutavelRecentes.splice(0, resultadosExecutavelRecentes.length - 40);
+    return res.json({ ok: true, recebidos: recebidos.length });
+});
 
 function criarEstruturaSala(roomId, roomName, criadorUsername, donoId, socketDonoId) {
     return {
@@ -511,6 +563,9 @@ function criarEstruturaSala(roomId, roomName, criadorUsername, donoId, socketDon
             teclado: null,
         },
         operadores: {},
+        disconnectTimers: new Map(),
+        ticketsPendentes: [],
+        resultadosRecentes: [],
     };
 }
 
@@ -554,6 +609,12 @@ function removerJogadorDaSala(socket) {
     const sala = salas[salaId];
     if (!sala || sala.operadores[operadorId]?.socketId !== socket.id) return;
 
+    const disconnectTimer = sala.disconnectTimers.get(operadorId);
+    if (disconnectTimer) {
+        clearTimeout(disconnectTimer);
+        sala.disconnectTimers.delete(operadorId);
+    }
+
     if (sala.socketDonoId === socket.id) sala.socketDonoId = null;
     delete sala.operadores[operadorId];
     sala.jogadores = sala.jogadores.filter(
@@ -567,6 +628,7 @@ function removerJogadorDaSala(socket) {
     if (sala.host === operadorId)
         sala.host = Object.keys(sala.operadores)[0] || null;
     if (sala.jogadores.length === 0) {
+        for (const timer of sala.disconnectTimers.values()) clearTimeout(timer);
         delete salas[salaId];
         console.log(`> Sala ${salaId} foi excluída por estar vazia (0/${MAX_JOGADORES_SALA}).`);
     } else {
@@ -620,10 +682,38 @@ io.on("connection", (socket) => {
         try {
             // Identidade leve existente: username/operadorId informados pelo cliente.
             // Isto não constitui validação antitrapaça nem altera a autenticação.
-            const salvo = partidas.salvar(resultado);
+            const resultadoValidado = validarResultado(resultado);
+            const salvo = partidas.salvar(resultadoValidado);
             // Mantém compatibilidade com os consumidores antigos do store em memória.
             accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
             io.to("ranking").emit("rankingAtualizado", { records: salvo.records });
+            const roomId = typeof resultado.roomId === "string" ? resultado.roomId.trim().toUpperCase() : "";
+            const sala = salas[roomId];
+            const jogador = sala?.jogadores.find((item) =>
+                item.id === resultado.operadorId || normalizeUsername(item.username) === normalizeUsername(resultado.username),
+            );
+            if (sala && jogador) {
+                const registro = {
+                    partidaId: resultadoValidado.partidaId,
+                    recebidoEm: new Date().toISOString(),
+                    perfil: {
+                        id: jogador.id,
+                        nome: jogador.username,
+                        instrumento: Object.entries(sala.instrumentos).find(([, operadorId]) => operadorId === jogador.id)?.[0] || resultadoValidado.instrumento,
+                    },
+                    musica: resultadoValidado.musica,
+                    pontuacao: resultadoValidado.pontuacao,
+                    precisao: resultadoValidado.precisao,
+                    maiorCombo: resultadoValidado.maiorCombo,
+                    notasAcertadas: resultadoValidado.notasAcertadas,
+                    notasErradas: resultadoValidado.notasErradas,
+                    fullCombo: resultadoValidado.fullCombo,
+                };
+                sala.resultadosRecentes = sala.resultadosRecentes.filter((item) => item.partidaId !== registro.partidaId);
+                sala.resultadosRecentes.push(registro);
+                sala.resultadosRecentes = sala.resultadosRecentes.slice(-20);
+                io.to(`operador-resultados:${roomId}`).emit("resultado_individual_recebido", registro);
+            }
             if (salvo.novasConquistas?.length) {
                 io.to(`conquistas:${normalizeUsername(resultado.username)}`).emit("conquistaDesbloqueada", {
                     notificacoes: salvo.notificacoesConquistas,
@@ -638,6 +728,66 @@ io.on("connection", (socket) => {
             console.error("> Falha ao sincronizar resultado:", error);
             if (typeof callback === "function") callback({ ok: false, erro: error.code ? "Falha ao gravar resultado em disco." : error.message });
         }
+    });
+
+    socket.on("monitorar_resultados_salas", ({ token } = {}, callback) => {
+        const authorization = isOfficialOperator({
+            headers: { authorization: typeof token === "string" ? `Bearer ${token}` : "" },
+        });
+        if (!authorization.ok) {
+            if (typeof callback === "function") callback({ ok: false, erro: authorization.error });
+            return;
+        }
+        for (const id of socket.data.salasMonitoradas || []) socket.leave(`operador-resultados:${id}`);
+        const ids = Object.keys(salas);
+        for (const id of ids) socket.join(`operador-resultados:${id}`);
+        socket.join("operador-resultados-global");
+        socket.data.salasMonitoradas = ids;
+        if (typeof callback === "function") callback({
+            ok: true,
+            salas: resumoSalas(),
+            tickets: ids.flatMap((id) => salas[id].ticketsPendentes),
+            resultados: [...ids.flatMap((id) => salas[id].resultadosRecentes), ...resultadosExecutavelRecentes],
+        });
+    });
+
+    socket.on("remover_ticket_sessao", ({ token, ticketId } = {}, callback) => {
+        const authorization = isOfficialOperator({
+            headers: { authorization: typeof token === "string" ? `Bearer ${token}` : "" },
+        });
+        if (!authorization.ok) {
+            if (typeof callback === "function") callback({ ok: false, erro: authorization.error });
+            return;
+        }
+        for (const sala of Object.values(salas)) {
+            const index = sala.ticketsPendentes.findIndex((ticket) => ticket.ticketId === ticketId);
+            if (index === -1) continue;
+            sala.ticketsPendentes.splice(index, 1);
+            if (sala.ultimoTicket?.ticketId === ticketId) {
+                sala.ultimoTicket = sala.ticketsPendentes[sala.ticketsPendentes.length - 1] || null;
+            }
+            io.to(`operador-resultados:${sala.roomId}`).emit("ticket_sessao_removido", { ticketId });
+            if (typeof callback === "function") callback({ ok: true });
+            return;
+        }
+        if (typeof callback === "function") callback({ ok: true });
+    });
+
+    socket.on("limpar_resultados_recentes", ({ token } = {}, callback) => {
+        const authorization = isOfficialOperator({
+            headers: { authorization: typeof token === "string" ? `Bearer ${token}` : "" },
+        });
+        if (!authorization.ok) {
+            if (typeof callback === "function") callback({ ok: false, erro: authorization.error });
+            return;
+        }
+        resultadosExecutavelRecentes.length = 0;
+        for (const sala of Object.values(salas)) {
+            sala.resultadosRecentes = [];
+            io.to(`operador-resultados:${sala.roomId}`).emit("resultados_recentes_limpos");
+        }
+        io.to("operador-resultados-global").emit("resultados_recentes_limpos");
+        if (typeof callback === "function") callback({ ok: true });
     });
 
     console.log(`> Cliente conectado: ${socket.id}`);
@@ -737,6 +887,21 @@ io.on("connection", (socket) => {
             }
 
             io.to(roomId).emit("sala_emitiu_ticket", { roomId, modo });
+            const ticket = {
+                ticketId: randomUUID(),
+                roomId,
+                roomName: sala.roomName,
+                modo: modo || { tipo: "freeplay", fase: null },
+                emitidoEm: new Date().toISOString(),
+                jogadores: sala.jogadores.map((jogador) => ({
+                    id: jogador.id,
+                    nome: jogador.username,
+                    instrumento: Object.entries(sala.instrumentos).find(([, operadorId]) => operadorId === jogador.id)?.[0] || "sem instrumento",
+                })),
+            };
+            sala.ultimoTicket = ticket;
+            sala.ticketsPendentes.push(ticket);
+            io.to(`operador-resultados:${roomId}`).emit("ticket_sessao_recebido", ticket);
             if (typeof callback === "function") callback({ ok: true });
         },
     );
@@ -757,6 +922,11 @@ io.on("connection", (socket) => {
 
         if (cliente.data.salaId && cliente.data.salaId !== salaId)
             removerJogadorDaSala(cliente);
+        const disconnectTimer = sala.disconnectTimers.get(operadorId);
+        if (disconnectTimer) {
+            clearTimeout(disconnectTimer);
+            sala.disconnectTimers.delete(operadorId);
+        }
         cliente.join(salaId);
         cliente.data.salaId = salaId;
         cliente.data.operadorId = operadorId;
@@ -857,9 +1027,20 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         console.log(`> Cliente desconectado: ${socket.id}`);
+        const { salaId, operadorId } = socket.data;
+        const sala = salas[salaId];
+        if (!sala || sala.operadores[operadorId]?.socketId !== socket.id) return;
 
-        // Centraliza a remoção e exclui imediatamente as salas vazias.
-        removerJogadorDaSala(socket);
+        const previousTimer = sala.disconnectTimers.get(operadorId);
+        if (previousTimer) clearTimeout(previousTimer);
+        const timer = setTimeout(() => {
+            sala.disconnectTimers.delete(operadorId);
+            // A página seguinte tem uma janela para reconectar com a mesma identidade.
+            if (salas[salaId] === sala && sala.operadores[operadorId]?.socketId === socket.id) {
+                removerJogadorDaSala(socket);
+            }
+        }, ROOM_RECONNECT_GRACE_MS);
+        sala.disconnectTimers.set(operadorId, timer);
     });
 });
 

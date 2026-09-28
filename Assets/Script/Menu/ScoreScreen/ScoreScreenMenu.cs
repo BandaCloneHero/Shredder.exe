@@ -29,6 +29,7 @@ using YARG.Helpers.Extensions;
 using YARG.Core.Engine;
 using YARG.Playback;
 using YARG.Settings;
+using YARG.Integration;
 
 namespace YARG.Menu.ScoreScreen
 {
@@ -154,6 +155,7 @@ namespace YARG.Menu.ScoreScreen
 
             // Put the scores in!
             CreateScoreCards(scoreScreenStats);
+            StartCoroutine(OperatorScoreReporter.Send(scoreScreenStats, song));
 
             SetNavigationScheme();
 

@@ -116,7 +116,7 @@
         "67"
       ],
       "createdAt": "2026-09-25T17:18:10.276Z",
-      "updatedAt": "2026-09-27T22:49:55.269Z",
+      "updatedAt": "2026-09-28T01:24:23.569Z",
       "resultadosPartidas": {
         "evt_446fa935-1343-4464-be4e-2816830459c8": {
           "partidaId": "evt_446fa935-1343-4464-be4e-2816830459c8",
@@ -138,8 +138,33 @@
           1
         ],
         "favoritas": [],
-        "selecionada": null,
-        "historicoSelecionadas": []
+        "selecionada": 1,
+        "historicoSelecionadas": [
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-09-28T00:16:44.351Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-09-28T00:29:44.956Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-09-28T00:35:43.007Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-09-28T00:41:58.869Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-09-28T00:47:53.235Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-09-28T01:24:23.569Z"
+          }
+        ]
       },
       "achievementProgress": {
         "gamesByDay": {}
@@ -280,7 +305,7 @@
       "currency": 0,
       "gamesPlayed": 0,
       "currentTitle": "Novato do Rock",
-      "updatedAt": "2026-09-27T14:48:46.391Z",
+      "updatedAt": "2026-09-28T01:35:02.541Z",
       "lifetimeStats": {
         "totalNotesHit": 0,
         "totalMisses": 0
@@ -326,7 +351,15 @@
         "selecionada": null,
         "historicoSelecionadas": []
       },
-      "achievements": [],
+      "achievements": [
+        "primeiros_acordes",
+        "aquecimento",
+        "on_fire",
+        "especialista",
+        "mestre_baixo",
+        "volta_por_cima",
+        "desafinador_profissional"
+      ],
       "achievementProgress": {
         "gamesByDay": {}
       },
@@ -403,8 +436,8 @@
       "avatar": "",
       "currency": 0,
       "gamesPlayed": 0,
-      "currentTitle": "Novato do Rock",
-      "updatedAt": "2026-09-27T14:48:46.391Z",
+      "currentTitle": "NEW FUNG FUNG",
+      "updatedAt": "2026-09-28T00:56:04.981Z",
       "lifetimeStats": {
         "totalNotesHit": 0,
         "totalMisses": 0
