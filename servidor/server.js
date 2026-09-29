@@ -535,6 +535,7 @@ app.post("/api/operador/salvar-pontuacao-banda", (req, res) => {
 
 const salas = {};
 const resultadosExecutavelRecentes = [];
+const ticketsSessaoPendentes = [];
 const ultimoEnvioExecutavelPorIp = new Map();
 const lotesExecutavelRecebidos = new Map();
 let proximaOrdemTicket = 0;
@@ -542,7 +543,7 @@ const MAX_JOGADORES_SALA = 4;
 const ROOM_RECONNECT_GRACE_MS = 15000;
 
 function ticketsNaFila() {
-    return Object.values(salas).flatMap((sala) => sala.ticketsPendentes)
+    return [...ticketsSessaoPendentes]
         .sort((a, b) => (a.ordemFila || Date.parse(a.emitidoEm)) - (b.ordemFila || Date.parse(b.emitidoEm)));
 }
 
@@ -655,7 +656,6 @@ function criarEstruturaSala(roomId, roomName, banda, criadorUsername, donoId, so
         },
         operadores: {},
         disconnectTimers: new Map(),
-        ticketsPendentes: [],
         resultadosRecentes: [],
     };
 }
@@ -918,6 +918,8 @@ io.on("connection", (socket) => {
             return;
         }
 
+        const filaIndex = ticketsSessaoPendentes.findIndex((item) => item.ticketId === ticket.ticketId);
+        if (filaIndex !== -1) ticketsSessaoPendentes.splice(filaIndex, 1);
         const sala = salas[ticket.roomId];
         if (sala) {
             sala.ticketsPendentes = sala.ticketsPendentes.filter((item) => item.ticketId !== ticket.ticketId);
@@ -936,21 +938,24 @@ io.on("connection", (socket) => {
             if (typeof callback === "function") callback({ ok: false, erro: authorization.error });
             return;
         }
-        for (const sala of Object.values(salas)) {
-            const index = sala.ticketsPendentes.findIndex((ticket) => ticket.ticketId === ticketId);
-            if (index === -1) continue;
-            if (ticketsNaFila()[0]?.ticketId !== ticketId || sala.ticketsPendentes[index].resultadosExecutavel) {
+        const index = ticketsSessaoPendentes.findIndex((ticket) => ticket.ticketId === ticketId);
+        if (index !== -1) {
+            const ticket = ticketsSessaoPendentes[index];
+            if (ticketsNaFila()[0]?.ticketId !== ticketId || ticket.resultadosExecutavel) {
                 if (typeof callback === "function") callback({ ok: false, erro: "Só é possível remover o primeiro ticket da fila, antes de receber resultados." });
                 return;
             }
-            sala.ticketsPendentes.splice(index, 1);
-            if (sala.ultimoTicket?.ticketId === ticketId) {
-                sala.ultimoTicket = sala.ticketsPendentes[sala.ticketsPendentes.length - 1] || null;
+            ticketsSessaoPendentes.splice(index, 1);
+            const sala = salas[ticket.roomId];
+            if (sala) {
+                sala.ticketsPendentes = sala.ticketsPendentes.filter((item) => item.ticketId !== ticketId);
+                if (sala.ultimoTicket?.ticketId === ticketId) {
+                    sala.ultimoTicket = sala.ticketsPendentes[sala.ticketsPendentes.length - 1] || null;
+                }
+                io.to(`operador-resultados:${sala.roomId}`).emit("ticket_sessao_removido", { ticketId });
             }
-            io.to(`operador-resultados:${sala.roomId}`).emit("ticket_sessao_removido", { ticketId });
-            if (typeof callback === "function") callback({ ok: true });
-            return;
         }
+        io.to("operador-resultados-global").emit("ticket_sessao_removido", { ticketId });
         if (typeof callback === "function") callback({ ok: true });
     });
 
@@ -1086,9 +1091,10 @@ io.on("connection", (socket) => {
                     instrumento: Object.entries(sala.instrumentos).find(([, operadorId]) => operadorId === jogador.id)?.[0] || "sem instrumento",
                 })),
             };
-            sala.ultimoTicket = ticket;
+            ticketsSessaoPendentes.push(ticket);
             sala.ticketsPendentes.push(ticket);
-            io.to(`operador-resultados:${roomId}`).emit("ticket_sessao_recebido", ticket);
+            sala.ultimoTicket = ticket;
+            io.to("operador-resultados-global").emit("ticket_sessao_recebido", ticket);
             if (typeof callback === "function") callback({ ok: true });
         },
     );
