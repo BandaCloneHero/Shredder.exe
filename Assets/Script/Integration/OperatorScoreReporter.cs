@@ -8,6 +8,10 @@ using YARG.Core;
 using YARG.Core.Engine;
 using YARG.Helpers.Extensions;
 using YARG.Song;
+using YARG.Core.Game;
+using YARG.Core.Song;
+using YARG.Menu.ScoreScreen;
+using YARG.Localization;
 
 namespace YARG.Integration
 {
