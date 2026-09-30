@@ -55,7 +55,7 @@
                 <div>
                     <p class="eyebrow">NOVA TRANSMISSÃO</p>
                     <h2>Crie uma sala.</h2>
-                    <p>Abra uma frequência para até quatro operadores.</p>
+                    <p>Abra uma sala para até quatro operadores. Se informar uma banda, o nome acompanha os tickets e as pontuações do grupo.</p>
                 </div>
                 <form id="form-criar-sala" class="room-form" novalidate>
                     <label for="room-name">NOME DA SALA</label>
@@ -67,6 +67,17 @@
                             maxlength="40"
                             placeholder="Ex.: PALCO PRINCIPAL"
                             required
+                        />
+                    </div>
+                    <label for="band-name">NOME DA BANDA <small>(opcional)</small></label>
+                    <div class="input-wrap">
+                        <span class="input-prefix">♫</span>
+                        <input
+                            id="band-name"
+                            name="bandName"
+                            maxlength="40"
+                            placeholder="Ex.: OS SHREDDERS"
+                            autocomplete="off"
                         />
                     </div>
                     <button

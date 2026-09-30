@@ -27,6 +27,8 @@ await window.concluirMusica({
 
 ## Semântica e decisões pendentes
 
+O ranking público permite selecionar Freeplay ou Modo História e, dentro do modo, uma música com resultados registrados. A lista de músicas é derivada do histórico salvo, pois o site não mantém catálogo completo das músicas do YARG. Cada tabela individual mostra o maior resultado do jogador naquela música/instrumento; resultados de outras músicas não entram no cálculo. Resultados antigos sem `modo` são classificados como História quando têm `fase` registrada e Freeplay nos demais casos.
+
 - Recordes individuais: maior pontuação por conta/instrumento; identidade no ranking é o username normalizado, para resistir à troca de operadorId do navegador.
 - Bandas: mantém a regra de soma das pontuações dos registros vinculados à banda que o ranking já utilizava. O callback real precisa fornecer `{ id, nome }` ou definir `player.banda`; sem banda o resultado conta apenas na aba individual. Decidir se futuramente a classificação será por sessão, melhor música ou temporada.
 - `songsCompleted`: músicas distintas **por instrumento**, rastreadas em `songRecords[musica].instrumentosCompletados`. Dados antigos sem esse histórico são preservados; a primeira execução após a integração passa a registrar a associação. Uma migração precisa de histórico real para deduplicar com totais antigos.
@@ -38,6 +40,14 @@ await window.concluirMusica({
 Execute `npm test` dentro de `servidor`. Os testes usam arquivos temporários e não alteram contas reais.
 
 ## Campos adicionais no Painel do Operador
+
+### Resultados do executável Unity e fila FIFO
+
+Tickets de todas as salas recebem uma ordem global de emissão. O endpoint `/api/operador/resultados-executavel` associa cada lote ao ticket mais antigo ainda sem resultados, comparando os instrumentos enviados pelo YARG aos instrumentos reservados no ticket. O lote fica aguardando revisão no painel; nenhuma conta ou ranking muda antes da confirmação de um operador oficial. A confirmação é aceita somente para o primeiro ticket da fila e grava cada resultado pela rota compartilhada `partidas.salvar`, atualizando perfil, conquistas e ranking. O ticket só sai da fila depois que todas as gravações terminam. IDs de partida estáveis por ticket/instrumento tornam uma retentativa idempotente.
+
+Ao criar a sala, o proprietário pode informar um nome de banda separado do nome da sala. A identidade da banda acompanha cada ticket. Após confirmar os resultados individuais, o servidor salva também o `BandScore` enviado pelo YARG (ou a soma dos resultados individuais para executáveis antigos), junto com música, modo e integrantes. A classificação de bandas usa a melhor pontuação dessa banda por música, sem somar tentativas ou faixas diferentes.
+
+O executável inclui `loteId` para reconhecer reenvios durante a execução atual do servidor. Como as salas e tickets já eram mantidos em memória, tickets pendentes e revisões também são perdidos se o processo Node reiniciar; após reiniciar, emita novos tickets para as próximas músicas. Os instrumentos aceitos incluem os nomes localizados e os identificadores do YARG (`FiveFretGuitar`, `FiveFretBass`, `Drums` e `ProKeys`).
 
 `operador.html` organiza o preenchimento em jogador/perfil, música/pontuação e precisão/combo/notas. O POST `/api/operador/salvar-pontuacao` aceita `nickname` (até 40 caracteres), `currentTitle` (até 80) e `currency` (inteiro de 0 a 1 bilhão) como campos opcionais. Apelido e título omitidos ou em branco mantêm os valores atuais. `currency` significa **moedas ganhas nesta sessão**: é somado ao saldo existente; não substitui o saldo. Campos legados `moedas` e `tituloEquipado`, quando presentes, são sincronizados com os ajustes para a página de perfil refletir o resultado.
 

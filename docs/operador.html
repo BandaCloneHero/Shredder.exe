@@ -87,14 +87,14 @@
     <main class="operator-shell">
         <p class="eyebrow">ESTAÇÃO // REGISTRO DE RESULTADOS</p>
         <h1>Painel do <span>Operador.</span></h1>
-        <p class="operator-intro">Transcreva os resultados exibidos no YARG ao final da música. Use o username da conta cadastrada do jogador. Preencha os dados da partida e, se necessário, ajuste o perfil. Os campos opcionais estão identificados.</p>
+        <p class="operator-intro">Confira os resultados enviados pelo executável e confirme a associação com os jogadores do ticket. O servidor atualiza perfil e ranking somente após a confirmação.</p>
         <section class="incoming-results" aria-labelledby="incoming-title">
             <h2 id="incoming-title">Tickets de sessão recebidos</h2>
-            <p class="operator-help">Tickets emitidos e resultados recentes do jogo aparecem aqui automaticamente. As pontuações incluem o perfil, instrumento e música, sem precisar identificar a sala.</p>
+            <p class="operator-help">Os tickets entram em uma fila FIFO global. Cada lote do YARG é associado ao ticket mais antigo sem resultados; confira os nomes e pontuações e confirme para salvar e liberar a fila.</p>
             <p id="incoming-results-status" class="incoming-results-status" role="status" aria-live="polite">Conectando ao servidor para localizar as salas ativas...</p>
             <div id="incoming-ticket-list" class="incoming-result-list" aria-live="polite"></div>
-            <h3 class="incoming-subheading">Resultados individuais recentes</h3>
-            <p class="operator-help">As pontuações vêm diretamente da tela de resultados do executável e mostram o perfil local de cada jogador.</p>
+            <h3 class="incoming-subheading">Outros resultados individuais recentes</h3>
+            <p class="operator-help">Resultados de outros fluxos continuam visíveis abaixo; resultados do executável aguardam confirmação no ticket correspondente.</p>
             <div class="incoming-results-actions"><button id="clear-recent-results" class="button button-ghost" type="button">Limpar resultados recentes</button></div>
             <div id="incoming-match-list" class="incoming-result-list" aria-live="polite"></div>
         </section>
@@ -295,7 +295,7 @@
                 <fieldset id="band-fields" class="operator-fields" aria-label="Pontuação da banda">
                     <section class="operator-block">
                         <h2><span>01</span> Banda</h2>
-                        <p class="operator-help">Este registro afeta somente a categoria Bandas. Não cria partida, recorde ou estatística para jogadores individuais.</p>
+                        <p class="operator-help">Informe música e modo para colocar o resultado na categoria correta. Este registro afeta somente o ranking de bandas.</p>
                         <div class="operator-grid">
                             <div class="operator-field">
                                 <label for="band-name">Nome da banda</label>
@@ -307,7 +307,18 @@
                             </div>
                             <div class="operator-field">
                                 <label for="band-score">Pontuação da banda</label>
-                                <input id="band-score" name="pontuacao" type="number" min="0" max="1000000000" step="1" required inputmode="numeric" placeholder="4000000">
+                                <input id="band-score" name="pontuacao" type="number" min="0" max="4000000000" step="1" required inputmode="numeric" placeholder="4000000">
+                            </div>
+                            <div class="operator-field">
+                                <label for="band-song">Música</label>
+                                <input id="band-song" name="musica" type="text" maxlength="200" required placeholder="Nome da música">
+                            </div>
+                            <div class="operator-field">
+                                <label for="band-mode">Modo</label>
+                                <select id="band-mode" name="modo" required>
+                                    <option value="freeplay">Freeplay</option>
+                                    <option value="historia">Modo História</option>
+                                </select>
                             </div>
                         </div>
                         <div class="operator-block" style="margin-top: 24px; margin-bottom: 0; padding-bottom: 0">
@@ -586,6 +597,8 @@
                 const payload = {
                     nome: value("nome"),
                     id: value("id") || undefined,
+                    musica: value("musica"),
+                    modo: value("modo"),
                     pontuacao: bandForm.elements.namedItem("pontuacao").valueAsNumber,
                     membros,
                 };

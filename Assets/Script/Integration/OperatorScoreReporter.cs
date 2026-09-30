@@ -12,8 +12,8 @@ using YARG.Song;
 namespace YARG.Integration
 {
     /// <summary>
-    /// Sends completed Unity score cards to the operator's live results feed.
-    /// This is intentionally separate from YARG's own score saving and ranking.
+    /// Sends completed Unity score cards to the operator's FIFO review queue.
+    /// The web profile and ranking are updated only after operator confirmation.
     /// </summary>
     public static class OperatorScoreReporter
     {
@@ -22,7 +22,9 @@ namespace YARG.Integration
         [Serializable]
         private sealed class ResultBatch
         {
+            public string loteId;
             public string musica;
+            public int pontuacaoBanda;
             public List<PlayerResult> resultados;
         }
 
@@ -47,7 +49,9 @@ namespace YARG.Integration
 
             var batch = new ResultBatch
             {
+                loteId = Guid.NewGuid().ToString("N"),
                 musica = song.Name,
+                pontuacaoBanda = Mathf.Max(0, scoreScreenStats.BandScore),
                 resultados = new List<PlayerResult>()
             };
 

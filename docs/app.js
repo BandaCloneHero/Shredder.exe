@@ -9,6 +9,7 @@ const STORAGE = {
     lobby: "shredder_lobby",
     roomId: "shredder_room_id",
     roomName: "shredder_room_name",
+    roomBand: "shredder_room_band",
     mode: "shredder_modo",
     progress: "shredder_progresso",
 };
@@ -446,6 +447,7 @@ function initializeInstruments() {
 function saveRoom(room) {
     localStorage.setItem(STORAGE.roomId, room.roomId);
     localStorage.setItem(STORAGE.roomName, room.roomName || "SALA SEM NOME");
+    localStorage.setItem(STORAGE.roomBand, JSON.stringify(room.banda || null));
 }
 
 window.updateOwnerControls = function (roomState) {
@@ -519,6 +521,7 @@ function initializeLobby() {
     const socket = window.socket;
     const roomList = document.querySelector("#room-list");
     const roomNameInput = document.querySelector("#room-name");
+    const bandNameInput = document.querySelector("#band-name");
     const createForm = document.querySelector("#form-criar-sala");
     const status = document.querySelector("#lobby-status");
     const emptyState = document.querySelector("#lobby-empty");
@@ -593,8 +596,8 @@ function initializeLobby() {
             card.disabled = full;
             card.innerHTML = `<span class="room-card-kicker">${full ? "SALA CHEIA // BLOQUEADA" : "SALA DISPONÍVEL"}</span><strong></strong><small></small><b></b>`;
             card.querySelector("strong").textContent = room.roomName;
-            card.querySelector("small").textContent =
-                `CRIADOR // ${room.criadorUsername} · CÓDIGO ${room.roomId}`;
+        card.querySelector("small").textContent =
+                `CRIADOR // ${room.criadorUsername} · CÓDIGO ${room.roomId}${room.banda?.nome ? ` · BANDA // ${room.banda.nome}` : ""}`;
             card.querySelector("b").textContent =
                 `${room.quantidadeJogadores}/${room.limiteJogadores} OPERADORES`;
             if (!full) card.addEventListener("click", () => enterRoom(room));
@@ -606,6 +609,7 @@ function initializeLobby() {
     createForm.addEventListener("submit", (event) => {
         event.preventDefault();
         const roomName = roomNameInput.value.trim();
+        const bandName = bandNameInput?.value.trim() || "";
         if (!roomName) {
             showError("IDENTIFIQUE A SALA ANTES DE TRANSMITIR.");
             roomNameInput.focus();
@@ -613,7 +617,7 @@ function initializeLobby() {
         }
         socket.emit(
             "criarSala",
-            { roomName, username: player.nome, operadorId: player.id },
+            { roomName, bandName, username: player.nome, operadorId: player.id },
             (response) => {
                 if (!response?.ok) {
                     showError(
@@ -816,6 +820,7 @@ function enviarPontuacaoParaRanking(dados) {
         username: dados.username || player.nome,
         instrumento: dados.instrumento || player.instrumento,
         banda: dados.banda ?? normalizeBand(player.banda),
+        modo: dados.modo || modo.tipo,
         // A tela de fases escolhe o modo antes de abrir o jogo. Ao concluir a
         // música, a mesma fase segue junto do resultado para o perfil remoto.
         ...(dados.fase === undefined && faseDaCampanha !== undefined ? { fase: faseDaCampanha } : {}),
@@ -852,10 +857,23 @@ function normalizeBand(banda) {
     return { id: banda.id || banda.nome, nome: banda.nome || banda.id };
 }
 
+function rankingMode(record) {
+    if (record.modo === "freeplay" || record.modo === "historia") return record.modo;
+    return record.fase === undefined || record.fase === null ? "freeplay" : "historia";
+}
+
+function rankingSongs(records, mode) {
+    return [...new Set(records
+        .filter(record => rankingMode(record) === mode && typeof record.musica === "string" && record.musica.trim())
+        .map(record => record.musica.trim()))]
+        .sort((a, b) => a.localeCompare(b, "pt-BR", { sensitivity: "base" }));
+}
+
 function aggregateRanking(records, tab) {
     const groups = new Map();
+    const membrosPorBanda = new Map();
     records.forEach((record) => {
-        const score = Number(tab === "bandas" ? record.pontuacao : (record.pontuacaoIndividual ?? record.pontuacao));
+        const score = Number(record.pontuacao);
         if (!record.nome || !Number.isFinite(score)) return;
         // Registros de banda não pertencem a um jogador individual e, por isso,
         // não têm jogadorId. Eles são válidos exclusivamente na aba Bandas.
@@ -863,15 +881,21 @@ function aggregateRanking(records, tab) {
         const band = normalizeBand(record.banda);
         if (tab === "bandas") {
             if (!band) return;
-            const current = groups.get(band.id) || {
-                id: band.id,
-                nome: band.nome,
-                pontuacao: 0,
-                instrumento: null,
-                membros: [],
-            };
-            current.pontuacao += score;
-            if (Array.isArray(record.membros) && record.membros.length) current.membros = record.membros;
+            const current = groups.get(band.id) || { id: band.id, nome: band.nome, pontuacao: 0, instrumento: null, membros: [], pontuacaoExplicita: -1 };
+            if (record.jogadorId) {
+                const membros = membrosPorBanda.get(band.id) || new Map();
+                const membro = membros.get(record.jogadorId);
+                if (!membro || score > membro.pontuacao) membros.set(record.jogadorId, {
+                    nome: record.nome,
+                    instrumento: record.instrumento,
+                    pontuacao: score,
+                });
+                membrosPorBanda.set(band.id, membros);
+            } else if (score > current.pontuacaoExplicita) {
+                current.pontuacaoExplicita = score;
+                current.pontuacao = score;
+                current.membros = Array.isArray(record.membros) ? record.membros : [];
+            }
             groups.set(band.id, current);
             return;
         }
@@ -885,6 +909,14 @@ function aggregateRanking(records, tab) {
                 pontuacao: score,
             });
     });
+    if (tab === "bandas") {
+        for (const [id, band] of groups) {
+            if (band.pontuacaoExplicita >= 0) continue;
+            const membros = [...(membrosPorBanda.get(id)?.values() || [])];
+            band.pontuacao = membros.reduce((total, membro) => total + membro.pontuacao, 0);
+            band.membros = membros;
+        }
+    }
     return [...groups.values()].sort(
         (left, right) =>
             right.pontuacao - left.pontuacao ||
@@ -892,14 +924,15 @@ function aggregateRanking(records, tab) {
     );
 }
 
-function renderRankingChampions(records) {
+function renderRankingChampions(records, mode, song) {
     const container = document.querySelector("#ranking-champions");
     if (!container) return;
+    const scopedRecords = records.filter(record => rankingMode(record) === mode && record.musica === song);
     const instrumentos = ["Guitarra", "Baixo", "Bateria", "Teclado"];
     const campeoes = instrumentos
         .map((instrumento) => ({
             instrumento,
-            jogador: aggregateRanking(records, instrumento)[0],
+            jogador: aggregateRanking(scopedRecords, instrumento)[0],
         }))
         .filter(({ jogador }) => jogador);
     container.hidden = campeoes.length === 0;
@@ -939,8 +972,7 @@ function renderRankingTab(records, tab, player) {
     const mine = document.querySelector("#my-ranking");
     const ranking = aggregateRanking(records, tab);
     const top = ranking.slice(0, 100);
-    const playerId =
-        tab === "bandas" ? normalizeBand(player?.banda)?.id : player?.nome?.toLowerCase();
+    const playerId = tab === "bandas" ? normalizeBand(player?.banda)?.id : player?.nome?.toLowerCase();
     const playerPosition = playerId
         ? ranking.findIndex((item) => item.id === playerId)
         : -1;
@@ -987,8 +1019,13 @@ async function initializeRanking() {
     const list = document.querySelector("#ranking-list");
     const status = document.querySelector("#ranking-status");
     const tabs = document.querySelectorAll("[data-ranking-tab]");
+    const modeTabs = document.querySelectorAll("[data-ranking-mode]");
+    const songSelect = document.querySelector("#ranking-song-select");
     let records = [];
     let dataAvailable = false;
+    let selectedMode = "freeplay";
+    let selectedSong = "";
+    let selectedTab = "Guitarra";
     let holdTimer;
     let heldBandCell = null;
     const posicionarDetalhesDaBanda = (cell) => {
@@ -1034,27 +1071,71 @@ async function initializeRanking() {
     ["pointerup", "pointercancel", "pointerleave"].forEach(eventName =>
         list?.addEventListener?.(eventName, () => clearTimeout(holdTimer))
     );
+    const renderSelection = () => {
+        const scopedRecords = selectedSong
+            ? records.filter(record => rankingMode(record) === selectedMode && record.musica === selectedSong)
+            : [];
+        renderRankingChampions(records, selectedMode, selectedSong);
+        renderRankingTab(dataAvailable ? scopedRecords : [], selectedTab, player);
+    };
+    const updateSongs = () => {
+        if (!songSelect) return;
+        const previous = selectedSong;
+        const songs = rankingSongs(records, selectedMode);
+        songSelect.replaceChildren();
+        if (!songs.length) {
+            const empty = document.createElement("option");
+            empty.value = "";
+            empty.textContent = "NENHUMA MÚSICA COM RESULTADOS";
+            songSelect.append(empty);
+            songSelect.disabled = true;
+            selectedSong = "";
+            return;
+        }
+        for (const song of songs) {
+            const option = document.createElement("option");
+            option.value = song;
+            option.textContent = song;
+            songSelect.append(option);
+        }
+        songSelect.disabled = false;
+        selectedSong = songs.includes(previous) ? previous : songs[0];
+        songSelect.value = selectedSong;
+    };
     const selectTab = (tab) => {
+        selectedTab = tab;
         tabs.forEach((button) =>
             button.classList.toggle(
                 "active",
                 button.dataset.rankingTab === tab,
             ),
         );
-        renderRankingTab(dataAvailable ? records : [], tab, player);
+        renderSelection();
     };
     tabs.forEach((button) =>
         button.addEventListener("click", () =>
             selectTab(button.dataset.rankingTab),
-        ),
+    ),
     );
+    modeTabs.forEach(button => button.addEventListener("click", () => {
+        selectedMode = button.dataset.rankingMode;
+        modeTabs.forEach(item => item.classList.toggle("active", item === button));
+        updateSongs();
+        renderSelection();
+    }));
+    songSelect?.addEventListener("change", () => {
+        selectedSong = songSelect.value;
+        renderSelection();
+    });
     selectTab("Guitarra");
+    updateSongs();
+    renderSelection();
     const socket = getGameSocket();
     const atualizar = (payload) => {
         records = payload.records;
         dataAvailable = true;
         status.textContent = `SINAL ONLINE // ${records.length} REGISTRO(S) SINCRONIZADO(S)`;
-        renderRankingChampions(records);
+        updateSongs();
         selectTab(document.querySelector(".ranking-tab.active")?.dataset.rankingTab || "Guitarra");
     };
     socket.on("rankingAtualizado", atualizar);
@@ -1094,6 +1175,7 @@ function initializeTicket() {
         mode.tipo === "historia" ? "MODO HISTÓRIA" : "FREEPLAY";
     document.querySelector("#ticket-stage").textContent =
         mode.tipo === "historia" ? `FASE ${mode.fase}` : "LIVRE";
+    document.querySelector("#ticket-band").textContent = readJson(STORAGE.roomBand, null)?.nome || "SEM BANDA";
     document.querySelector("#ticket-count").textContent = lobby.length;
     document.querySelector("#ticket-code").textContent = player.id
         .slice(-4)

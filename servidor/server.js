@@ -458,6 +458,7 @@ app.post("/api/operador/salvar-pontuacao", (req, res) => {
             operadorId: "admin-web-panel",
             username: dados.username,
             instrumento: dados.instrumento,
+            modo: dados.modo,
             musica: dados.musica,
             pontuacao: dados.pontuacao,
             maiorCombo: dados.comboMaximo ?? dados.maiorCombo,
@@ -516,6 +517,8 @@ app.post("/api/operador/salvar-pontuacao-banda", (req, res) => {
         const salvo = partidas.salvarPontuacaoBanda({
             partidaId: "band_" + randomUUID(),
             banda: { id: idInformado || idGerado, nome },
+            musica: dados.musica,
+            modo: dados.modo,
             pontuacao: dados.pontuacao,
             membros: dados.membros,
         });
@@ -533,11 +536,29 @@ app.post("/api/operador/salvar-pontuacao-banda", (req, res) => {
 const salas = {};
 const resultadosExecutavelRecentes = [];
 const ultimoEnvioExecutavelPorIp = new Map();
+const lotesExecutavelRecebidos = new Map();
+let proximaOrdemTicket = 0;
 const MAX_JOGADORES_SALA = 4;
 const ROOM_RECONNECT_GRACE_MS = 15000;
 
-// Resultados enviados diretamente pelo executável Unity. São mantidos apenas
-// em memória para aparecerem no painel, sem alterar ranking ou contas.
+function ticketsNaFila() {
+    return Object.values(salas).flatMap((sala) => sala.ticketsPendentes)
+        .sort((a, b) => (a.ordemFila || Date.parse(a.emitidoEm)) - (b.ordemFila || Date.parse(b.emitidoEm)));
+}
+
+function normalizarInstrumentoExecutavel(valor) {
+    const chave = String(valor || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const aliases = {
+        guitarra: "guitarra", fivefretguitar: "guitarra", guitar: "guitarra",
+        baixo: "baixo", fivefretbass: "baixo", bass: "baixo",
+        bateria: "bateria", drums: "bateria", drum: "bateria",
+        teclado: "teclado", prokeys: "teclado", keys: "teclado",
+    };
+    return aliases[chave] || null;
+}
+
+// O executável envia resultados que são vinculados ao ticket FIFO mais antigo
+// ainda sem lote. O operador confirma o vínculo antes de qualquer gravação.
 app.post("/api/operador/resultados-executavel", (req, res) => {
     const ip = req.ip || "desconhecido";
     const ultimoEnvio = ultimoEnvioExecutavelPorIp.get(ip) || 0;
@@ -546,8 +567,14 @@ app.post("/api/operador/resultados-executavel", (req, res) => {
     }
     const dados = req.body || {};
     if (typeof dados.musica !== "string" || !dados.musica.trim() || dados.musica.length > 200 ||
-        !Array.isArray(dados.resultados) || dados.resultados.length > MAX_JOGADORES_SALA) {
+        !Array.isArray(dados.resultados) || dados.resultados.length > MAX_JOGADORES_SALA ||
+        (dados.pontuacaoBanda !== undefined && (!Number.isSafeInteger(dados.pontuacaoBanda) || dados.pontuacaoBanda < 0 || dados.pontuacaoBanda > 4e9))) {
         return res.status(400).json({ ok: false, erro: "Dados de resultado inválidos." });
+    }
+    const loteId = typeof dados.loteId === "string" && /^[a-f0-9-]{16,64}$/i.test(dados.loteId) ? dados.loteId : null;
+    if (loteId && lotesExecutavelRecebidos.has(loteId)) {
+        const ticketId = lotesExecutavelRecebidos.get(loteId);
+        return res.json({ ok: true, duplicado: true, recebidos: dados.resultados.length, ticketId });
     }
 
     const recebidos = [];
@@ -560,13 +587,15 @@ app.post("/api/operador/resultados-executavel", (req, res) => {
             !Number.isSafeInteger(item.maiorCombo) || item.maiorCombo < 0 || item.maiorCombo > 1e6 ||
             !Number.isSafeInteger(item.notasAcertadas) || item.notasAcertadas < 0 || item.notasAcertadas > 1e6 ||
             !Number.isSafeInteger(item.notasErradas) || item.notasErradas < 0 || item.notasErradas > 1e6 ||
-            typeof item.fullCombo !== "boolean") {
+            typeof item.fullCombo !== "boolean" || item.maiorCombo > item.notasAcertadas ||
+            (item.fullCombo && (item.notasErradas !== 0 || item.notasAcertadas === 0 || item.maiorCombo !== item.notasAcertadas))) {
             return res.status(400).json({ ok: false, erro: "Pontuação de perfil inválida." });
         }
         recebidos.push({
             partidaId: `unity_${randomUUID()}`,
             recebidoEm: new Date().toISOString(),
             perfil: { nome: item.perfilNome.trim(), instrumento: item.instrumento, modoJogo: item.modoJogo },
+            instrumentoNormalizado: normalizarInstrumentoExecutavel(item.instrumento),
             musica: dados.musica.trim(),
             pontuacao: item.pontuacao,
             precisao: item.precisao,
@@ -575,20 +604,41 @@ app.post("/api/operador/resultados-executavel", (req, res) => {
             notasErradas: item.notasErradas,
             fullCombo: item.fullCombo,
         });
+        if (!normalizarInstrumentoExecutavel(item.instrumento)) {
+            return res.status(400).json({ ok: false, erro: `Instrumento não reconhecido no resultado: ${item.instrumento}.` });
+        }
     }
-    for (const resultado of recebidos) {
-        resultadosExecutavelRecentes.push(resultado);
-        io.to("operador-resultados-global").emit("resultado_individual_recebido", resultado);
+    const ticket = ticketsNaFila().find((item) => !item.resultadosExecutavel);
+    if (!ticket) {
+        return res.status(409).json({ ok: false, erro: "Nenhum ticket aguardando resultados. Os resultados não foram registrados; emita um ticket antes da próxima música." });
+    }
+    const jogadores = (ticket.jogadores || []).filter((jogador) => normalizarInstrumentoExecutavel(jogador.instrumento));
+    const instrumentosTicket = jogadores.map((jogador) => normalizarInstrumentoExecutavel(jogador.instrumento));
+    const instrumentosResultado = recebidos.map((resultado) => resultado.instrumentoNormalizado);
+    if (jogadores.length !== recebidos.length || instrumentosTicket.length !== instrumentosResultado.length ||
+        new Set(instrumentosTicket).size !== instrumentosTicket.length ||
+        new Set(instrumentosResultado).size !== instrumentosResultado.length ||
+        instrumentosTicket.some((instrumento) => !instrumentosResultado.includes(instrumento))) {
+        return res.status(409).json({ ok: false, erro: "Os instrumentos dos resultados não correspondem aos jogadores do ticket mais antigo. Confira a fila antes de continuar." });
+    }
+    ticket.resultadosExecutavel = recebidos.map(({ instrumentoNormalizado, ...resultado }) => ({ ...resultado, instrumentoNormalizado }));
+    ticket.musica = dados.musica.trim();
+    ticket.pontuacaoBanda = dados.pontuacaoBanda;
+    ticket.estado = "aguardando_confirmacao";
+    if (loteId) {
+        lotesExecutavelRecebidos.set(loteId, ticket.ticketId);
+        if (lotesExecutavelRecebidos.size > 500) lotesExecutavelRecebidos.delete(lotesExecutavelRecebidos.keys().next().value);
     }
     ultimoEnvioExecutavelPorIp.set(ip, Date.now());
-    if (resultadosExecutavelRecentes.length > 40) resultadosExecutavelRecentes.splice(0, resultadosExecutavelRecentes.length - 40);
-    return res.json({ ok: true, recebidos: recebidos.length });
+    io.to("operador-resultados-global").emit("revisao_ticket_recebida", ticket);
+    return res.json({ ok: true, recebidos: recebidos.length, ticketId: ticket.ticketId });
 });
 
-function criarEstruturaSala(roomId, roomName, criadorUsername, donoId, socketDonoId) {
+function criarEstruturaSala(roomId, roomName, banda, criadorUsername, donoId, socketDonoId) {
     return {
         roomId,
         roomName,
+        banda,
         criadorUsername,
         donoId,
         socketDonoId,
@@ -614,6 +664,7 @@ function resumoSalas() {
     return Object.values(salas).map((sala) => ({
         roomId: sala.roomId,
         roomName: sala.roomName,
+        banda: sala.banda,
         criadorUsername: sala.criadorUsername,
         criadoEm: sala.criadoEm,
         jogadores: sala.jogadores.map((jogador) => jogador.username),
@@ -787,9 +838,94 @@ io.on("connection", (socket) => {
         if (typeof callback === "function") callback({
             ok: true,
             salas: resumoSalas(),
-            tickets: ids.flatMap((id) => salas[id].ticketsPendentes),
+            tickets: ticketsNaFila(),
             resultados: [...ids.flatMap((id) => salas[id].resultadosRecentes), ...resultadosExecutavelRecentes],
         });
+    });
+
+    socket.on("confirmar_resultados_ticket", ({ token, ticketId } = {}, callback) => {
+        const authorization = isOfficialOperator({
+            headers: { authorization: typeof token === "string" ? `Bearer ${token}` : "" },
+        });
+        if (!authorization.ok) {
+            if (typeof callback === "function") callback({ ok: false, erro: authorization.error });
+            return;
+        }
+        const fila = ticketsNaFila();
+        const ticket = fila[0];
+        if (!ticket || ticket.ticketId !== ticketId) {
+            if (typeof callback === "function") callback({ ok: false, erro: "A fila mudou. Confirme primeiro o ticket mais antigo." });
+            return;
+        }
+        if (!Array.isArray(ticket.resultadosExecutavel) || ticket.estado !== "aguardando_confirmacao") {
+            if (typeof callback === "function") callback({ ok: false, erro: "Este ticket ainda não recebeu resultados para confirmar." });
+            return;
+        }
+
+        const resultadosSalvos = [];
+        try {
+            for (const item of ticket.resultadosExecutavel) {
+                const jogador = ticket.jogadores.find((pessoa) => normalizarInstrumentoExecutavel(pessoa.instrumento) === item.instrumentoNormalizado);
+                if (!jogador || !jogador.nome || !jogador.id) throw new Error("Não foi possível identificar a conta do jogador pelo ticket.");
+                const resultado = validarResultado({
+                    partidaId: `unity_${ticket.ticketId}_${item.instrumentoNormalizado}`,
+                    operadorId: String(jogador.id),
+                    username: jogador.nome,
+                    instrumento: item.instrumentoNormalizado,
+                    banda: ticket.banda || undefined,
+                    modo: ticket.modo?.tipo === "historia" ? "historia" : "freeplay",
+                    musica: ticket.musica,
+                    pontuacao: item.pontuacao,
+                    precisao: item.precisao,
+                    maiorCombo: item.maiorCombo,
+                    notasAcertadas: item.notasAcertadas,
+                    notasErradas: item.notasErradas,
+                    fullCombo: item.fullCombo,
+                    ...(ticket.modo?.tipo === "historia" && Number.isSafeInteger(ticket.modo.fase) && ticket.modo.fase > 0 ? { fase: ticket.modo.fase } : {}),
+                });
+                const salvo = partidas.salvar(resultado);
+                accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
+                io.to("ranking").emit("rankingAtualizado", { records: salvo.records });
+                if (salvo.novasConquistas?.length) {
+                    io.to(`conquistas:${normalizeUsername(resultado.username)}`).emit("conquistaDesbloqueada", {
+                        notificacoes: salvo.notificacoesConquistas,
+                    });
+                }
+                resultadosSalvos.push({ username: resultado.username, instrumento: resultado.instrumento, partidaId: resultado.partidaId });
+            }
+            if (ticket.banda) {
+                const membros = ticket.resultadosExecutavel.map((item) => {
+                    const jogador = ticket.jogadores.find((pessoa) => normalizarInstrumentoExecutavel(pessoa.instrumento) === item.instrumentoNormalizado);
+                    return { nome: jogador.nome, instrumento: item.instrumentoNormalizado, pontuacao: item.pontuacao };
+                });
+                const pontuacaoBanda = Number.isSafeInteger(ticket.pontuacaoBanda)
+                    ? ticket.pontuacaoBanda
+                    : membros.reduce((total, membro) => total + membro.pontuacao, 0);
+                const salvoBanda = partidas.salvarPontuacaoBanda({
+                    partidaId: `band_${ticket.ticketId}`,
+                    banda: ticket.banda,
+                    musica: ticket.musica,
+                    modo: ticket.modo?.tipo === "historia" ? "historia" : "freeplay",
+                    pontuacao: pontuacaoBanda,
+                    membros,
+                });
+                io.to("ranking").emit("rankingAtualizado", { records: salvoBanda.records });
+                resultadosSalvos.push({ nome: ticket.banda.nome, pontuacao: pontuacaoBanda, tipo: "banda" });
+            }
+        } catch (error) {
+            console.error("> Falha ao confirmar resultados do ticket:", error);
+            if (typeof callback === "function") callback({ ok: false, erro: error.message || "Falha ao salvar resultados." });
+            return;
+        }
+
+        const sala = salas[ticket.roomId];
+        if (sala) {
+            sala.ticketsPendentes = sala.ticketsPendentes.filter((item) => item.ticketId !== ticket.ticketId);
+            if (sala.ultimoTicket?.ticketId === ticket.ticketId) sala.ultimoTicket = null;
+            io.to(`operador-resultados:${ticket.roomId}`).emit("ticket_sessao_removido", { ticketId: ticket.ticketId });
+        }
+        io.to("operador-resultados-global").emit("ticket_sessao_removido", { ticketId: ticket.ticketId });
+        if (typeof callback === "function") callback({ ok: true, resultados: resultadosSalvos });
     });
 
     socket.on("remover_ticket_sessao", ({ token, ticketId } = {}, callback) => {
@@ -803,6 +939,10 @@ io.on("connection", (socket) => {
         for (const sala of Object.values(salas)) {
             const index = sala.ticketsPendentes.findIndex((ticket) => ticket.ticketId === ticketId);
             if (index === -1) continue;
+            if (ticketsNaFila()[0]?.ticketId !== ticketId || sala.ticketsPendentes[index].resultadosExecutavel) {
+                if (typeof callback === "function") callback({ ok: false, erro: "Só é possível remover o primeiro ticket da fila, antes de receber resultados." });
+                return;
+            }
             sala.ticketsPendentes.splice(index, 1);
             if (sala.ultimoTicket?.ticketId === ticketId) {
                 sala.ultimoTicket = sala.ticketsPendentes[sala.ticketsPendentes.length - 1] || null;
@@ -840,21 +980,25 @@ io.on("connection", (socket) => {
 
     socket.on(
         "criarSala",
-        ({ roomName, username, operadorId } = {}, callback) => {
+        ({ roomName, bandName, username, operadorId } = {}, callback) => {
             const nomeSala = String(roomName || "").trim();
+            const nomeBanda = String(bandName || "").trim();
             const nomeUsuario = String(username || "").trim();
             const id = String(operadorId || nomeUsuario).trim();
-            if (!nomeSala || nomeSala.length > 40 || !nomeUsuario || !id) {
+            if (!nomeSala || nomeSala.length > 40 || nomeBanda.length > 40 || !nomeUsuario || !id) {
                 if (typeof callback === "function")
                     callback({
                         ok: false,
-                        erro: "Nome da sala ou identidade inválida.",
+                        erro: "Nome da sala, banda ou identidade inválida.",
                     });
                 return;
             }
 
             const roomId = criarSala();
-            salas[roomId] = criarEstruturaSala(roomId, nomeSala, nomeUsuario, id, socket.id);
+            const bandId = nomeBanda.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 100);
+            const banda = nomeBanda ? { id: bandId || randomUUID(), nome: nomeBanda } : null;
+            salas[roomId] = criarEstruturaSala(roomId, nomeSala, banda, nomeUsuario, id, socket.id);
             entrarNaSala(socket, roomId, id, nomeUsuario, callback);
         },
     );
@@ -930,8 +1074,10 @@ io.on("connection", (socket) => {
             io.to(roomId).emit("sala_emitiu_ticket", { roomId, modo });
             const ticket = {
                 ticketId: randomUUID(),
+                ordemFila: ++proximaOrdemTicket,
                 roomId,
                 roomName: sala.roomName,
+                banda: sala.banda,
                 modo: modo || { tipo: "freeplay", fase: null },
                 emitidoEm: new Date().toISOString(),
                 jogadores: sala.jogadores.map((jogador) => ({
@@ -991,6 +1137,7 @@ io.on("connection", (socket) => {
                 ok: true,
                 roomId: sala.roomId,
                 roomName: sala.roomName,
+                banda: sala.banda,
             });
         transmitirSalas();
         enviarEstadoSala(salaId);

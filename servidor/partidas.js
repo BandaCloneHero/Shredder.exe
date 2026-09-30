@@ -103,6 +103,8 @@ function validarResultado(dados) {
     }
     const instrumento = typeof dados.instrumento === 'string' ? dados.instrumento.toLowerCase() : '';
     if (!INSTRUMENTOS.includes(instrumento)) throw new Error('Instrumento inválido.');
+    const modo = dados.modo === undefined ? (dados.fase === undefined ? 'freeplay' : 'historia') : dados.modo;
+    if (!['freeplay', 'historia'].includes(modo)) throw new Error('Modo de jogo inválido.');
     // Limites de transporte plausíveis; ajustar ao catálogo real de músicas/pontuação.
     for (const [campo, max] of Object.entries({ pontuacao: 1e9, maiorCombo: 1e6, notasAcertadas: 1e6, notasErradas: 1e6 })) {
         if (!Number.isSafeInteger(dados[campo]) || dados[campo] < 0 || dados[campo] > max) throw new Error(`Campo inválido: ${campo}.`);
@@ -139,7 +141,7 @@ function validarResultado(dados) {
     if (dados.dificuldade !== undefined && !['maxima'].includes(dados.dificuldade)) throw new Error('Dificuldade inválida.');
     return {
         ...Object.fromEntries(['partidaId', 'operadorId', 'username', 'pontuacao', 'precisao', 'maiorCombo', 'fullCombo', 'notasAcertadas', 'notasErradas', 'musica'].map(k => [k, dados[k]])),
-        instrumento, banda, ...perfil,
+        instrumento, banda, modo, ...perfil,
         ...(dados.pausada === undefined ? {} : { pausada: dados.pausada }),
         ...(dados.energiaFinal === undefined ? {} : { energiaFinal: dados.energiaFinal }),
         ...(dados.dificuldade === undefined ? {} : { dificuldade: dados.dificuldade }),
@@ -228,6 +230,9 @@ function criarPersistenciaPartidas(arquivo) {
         const partidas = Object.values(conta.resultadosPartidas || {}).map(r => ({
             ...identidade,
             instrumento: r.instrumento[0].toUpperCase() + r.instrumento.slice(1),
+            musica: r.musica,
+            modo: r.modo || (r.fase == null ? 'freeplay' : 'historia'),
+            fase: r.fase,
             pontuacao: r.pontuacao, banda: r.banda,
             // Correções manuais de maxScore refletem no ranking individual;
             // bandas continuam somando as pontuações registradas nas partidas.
@@ -247,6 +252,8 @@ function criarPersistenciaPartidas(arquivo) {
             jogadorId: null,
             nome: registro.banda.nome,
             instrumento: null,
+            musica: registro.musica,
+            modo: registro.modo || 'freeplay',
             pontuacao: registro.pontuacao,
             banda: registro.banda,
             membros: registro.membros || [],
@@ -369,9 +376,11 @@ function criarPersistenciaPartidas(arquivo) {
             if (!texto(payload.partidaId, 100) || !texto(payload.banda?.id, 100) || !texto(payload.banda?.nome, 100)) {
                 throw erroPerfil('Banda inválida.');
             }
-            if (!Number.isSafeInteger(payload.pontuacao) || payload.pontuacao < 0 || payload.pontuacao > 1e9) {
+            if (!Number.isSafeInteger(payload.pontuacao) || payload.pontuacao < 0 || payload.pontuacao > 4e9) {
                 throw erroPerfil('Pontuação de banda inválida.');
             }
+            if (payload.musica !== undefined && !texto(payload.musica, 200)) throw erroPerfil('Música da banda inválida.');
+            if (payload.modo !== undefined && !['freeplay', 'historia'].includes(payload.modo)) throw erroPerfil('Modo da banda inválido.');
             const membrosEnviados = payload.membros ?? [];
             if (!Array.isArray(membrosEnviados) || membrosEnviados.length > INSTRUMENTOS.length) {
                 throw erroPerfil('Integrantes da banda inválidos.');
@@ -386,12 +395,22 @@ function criarPersistenciaPartidas(arquivo) {
             const raiz = ler();
             raiz.bandRecords ??= {};
             if (typeof raiz.bandRecords !== 'object' || Array.isArray(raiz.bandRecords)) throw erroPerfil('Registros de bandas inválidos.');
-            if (Object.hasOwn(raiz.bandRecords, payload.partidaId)) throw erroPerfil('ID de pontuação de banda já usado.', 409);
+            if (Object.hasOwn(raiz.bandRecords, payload.partidaId)) {
+                const existente = raiz.bandRecords[payload.partidaId];
+                const mesmaPontuacao = existente.banda?.id === payload.banda.id.trim() &&
+                    existente.banda?.nome === payload.banda.nome.trim() && existente.musica === payload.musica?.trim() &&
+                    existente.modo === payload.modo && existente.pontuacao === payload.pontuacao &&
+                    JSON.stringify(existente.membros || []) === JSON.stringify(membros);
+                if (!mesmaPontuacao) throw erroPerfil('ID de pontuação de banda já usado.', 409);
+                return { raiz, records: registros(raiz), duplicado: true };
+            }
             raiz.bandRecords[payload.partidaId] = {
                 partidaId: payload.partidaId,
                 banda: { id: payload.banda.id.trim(), nome: payload.banda.nome.trim() },
                 pontuacao: payload.pontuacao,
                 membros,
+                ...(payload.musica === undefined ? {} : { musica: payload.musica.trim() }),
+                ...(payload.modo === undefined ? {} : { modo: payload.modo }),
                 createdAt: new Date().toISOString(),
             };
             gravar(raiz);

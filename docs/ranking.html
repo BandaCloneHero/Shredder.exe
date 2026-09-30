@@ -43,6 +43,7 @@
             <p id="ranking-status" class="ranking-status">
                 SINCRONIZANDO DADOS...
             </p>
+            <p class="operator-help">Escolha Freeplay ou Modo História e uma música. Cada tabela mostra o maior resultado registrado naquela música e instrumento.</p>
 
             <section class="ranking-award panel-cut" aria-labelledby="ranking-award-title">
                 <div class="ranking-award-visual">
@@ -56,6 +57,17 @@
             </section>
 
             <section id="ranking-champions" class="ranking-champions" aria-label="Campeões por instrumento" hidden></section>
+
+            <nav class="ranking-mode-tabs" aria-label="Modo de jogo do ranking">
+                <button class="ranking-tab active" data-ranking-mode="freeplay" type="button">FREEPLAY</button>
+                <button class="ranking-tab" data-ranking-mode="historia" type="button">MODO HISTÓRIA</button>
+            </nav>
+            <label class="ranking-song-filter" for="ranking-song-select">
+                <span>MÚSICA</span>
+                <select id="ranking-song-select" disabled>
+                    <option value="">AGUARDANDO RESULTADOS</option>
+                </select>
+            </label>
 
             <nav class="ranking-tabs" aria-label="Categorias do ranking">
                 <button
