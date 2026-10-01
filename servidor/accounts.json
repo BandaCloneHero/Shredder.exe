@@ -1,0 +1,1037 @@
+{
+  "accounts": {
+    "123456": {
+      "username": "123456",
+      "salt": "e04b95b4821f3b42f5772c9ab71d6df8",
+      "passwordHash": "4eb028669b684a9ba6c00d02869e69608131540757ab380c8cf787e4d949137f3f3b65f6d98dccf6d8d702bccfc7e0e145a3a4539488d435c89c0737dbcbef13",
+      "nickname": "123456",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 9,
+      "currentTitle": "Novato do Rock",
+      "lifetimeStats": {
+        "totalNotesHit": 6246,
+        "totalMisses": 5418
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 5235232,
+          "maxCombo": 544,
+          "bestAccuracy": 96.2,
+          "songsCompleted": 2,
+          "fullCombos": 1
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 128500,
+          "maxCombo": 250,
+          "bestAccuracy": 96.2,
+          "songsCompleted": 6,
+          "fullCombos": 6
+        },
+        "teclado": {
+          "maxScore": 965385,
+          "maxCombo": 564,
+          "bestAccuracy": 99.7,
+          "songsCompleted": 1,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "teclado"
+      },
+      "songRecords": {
+        "B.G.d.N.": {
+          "plays": 1,
+          "bestScore": 128450,
+          "bestCombo": 186,
+          "bestAccuracy": 96.2
+        },
+        "aura676769": {
+          "plays": 6,
+          "bestScore": 128500,
+          "bestCombo": 250,
+          "bestAccuracy": 96.2
+        },
+        "supersonic": {
+          "plays": 1,
+          "bestScore": 965385,
+          "bestCombo": 564,
+          "bestAccuracy": 99.7
+        },
+        "psychosocial": {
+          "instrumentosCompletados": [
+            "guitarra"
+          ],
+          "plays": 1,
+          "bestScore": 5235232,
+          "bestCombo": 544,
+          "bestAccuracy": 75,
+          "partidaId": "evt_446fa935-1343-4464-be4e-2816830459c8",
+          "operadorId": "admin-web-panel",
+          "username": "123456",
+          "pontuacao": 5235232,
+          "precisao": 75,
+          "maiorCombo": 544,
+          "fullCombo": false,
+          "notasAcertadas": 1244,
+          "notasErradas": 5235,
+          "musica": "psychosocial",
+          "instrumento": "guitarra",
+          "banda": null,
+          "updatedAt": "2026-09-27T20:51:07.053Z"
+        }
+      },
+      "achievements": [
+        "primeiros_acordes",
+        "aquecimento",
+        "ritmo_de_ferro",
+        "sem_errar_o_compasso",
+        "on_fire",
+        "cirurgico",
+        "no_limite",
+        "virada_insana",
+        "perfeccionista",
+        "mestre_guitarra",
+        "mestre_baixo",
+        "mestre_teclado",
+        "banda_afinada",
+        "show_perfeito",
+        "colecionador_de_fases",
+        "dono_do_palco",
+        "maratonista",
+        "incansavel",
+        "lenda_viva",
+        "rei_do_ranking",
+        "estrela_da_feira",
+        "tentativa_corajosa",
+        "quase_la",
+        "desafinador_profissional",
+        "imparavel",
+        "Lenda",
+        "67"
+      ],
+      "createdAt": "2026-09-25T17:18:10.276Z",
+      "updatedAt": "2026-09-27T22:49:55.269Z",
+      "resultadosPartidas": {
+        "evt_446fa935-1343-4464-be4e-2816830459c8": {
+          "partidaId": "evt_446fa935-1343-4464-be4e-2816830459c8",
+          "operadorId": "admin-web-panel",
+          "username": "123456",
+          "pontuacao": 5235232,
+          "precisao": 75,
+          "maiorCombo": 544,
+          "fullCombo": false,
+          "notasAcertadas": 1244,
+          "notasErradas": 5235,
+          "musica": "psychosocial",
+          "instrumento": "guitarra",
+          "banda": null
+        }
+      },
+      "fases": {
+        "desbloqueadas": [
+          1
+        ],
+        "favoritas": [],
+        "selecionada": null,
+        "historicoSelecionadas": []
+      },
+      "achievementProgress": {
+        "gamesByDay": {}
+      },
+      "achievementNotifications": []
+    },
+    "davijohann": {
+      "username": "DaviJohann",
+      "salt": "89b0990a4d83aeedd9fcf93bd0b9702b",
+      "passwordHash": "12219bcb8fa8643c8725da05c7bbc7dacb10085840e85f550332d217cb6c22280f0e223c498e2263608f6558cf9e1ebe71b36305d6aedc1df99184e4bf12fffe",
+      "createdAt": "2026-09-24T11:34:46.356Z",
+      "nickname": "DaviJohann",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 0,
+      "currentTitle": "Novato do Rock",
+      "updatedAt": "2026-09-27T14:48:46.391Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "fases": {
+        "desbloqueadas": [
+          1
+        ],
+        "favoritas": [],
+        "selecionada": null,
+        "historicoSelecionadas": []
+      },
+      "achievements": [],
+      "achievementProgress": {
+        "gamesByDay": {}
+      },
+      "achievementNotifications": []
+    },
+    "daviteste123": {
+      "username": "daviteste123",
+      "salt": "e9630b319e668910b2d83dfc3fecf47b",
+      "passwordHash": "48ee3d2d76b2234118d3f8b7006387ac41ff850619f5c469f1e316a8ae29f93f20d73fbdb4f9dc7ae04cb081f844a016289de1ad93d65badc4c618b85faf22e5",
+      "createdAt": "2026-09-24T11:36:04.127Z",
+      "nickname": "daviteste123",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 0,
+      "currentTitle": "Novato do Rock",
+      "updatedAt": "2026-09-27T14:48:46.391Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "fases": {
+        "desbloqueadas": [
+          1
+        ],
+        "favoritas": [],
+        "selecionada": null,
+        "historicoSelecionadas": []
+      },
+      "achievements": [],
+      "achievementProgress": {
+        "gamesByDay": {}
+      },
+      "achievementNotifications": []
+    },
+    "davitest123": {
+      "username": "davitest123",
+      "salt": "38c9ba76c94ab094b0cf070769eb4ecc",
+      "passwordHash": "ef41b756280b245e18ad988ac29b604981fb4e8f9f98035df07e7dd404f111125df9d68565ff5905dcd3ff5d97ef04e74ac1fbd3b40bde52da3382391ba7fbd4",
+      "createdAt": "2026-09-24T11:50:27.069Z",
+      "nickname": "davitest123",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 2,
+      "currentTitle": "Novato do Rock",
+      "updatedAt": "2026-09-30T18:04:46.705Z",
+      "lifetimeStats": {
+        "totalNotesHit": 1155,
+        "totalMisses": 196
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 73821,
+          "maxCombo": 29,
+          "bestAccuracy": 83.56868,
+          "songsCompleted": 1,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 55351,
+          "maxCombo": 52,
+          "bestAccuracy": 88.11189,
+          "songsCompleted": 1,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {
+        "Nerve": {
+          "instrumentosCompletados": [
+            "guitarra"
+          ],
+          "plays": 1,
+          "bestScore": 73821,
+          "bestCombo": 29,
+          "bestAccuracy": 83.56868,
+          "partidaId": "unity_9dd18dbf-b2c1-40ea-8448-ee3f6778cc52_guitarra",
+          "operadorId": "OP-K4276",
+          "username": "davitest123",
+          "pontuacao": 73821,
+          "precisao": 83.56868,
+          "maiorCombo": 29,
+          "fullCombo": false,
+          "notasAcertadas": 651,
+          "notasErradas": 128,
+          "musica": "Nerve",
+          "instrumento": "guitarra",
+          "banda": {
+            "id": "os-meia-bombas",
+            "nome": "Os Meia-Bombas"
+          },
+          "modo": "historia",
+          "fase": 1,
+          "updatedAt": "2026-09-30T17:50:55.932Z"
+        },
+        "The Glass": {
+          "instrumentosCompletados": [
+            "baixo"
+          ],
+          "plays": 1,
+          "bestScore": 55351,
+          "bestCombo": 52,
+          "bestAccuracy": 88.11189,
+          "partidaId": "unity_97450985-f387-445b-b507-c17a725da3ce_baixo",
+          "operadorId": "OP-K4276",
+          "username": "davitest123",
+          "pontuacao": 55351,
+          "precisao": 88.11189,
+          "maiorCombo": 52,
+          "fullCombo": false,
+          "notasAcertadas": 504,
+          "notasErradas": 68,
+          "musica": "The Glass",
+          "instrumento": "baixo",
+          "banda": {
+            "id": "nao-sei",
+            "nome": "nao sei"
+          },
+          "modo": "historia",
+          "fase": 2,
+          "updatedAt": "2026-09-30T17:55:47.105Z"
+        }
+      },
+      "resultadosPartidas": {
+        "unity_9dd18dbf-b2c1-40ea-8448-ee3f6778cc52_guitarra": {
+          "partidaId": "unity_9dd18dbf-b2c1-40ea-8448-ee3f6778cc52_guitarra",
+          "operadorId": "OP-K4276",
+          "username": "davitest123",
+          "pontuacao": 73821,
+          "precisao": 83.56868,
+          "maiorCombo": 29,
+          "fullCombo": false,
+          "notasAcertadas": 651,
+          "notasErradas": 128,
+          "musica": "Nerve",
+          "instrumento": "guitarra",
+          "banda": {
+            "id": "os-meia-bombas",
+            "nome": "Os Meia-Bombas"
+          },
+          "modo": "historia",
+          "fase": 1
+        },
+        "unity_97450985-f387-445b-b507-c17a725da3ce_baixo": {
+          "partidaId": "unity_97450985-f387-445b-b507-c17a725da3ce_baixo",
+          "operadorId": "OP-K4276",
+          "username": "davitest123",
+          "pontuacao": 55351,
+          "precisao": 88.11189,
+          "maiorCombo": 52,
+          "fullCombo": false,
+          "notasAcertadas": 504,
+          "notasErradas": 68,
+          "musica": "The Glass",
+          "instrumento": "baixo",
+          "banda": {
+            "id": "nao-sei",
+            "nome": "nao sei"
+          },
+          "modo": "historia",
+          "fase": 2
+        }
+      },
+      "fases": {
+        "desbloqueadas": [
+          1,
+          2,
+          3
+        ],
+        "favoritas": [],
+        "selecionada": 3,
+        "historicoSelecionadas": [
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-09-28T19:05:00.639Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-09-30T17:44:19.122Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-09-30T17:46:32.025Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-09-30T17:50:55.932Z"
+          },
+          {
+            "fase": 2,
+            "selecionadaEm": "2026-09-30T17:52:58.133Z"
+          },
+          {
+            "fase": 2,
+            "selecionadaEm": "2026-09-30T17:55:47.105Z"
+          },
+          {
+            "fase": 3,
+            "selecionadaEm": "2026-09-30T17:56:10.245Z"
+          },
+          {
+            "fase": 3,
+            "selecionadaEm": "2026-09-30T18:04:46.705Z"
+          }
+        ]
+      },
+      "achievements": [
+        "aquecimento",
+        "cirurgico",
+        "especialista",
+        "mestre_baixo",
+        "mestre_teclado",
+        "tentativa_corajosa",
+        "primeiros_acordes",
+        "desafinador_profissional"
+      ],
+      "achievementProgress": {
+        "gamesByDay": {
+          "2026-09-30": 2
+        }
+      },
+      "achievementNotifications": []
+    },
+    "davi12345": {
+      "username": "davi12345",
+      "salt": "fddf50c60b864e57d46f54bc5bfaf0dc",
+      "passwordHash": "728f65be2b0ec5d650c5d349391b34632bbe23c3219e30e26366b05cc5800e6b0b7a4e697ef3d203211ad23ec5cf61813837f20f1a4e39d799f1ae6d599af2de",
+      "createdAt": "2026-09-24T12:21:54.015Z",
+      "nickname": "davi12345",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 0,
+      "currentTitle": "Novato do Rock",
+      "updatedAt": "2026-09-27T14:48:46.391Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "fases": {
+        "desbloqueadas": [
+          1
+        ],
+        "favoritas": [],
+        "selecionada": null,
+        "historicoSelecionadas": []
+      },
+      "achievements": [],
+      "achievementProgress": {
+        "gamesByDay": {}
+      },
+      "achievementNotifications": []
+    },
+    "alparenga": {
+      "username": "alparenga",
+      "salt": "1de339fb2080d307e7445754e93f4556",
+      "passwordHash": "debe524cdeebe2615b331c4c9846af95bfe103306fc3323a3b297d6fa917855984e5071e8c892667fac491f4680e5114b27d0607f57f16b7deb7062f1757a69a",
+      "createdAt": "2026-09-24T19:47:17.031Z",
+      "nickname": "alparenga",
+      "avatar": "",
+      "currency": 67676767,
+      "gamesPlayed": 0,
+      "currentTitle": "NEW FUNG FUNG",
+      "updatedAt": "2026-09-30T18:05:22.591Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "bateria"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "fases": {
+        "desbloqueadas": [
+          1
+        ],
+        "favoritas": [],
+        "selecionada": 1,
+        "historicoSelecionadas": [
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-09-30T18:05:22.591Z"
+          }
+        ]
+      },
+      "achievements": [
+        "colecionador_de_fases",
+        "incansavel"
+      ],
+      "achievementProgress": {
+        "gamesByDay": {}
+      },
+      "achievementNotifications": []
+    },
+    "davijohannbecker": {
+      "username": "DAVIJOHANNBECKER",
+      "salt": "59580c3b07f5a379e210f82f8863565d",
+      "passwordHash": "c79d01f88afdc31ff62269d51ccbd3a640de22e1e25d64349ba6e6d3a024832138da89a8b311e26167bb14a50405ebeb9679e01b3a8954bc6fb9ce33e6aa3734",
+      "nickname": "DAVIJOHANNBECKER",
+      "avatar": "",
+      "currency": 67676767676763,
+      "gamesPlayed": 4,
+      "currentTitle": "resenhex chocolex",
+      "lifetimeStats": {
+        "totalNotesHit": 9643,
+        "totalMisses": 5768
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 646235,
+          "maxCombo": 362,
+          "bestAccuracy": 98.5,
+          "songsCompleted": 1,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 4354132,
+          "maxCombo": 124,
+          "bestAccuracy": 42,
+          "songsCompleted": 1,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 5235232,
+          "maxCombo": 1753,
+          "bestAccuracy": 100,
+          "songsCompleted": 2,
+          "fullCombos": 1
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {
+        "psychosocial": {
+          "instrumentosCompletados": [
+            "guitarra",
+            "bateria",
+            "baixo"
+          ],
+          "plays": 3,
+          "bestScore": 5235232,
+          "bestCombo": 564,
+          "bestAccuracy": 98.5,
+          "partidaId": "evt_41c5f922-e2de-47d2-8df7-852a9eb83e62",
+          "operadorId": "admin-web-panel",
+          "username": "DAVIJOHANNBECKER",
+          "pontuacao": 4354132,
+          "precisao": 42,
+          "maiorCombo": 124,
+          "fullCombo": false,
+          "notasAcertadas": 5324,
+          "notasErradas": 1242,
+          "musica": "psychosocial",
+          "instrumento": "baixo",
+          "banda": {
+            "id": "Os Mitocondrias",
+            "nome": "Os Mitocondrias"
+          },
+          "updatedAt": "2026-09-27T20:21:59.681Z"
+        },
+        "The Last Goodbye": {
+          "instrumentosCompletados": [
+            "bateria"
+          ],
+          "plays": 1,
+          "bestScore": 642253,
+          "bestCombo": 1753,
+          "bestAccuracy": 100,
+          "partidaId": "evt_ee6e8e68-e369-45ee-83d2-d43ca6c55d0b",
+          "operadorId": "admin-web-panel",
+          "username": "DAVIJOHANNBECKER",
+          "pontuacao": 642253,
+          "precisao": 100,
+          "maiorCombo": 1753,
+          "fullCombo": true,
+          "notasAcertadas": 1753,
+          "notasErradas": 0,
+          "musica": "The Last Goodbye",
+          "instrumento": "bateria",
+          "banda": null,
+          "nickname": "DAVIJOHANNBECKER",
+          "currentTitle": "resenhex chocolex",
+          "updatedAt": "2026-09-27T14:56:17.933Z"
+        }
+      },
+      "achievements": [
+        "primeiros_acordes",
+        "aquecimento",
+        "ritmo_de_ferro",
+        "sem_errar_o_compasso",
+        "on_fire",
+        "especialista"
+      ],
+      "createdAt": "2026-09-27T13:26:28.094Z",
+      "updatedAt": "2026-09-27T21:54:30.002Z",
+      "fases": {
+        "desbloqueadas": [
+          1,
+          2
+        ],
+        "favoritas": [],
+        "selecionada": 2,
+        "historicoSelecionadas": [
+          {
+            "fase": 3,
+            "selecionadaEm": "2026-09-27T19:27:23.118Z"
+          },
+          {
+            "fase": 4,
+            "selecionadaEm": "2026-09-27T19:27:29.165Z"
+          },
+          {
+            "fase": 4,
+            "selecionadaEm": "2026-09-27T19:27:34.551Z"
+          },
+          {
+            "fase": 5,
+            "selecionadaEm": "2026-09-27T19:28:52.425Z"
+          }
+        ]
+      },
+      "resultadosPartidas": {
+        "evt_fabc3aa1-5410-4deb-95f1-f5cbc6538efc": {
+          "partidaId": "evt_fabc3aa1-5410-4deb-95f1-f5cbc6538efc",
+          "operadorId": "admin-web-panel",
+          "username": "DAVIJOHANNBECKER",
+          "pontuacao": 646235,
+          "precisao": 98.5,
+          "maiorCombo": 362,
+          "fullCombo": false,
+          "notasAcertadas": 1321,
+          "notasErradas": 184,
+          "musica": "psychosocial",
+          "instrumento": "guitarra",
+          "banda": null
+        },
+        "evt_ee6e8e68-e369-45ee-83d2-d43ca6c55d0b": {
+          "partidaId": "evt_ee6e8e68-e369-45ee-83d2-d43ca6c55d0b",
+          "operadorId": "admin-web-panel",
+          "username": "DAVIJOHANNBECKER",
+          "pontuacao": 642253,
+          "precisao": 100,
+          "maiorCombo": 1753,
+          "fullCombo": true,
+          "notasAcertadas": 1753,
+          "notasErradas": 0,
+          "musica": "The Last Goodbye",
+          "instrumento": "bateria",
+          "banda": null,
+          "nickname": "DAVIJOHANNBECKER",
+          "currentTitle": "resenhex chocolex"
+        },
+        "evt_4b1019d8-3a6a-4279-820b-235746c6a82d": {
+          "partidaId": "evt_4b1019d8-3a6a-4279-820b-235746c6a82d",
+          "operadorId": "admin-web-panel",
+          "username": "DAVIJOHANNBECKER",
+          "pontuacao": 5235232,
+          "precisao": 54,
+          "maiorCombo": 564,
+          "fullCombo": false,
+          "notasAcertadas": 1245,
+          "notasErradas": 4342,
+          "musica": "psychosocial",
+          "instrumento": "bateria",
+          "banda": null
+        },
+        "evt_41c5f922-e2de-47d2-8df7-852a9eb83e62": {
+          "partidaId": "evt_41c5f922-e2de-47d2-8df7-852a9eb83e62",
+          "operadorId": "admin-web-panel",
+          "username": "DAVIJOHANNBECKER",
+          "pontuacao": 4354132,
+          "precisao": 42,
+          "maiorCombo": 124,
+          "fullCombo": false,
+          "notasAcertadas": 5324,
+          "notasErradas": 1242,
+          "musica": "psychosocial",
+          "instrumento": "baixo",
+          "banda": {
+            "id": "Os Mitocondrias",
+            "nome": "Os Mitocondrias"
+          }
+        }
+      },
+      "achievementProgress": {
+        "gamesByDay": {}
+      },
+      "achievementNotifications": []
+    },
+    "seraquesalva": {
+      "username": "seraquesalva",
+      "salt": "569be2652cdab7e0e5725ef407678f7c",
+      "passwordHash": "6e6b8f94013b0b9c326255eed8853405c9045449a5acb0a668d0e7943add9d81a53c0c413d1b7260b91ae57d9e487101079024063744a5f0506eab1bf9d4d5d6",
+      "nickname": "seraquesalva",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 0,
+      "currentTitle": "Novato do Rock",
+      "createdAt": "2026-09-28T11:45:48.897Z",
+      "updatedAt": "2026-09-28T12:11:55.367Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "achievements": [
+        "on_fire",
+        "cirurgico",
+        "especialista",
+        "multi_instrumentista"
+      ],
+      "achievementNotifications": [],
+      "achievementProgress": {
+        "gamesByDay": {}
+      },
+      "fases": {
+        "desbloqueadas": [
+          1
+        ],
+        "favoritas": [],
+        "selecionada": null,
+        "historicoSelecionadas": []
+      }
+    },
+    "joao": {
+      "username": "Joao",
+      "salt": "11d3fbd1843bbb10ad140a8052cdecbe",
+      "passwordHash": "5a2620dba9d2fe6fa32da1b630af33cd264ab6f24dacf4b011a0086363642b0d30f552d70ec3b7ac584b674e5d4f78e5d1036e3f8fa9ad4662e3bf124f5e1466",
+      "nickname": "Joao",
+      "avatar": "",
+      "currency": 0,
+      "gamesPlayed": 0,
+      "currentTitle": "Uma Coisa Engraçada",
+      "createdAt": "2026-09-29T19:17:53.077Z",
+      "updatedAt": "2026-09-29T19:42:19.703Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "achievements": [
+        "primeiros_acordes",
+        "aquecimento",
+        "ritmo_de_ferro",
+        "sem_errar_o_compasso",
+        "on_fire",
+        "cirurgico",
+        "no_limite",
+        "virada_insana",
+        "especialista",
+        "multi_instrumentista",
+        "perfeccionista",
+        "mestre_guitarra",
+        "mestre_baixo",
+        "mestre_bateria",
+        "mestre_teclado",
+        "banda_afinada",
+        "show_perfeito",
+        "colecionador_de_fases",
+        "dono_do_palco",
+        "favorita_da_casa",
+        "maratonista",
+        "incansavel",
+        "lenda_viva",
+        "rei_do_ranking",
+        "estrela_da_feira",
+        "tentativa_corajosa",
+        "quase_la",
+        "volta_por_cima",
+        "desafinador_profissional"
+      ],
+      "achievementNotifications": [],
+      "achievementProgress": {
+        "gamesByDay": {}
+      },
+      "fases": {
+        "desbloqueadas": [
+          1
+        ],
+        "favoritas": [],
+        "selecionada": null,
+        "historicoSelecionadas": []
+      }
+    }
+  },
+  "bandRecords": {
+    "band_daf7c8fe-83c5-4c72-a2e5-9e2356d2f9e2": {
+      "partidaId": "band_daf7c8fe-83c5-4c72-a2e5-9e2356d2f9e2",
+      "banda": {
+        "id": "os-meia-bomba",
+        "nome": "OS MEIA-BOMBA"
+      },
+      "pontuacao": 6431646,
+      "membros": [
+        {
+          "nome": "JUNINHO",
+          "instrumento": "guitarra",
+          "pontuacao": 2611513
+        },
+        {
+          "nome": "GOONINHO",
+          "instrumento": "baixo",
+          "pontuacao": 574065
+        },
+        {
+          "nome": "FOTOCÓPIA",
+          "instrumento": "bateria",
+          "pontuacao": 2102044
+        },
+        {
+          "nome": "CARIMBO",
+          "instrumento": "teclado",
+          "pontuacao": 1144024
+        }
+      ],
+      "createdAt": "2026-09-27T20:39:42.083Z"
+    },
+    "band_9dd18dbf-b2c1-40ea-8448-ee3f6778cc52": {
+      "partidaId": "band_9dd18dbf-b2c1-40ea-8448-ee3f6778cc52",
+      "banda": {
+        "id": "os-meia-bombas",
+        "nome": "Os Meia-Bombas"
+      },
+      "pontuacao": 73821,
+      "membros": [
+        {
+          "nome": "davitest123",
+          "instrumento": "guitarra",
+          "pontuacao": 73821
+        }
+      ],
+      "musica": "Nerve",
+      "modo": "historia",
+      "createdAt": "2026-09-30T17:50:55.938Z"
+    },
+    "band_97450985-f387-445b-b507-c17a725da3ce": {
+      "partidaId": "band_97450985-f387-445b-b507-c17a725da3ce",
+      "banda": {
+        "id": "nao-sei",
+        "nome": "nao sei"
+      },
+      "pontuacao": 55351,
+      "membros": [
+        {
+          "nome": "davitest123",
+          "instrumento": "baixo",
+          "pontuacao": 55351
+        }
+      ],
+      "musica": "The Glass",
+      "modo": "historia",
+      "createdAt": "2026-09-30T17:55:47.108Z"
+    }
+  }
+}
