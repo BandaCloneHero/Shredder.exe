@@ -35,15 +35,26 @@
                     <h1 id="profile-nickname">
                         Sincronizando <span>perfil.</span>
                     </h1>
-                    <p id="profile-username" class="profile-username">
-                        // AGUARDE O SINAL
-                    </p>
+                <p id="profile-username" class="profile-username">
+                    // AGUARDE O SINAL
+                </p>
+                <button id="open-avatar-picker" class="button button-ghost profile-avatar-edit" type="button" hidden>ESCOLHER FOTO DE PERFIL</button>
                 </div>
                 <div class="profile-title-chip">
                     <span>TÍTULO EQUIPADO</span>
                     <strong id="profile-title">---</strong>
                 </div>
             </section>
+
+            <dialog id="avatar-picker-dialog" class="achievement-dialog avatar-picker-dialog" aria-labelledby="avatar-picker-title">
+                <div class="achievement-dialog-head">
+                    <div><p class="eyebrow">IDENTIDADE // AVATAR</p><h2 id="avatar-picker-title">Escolha sua <span>foto.</span></h2></div>
+                    <button id="close-avatar-picker" class="achievement-close" type="button" aria-label="Fechar escolha de avatar">×</button>
+                </div>
+                <p class="avatar-picker-intro">Personagens originais inspirados em batida, som e ritmo.</p>
+                <div id="avatar-picker-options" class="avatar-picker-options" role="group" aria-label="Avatares disponíveis"></div>
+                <p id="avatar-picker-status" class="shop-status" role="status" aria-live="polite"></p>
+            </dialog>
 
             <p
                 id="profile-status"
@@ -127,39 +138,54 @@
                     </div>
                     <span class="customization-balance"><b aria-hidden="true">◈</b> <span id="customization-currency">0</span> MOEDAS</span>
                 </div>
-                <div class="customization-grid">
-                    <article class="customization-card customization-frame-card">
-                        <div class="customization-preview frame-preview" aria-hidden="true">
-                            <span class="preview-player-icon">OP</span>
-                            <img src="images/moldura-cyberpunk-musical.png" alt="" />
-                        </div>
-                        <div class="customization-copy">
-                            <span class="customization-type">MOLDURA // CONCEITO</span>
-                            <h3>Moldura Cyberpunk Musical</h3>
-                            <p>Prévia da moldura neon para o perfil do jogador.</p>
-                            <span class="customization-status">CATÁLOGO EM MONTAGEM</span>
-                        </div>
-                    </article>
-                    <article class="customization-card">
-                        <div class="customization-preview title-preview" aria-hidden="true">✦</div>
-                        <div class="customization-copy">
-                            <span class="customization-type">TÍTULO // EQUIPADO</span>
-                            <h3 id="customization-current-title">Novato do Rock</h3>
-                            <p>Seu título aparece junto à identidade do operador.</p>
-                            <span class="customization-status is-equipped">EM USO</span>
-                        </div>
-                    </article>
-                    <article class="customization-card customization-coming-soon">
-                        <div class="customization-preview future-preview" aria-hidden="true">＋</div>
-                        <div class="customization-copy">
-                            <span class="customization-type">PRÓXIMOS ITENS</span>
-                            <h3>Efeitos e visuais</h3>
-                            <p>Novas molduras, títulos e efeitos poderão entrar aqui.</p>
-                            <span class="customization-status">EM BREVE</span>
-                        </div>
-                    </article>
+                <div class="inventory-launcher">
+                    <div><span class="eyebrow">EQUIPAMENTO DO OPERADOR</span><strong><span id="inventory-owned-count">0</span> acessórios no inventário</strong></div>
+                    <button id="open-profile-inventory" class="button button-primary" type="button">ABRIR INVENTÁRIO <b>↗</b></button>
                 </div>
             </section>
+
+            <dialog id="profile-inventory-dialog" class="achievement-dialog profile-inventory-dialog" aria-labelledby="profile-inventory-title">
+                <div class="achievement-dialog-head">
+                    <div><p class="eyebrow">GARAGEM // PERSONALIZAÇÃO</p><h2 id="profile-inventory-title">Inventário do <span>operador.</span></h2></div>
+                    <button id="close-profile-inventory" class="achievement-close" type="button" aria-label="Fechar inventário">×</button>
+                </div>
+                <p id="shop-status" class="shop-status" role="status" aria-live="polite"></p>
+                <div class="customization-tabs" role="tablist" aria-label="Inventário, equipamento e loja">
+                    <button id="inventory-tab" class="customization-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="inventory-panel">INVENTÁRIO</button>
+                    <button id="shop-tab" class="customization-tab" type="button" role="tab" aria-selected="false" aria-controls="shop-panel">LOJA</button>
+                </div>
+                <div id="inventory-panel" class="inventory-dialog-panel" role="tabpanel" aria-labelledby="inventory-tab">
+                    <aside class="inventory-profile-preview" aria-label="Prévia do perfil">
+                        <div class="inventory-profile-avatar" id="profile-avatar-preview"></div>
+                        <div><p class="eyebrow">PRÉVIA // PERFIL</p><strong>Seu avatar equipado</strong><span>Veja como moldura, efeito e fundo aparecem juntos.</span></div>
+                    </aside>
+                    <div class="inventory-loadout-heading">
+                        <div><p class="eyebrow">LOADOUT // EQUIPADO</p><h3>Espaços do perfil</h3></div>
+                        <span>ITENS APLICADOS AO AVATAR</span>
+                    </div>
+                    <div id="profile-loadout-slots" class="inventory-loadout-slots"></div>
+                <div class="shop-subsection">
+                    <h3>INVENTÁRIO // ITENS GUARDADOS</h3>
+                    <div class="shop-filters">
+                        <label>TIPO <select id="inventory-filter-type" aria-label="Filtrar inventário por tipo"><option value="todos">Todos os tipos</option><option value="moldura">Molduras</option><option value="efeito">Efeitos</option><option value="fundo">Fundos</option><option value="título">Títulos</option><option value="acessório">Acessórios</option></select></label>
+                        <label>RARIDADE <select id="inventory-filter-rarity" aria-label="Filtrar inventário por raridade"><option value="todas">Todas</option><option value="common">Comum</option><option value="uncommon">Incomum</option><option value="rare">Rara</option><option value="epic">Épica</option><option value="legendary">Lendária</option></select></label>
+                    </div>
+                    <div id="profile-inventory" class="customization-grid" aria-label="Acessórios adquiridos"></div>
+                </div>
+                </div>
+                <div id="shop-panel" class="inventory-dialog-panel" role="tabpanel" aria-labelledby="shop-tab" hidden>
+                <div class="shop-subsection">
+                    <h3>CATÁLOGO // ACESSÓRIOS DISPONÍVEIS</h3>
+                    <div class="shop-filters">
+                        <label>TIPO <select id="shop-filter-type" aria-label="Filtrar catálogo por tipo"><option value="todos">Todos os tipos</option><option value="moldura">Molduras</option><option value="efeito">Efeitos</option><option value="fundo">Fundos</option><option value="título">Títulos</option><option value="acessório">Acessórios</option></select></label>
+                        <label>RARIDADE <select id="shop-filter-rarity" aria-label="Filtrar catálogo por raridade"><option value="todas">Todas</option><option value="common">Comum</option><option value="uncommon">Incomum</option><option value="rare">Rara</option><option value="epic">Épica</option><option value="legendary">Lendária</option></select></label>
+                        <label>PREÇO <select id="shop-filter-price" aria-label="Filtrar catálogo por faixa de preço"><option value="todos">Qualquer preço</option><option value="20">Até 20 moedas</option><option value="40">Até 40 moedas</option><option value="60">Até 60 moedas</option><option value="100">Até 100 moedas</option></select></label>
+                        <label>ORDENAR <select id="shop-sort-price" aria-label="Ordenar itens por preço"><option value="asc">Menor preço</option><option value="desc">Maior preço</option></select></label>
+                    </div>
+                    <div id="customization-grid" class="customization-grid" aria-label="Acessórios disponíveis"></div>
+                </div>
+                </div>
+            </dialog>
 
             <section class="profile-section">
                 <div class="profile-section-heading">

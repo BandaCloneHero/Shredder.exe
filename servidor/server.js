@@ -6,6 +6,7 @@ const path = require("path");
 const { scrypt, randomBytes, randomUUID, timingSafeEqual, createHash } = require("crypto");
 const { promisify } = require("util");
 const { criarPersistenciaPartidas, validarResultado, inicializarPerfil } = require("./partidas");
+const { catalogoLoja, itensPorId } = require("./catalogo-loja");
 
 const scryptAsync = promisify(scrypt);
 const app = express();
@@ -22,6 +23,7 @@ const partidas = criarPersistenciaPartidas(ACCOUNTS_FILE);
 let accountStore = { accounts: {} };
 let sessions = new Map();
 const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
+const PROFILE_AVATAR_IDS = new Set(["night-sentinel", "astral-oracle", "fox-wanderer", "dune-explorer", "deep-diver", "crystal-golem", "forest-spirit", "nocturne", "alien-roamer", "neon-android", "starfarer", "void-knight", "frost-mage", "sun-guardian", "shadow-scout", "brass-automaton", "mothling", "neon-familiar", "rune-guardian", "aurora-entity", "pulse-vanguard", "neon-reaper", "beat-runner", "soundcrow"]);
 
 function loadAccounts() {
     try {
@@ -292,11 +294,13 @@ app.get("/api/perfil/:username", (req, res) => {
             username:
                 account.username || normalizeUsername(req.params.username),
             nickname: account.nickname || account.username || "OPERADOR",
+            avatar: account.avatar || "",
             tituloEquipado:
                 account.tituloEquipado ||
                 account.currentTitle ||
                 "Novato do Rock",
             moedas: account.moedas ?? account.currency ?? 0,
+            cosmetics: account.cosmetics || { owned: [], equipped: {} },
             gamesPlayed: account.gamesPlayed || 0,
             lifetimeStats: {
                 totalNotesHit: account.lifetimeStats?.totalNotesHit || 0,
@@ -319,6 +323,70 @@ app.get("/api/perfil/:username", (req, res) => {
             },
         },
     });
+});
+
+app.post("/api/perfil/avatar", (req, res) => {
+    const session = getAuthenticatedSession(req);
+    if (!session) return res.status(401).json({ ok: false, error: "Entre na sua conta para alterar a foto de perfil." });
+    const avatar = req.body?.avatar;
+    if (typeof avatar !== "string" || (avatar !== "" && !PROFILE_AVATAR_IDS.has(avatar))) {
+        return res.status(400).json({ ok: false, error: "Avatar inválido. Escolha uma das imagens disponíveis." });
+    }
+    session.account.avatar = avatar;
+    session.account.updatedAt = new Date().toISOString();
+    saveAccounts();
+    return res.json({ ok: true, avatar });
+});
+
+app.get("/api/loja/catalogo", (_req, res) => {
+    return res.json({ ok: true, items: catalogoLoja });
+});
+
+app.post("/api/loja/:action", (req, res) => {
+    const session = getAuthenticatedSession(req);
+    if (!session) return res.status(401).json({ ok: false, error: "Entre na sua conta para acessar a loja." });
+    const action = ({ comprar: "comprar", buy: "comprar", equipar: "equipar", equip: "equipar", retirar: "retirar", unequip: "retirar", desequipar: "retirar" })[req.params.action];
+    const item = itensPorId[req.body?.itemId];
+    if (!action) return res.status(400).json({ ok: false, error: "Ação da loja inválida. Atualize o perfil e tente novamente." });
+    if (!item) return res.status(400).json({ ok: false, error: `Acessório não reconhecido: ${String(req.body?.itemId || "vazio")}. Atualize o perfil para carregar o catálogo atual.` });
+    const account = session.account;
+    account.cosmetics ??= { owned: [], equipped: {} };
+    account.cosmetics.owned ??= [];
+    account.cosmetics.equipped ??= {};
+    const itemId = req.body.itemId;
+    let starterCreditsGranted = false;
+    if (action === "comprar") {
+        if (account.cosmetics.owned.includes(itemId)) return res.status(409).json({ ok: false, error: "Você já possui este acessório." });
+        let currency = Number(account.currency ?? account.moedas ?? 0);
+        if (!Number.isSafeInteger(currency) || currency < 0) return res.status(400).json({ ok: false, error: "Saldo de moedas inválido." });
+        if (currency < item.price && !account.cosmetics.starterCreditsGranted) {
+            currency += 500;
+            account.cosmetics.starterCreditsGranted = true;
+            starterCreditsGranted = true;
+        }
+        if (currency < item.price) return res.status(400).json({ ok: false, error: "Moedas insuficientes para este acessório." });
+        account.currency = currency - item.price;
+        account.moedas = account.currency;
+        account.cosmetics.owned.push(itemId);
+        account.cosmetics.starterCreditsGranted ||= starterCreditsGranted;
+    } else if (action === "equipar") {
+        if (!account.cosmetics.owned.includes(itemId)) return res.status(403).json({ ok: false, error: "Compre este acessório antes de equipá-lo." });
+        if (item.slot === "título" && account.cosmetics.equipped[item.slot] !== itemId) {
+            account.cosmetics.previousTitle ??= account.currentTitle || "Novato do Rock";
+        }
+        account.cosmetics.equipped[item.slot] = itemId;
+        if (item.slot === "título") account.currentTitle = item.name;
+    } else {
+        if (account.cosmetics.equipped[item.slot] !== itemId) return res.status(409).json({ ok: false, error: "Este item não está equipado nesse espaço." });
+        delete account.cosmetics.equipped[item.slot];
+        if (item.slot === "título") {
+            account.currentTitle = account.cosmetics.previousTitle || "Novato do Rock";
+            delete account.cosmetics.previousTitle;
+        }
+    }
+    account.updatedAt = new Date().toISOString();
+    saveAccounts();
+    return res.json({ ok: true, currency: account.currency ?? account.moedas ?? 0, cosmetics: account.cosmetics, currentTitle: account.currentTitle, starterCreditsGranted });
 });
 
 app.get("/api/auth/session", (req, res) => {
@@ -657,6 +725,8 @@ function criarEstruturaSala(roomId, roomName, banda, criadorUsername, donoId, so
         operadores: {},
         disconnectTimers: new Map(),
         resultadosRecentes: [],
+        ticketsPendentes: [],
+        ultimoTicket: null,
     };
 }
 
@@ -1075,6 +1145,9 @@ io.on("connection", (socket) => {
                 }
                 return;
             }
+
+            // Compatibilidade com salas criadas antes da fila de tickets existir.
+            if (!Array.isArray(sala.ticketsPendentes)) sala.ticketsPendentes = [];
 
             io.to(roomId).emit("sala_emitiu_ticket", { roomId, modo });
             const ticket = {
