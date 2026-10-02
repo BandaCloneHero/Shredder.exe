@@ -51,7 +51,9 @@ class ShredderAccount {
     const payload = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      throw new Error(payload.error || "Falha de comunicação com o servidor.");
+      const error = new Error(payload.error || "Falha de comunicação com o servidor.");
+      error.status = response.status;
+      throw error;
     }
 
     return payload;
@@ -101,9 +103,13 @@ class ShredderAccount {
       const state = this.applyAuth(payload);
       this.protectCurrentPage();
       return state;
-    } catch {
-      this.clear();
-      this.protectCurrentPage();
+    } catch (error) {
+      // Uma falha de rede durante a navegação entre páginas não invalida a
+      // sessão. Só removemos o token quando o servidor confirmar que expirou.
+      if (error.status === 401) {
+        this.clear();
+        this.protectCurrentPage();
+      }
       return this.snapshot();
     }
   }

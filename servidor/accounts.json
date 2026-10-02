@@ -280,7 +280,7 @@
       "currency": 0,
       "gamesPlayed": 2,
       "currentTitle": "Novato do Rock",
-      "updatedAt": "2026-09-30T18:04:46.705Z",
+      "updatedAt": "2026-10-01T17:32:06.127Z",
       "lifetimeStats": {
         "totalNotesHit": 1155,
         "totalMisses": 196
@@ -452,6 +452,14 @@
           {
             "fase": 3,
             "selecionadaEm": "2026-09-30T18:04:46.705Z"
+          },
+          {
+            "fase": 3,
+            "selecionadaEm": "2026-10-01T17:30:13.678Z"
+          },
+          {
+            "fase": 3,
+            "selecionadaEm": "2026-10-01T17:32:06.127Z"
           }
         ]
       },
@@ -542,19 +550,19 @@
       "nickname": "alparenga",
       "avatar": "",
       "currency": 67676767,
-      "gamesPlayed": 0,
+      "gamesPlayed": 1,
       "currentTitle": "NEW FUNG FUNG",
-      "updatedAt": "2026-09-30T18:05:22.591Z",
+      "updatedAt": "2026-10-01T18:58:37.923Z",
       "lifetimeStats": {
-        "totalNotesHit": 0,
-        "totalMisses": 0
+        "totalNotesHit": 63426,
+        "totalMisses": 2
       },
       "instrumentStats": {
         "guitarra": {
-          "maxScore": 0,
-          "maxCombo": 0,
-          "bestAccuracy": 0,
-          "songsCompleted": 0,
+          "maxScore": 132564555,
+          "maxCombo": 425,
+          "bestAccuracy": 98,
+          "songsCompleted": 1,
           "fullCombos": 0
         },
         "baixo": {
@@ -580,8 +588,48 @@
         },
         "favoriteInstrument": "bateria"
       },
-      "songRecords": {},
-      "resultadosPartidas": {},
+      "songRecords": {
+        "nigger": {
+          "instrumentosCompletados": [
+            "guitarra"
+          ],
+          "plays": 1,
+          "bestScore": 132564555,
+          "bestCombo": 425,
+          "bestAccuracy": 98,
+          "partidaId": "evt_c4440a66-84e5-4d5b-a537-f2a510e250c2",
+          "operadorId": "admin-web-panel",
+          "username": "alparenga",
+          "pontuacao": 132564555,
+          "precisao": 98,
+          "maiorCombo": 425,
+          "fullCombo": false,
+          "notasAcertadas": 63426,
+          "notasErradas": 2,
+          "musica": "nigger",
+          "instrumento": "guitarra",
+          "banda": null,
+          "modo": "freeplay",
+          "updatedAt": "2026-10-01T18:58:37.923Z"
+        }
+      },
+      "resultadosPartidas": {
+        "evt_c4440a66-84e5-4d5b-a537-f2a510e250c2": {
+          "partidaId": "evt_c4440a66-84e5-4d5b-a537-f2a510e250c2",
+          "operadorId": "admin-web-panel",
+          "username": "alparenga",
+          "pontuacao": 132564555,
+          "precisao": 98,
+          "maiorCombo": 425,
+          "fullCombo": false,
+          "notasAcertadas": 63426,
+          "notasErradas": 2,
+          "musica": "nigger",
+          "instrumento": "guitarra",
+          "banda": null,
+          "modo": "freeplay"
+        }
+      },
       "fases": {
         "desbloqueadas": [
           1
@@ -597,22 +645,37 @@
       },
       "achievements": [
         "colecionador_de_fases",
-        "incansavel"
+        "incansavel",
+        "primeiros_acordes",
+        "rei_do_ranking"
       ],
       "achievementProgress": {
-        "gamesByDay": {}
+        "gamesByDay": {
+          "2026-10-01": 1
+        }
       },
-      "achievementNotifications": []
+      "achievementNotifications": [
+        {
+          "id": "1b4d7ac0-4c87-457e-9844-21a05586f2e9",
+          "conquistaId": "primeiros_acordes",
+          "criadaEm": "2026-10-01T18:58:37.923Z"
+        },
+        {
+          "id": "90848fe0-3d7b-464e-b490-23bca3aacf9c",
+          "conquistaId": "rei_do_ranking",
+          "criadaEm": "2026-10-01T18:58:37.923Z"
+        }
+      ]
     },
     "davijohannbecker": {
       "username": "DAVIJOHANNBECKER",
       "salt": "59580c3b07f5a379e210f82f8863565d",
       "passwordHash": "c79d01f88afdc31ff62269d51ccbd3a640de22e1e25d64349ba6e6d3a024832138da89a8b311e26167bb14a50405ebeb9679e01b3a8954bc6fb9ce33e6aa3734",
       "nickname": "DAVIJOHANNBECKER",
-      "avatar": "",
-      "currency": 67676767676763,
+      "avatar": "soundcrow",
+      "currency": 67676767675005,
       "gamesPlayed": 4,
-      "currentTitle": "resenhex chocolex",
+      "currentTitle": "Novato do Rock",
       "lifetimeStats": {
         "totalNotesHit": 9643,
         "totalMisses": 5768
@@ -710,7 +773,7 @@
         "especialista"
       ],
       "createdAt": "2026-09-27T13:26:28.094Z",
-      "updatedAt": "2026-09-27T21:54:30.002Z",
+      "updatedAt": "2026-10-02T12:35:40.430Z",
       "fases": {
         "desbloqueadas": [
           1,
@@ -734,6 +797,10 @@
           {
             "fase": 5,
             "selecionadaEm": "2026-09-27T19:28:52.425Z"
+          },
+          {
+            "fase": 2,
+            "selecionadaEm": "2026-10-01T18:56:01.826Z"
           }
         ]
       },
@@ -803,7 +870,52 @@
       "achievementProgress": {
         "gamesByDay": {}
       },
-      "achievementNotifications": []
+      "achievementNotifications": [],
+      "cosmetics": {
+        "owned": [
+          "frame-cyberpunk",
+          "frame-neon",
+          "effect-pulse",
+          "title-guitar-hero",
+          "pick-patch",
+          "frame-magma",
+          "frame-frost",
+          "effect-flame",
+          "effect-aura",
+          "effect-lightning",
+          "effect-glitch",
+          "bg-space",
+          "effect-notes",
+          "effect-stars",
+          "bg-crimson",
+          "bg-matrix",
+          "frame-gold",
+          "frame-pixel",
+          "bg-sunset",
+          "bg-ocean",
+          "frame-violet",
+          "bg-stage",
+          "bg-grid",
+          "effect-supernova",
+          "effect-dragon",
+          "effect-headliner",
+          "frame-aurora",
+          "frame-circuit",
+          "frame-comet",
+          "frame-prism",
+          "frame-royal",
+          "frame-void",
+          "effect-spiral-trail",
+          "effect-void-sovereign",
+          "effect-infinity"
+        ],
+        "equipped": {
+          "moldura": "frame-royal",
+          "efeito": "effect-void-sovereign"
+        },
+        "starterCreditsGranted": false
+      },
+      "moedas": 67676767675005
     },
     "seraquesalva": {
       "username": "seraquesalva",

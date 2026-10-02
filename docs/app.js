@@ -33,6 +33,25 @@ const PROFILE_INSTRUMENTS = [
     ["teclado", "TECLADO"],
 ];
 
+let PROFILE_SHOP_ITEMS = [];
+
+const PROFILE_RARITY_LABEL = { common: ["COMUM", "INICIANTE"], uncommon: ["INCOMUM", "INTERMEDIÁRIA"], rare: ["RARA", "AVANÇADA"], epic: ["ÉPICA", "ESPECIALISTA"], legendary: ["LENDÁRIA", "MESTRE"] };
+const PROFILE_AVATARS = [
+    ["night-sentinel", "Guardião do Pulso"], ["astral-oracle", "Oráculo Sonoro"], ["fox-wanderer", "Raposa Sincopada"], ["dune-explorer", "Errante do Eco"], ["deep-diver", "Frequência Abissal"],
+    ["crystal-golem", "Golem Rítmico"], ["forest-spirit", "Espírito Harmônico"], ["nocturne", "Pulso Noturno"], ["alien-roamer", "Viajante de Frequência"], ["neon-android", "Equalizador Neon"],
+    ["starfarer", "Ritmo Estelar"], ["void-knight", "Cavaleiro da Clave"], ["frost-mage", "Eco Glacial"], ["sun-guardian", "Guardião do BPM"], ["shadow-scout", "Sombra Sincopada"],
+    ["brass-automaton", "Autômato Rítmico"], ["mothling", "Mariposa Sonora"], ["neon-familiar", "Felino do Pulso"], ["rune-guardian", "Guardião da Clave"], ["aurora-entity", "Aurora de Ondas"],
+    ["pulse-vanguard", "Vanguarda do Pulso"], ["neon-reaper", "Ceifador Neon"], ["beat-runner", "Corredor do Beat"], ["soundcrow", "Corvo Sonoro"],
+];
+const PROFILE_AVATAR_IDS = PROFILE_AVATARS.map(([id]) => id);
+
+async function loadProfileShopCatalog() {
+    const response = await fetch("/api/loja/catalogo", { headers: { Accept: "application/json" }, cache: "no-store" });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || !Array.isArray(payload.items)) throw new Error(payload.error || "Catálogo da loja indisponível.");
+    PROFILE_SHOP_ITEMS = payload.items;
+}
+
 function profileNumber(value) {
     const parsed = Number(value);
     return Number.isFinite(parsed) ? parsed : 0;
@@ -62,7 +81,9 @@ function renderProfile(profile, isOwnProfile) {
         profile.favoriteInstrument || "nenhum",
     ).toLowerCase();
 
-    document.querySelector("#profile-nickname").innerHTML = `<span class="profile-player-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 20c.4-3.6 2.8-5.6 6.5-5.6s6.1 2 6.5 5.6"></path></svg></span><span>${escapeHtml(profile.nickname)}</span>`;
+    document.querySelector("#profile-nickname").innerHTML = `<span class="profile-avatar-stage" aria-hidden="true"><span class="avatar-effect-glow"></span><span class="avatar-effect-orbit"></span><span class="avatar-effect-sparks"><i></i><b></b></span><span class="champions-wings"><i></i><b></b></span><span class="profile-player-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 20c.4-3.6 2.8-5.6 6.5-5.6s6.1 2 6.5 5.6"></path></svg></span></span><span>${escapeHtml(profile.nickname)}</span>`;
+    renderProfileAvatar(profile);
+    setupProfileAvatarPicker(profile, isOwnProfile);
     document.querySelector("#profile-username").textContent =
         `// ${profile.username}`;
     document.querySelector("#profile-title").textContent =
@@ -80,6 +101,7 @@ function renderProfile(profile, isOwnProfile) {
     if (customizationTitle) {
         customizationTitle.textContent = profile.tituloEquipado || "Novato do Rock";
     }
+    renderProfileShop(profile, isOwnProfile);
     document.querySelector("#profile-games").textContent = formatScore(
         profileNumber(profile.gamesPlayed),
     );
@@ -154,6 +176,223 @@ function renderProfile(profile, isOwnProfile) {
     }
 }
 
+function renderProfileShop(profile, isOwnProfile) {
+    const grid = document.querySelector("#customization-grid");
+    const inventory = document.querySelector("#profile-inventory");
+    const status = document.querySelector("#shop-status");
+    if (!grid || !inventory) return;
+    const owned = new Set(profile.cosmetics?.owned || []);
+    const equipped = profile.cosmetics?.equipped || {};
+    const inventoryDialog = document.querySelector("#profile-inventory-dialog");
+    const inventoryTab = document.querySelector("#inventory-tab");
+    const shopTab = document.querySelector("#shop-tab");
+    const inventoryPanel = document.querySelector("#inventory-panel");
+    const shopPanel = document.querySelector("#shop-panel");
+    const selectTab = tab => {
+        if (!inventoryDialog || !inventoryTab || !shopTab || !inventoryPanel || !shopPanel) return;
+        inventoryDialog.dataset.activeTab = tab;
+        const panels = { inventory: inventoryPanel, shop: shopPanel };
+        const tabs = { inventory: inventoryTab, shop: shopTab };
+        for (const [key, panel] of Object.entries(panels)) {
+            const selected = key === tab;
+            panel.hidden = !selected;
+            tabs[key].classList.toggle("is-active", selected);
+            tabs[key].setAttribute("aria-selected", String(selected));
+        }
+    };
+    if (inventoryTab) inventoryTab.onclick = () => selectTab("inventory");
+    if (shopTab) shopTab.onclick = () => selectTab("shop");
+    if (inventoryTab) inventoryTab.textContent = `INVENTÁRIO · ${owned.size}`;
+    const inventoryCount = document.querySelector("#inventory-owned-count");
+    if (inventoryCount) inventoryCount.textContent = owned.size;
+    selectTab(inventoryDialog?.dataset.activeTab || "inventory");
+    const openInventory = document.querySelector("#open-profile-inventory");
+    const closeInventory = document.querySelector("#close-profile-inventory");
+    if (openInventory) openInventory.onclick = () => inventoryDialog?.showModal();
+    if (closeInventory) closeInventory.onclick = () => inventoryDialog?.close();
+    if (inventoryDialog) inventoryDialog.onclick = event => {
+        if (event.target === inventoryDialog) inventoryDialog.close();
+    };
+    const card = (item, mode) => {
+        const isEquipped = equipped[item.slot] === item.id;
+        let action = "";
+        if (mode === "inventory") {
+            action = isEquipped
+                ? '<span class="customization-status is-equipped">EQUIPADO</span>'
+                : isOwnProfile ? `<button class="button button-ghost shop-action" type="button" data-shop-action="equip" data-item="${item.id}">EQUIPAR</button>` : '<span class="customization-status">NO INVENTÁRIO</span>';
+        } else if (isOwnProfile) {
+            action = `<button class="button button-primary shop-action" type="button" data-shop-action="buy" data-item="${item.id}">COMPRAR <b>◈ ${item.price}</b></button>`;
+        } else {
+            action = '<span class="customization-status">LOJA DO OPERADOR</span>';
+        }
+        const rarity = item.rarityKey || "common";
+        const [rarityLabel, difficulty] = PROFILE_RARITY_LABEL[rarity];
+        return `<article class="customization-card shop-rarity-card rarity-${rarity}"><div class="customization-preview shop-preview shop-${item.slot} shop-item-${item.id}" aria-hidden="true">${item.preview}</div><div class="customization-copy"><span class="customization-type">${item.type} // ACESSÓRIO</span><span class="shop-rarity">${rarityLabel} <i>·</i> ${difficulty}</span><h3>${item.name}</h3><p>${item.description}</p>${action}</div></article>`;
+    };
+    const ownedItems = PROFILE_SHOP_ITEMS.filter(item => owned.has(item.id));
+    const loadout = document.querySelector("#profile-loadout-slots");
+    if (loadout) {
+        const slots = [["moldura", "MOLDURA"], ["efeito", "EFEITO"], ["fundo", "FUNDO"], ["título", "TÍTULO"], ["acessório", "ACESSÓRIO"]];
+        loadout.innerHTML = slots.map(([slot, label]) => {
+            const item = PROFILE_SHOP_ITEMS.find(entry => entry.id === equipped[slot]);
+            const value = item?.name || (slot === "título" ? profile.tituloEquipado : "SLOT VAZIO");
+            const preview = item?.preview || (slot === "título" && profile.tituloEquipado ? "✦" : "＋");
+            const rarity = item?.rarityKey || "common";
+            const removeButton = item && isOwnProfile ? `<button class="unequip-action" type="button" data-shop-action="unequip" data-item="${item.id}" aria-label="Retirar ${escapeHtml(item.name)} do espaço ${label.toLowerCase()}">RETIRAR</button>` : "";
+            return `<article class="inventory-equipment-slot rarity-${rarity}${item ? " is-filled" : ""}"><span>${label}</span><b aria-hidden="true">${preview}</b><strong>${escapeHtml(value)}</strong><small>${item ? "EQUIPADO" : slot === "título" ? "TÍTULO ATUAL" : "VAZIO"}</small>${removeButton}</article>`;
+        }).join("");
+    }
+    const inventoryFilter = document.querySelector("#inventory-filter-type");
+    const inventoryRarityFilter = document.querySelector("#inventory-filter-rarity");
+    const shopTypeFilter = document.querySelector("#shop-filter-type");
+    const shopRarityFilter = document.querySelector("#shop-filter-rarity");
+    const shopPriceFilter = document.querySelector("#shop-filter-price");
+    const shopSort = document.querySelector("#shop-sort-price");
+    if (inventoryFilter) inventoryFilter.onchange = () => renderProfileShop(profile, isOwnProfile);
+    if (inventoryRarityFilter) inventoryRarityFilter.onchange = () => renderProfileShop(profile, isOwnProfile);
+    if (shopTypeFilter) shopTypeFilter.onchange = () => renderProfileShop(profile, isOwnProfile);
+    if (shopRarityFilter) shopRarityFilter.onchange = () => renderProfileShop(profile, isOwnProfile);
+    if (shopPriceFilter) shopPriceFilter.onchange = () => renderProfileShop(profile, isOwnProfile);
+    if (shopSort) shopSort.onchange = () => renderProfileShop(profile, isOwnProfile);
+    const inventoryType = inventoryFilter?.value || "todos";
+    const inventoryRarity = inventoryRarityFilter?.value || "todas";
+    const visibleOwned = ownedItems.filter(item => (inventoryType === "todos" || item.slot === inventoryType) && (inventoryRarity === "todas" || item.rarityKey === inventoryRarity));
+    inventory.innerHTML = visibleOwned.length
+        ? [["moldura", "MOLDURAS"], ["efeito", "EFEITOS"], ["fundo", "FUNDOS"], ["título", "TÍTULOS"], ["acessório", "ACESSÓRIOS"]]
+            .map(([slot, categoryLabel]) => {
+                const categoryItems = visibleOwned.filter(item => item.slot === slot);
+                if (!categoryItems.length) return "";
+                const rarityGroups = ["common", "uncommon", "rare", "epic", "legendary"]
+                    .map(rarity => {
+                        const rarityItems = categoryItems
+                            .filter(item => (item.rarityKey || "common") === rarity)
+                            .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+                        if (!rarityItems.length) return "";
+                        const [rarityLabel, difficulty] = PROFILE_RARITY_LABEL[rarity];
+                        return `<section class="inventory-rarity-group rarity-${rarity}"><h5>${rarityLabel}<span>${difficulty}</span></h5><div class="inventory-items-grid">${rarityItems.map(item => card(item, "inventory")).join("")}</div></section>`;
+                    }).join("");
+                return `<section class="inventory-category"><h4>${categoryLabel}<span>${categoryItems.length} ${categoryItems.length === 1 ? "ITEM" : "ITENS"}</span></h4>${rarityGroups}</section>`;
+            }).join("")
+        : ownedItems.length
+            ? '<p class="profile-empty shop-empty">NENHUM ITEM NO INVENTÁRIO PARA ESTE TIPO.</p>'
+        : '<p class="profile-empty shop-empty">INVENTÁRIO VAZIO // COMPRE UM ACESSÓRIO NO CATÁLOGO.</p>';
+    const maxPrice = shopPriceFilter?.value || "todos";
+    const selectedType = shopTypeFilter?.value || "todos";
+    const selectedRarity = shopRarityFilter?.value || "todas";
+    const direction = shopSort?.value === "desc" ? -1 : 1;
+    const availableItems = PROFILE_SHOP_ITEMS
+        .filter(item => !owned.has(item.id))
+        .filter(item => selectedType === "todos" || item.slot === selectedType)
+        .filter(item => selectedRarity === "todas" || item.rarityKey === selectedRarity)
+        .filter(item => maxPrice === "todos" || item.price <= Number(maxPrice))
+        .sort((a, b) => direction * (a.price - b.price));
+    grid.innerHTML = availableItems.length
+        ? availableItems.map(item => card(item, "catalog")).join("")
+        : PROFILE_SHOP_ITEMS.length > 0 && PROFILE_SHOP_ITEMS.every(item => owned.has(item.id))
+            ? '<p class="profile-empty shop-empty">CATÁLOGO COMPLETO // VOCÊ JÁ POSSUI TODOS OS ACESSÓRIOS.</p>'
+            : '<p class="profile-empty shop-empty">NENHUM ITEM ENCONTRADO // AJUSTE OS FILTROS.</p>';
+    if (inventoryDialog && !inventoryDialog.dataset.shopActionsBound) {
+        inventoryDialog.dataset.shopActionsBound = "true";
+        inventoryDialog.addEventListener("click", async event => {
+            const button = event.target.closest("[data-shop-action]");
+            if (!button || !inventoryDialog.contains(button)) return;
+            button.disabled = true;
+            status.textContent = "PROCESSANDO TRANSAÇÃO...";
+            try {
+                const action = ({ buy: "comprar", equip: "equipar", unequip: "retirar" })[button.dataset.shopAction];
+                const result = await window.shredderAccount.request(`/api/loja/${action}`, {
+                    method: "POST", body: { itemId: button.dataset.item },
+                });
+                profile.moedas = result.currency;
+                profile.cosmetics = result.cosmetics;
+                profile.tituloEquipado = result.currentTitle || profile.tituloEquipado;
+                renderProfileAvatar(profile);
+                window.shredderUI?.applyCosmetics(result.cosmetics);
+                document.querySelector("#profile-currency").textContent = formatScore(result.currency);
+                document.querySelector("#customization-currency").textContent = formatScore(result.currency);
+                document.querySelector("#profile-title").textContent = profile.tituloEquipado;
+                status.textContent = action === "comprar"
+                    ? result.starterCreditsGranted
+                        ? "500 MOEDAS INICIAIS ADICIONADAS. ACESSÓRIO COMPRADO!"
+                        : "ACESSÓRIO ADICIONADO AO INVENTÁRIO."
+                    : action === "equipar" ? "ACESSÓRIO EQUIPADO NO PERFIL." : "ACESSÓRIO RETIRADO E DEVOLVIDO AO INVENTÁRIO.";
+                renderProfileShop(profile, true);
+            } catch (error) {
+                status.textContent = error.message || "NÃO FOI POSSÍVEL CONCLUIR A TRANSAÇÃO.";
+                button.disabled = false;
+            }
+        });
+    }
+}
+
+function renderProfileAvatar(profile) {
+    const stage = document.querySelector("#profile-nickname .profile-avatar-stage");
+    const avatar = stage?.querySelector(".profile-player-icon");
+    if (!stage || !avatar) return;
+    const equipped = profile.cosmetics?.equipped || {};
+    stage.dataset.frame = equipped.moldura || "";
+    stage.dataset.effect = equipped.efeito || "";
+    avatar.dataset.frame = equipped.moldura || "";
+    avatar.dataset.background = equipped.fundo || "";
+    avatar.dataset.avatar = PROFILE_AVATAR_IDS.includes(profile.avatar) ? profile.avatar : "";
+    avatar.style.backgroundImage = avatar.dataset.avatar ? `url("images/avatars/${avatar.dataset.avatar}.png?v=4")` : "";
+    avatar.style.backgroundSize = avatar.dataset.avatar ? "cover" : "";
+    avatar.style.backgroundPosition = avatar.dataset.avatar ? "center" : "";
+    avatar.style.backgroundRepeat = avatar.dataset.avatar ? "no-repeat" : "";
+    const preview = document.querySelector("#profile-avatar-preview");
+    if (preview && stage && !preview.contains(stage)) preview.replaceChildren(stage.cloneNode(true));
+}
+
+function setupProfileAvatarPicker(profile, isOwnProfile) {
+    const dialog = document.querySelector("#avatar-picker-dialog");
+    const open = document.querySelector("#open-avatar-picker");
+    const close = document.querySelector("#close-avatar-picker");
+    const options = document.querySelector("#avatar-picker-options");
+    const status = document.querySelector("#avatar-picker-status");
+    if (!dialog || !open || !options) return;
+    dialog.profileData = profile;
+    options.innerHTML = `<button class="avatar-choice" type="button" data-avatar=""><span class="avatar-choice-image avatar-choice-default">♪</span><strong>PADRÃO</strong></button>${PROFILE_AVATARS.map(([id, label]) => `<button class="avatar-choice" type="button" data-avatar="${id}"><img class="avatar-choice-image" src="images/avatars/${id}.png?v=4" alt="" loading="lazy" decoding="async"><strong>${escapeHtml(label)}</strong></button>`).join("")}`;
+    open.hidden = !isOwnProfile;
+    dialog.dataset.canEdit = String(isOwnProfile);
+    open.onclick = () => dialog.showModal();
+    if (close) close.onclick = () => dialog.close();
+    dialog.onclick = event => { if (event.target === dialog) dialog.close(); };
+    const selectedAvatar = PROFILE_AVATAR_IDS.includes(profile.avatar) ? profile.avatar : "";
+    options.querySelectorAll("[data-avatar]").forEach(button => {
+        const selected = button.dataset.avatar === selectedAvatar;
+        button.classList.toggle("is-selected", selected);
+        button.setAttribute("aria-pressed", String(selected));
+    });
+    if (dialog.dataset.bound === "true") return;
+    dialog.dataset.bound = "true";
+    options.addEventListener("click", async event => {
+        const button = event.target.closest("[data-avatar]");
+        if (!button || dialog.dataset.canEdit !== "true") return;
+        const activeProfile = dialog.profileData;
+        const choices = [...options.querySelectorAll("[data-avatar]")];
+        choices.forEach(choice => { choice.disabled = true; });
+        status.textContent = "SALVANDO FOTO DE PERFIL...";
+        try {
+            const result = await window.shredderAccount.request("/api/perfil/avatar", {
+                method: "POST", body: { avatar: button.dataset.avatar },
+            });
+            activeProfile.avatar = result.avatar;
+            renderProfileAvatar(activeProfile);
+            window.shredderUI?.applyCosmetics(activeProfile.cosmetics, undefined, undefined, activeProfile.avatar);
+            choices.forEach(choice => {
+                const selected = choice.dataset.avatar === (activeProfile.avatar || "");
+                choice.classList.toggle("is-selected", selected);
+                choice.setAttribute("aria-pressed", String(selected));
+            });
+            status.textContent = "FOTO DE PERFIL ATUALIZADA.";
+        } catch (error) {
+            status.textContent = error.message || "NÃO FOI POSSÍVEL SALVAR O AVATAR.";
+        } finally {
+            choices.forEach(choice => { choice.disabled = false; });
+        }
+    });
+}
+
 async function loadProfile(username, isOwnProfile) {
     const status = document.querySelector("#profile-status");
     const searchError = document.querySelector("#profile-search-error");
@@ -192,6 +431,11 @@ async function initializeProfile() {
     // Aguarda validar o token antes de decidir qual conta carregar.
     // Sem isso, o perfil pode iniciar com o username ainda nulo e ler uma identidade local antiga.
     if (window.shredderAccount) await window.shredderAccount.restore();
+    try {
+        await loadProfileShopCatalog();
+    } catch (error) {
+        document.querySelector("#shop-status").textContent = `LOJA SEM SINAL // ${error.message}`;
+    }
 
     const searchForm = document.querySelector("#profile-search-form");
     const searchInput = document.querySelector("#profile-search");

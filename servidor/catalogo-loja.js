@@ -1,0 +1,42 @@
+// Fonte única dos itens da loja. A API usa este catálogo para exibir e validar compras.
+const catalogoLoja = [
+    { id: "pick-patch", name: "Patch Palheta", type: "ACESSÓRIO", slot: "acessório", price: 0, preview: "⌁", description: "Um detalhe para marcar seu primeiro visual.", rarityKey: "common" },
+    { id: "frame-cyberpunk", name: "Cyberpunk Musical", type: "MOLDURA", slot: "moldura", price: 12, preview: "⌁", description: "Neon e música em uma moldura de palco.", rarityKey: "rare" },
+    { id: "frame-neon", name: "Moldura Neon", type: "MOLDURA", slot: "moldura", price: 8, preview: "✦", description: "Brilho ciano para sua identidade.", rarityKey: "uncommon" },
+    { id: "frame-magma", name: "Aro Magma", type: "MOLDURA", slot: "moldura", price: 11, preview: "◉", description: "Contorno quente com energia vulcânica.", rarityKey: "rare" },
+    { id: "frame-frost", name: "Gelo Elétrico", type: "MOLDURA", slot: "moldura", price: 11, preview: "❄", description: "Uma moldura fria com brilho azul.", rarityKey: "rare" },
+    { id: "frame-gold", name: "Disco de Ouro", type: "MOLDURA", slot: "moldura", price: 18, preview: "★", description: "Um aro dourado para lendas do palco.", rarityKey: "epic" },
+    { id: "frame-pixel", name: "Pixel Glitch", type: "MOLDURA", slot: "moldura", price: 13, preview: "▦", description: "Visual retrô com interferência digital.", rarityKey: "rare" },
+    { id: "frame-violet", name: "Vórtice Violeta", type: "MOLDURA", slot: "moldura", price: 15, preview: "◈", description: "Um halo roxo de outra dimensão.", rarityKey: "epic" },
+    { id: "frame-aurora", name: "Aurora Boreal", type: "MOLDURA ANIMADA", slot: "moldura", price: 32, preview: "✧", description: "Faixas de luz verde e ciano deslizam pelo aro.", rarityKey: "rare" },
+    { id: "frame-prism", name: "Prisma Infinito", type: "MOLDURA ANIMADA", slot: "moldura", price: 55, preview: "✺", description: "Um espectro de cores gira ao redor do retrato.", rarityKey: "epic" },
+    { id: "frame-comet", name: "Órbita de Cometa", type: "MOLDURA ANIMADA", slot: "moldura", price: 50, preview: "☄", description: "Um cometa cruza a órbita em alta velocidade.", rarityKey: "epic" },
+    { id: "frame-circuit", name: "Circuito Vivo", type: "MOLDURA ANIMADA", slot: "moldura", price: 36, preview: "⌗", description: "Pulsos de energia percorrem as trilhas digitais.", rarityKey: "rare" },
+    { id: "frame-royal", name: "Coroa Dourada", type: "MOLDURA ANIMADA", slot: "moldura", price: 90, preview: "♛", description: "Asas douradas se abrem atrás do avatar, sob a coroa dos campeões.", rarityKey: "legendary" },
+    { id: "frame-void", name: "Portal do Vazio", type: "MOLDURA ANIMADA", slot: "moldura", price: 100, preview: "◉", description: "Um portal violeta se abre em espirais de energia.", rarityKey: "legendary" },
+    { id: "title-guitar-hero", name: "Lenda das Seis Cordas", type: "TÍTULO", slot: "título", price: 15, preview: "✦", description: "Um título para quem domina a guitarra.", rarityKey: "rare" },
+    { id: "effect-pulse", name: "Pulso Magenta", type: "EFEITO", slot: "efeito", price: 20, preview: "〰", description: "Um pulso magenta acompanha seu avatar.", rarityKey: "uncommon" },
+    { id: "effect-lightning", name: "Raio de Palco", type: "EFEITO", slot: "efeito", price: 24, preview: "ϟ", description: "Faíscas elétricas em volta do retrato.", rarityKey: "rare" },
+    { id: "effect-stars", name: "Chuva de Estrelas", type: "EFEITO", slot: "efeito", price: 22, preview: "✧", description: "Estrelas cintilam ao redor do seu rosto.", rarityKey: "epic" },
+    { id: "effect-flame", name: "Chama do Rock", type: "EFEITO", slot: "efeito", price: 26, preview: "♨", description: "Uma aura flamejante para sua identidade.", rarityKey: "epic" },
+    { id: "effect-notes", name: "Notas no Ar", type: "EFEITO", slot: "efeito", price: 19, preview: "♫", description: "Notas musicais orbitam seu retrato.", rarityKey: "uncommon" },
+    { id: "effect-glitch", name: "Falha de Sinal", type: "EFEITO", slot: "efeito", price: 25, preview: "▤", description: "Interferência digital animada.", rarityKey: "rare" },
+    { id: "effect-aura", name: "Aura Radioativa", type: "EFEITO", slot: "efeito", price: 23, preview: "☢", description: "Uma aura verde pulsa no avatar.", rarityKey: "rare" },
+    { id: "effect-supernova", name: "Supernova", type: "EFEITO", slot: "efeito", price: 48, preview: "✺", description: "Explosão estelar com dois anéis de energia.", rarityKey: "epic" },
+    { id: "effect-dragon", name: "Dragão de Neon", type: "EFEITO", slot: "efeito", price: 65, preview: "♜", description: "Aura dupla com escamas de luz em órbita.", rarityKey: "legendary" },
+    { id: "effect-headliner", name: "Coroa do Headliner", type: "EFEITO", slot: "efeito", price: 85, preview: "♛", description: "Uma coroa dourada para quem domina o palco.", rarityKey: "legendary" },
+    { id: "effect-void-sovereign", name: "Soberano do Vazio", type: "AURA ANIMADA", slot: "efeito", price: 110, preview: "◈", description: "Um halo sombrio, runas violeta e fragmentos que orbitam o avatar.", rarityKey: "legendary" },
+    { id: "effect-infinity", name: "Ruptura do Infinito", type: "AURA ANIMADA", slot: "efeito", price: 125, preview: "∞", description: "Anéis cósmicos cruzam o retrato enquanto símbolos surgem na órbita.", rarityKey: "legendary" },
+    { id: "effect-spiral-trail", name: "Espiral Astral", type: "RASTRO ANIMADO", slot: "efeito", price: 95, preview: "⟲", description: "Quatro órbitas ciano e douradas giram como um rastro em miniatura.", rarityKey: "epic" },
+    { id: "bg-space", name: "Nebulosa", type: "FUNDO", slot: "fundo", price: 18, preview: "✦", description: "Um pequeno universo atrás do retrato.", rarityKey: "epic" },
+    { id: "bg-sunset", name: "Pôr do Sol", type: "FUNDO", slot: "fundo", price: 14, preview: "◒", description: "Cores quentes de fim de show.", rarityKey: "uncommon" },
+    { id: "bg-grid", name: "Grade Synthwave", type: "FUNDO", slot: "fundo", price: 16, preview: "▦", description: "Uma grade retrô iluminada.", rarityKey: "rare" },
+    { id: "bg-matrix", name: "Chuva de Dados", type: "FUNDO", slot: "fundo", price: 17, preview: "⌗", description: "Código verde em movimento.", rarityKey: "rare" },
+    { id: "bg-stage", name: "Holofote", type: "FUNDO", slot: "fundo", price: 15, preview: "◉", description: "Luzes de palco focadas no avatar.", rarityKey: "uncommon" },
+    { id: "bg-crimson", name: "Palco Carmesim", type: "FUNDO", slot: "fundo", price: 16, preview: "◉", description: "Um fundo vermelho de show ao vivo.", rarityKey: "rare" },
+    { id: "bg-ocean", name: "Onda Ciano", type: "FUNDO", slot: "fundo", price: 14, preview: "≈", description: "Ondas azuis atrás da identidade.", rarityKey: "uncommon" },
+];
+
+const itensPorId = Object.fromEntries(catalogoLoja.map(item => [item.id, item]));
+
+module.exports = { catalogoLoja, itensPorId };
