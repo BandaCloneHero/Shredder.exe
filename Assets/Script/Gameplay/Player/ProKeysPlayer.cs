@@ -70,6 +70,11 @@ namespace YARG.Gameplay.Player
 
         public float RangeShiftOffset => _currentOffset;
 
+        [Header("Teclado de sete teclas brancas")]
+        [Tooltip("Usa cores individuais e posições fixas apenas em charts que contêm somente dó a si da primeira oitava. Outros charts mantêm o Pro Keys original.")]
+        [SerializeField] private bool _enableSevenWhiteKeys = true;
+        public bool SevenWhiteKeysMode { get; private set; }
+
         [Header("Pro Keys Specific")]
         [SerializeField]
         private KeysArray _keysArray;
@@ -126,7 +131,21 @@ namespace YARG.Gameplay.Player
         protected override InstrumentDifficulty<ProKeysNote> GetNotes(SongChart chart)
         {
             var track = chart.ProKeys.Clone();
-            return track.GetDifficulty(Player.Profile.CurrentDifficulty);
+            var difficulty = track.GetDifficulty(Player.Profile.CurrentDifficulty);
+            SevenWhiteKeysMode = _enableSevenWhiteKeys && difficulty.Notes.Count > 0;
+            foreach (var parent in difficulty.Notes)
+            {
+                foreach (var note in parent.AllNotes)
+                {
+                    if (!SevenKeyProKeysLayout.IsPlayable(note.Key))
+                    {
+                        SevenWhiteKeysMode = false;
+                        break;
+                    }
+                }
+                if (!SevenWhiteKeysMode) break;
+            }
+            return difficulty;
         }
 
         protected override ProKeysEngine CreateEngine()
@@ -695,11 +714,21 @@ namespace YARG.Gameplay.Player
             // Ignore SP in practice mode
             if (action == ProKeysAction.StarPower && GameManager.IsPractice) return true;
 
+            // Decorative keys do not trigger overhits. SP and touch effects remain available.
+            if (SevenWhiteKeysMode && !Player.IsReplay && (int)action <= (int)ProKeysAction.Key25
+                && !SevenKeyProKeysLayout.IsPlayable((int)action)) return true;
+
             return false;
         }
 
         private void GetRangeShifts()
         {
+            if (SevenWhiteKeysMode)
+            {
+                _rangeShifts = new List<RangeShift> { RangeShift.Default };
+                _shiftIndicators.Clear();
+                return;
+            }
             // Get the range shifts from the phrases
 
             _rangeShifts = NoteTrack.Phrases

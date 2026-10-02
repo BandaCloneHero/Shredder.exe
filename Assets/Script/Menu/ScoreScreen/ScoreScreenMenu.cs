@@ -154,6 +154,7 @@ namespace YARG.Menu.ScoreScreen
             _bandScore.text = scoreScreenStats.BandScore.ToString("N0");
 
             // Put the scores in!
+            ShowBossBattleSummary(scoreScreenStats.BossBattle);
             CreateScoreCards(scoreScreenStats);
             StartCoroutine(OperatorScoreReporter.Send(scoreScreenStats, song));
 
@@ -186,6 +187,62 @@ namespace YARG.Menu.ScoreScreen
             _cancellationToken?.Cancel();
             _cancellationToken?.Dispose();
             Navigator.Instance.PopScheme();
+        }
+
+        private GameObject _bossSummary;
+        private Vector2 _originalScrollOffsetMax;
+        private bool _bossSummaryLayoutApplied;
+
+        private void ShowBossBattleSummary(BossBattleResult battle)
+        {
+            var scrollRect = (RectTransform)_cardScrollRect.transform;
+            if (_bossSummary != null) Destroy(_bossSummary);
+            if (_bossSummaryLayoutApplied)
+            {
+                scrollRect.offsetMax = _originalScrollOffsetMax;
+                _bossSummaryLayoutApplied = false;
+            }
+            if (battle == null) return;
+
+            // Shrink the scroll root: ScrollRect drives viewport geometry when hiding its scrollbar.
+            _originalScrollOffsetMax = scrollRect.offsetMax;
+            scrollRect.offsetMax = _originalScrollOffsetMax - new Vector2(0f, 82f);
+            _bossSummaryLayoutApplied = true;
+            _bossSummary = new GameObject("Boss Battle Summary", typeof(RectTransform), typeof(Image));
+            _bossSummary.transform.SetParent(_cardScrollRect.transform, false);
+            var rect = (RectTransform)_bossSummary.transform;
+            rect.anchorMin = new Vector2(0f, 1f);
+            rect.anchorMax = Vector2.one;
+            rect.pivot = new Vector2(0.5f, 1f);
+            rect.anchoredPosition = new Vector2(0f, 82f);
+            rect.sizeDelta = new Vector2(0f, 72f);
+            var background = _bossSummary.GetComponent<Image>();
+            background.color = new Color(0.025f, 0.035f, 0.075f, 0.95f);
+            background.raycastTarget = false;
+
+            var textObject = new GameObject("Battle Result", typeof(RectTransform), typeof(TextMeshProUGUI));
+            textObject.transform.SetParent(rect, false);
+            var label = textObject.GetComponent<TextMeshProUGUI>();
+            label.rectTransform.anchorMin = Vector2.zero;
+            label.rectTransform.anchorMax = Vector2.one;
+            label.rectTransform.offsetMin = new Vector2(18f, 6f);
+            label.rectTransform.offsetMax = new Vector2(-18f, -6f);
+            label.font = _songTitle.font;
+            label.fontSharedMaterial = _songTitle.fontSharedMaterial;
+            label.fontSize = 24f;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 16f;
+            label.fontSizeMax = 24f;
+            label.alignment = TextAlignmentOptions.Center;
+            label.raycastTarget = false;
+            label.color = Color.white;
+            label.richText = true;
+            float remainingPercent = battle.MaxHealth > 0f
+                ? Mathf.Clamp01(battle.RemainingHealth / battle.MaxHealth) * 100f : 0f;
+            string status = battle.Defeated ? "DERROTADO" : "SOBREVIVEU";
+            string color = battle.Defeated ? "59F4C0" : "FFB070";
+            label.text = $"<color=#{color}><b>{battle.BossName.ToUpperInvariant()} {status}</b></color>\n"
+                + $"<size=80%>Vida restante: {battle.RemainingHealth:0.#} / {battle.MaxHealth:0.#} ({remainingPercent:0.#}%)</size>";
         }
 
         private void CreateScoreCards(ScoreScreenStats scoreScreenStats)

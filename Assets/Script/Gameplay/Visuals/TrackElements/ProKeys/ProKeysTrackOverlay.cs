@@ -32,9 +32,13 @@ namespace YARG.Gameplay.Visuals
         [SerializeField]
         private float _blackKeyOffset;
 
-        public float KeySpacing => _trackWidth / ProKeysPlayer.WHITE_KEY_VISIBLE_COUNT;
+        public float KeySpacing => _trackWidth / (_sevenWhiteKeysMode ? 7 : ProKeysPlayer.WHITE_KEY_VISIBLE_COUNT);
+        private float KeyWidthScale => _sevenWhiteKeysMode ? ProKeysPlayer.WHITE_KEY_VISIBLE_COUNT / 7f : 1f;
+        private float AdaptOffset(float offset) => !_sevenWhiteKeysMode ? offset :
+            -_trackWidth * 0.5f + (offset + _trackWidth * 0.5f) * KeyWidthScale;
 
         private readonly List<GameObject> _highlights = new();
+        private bool _sevenWhiteKeysMode;
 
         private static readonly int IsHighlight = Shader.PropertyToID("_IsHighlight");
         private static readonly int BaseMap     = Shader.PropertyToID("_BaseMap");
@@ -42,6 +46,7 @@ namespace YARG.Gameplay.Visuals
 
         public void Initialize(TrackPlayer player, ColorProfile.ProKeysColors colors)
         {
+            _sevenWhiteKeysMode = player is ProKeysPlayer { SevenWhiteKeysMode: true };
             int overlayPositionIndex = 0;
 
             _highlights.Clear();
@@ -56,6 +61,10 @@ namespace YARG.Gameplay.Visuals
                 // Get the group index (two groups per octave)
                 int group = octaveIndex * 2 + (ProKeysUtilities.IsLowerHalfKey(noteIndex) ? 0 : 1);
                 var groupColor = colors.GetOverlayColor(group).ToUnityColor();
+                if (player is ProKeysPlayer { SevenWhiteKeysMode: true })
+                {
+                    groupColor = SevenKeyProKeysLayout.GetColor(i);
+                }
 
                 if (ProKeysUtilities.IsBlackKey(noteIndex))
                 {
@@ -72,7 +81,9 @@ namespace YARG.Gameplay.Visuals
                     SpawnHighlight(false, whitePositionIndex, player, groupColor);
                     whitePositionIndex++;
 
-                    SpawnOverlay(overlayPositionIndex, noteIndex, player, groupColor);
+                    if (player is not ProKeysPlayer { SevenWhiteKeysMode: true }
+                        || SevenKeyProKeysLayout.IsPlayable(i))
+                        SpawnOverlay(overlayPositionIndex, noteIndex, player, groupColor);
                     overlayPositionIndex++;
                 }
             }
@@ -88,7 +99,10 @@ namespace YARG.Gameplay.Visuals
                 : _whiteKeyOffset;
 
             var highlight = Instantiate(prefab, transform);
-            highlight.transform.localPosition = new Vector3(index * KeySpacing + offset, 0f, 0f);
+            highlight.transform.localPosition = new Vector3(index * KeySpacing + AdaptOffset(offset), 0f, 0f);
+            var highlightScale = highlight.transform.localScale;
+            highlightScale.x *= KeyWidthScale;
+            highlight.transform.localScale = highlightScale;
 
             var meshRenderer = highlight.GetComponentInChildren<MeshRenderer>();
 
@@ -111,7 +125,10 @@ namespace YARG.Gameplay.Visuals
             // Spawn overlay
 
             var overlay = Instantiate(_keyOverlayPrefab, transform);
-            overlay.transform.localPosition = new Vector3(index * KeySpacing + _whiteKeyOffset, 0f, 0f);
+            overlay.transform.localPosition = new Vector3(index * KeySpacing + AdaptOffset(_whiteKeyOffset), 0f, 0f);
+            var overlayScale = overlay.transform.localScale;
+            overlayScale.x *= KeyWidthScale;
+            overlay.transform.localScale = overlayScale;
 
             var material = overlay.GetComponentInChildren<MeshRenderer>().material;
             material.color = color.WithAlpha(0.05f);
@@ -141,6 +158,7 @@ namespace YARG.Gameplay.Visuals
         public void SetKeyHeld(int keyIndex, bool held)
         {
             if (keyIndex < 0 || keyIndex >= _highlights.Count) return;
+            if (_sevenWhiteKeysMode && !SevenKeyProKeysLayout.IsPlayable(keyIndex)) return;
 
             _highlights[keyIndex].SetActive(held);
         }

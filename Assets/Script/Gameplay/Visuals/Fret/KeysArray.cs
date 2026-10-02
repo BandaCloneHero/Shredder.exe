@@ -4,6 +4,7 @@ using YARG.Core.Engine.Keys;
 using YARG.Core.Game;
 using YARG.Gameplay.Player;
 using YARG.Themes;
+using YARG.Helpers.Extensions;
 
 namespace YARG.Gameplay.Visuals
 {
@@ -18,7 +19,11 @@ namespace YARG.Gameplay.Visuals
         [SerializeField]
         private float _blackKeyOffset;
 
-        public float KeySpacing => _trackWidth / ProKeysPlayer.WHITE_KEY_VISIBLE_COUNT;
+        private bool _sevenWhiteKeysMode;
+        public float KeySpacing => _trackWidth / (_sevenWhiteKeysMode ? 7 : ProKeysPlayer.WHITE_KEY_VISIBLE_COUNT);
+        private float KeyWidthScale => _sevenWhiteKeysMode ? ProKeysPlayer.WHITE_KEY_VISIBLE_COUNT / 7f : 1f;
+        private float AdaptOffset(float offset) => !_sevenWhiteKeysMode ? offset :
+            -_trackWidth * 0.5f + (offset + _trackWidth * 0.5f) * KeyWidthScale;
 
         private TrackPlayer _player;
 
@@ -29,6 +34,7 @@ namespace YARG.Gameplay.Visuals
         public void Initialize(TrackPlayer player, ThemePreset themePreset, ColorProfile.ProKeysColors colors)
         {
             _player = player;
+            _sevenWhiteKeysMode = player is ProKeysPlayer { SevenWhiteKeysMode: true };
 
             var whiteKeyPrefab = ThemeManager.Instance.CreateFretPrefabFromTheme(themePreset, VisualStyle.ProKeys,
                 ThemeManager.WHITE_KEY_PREFAB_NAME);
@@ -54,10 +60,15 @@ namespace YARG.Gameplay.Visuals
                     var fret = Instantiate(blackKeyPrefab, transform);
                     fret.SetActive(true);
                     fret.transform.localPosition = new Vector3(
-                        blackPositionIndex * KeySpacing + _blackKeyOffset, 0f, 0f);
+                        blackPositionIndex * KeySpacing + AdaptOffset(_blackKeyOffset), 0f, 0f);
+                    var blackScale = fret.transform.localScale;
+                    blackScale.x *= KeyWidthScale;
+                    fret.transform.localScale = blackScale;
 
                     int group = octaveIndex * 2 + (ProKeysUtilities.IsLowerHalfKey(noteIndex) ? 0 : 1);
                     var color = colors.GetBlackKeyColor(group);
+                    if (player is ProKeysPlayer { SevenWhiteKeysMode: true })
+                        color = System.Drawing.Color.FromArgb(28, 28, 28);
 
                     var fretComp = fret.GetComponent<Fret>();
                     fretComp.Initialize(color, color, color, color);
@@ -80,9 +91,15 @@ namespace YARG.Gameplay.Visuals
                     var fret = Instantiate(whiteKeyPrefab, transform);
                     fret.SetActive(true);
                     fret.transform.localPosition = new Vector3(
-                        whitePositionIndex * KeySpacing + _whiteKeyOffset, 0f, 0f);
+                        whitePositionIndex * KeySpacing + AdaptOffset(_whiteKeyOffset), 0f, 0f);
+                    var whiteScale = fret.transform.localScale;
+                    whiteScale.x *= KeyWidthScale;
+                    fret.transform.localScale = whiteScale;
 
                     var color = colors.WhiteKey;
+                    if (player is ProKeysPlayer { SevenWhiteKeysMode: true }
+                        && SevenKeyProKeysLayout.IsPlayable(i))
+                        color = SevenKeyProKeysLayout.GetColor(i).ToSystemColor();
 
                     var fretComp = fret.GetComponent<Fret>();
                     fretComp.Initialize(color, color, color, color);
@@ -94,6 +111,11 @@ namespace YARG.Gameplay.Visuals
 
                     whitePositionIndex++;
                 }
+
+                // Retain pitch-index slots for the engine, but render only C through B.
+                // This includes the five decorative black keys between the seven whites.
+                if (player is ProKeysPlayer { SevenWhiteKeysMode: true } && i >= 12)
+                    _keys[i].gameObject.SetActive(false);
             }
         }
 
@@ -104,17 +126,20 @@ namespace YARG.Gameplay.Visuals
 
         public void SetPressed(int index, bool pressed)
         {
+            if (!_keys[index].gameObject.activeSelf) return;
             _keys[index].SetPressed(pressed);
         }
 
         public void PlayHitAnimation(int index)
         {
+            if (!_keys[index].gameObject.activeSelf) return;
             _keys[index].PlayHitAnimation();
             _keys[index].PlayHitParticles();
         }
 
         public void PlayMissAnimation(int index)
         {
+            if (!_keys[index].gameObject.activeSelf) return;
             _keys[index].PlayMissAnimation();
             _keys[index].PlayMissParticles();
         }
@@ -123,6 +148,7 @@ namespace YARG.Gameplay.Visuals
         {
             foreach (var fret in _keys)
             {
+                if (!fret.gameObject.activeSelf) continue;
                 fret.SetBreMode(breMode);
             }
         }

@@ -142,6 +142,13 @@ namespace YARG.Song
 #nullable disable
         {
             var directories = new List<string>(SettingsManager.Settings.SongFolders);
+#if UNITY_EDITOR
+            // Local charts for trying gameplay changes from this Unity project.
+            string projectTestSongs = System.IO.Path.GetFullPath(
+                System.IO.Path.Combine(UnityEngine.Application.dataPath, "../TestSongs"));
+            if (System.IO.Directory.Exists(projectTestSongs) && !directories.Contains(projectTestSongs))
+                directories.Add(projectTestSongs);
+#endif
             string setlistPath = PathHelper.SetlistPath;
             if (!string.IsNullOrEmpty(setlistPath) && !directories.Contains(setlistPath))
             {

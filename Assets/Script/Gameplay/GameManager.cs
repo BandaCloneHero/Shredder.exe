@@ -614,8 +614,10 @@ namespace YARG.Gameplay
             }
 
             // Pass the score info to the stats screen
+            var bossReaction = FindAnyObjectByType<GepetoBossReaction>();
             GlobalVariables.State.ScoreScreenStats = new ScoreScreenStats
             {
+                BossBattle = bossReaction != null ? bossReaction.CaptureResult() : null,
                 PlayerScores = _players.Select(player => new PlayerScoreCard
                 {
                     IsHighScore = player.Score > player.LastHighScore,

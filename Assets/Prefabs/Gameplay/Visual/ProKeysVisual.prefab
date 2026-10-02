@@ -691,6 +691,7 @@ MonoBehaviour:
   EffectPool: {fileID: 1486725686970304910}
   StarPowerEffect: {fileID: 8822912986501080586}
   _keysArray: {fileID: 679598873221959975}
+  _enableSevenWhiteKeys: 1
   _trackOverlay: {fileID: 7995190430839588284}
   _shiftIndicatorPool: {fileID: 1927606851816881999}
   _chordBarPool: {fileID: 604328965033258162}

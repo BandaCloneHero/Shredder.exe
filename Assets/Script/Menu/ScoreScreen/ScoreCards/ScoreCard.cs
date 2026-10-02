@@ -135,6 +135,7 @@ namespace YARG.Menu.ScoreScreen
 
         public virtual void SetCardContents()
         {
+            SetBossContribution();
             _playerName.text = Player.Profile.Name;
 
             _instrument.text = Player.Profile.CurrentInstrument.ToLocalizedName();
@@ -522,6 +523,45 @@ namespace YARG.Menu.ScoreScreen
             }
 
             return bins;
+        }
+
+        private GameObject _bossContribution;
+
+        private void SetBossContribution()
+        {
+            if (_bossContribution != null) Destroy(_bossContribution);
+            var battle = GlobalVariables.State.ScoreScreenStats?.BossBattle;
+            if (battle == null || battle.Players == null || _basicStatsRect == null) return;
+            float damage = 0f;
+            bool participated = false;
+            foreach (var contribution in battle.Players)
+            {
+                if (contribution.Player != Player) continue;
+                participated = true;
+                damage += contribution.Damage;
+            }
+            float totalDamage = Mathf.Max(0f, battle.MaxHealth - battle.RemainingHealth);
+            float share = totalDamage > 0f ? Mathf.Clamp01(damage / totalDamage) * 100f : 0f;
+            _bossContribution = new GameObject("Boss Contribution", typeof(RectTransform),
+                typeof(LayoutElement), typeof(TextMeshProUGUI));
+            _bossContribution.transform.SetParent(_basicStatsRect, false);
+            _bossContribution.transform.SetAsFirstSibling();
+            var layout = _bossContribution.GetComponent<LayoutElement>();
+            layout.minHeight = layout.preferredHeight = 62f;
+            var label = _bossContribution.GetComponent<TextMeshProUGUI>();
+            label.font = _notesHit.font;
+            label.fontSharedMaterial = _notesHit.fontSharedMaterial;
+            label.fontSize = 20f;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 16f;
+            label.fontSizeMax = 20f;
+            label.alignment = TextAlignmentOptions.Center;
+            label.color = Color.white;
+            label.raycastTarget = false;
+            label.richText = true;
+            label.text = participated
+                ? $"<color=#59F4C0><b>DANO AO BOSS: {damage:0.#}</b></color>\n<size=85%>{share:0.#}% do dano da banda</size>"
+                : "<size=85%>Este instrumento não participa do combate.</size>";
         }
 
         private TextMeshProUGUI CreateHistogramLabel(Transform parent, string name, TextAlignmentOptions alignment)

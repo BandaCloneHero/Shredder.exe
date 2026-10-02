@@ -16,6 +16,7 @@ namespace YARG.Menu.ScoreScreen
 
     public struct ScoreScreenStats
     {
+        public BossBattleResult BossBattle;
         public PlayerScoreCard[] PlayerScores;
 
         public int BandStars;
@@ -24,5 +25,20 @@ namespace YARG.Menu.ScoreScreen
 #nullable enable
         public ReplayInfo? ReplayInfo;
 #nullable disable
+    }
+
+    public sealed class BossBattleResult
+    {
+        public string BossName;
+        public bool Defeated;
+        public float RemainingHealth;
+        public float MaxHealth;
+        public BossPlayerContribution[] Players;
+    }
+
+    public struct BossPlayerContribution
+    {
+        public YargPlayer Player;
+        public float Damage;
     }
 }

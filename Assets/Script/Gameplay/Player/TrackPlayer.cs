@@ -124,6 +124,8 @@ namespace YARG.Gameplay.Player
             Initialize(index, player, chart, lastHighScore);
 
             TrackView = trackView;
+            playerReaction = TrackView.GetComponentInChildren<ReactionController>(true);
+            playerReaction?.ConfigureForInstrument(player.Profile.CurrentInstrument);
 
             Beatlines = SyncTrack.Beatlines;
             BeatlineIndex = 0;
@@ -167,6 +169,7 @@ namespace YARG.Gameplay.Player
 
             ComboMeter.SetFullCombo(IsFc);
             TrackView.ForceReset();
+            playerReaction?.ResetReaction();
             GameManager.ResetCoda();
 
             NotePool.ReturnAllObjects();
@@ -1059,7 +1062,7 @@ namespace YARG.Gameplay.Player
                 }
             }
 
-            TrackView?.GetComponentInChildren<ReactionController>()?.TriggerHit(GetLedColorIndex(note));
+            playerReaction?.TriggerHit(GetLedColorIndex(note));
 
             LastCombo = Combo;
         }
@@ -1077,7 +1080,7 @@ namespace YARG.Gameplay.Player
             if (!GameManager.IsSeekingReplay)
             {
 
-                TrackView?.GetComponentInChildren<ReactionController>()?.TriggerMissReaction();
+                playerReaction?.TriggerMissReaction();
 
                 SetStemMuteState(true);
 
@@ -1099,7 +1102,8 @@ namespace YARG.Gameplay.Player
         protected virtual void OnOverhit()
         {
 
-            FindFirstObjectByType<ReactionController>()?.TriggerMissReaction();
+            if (!GameManager.IsSeekingReplay)
+                playerReaction?.TriggerMissReaction();
 
             if (IsFc)
             {

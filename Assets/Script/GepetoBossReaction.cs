@@ -1,144 +1,110 @@
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using YARG;
 using YARG.Gameplay;
-using System.Collections.Generic;
+using YARG.Gameplay.Player;
+using YARG.Menu.ScoreScreen;
 
 public class GepetoBossReaction : MonoBehaviour
 {
-    [Tooltip("Arraste o componente Image do robô aqui")]
-    [SerializeField] private Image robotImage;
-
-    [Tooltip("Sprite do robô de boa / neutro")]
-    [SerializeField] private Sprite robotHappySprite;
-
-    [Tooltip("Sprite do robô putasso no dano crítico")]
-    [SerializeField] private Sprite robotAngrySprite;
-
-    [Header("Configuração de Reação")]
-    [Tooltip("Duração da expressão de raiva ao sofrer dano crítico.")]
-    [Min(0.1f)]
-    [SerializeField] private float angryCooldown = 2f;
-
-    [Header("Barra de Vida da Corporação")]
     [SerializeField] private BossHealthBar bossHealthBar;
 
-    private float angryTimer = 0f;
-    private bool isAngry = false;
+    private readonly List<TrackPlayer> subscribedPlayers = new();
+    private readonly Dictionary<TrackPlayer, System.Action<double, double>> hitHandlers = new();
+    private readonly Dictionary<TrackPlayer, float> playerDamage = new();
     private GameManager gameManager;
-    private readonly List<ReactionController> reactionControllers = new List<ReactionController>();
-    private readonly List<TrackAvatar> trackedAvatars = new List<TrackAvatar>();
+    private GepetoVisualAnimator visualAnimator;
 
     private void Awake()
     {
-        if (robotImage == null)
-        {
-            robotImage = GetComponent<Image>();
-        }
-
         if (bossHealthBar == null)
-        {
             bossHealthBar = FindAnyObjectByType<BossHealthBar>();
-        }
-    }
-
-    private void Start()
-    {
-        SetRobotState(false);
+        visualAnimator = FindAnyObjectByType<GepetoVisualAnimator>();
     }
 
     private void Update()
     {
         if (gameManager == null)
-        {
             gameManager = FindAnyObjectByType<GameManager>();
-            if (gameManager == null) return;
-        }
+        if (gameManager == null || bossHealthBar == null)
+            return;
 
-        RefreshHitSubscriptions();
+        var players = gameManager.Players;
+        if (players == null)
+            return;
 
-        // O robô SÓ fica puto se a pontuação atingir o patamar de dano crítico na barra
-        if (bossHealthBar != null)
+        int totalNotes = 0;
+        foreach (var player in players)
         {
-            bool triggerCriticalReaction = bossHealthBar.ProcessScoreForCritical(gameManager.BandScore);
-            if (triggerCriticalReaction)
-            {
-                TriggerAngryFace();
-            }
+            if (player is not TrackPlayer trackPlayer)
+                continue;
+
+            totalNotes += trackPlayer.BossEventCount;
+            if (subscribedPlayers.Contains(trackPlayer))
+                continue;
+
+            subscribedPlayers.Add(trackPlayer);
+            System.Action<double, double> handler = (noteTime, hitTime) => OnNoteHit(trackPlayer, noteTime, hitTime);
+            hitHandlers.Add(trackPlayer, handler);
+            playerDamage.Add(trackPlayer, 0f);
+            trackPlayer.BossNoteHit += handler;
+            trackPlayer.BossNoteMissed += OnNoteMissed;
         }
 
-        // Controla o tempo da carinha de bravo voltando ao normal
-        if (angryTimer > 0f)
-        {
-            angryTimer -= Time.deltaTime;
-        }
-
-        if (angryTimer <= 0f && isAngry)
-        {
-            SetRobotState(false);
-        }
+        bossHealthBar.SetExpectedNoteCount(totalNotes);
     }
 
-    private void RefreshHitSubscriptions()
+    private void OnNoteHit(TrackPlayer player, double noteTime, double hitTime)
     {
-        ReactionController[] reactions = FindObjectsByType<ReactionController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        foreach (var reaction in reactions)
-        {
-            if (reaction == null || !reaction.isActiveAndEnabled || reactionControllers.Contains(reaction)) continue;
+        if (gameManager != null && gameManager.IsSeekingReplay)
+            return;
 
-            reactionControllers.Add(reaction);
-            reaction.NoteHit += OnNoteHit;
-        }
-
-        if (reactionControllers.Count > 0) return;
-
-        TrackAvatar[] avatars = FindObjectsByType<TrackAvatar>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        foreach (var avatar in avatars)
-        {
-            if (avatar == null || !avatar.isActiveAndEnabled || trackedAvatars.Contains(avatar)) continue;
-
-            trackedAvatars.Add(avatar);
-            avatar.NoteHit += OnNoteHit;
-        }
+        if (bossHealthBar == null) return;
+        float healthBefore = bossHealthBar.CurrentHealth;
+        bossHealthBar.RegisterNoteHit(noteTime, hitTime);
+        playerDamage[player] += Mathf.Max(0f, healthBefore - bossHealthBar.CurrentHealth);
     }
 
-    private void OnNoteHit(int lane)
+    private void OnNoteMissed()
     {
-        // Notas dão apenas dano minúsculo de fundo e NÃO mudam a expressão do robô
-        bossHealthBar?.RegisterNoteHit();
+        if (gameManager != null && gameManager.IsSeekingReplay)
+            return;
+
+        bossHealthBar?.RegisterNoteMiss();
+        visualAnimator?.TriggerMissFeedback();
     }
 
     private void OnDestroy()
     {
-        foreach (var reaction in reactionControllers)
+        foreach (var player in subscribedPlayers)
         {
-            if (reaction != null) reaction.NoteHit -= OnNoteHit;
-        }
-
-        foreach (var avatar in trackedAvatars)
-        {
-            if (avatar != null) avatar.NoteHit -= OnNoteHit;
+            if (player == null) continue;
+            if (hitHandlers.TryGetValue(player, out var handler))
+                player.BossNoteHit -= handler;
+            player.BossNoteMissed -= OnNoteMissed;
         }
     }
 
-    private void TriggerAngryFace()
+    public BossBattleResult CaptureResult()
     {
-        SetRobotState(true);
-        angryTimer = angryCooldown;
-    }
-
-    private void SetRobotState(bool angry)
-    {
-        isAngry = angry;
-        if (robotImage == null) return;
-
-        if (angry && robotAngrySprite != null)
+        if (bossHealthBar == null) return null;
+        var contributions = new List<BossPlayerContribution>();
+        foreach (var player in subscribedPlayers)
         {
-            robotImage.sprite = robotAngrySprite;
+            if (player == null) continue;
+            contributions.Add(new BossPlayerContribution
+            {
+                Player = player.Player,
+                Damage = playerDamage[player]
+            });
         }
-        else if (!angry && robotHappySprite != null)
+        return new BossBattleResult
         {
-            robotImage.sprite = robotHappySprite;
-        }
+            BossName = "Gepeto",
+            Defeated = bossHealthBar.IsDefeated,
+            RemainingHealth = bossHealthBar.CurrentHealth,
+            MaxHealth = bossHealthBar.MaxHealth,
+            Players = contributions.ToArray()
+        };
     }
 }

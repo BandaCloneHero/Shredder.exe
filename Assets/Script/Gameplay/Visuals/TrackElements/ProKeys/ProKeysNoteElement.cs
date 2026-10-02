@@ -159,6 +159,13 @@ namespace YARG.Gameplay.Visuals
                 ? colors.BlackNoteStarPower.ToUnityColor()
                 : colors.WhiteNoteStarPower.ToUnityColor();
 
+            if (Player is ProKeysPlayer { SevenWhiteKeysMode: true })
+            {
+                // Keep the key identity during star power as well as on sustains.
+                colorNoStarPower = SevenKeyProKeysLayout.GetColor(NoteRef.Key);
+                colorStarPower = colorNoStarPower;
+            }
+
             var color = IsStarPowerVisible
                 ? colorStarPower
                 : colorNoStarPower;
