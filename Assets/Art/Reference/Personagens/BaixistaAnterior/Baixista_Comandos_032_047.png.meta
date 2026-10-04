@@ -1,0 +1,523 @@
+fileFormatVersion: 2
+guid: b018f191d822436890bd4bd22e7288ed
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 21300101
+    second: Baixista_Comandos_032_047_01
+  - first:
+      213: 21300102
+    second: Baixista_Comandos_032_047_02
+  - first:
+      213: 21300103
+    second: Baixista_Comandos_032_047_03
+  - first:
+      213: 21300104
+    second: Baixista_Comandos_032_047_04
+  - first:
+      213: 21300105
+    second: Baixista_Comandos_032_047_05
+  - first:
+      213: 21300106
+    second: Baixista_Comandos_032_047_06
+  - first:
+      213: 21300107
+    second: Baixista_Comandos_032_047_07
+  - first:
+      213: 21300108
+    second: Baixista_Comandos_032_047_08
+  - first:
+      213: 21300109
+    second: Baixista_Comandos_032_047_09
+  - first:
+      213: 21300110
+    second: Baixista_Comandos_032_047_10
+  - first:
+      213: 21300111
+    second: Baixista_Comandos_032_047_11
+  - first:
+      213: 21300112
+    second: Baixista_Comandos_032_047_12
+  - first:
+      213: 21300113
+    second: Baixista_Comandos_032_047_13
+  - first:
+      213: 21300114
+    second: Baixista_Comandos_032_047_14
+  - first:
+      213: 21300115
+    second: Baixista_Comandos_032_047_15
+  - first:
+      213: 21300116
+    second: Baixista_Comandos_032_047_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_01
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aca67bc17a509c0843aababcdf06ef70
+      internalID: 21300101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_02
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5078f86ca0f3859c9eb7ab6749518a32
+      internalID: 21300102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_03
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4de7d8b55a5d5e344fda45ff04e537d
+      internalID: 21300103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_04
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c81d3a1415098b0f5d21e1462d62800
+      internalID: 21300104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_05
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5438e9a0ead49fd50072b5b2700b4e65
+      internalID: 21300105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_06
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0e7140a0a1b5b23c9343ad4cf4b2340
+      internalID: 21300106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_07
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 377665d80ba96c28fda8a40fa5c1cbeb
+      internalID: 21300107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_08
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5d21cad4f7b9b51d7f79a5d30575424
+      internalID: 21300108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_09
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88ee259953b3707d21992a83626e4291
+      internalID: 21300109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_10
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1649ea1d7fb070f7365c3d7000f3d62d
+      internalID: 21300110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_11
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e94c02789e77d03a5d17260d9d9f961
+      internalID: 21300111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_12
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: efd2b03ddd2030e805656ac03a09a5f2
+      internalID: 21300112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_13
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e3ccae50417b8aa17247db7ccaf1b79e
+      internalID: 21300113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_14
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3254ce5ced188cfcd6d46b683389268b
+      internalID: 21300114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_15
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fca529c4c8dab6864eb2023b381a15a5
+      internalID: 21300115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baixista_Comandos_032_047_16
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3053786c9ce73a22b727ddef6eae5546
+      internalID: 21300116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondarySpriteTextures: []
+    nameFileIdTable:
+      Baixista_Comandos_032_047_01: 21300101
+      Baixista_Comandos_032_047_02: 21300102
+      Baixista_Comandos_032_047_03: 21300103
+      Baixista_Comandos_032_047_04: 21300104
+      Baixista_Comandos_032_047_05: 21300105
+      Baixista_Comandos_032_047_06: 21300106
+      Baixista_Comandos_032_047_07: 21300107
+      Baixista_Comandos_032_047_08: 21300108
+      Baixista_Comandos_032_047_09: 21300109
+      Baixista_Comandos_032_047_10: 21300110
+      Baixista_Comandos_032_047_11: 21300111
+      Baixista_Comandos_032_047_12: 21300112
+      Baixista_Comandos_032_047_13: 21300113
+      Baixista_Comandos_032_047_14: 21300114
+      Baixista_Comandos_032_047_15: 21300115
+      Baixista_Comandos_032_047_16: 21300116
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

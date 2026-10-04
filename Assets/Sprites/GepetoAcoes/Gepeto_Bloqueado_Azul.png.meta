@@ -1,0 +1,523 @@
+fileFormatVersion: 2
+guid: d9a1889da74343fdaf79976dc8e20388
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 21300101
+    second: Gepeto_Bloqueado_Azul_01
+  - first:
+      213: 21300102
+    second: Gepeto_Bloqueado_Azul_02
+  - first:
+      213: 21300103
+    second: Gepeto_Bloqueado_Azul_03
+  - first:
+      213: 21300104
+    second: Gepeto_Bloqueado_Azul_04
+  - first:
+      213: 21300105
+    second: Gepeto_Bloqueado_Azul_05
+  - first:
+      213: 21300106
+    second: Gepeto_Bloqueado_Azul_06
+  - first:
+      213: 21300107
+    second: Gepeto_Bloqueado_Azul_07
+  - first:
+      213: 21300108
+    second: Gepeto_Bloqueado_Azul_08
+  - first:
+      213: 21300109
+    second: Gepeto_Bloqueado_Azul_09
+  - first:
+      213: 21300110
+    second: Gepeto_Bloqueado_Azul_10
+  - first:
+      213: 21300111
+    second: Gepeto_Bloqueado_Azul_11
+  - first:
+      213: 21300112
+    second: Gepeto_Bloqueado_Azul_12
+  - first:
+      213: 21300113
+    second: Gepeto_Bloqueado_Azul_13
+  - first:
+      213: 21300114
+    second: Gepeto_Bloqueado_Azul_14
+  - first:
+      213: 21300115
+    second: Gepeto_Bloqueado_Azul_15
+  - first:
+      213: 21300116
+    second: Gepeto_Bloqueado_Azul_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_01
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 961253f1252d2770763ee6ddcc9be5b7
+      internalID: 21300101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_02
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89e36bf8741188b50ce30ff1b88b7a55
+      internalID: 21300102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_03
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ec57c083d68f6e0ae60f43d07299563
+      internalID: 21300103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_04
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5de45030fe6e35eddfe664877782464b
+      internalID: 21300104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_05
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89dad9bc4d9878d8ab8e149d37719cab
+      internalID: 21300105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_06
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8531c0c4c2a41cf9a85bf98187ac002a
+      internalID: 21300106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_07
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf0b4cdb8b429b1ce5c5f5d61be0b792
+      internalID: 21300107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_08
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 694a153cd95c85b1bbfba698ee23f197
+      internalID: 21300108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_09
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5308d3c44740605643aff5115e37fb5a
+      internalID: 21300109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_10
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 627494f16d4167a0ff301c5a9e78bcdc
+      internalID: 21300110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_11
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 820d131b9fd3dd095168ff0ad58d3f5e
+      internalID: 21300111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_12
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b155d5e4a7b713d18f38b180abfcc71
+      internalID: 21300112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_13
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f615c58eab792c8a361f2607eca47909
+      internalID: 21300113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_14
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 319e0420e01677b3ba66c70e2f0f9a2d
+      internalID: 21300114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_15
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 961fa57c72735d2515b8cfe0f18586d5
+      internalID: 21300115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gepeto_Bloqueado_Azul_16
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3db604a21eaa836478d3043d5ea005a5
+      internalID: 21300116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondarySpriteTextures: []
+    nameFileIdTable:
+      Gepeto_Bloqueado_Azul_01: 21300101
+      Gepeto_Bloqueado_Azul_02: 21300102
+      Gepeto_Bloqueado_Azul_03: 21300103
+      Gepeto_Bloqueado_Azul_04: 21300104
+      Gepeto_Bloqueado_Azul_05: 21300105
+      Gepeto_Bloqueado_Azul_06: 21300106
+      Gepeto_Bloqueado_Azul_07: 21300107
+      Gepeto_Bloqueado_Azul_08: 21300108
+      Gepeto_Bloqueado_Azul_09: 21300109
+      Gepeto_Bloqueado_Azul_10: 21300110
+      Gepeto_Bloqueado_Azul_11: 21300111
+      Gepeto_Bloqueado_Azul_12: 21300112
+      Gepeto_Bloqueado_Azul_13: 21300113
+      Gepeto_Bloqueado_Azul_14: 21300114
+      Gepeto_Bloqueado_Azul_15: 21300115
+      Gepeto_Bloqueado_Azul_16: 21300116
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

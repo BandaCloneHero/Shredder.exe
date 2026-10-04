@@ -6,6 +6,9 @@ using System.Collections;
 
 public class BossUIController : MonoBehaviour
 {
+    public TMP_FontAsset NotificationFont => notificationFont;
+    [SerializeField] private TMP_FontAsset attackNotificationFont;
+    public TMP_FontAsset AttackNotificationFont => attackNotificationFont != null ? attackNotificationFont : notificationFont;
     [Header("Referências")]
     [SerializeField] private BossHealthBar bossHealthBar;
     [SerializeField] private Image healthBarFillImage; // A imagem interna do Slider que preenche a vida
@@ -138,7 +141,7 @@ public class BossUIController : MonoBehaviour
     {
         if (healthBarFillImage == null) return;
 
-        if (hpPercent <= 0.5f)
+        if (bossHealthBar != null && bossHealthBar.CurrentPhase == 2)
         {
             healthBarFillImage.color = phase2Color;
         }

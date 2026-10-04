@@ -1,0 +1,523 @@
+fileFormatVersion: 2
+guid: 21a9157045524c39a9f489662b31c83f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 21300101
+    second: Tecladista_Comandos_048_063_01
+  - first:
+      213: 21300102
+    second: Tecladista_Comandos_048_063_02
+  - first:
+      213: 21300103
+    second: Tecladista_Comandos_048_063_03
+  - first:
+      213: 21300104
+    second: Tecladista_Comandos_048_063_04
+  - first:
+      213: 21300105
+    second: Tecladista_Comandos_048_063_05
+  - first:
+      213: 21300106
+    second: Tecladista_Comandos_048_063_06
+  - first:
+      213: 21300107
+    second: Tecladista_Comandos_048_063_07
+  - first:
+      213: 21300108
+    second: Tecladista_Comandos_048_063_08
+  - first:
+      213: 21300109
+    second: Tecladista_Comandos_048_063_09
+  - first:
+      213: 21300110
+    second: Tecladista_Comandos_048_063_10
+  - first:
+      213: 21300111
+    second: Tecladista_Comandos_048_063_11
+  - first:
+      213: 21300112
+    second: Tecladista_Comandos_048_063_12
+  - first:
+      213: 21300113
+    second: Tecladista_Comandos_048_063_13
+  - first:
+      213: 21300114
+    second: Tecladista_Comandos_048_063_14
+  - first:
+      213: 21300115
+    second: Tecladista_Comandos_048_063_15
+  - first:
+      213: 21300116
+    second: Tecladista_Comandos_048_063_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_01
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c0b1db68b99c0baca9f16a89aca9f77
+      internalID: 21300101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_02
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8769a2fe7ad5712df36bde0a61a0ea5a
+      internalID: 21300102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_03
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b3e117fc2a5bf641a45620634866e536
+      internalID: 21300103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_04
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f4316fb95c22e7106ad25acb69d4bb46
+      internalID: 21300104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_05
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f75f85b44a0d517c8004b52d647f7aa
+      internalID: 21300105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_06
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a964c537efc345365a04dd0bdb6c550b
+      internalID: 21300106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_07
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af97bb3260c721c62e411e073f136219
+      internalID: 21300107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_08
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19ba2d5256e120966149eabf2cc546a5
+      internalID: 21300108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_09
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2caa0572bfd652dc9b82c8276bd6723
+      internalID: 21300109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_10
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 008b69e0360347414fa1e460561a16c5
+      internalID: 21300110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_11
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9ef16b3146e2e919beb3552ac9d0f492
+      internalID: 21300111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_12
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd168563c384463a36c5ed08b03c9b32
+      internalID: 21300112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_13
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88893a505fe615830e8c02dca7d16474
+      internalID: 21300113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_14
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4daf6bfae1a9d218a3a4538bb346bca3
+      internalID: 21300114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_15
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ae4bd14be2e5e8a8d583980b51b769f6
+      internalID: 21300115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tecladista_Comandos_048_063_16
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec54a6dd4ee8dfb1de95421be9d32235
+      internalID: 21300116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondarySpriteTextures: []
+    nameFileIdTable:
+      Tecladista_Comandos_048_063_01: 21300101
+      Tecladista_Comandos_048_063_02: 21300102
+      Tecladista_Comandos_048_063_03: 21300103
+      Tecladista_Comandos_048_063_04: 21300104
+      Tecladista_Comandos_048_063_05: 21300105
+      Tecladista_Comandos_048_063_06: 21300106
+      Tecladista_Comandos_048_063_07: 21300107
+      Tecladista_Comandos_048_063_08: 21300108
+      Tecladista_Comandos_048_063_09: 21300109
+      Tecladista_Comandos_048_063_10: 21300110
+      Tecladista_Comandos_048_063_11: 21300111
+      Tecladista_Comandos_048_063_12: 21300112
+      Tecladista_Comandos_048_063_13: 21300113
+      Tecladista_Comandos_048_063_14: 21300114
+      Tecladista_Comandos_048_063_15: 21300115
+      Tecladista_Comandos_048_063_16: 21300116
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

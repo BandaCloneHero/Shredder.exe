@@ -24,11 +24,43 @@ namespace YARG.Gameplay.Player
 
         public YargPlayer Player { get; private set; }
 
+        private double _bossSpeedStart, _bossSpeedEnd;
+        private float _bossSpeedIncrease;
+
+        public void ApplyBossVisualSpeedBoost(float increase, float durationSeconds)
+        {
+            _bossSpeedIncrease = Mathf.Clamp(increase, 0f, 0.6f);
+            _bossSpeedStart = GameManager.SongTime;
+            _bossSpeedEnd = _bossSpeedStart + Mathf.Max(0f, durationSeconds);
+        }
+
+        public void ClearBossVisualSpeedBoost()
+        {
+            _bossSpeedIncrease = 0f;
+        }
+
+        private float BossVisualSpeedMultiplier
+        {
+            get
+            {
+                if (_bossSpeedIncrease <= 0f || GameManager.IsSeekingReplay) return 1f;
+                double now = GameManager.SongTime;
+                if (now < _bossSpeedStart || now >= _bossSpeedEnd) return 1f;
+                float duration = (float)(_bossSpeedEnd - _bossSpeedStart);
+                float rampIn = Mathf.Min(0.4f, duration * 0.5f);
+                float rampOut = Mathf.Min(0.6f, duration * 0.5f);
+                float envelope = Mathf.Min(
+                    Mathf.SmoothStep(0f, 1f, (float)(now - _bossSpeedStart) / Mathf.Max(0.001f, rampIn)),
+                    Mathf.SmoothStep(0f, 1f, (float)(_bossSpeedEnd - now) / Mathf.Max(0.001f, rampOut)));
+                return 1f + _bossSpeedIncrease * envelope;
+            }
+        }
+
         public float NoteSpeed
         {
             get
             {
-                float noteSpeed = Player.Profile.NoteSpeed * _noteSpeedDifficultyScale;
+                float noteSpeed = Player.Profile.NoteSpeed * _noteSpeedDifficultyScale * BossVisualSpeedMultiplier;
 
                 // If we're in a replay, don't change the note speed (it should be like a video
                 // slowing down/speeding up). The actual song speed should be taken into account though,

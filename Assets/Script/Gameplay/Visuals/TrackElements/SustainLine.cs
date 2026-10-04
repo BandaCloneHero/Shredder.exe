@@ -46,6 +46,7 @@ namespace YARG.Gameplay.Visuals
 
         // Mesh properties
         private float _currentLength;
+        private float _lengthSeconds;
         private float _currentStartZ;
 
         private void Awake()
@@ -167,6 +168,7 @@ namespace YARG.Gameplay.Visuals
 
         public void Initialize(float len)
         {
+            _lengthSeconds = _player != null ? len / Mathf.Max(0.001f, _player.NoteSpeed) : 0f;
             _currentLength = len;
             _currentStartZ = 0f;
             UpdateMeshGeometry();
@@ -211,6 +213,16 @@ namespace YARG.Gameplay.Visuals
 
         public void UpdateSustainLine()
         {
+            // Sustain ends must keep their chart time when visual speed changes.
+            if (_player != null)
+            {
+                float length = _lengthSeconds * _player.NoteSpeed;
+                if (!Mathf.Approximately(length, _currentLength))
+                {
+                    _currentLength = length;
+                    UpdateMeshGeometry();
+                }
+            }
             UpdateLengthForHit();
             UpdateAnimation();
         }

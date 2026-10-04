@@ -583,7 +583,10 @@ namespace YARG.Song
                 case ScanStage.LoadingSongs:
                     subText = $"Folders Scanned: {tracker.NumScannedDirectories}\n" +
                               $"Songs Scanned: {tracker.Count}\n" +
-                              $"Errors: {tracker.BadSongCount}"; break;
+                              $"Errors: {tracker.BadSongCount}";
+                    if (YARG.Localization.LocalizationManager.TryGetLocalizedKey("Loading.ScanProgress", out var progressFormat))
+                        subText = string.Format(progressFormat, tracker.NumScannedDirectories, tracker.Count, tracker.BadSongCount);
+                    break;
             }
             context.SetLoadingText(phrase, subText);
         }

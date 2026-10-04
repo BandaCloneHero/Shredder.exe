@@ -1,0 +1,523 @@
+fileFormatVersion: 2
+guid: 645061ef9888476b8c2047c26bbc71fc
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 21300101
+    second: Baterista_Comandos_016_031_01
+  - first:
+      213: 21300102
+    second: Baterista_Comandos_016_031_02
+  - first:
+      213: 21300103
+    second: Baterista_Comandos_016_031_03
+  - first:
+      213: 21300104
+    second: Baterista_Comandos_016_031_04
+  - first:
+      213: 21300105
+    second: Baterista_Comandos_016_031_05
+  - first:
+      213: 21300106
+    second: Baterista_Comandos_016_031_06
+  - first:
+      213: 21300107
+    second: Baterista_Comandos_016_031_07
+  - first:
+      213: 21300108
+    second: Baterista_Comandos_016_031_08
+  - first:
+      213: 21300109
+    second: Baterista_Comandos_016_031_09
+  - first:
+      213: 21300110
+    second: Baterista_Comandos_016_031_10
+  - first:
+      213: 21300111
+    second: Baterista_Comandos_016_031_11
+  - first:
+      213: 21300112
+    second: Baterista_Comandos_016_031_12
+  - first:
+      213: 21300113
+    second: Baterista_Comandos_016_031_13
+  - first:
+      213: 21300114
+    second: Baterista_Comandos_016_031_14
+  - first:
+      213: 21300115
+    second: Baterista_Comandos_016_031_15
+  - first:
+      213: 21300116
+    second: Baterista_Comandos_016_031_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_01
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6fd99c987400893dea18268fa64d6f11
+      internalID: 21300101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_02
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 785a3369c374be4c3d68d1bb9560a236
+      internalID: 21300102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_03
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 94d2adcddfc2cb8fe16d5839c62a594e
+      internalID: 21300103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_04
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 792
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf8ed76803a47babbd2935d2ca695d0b
+      internalID: 21300104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_05
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4500ee8fbe9e4cc73762b1845554074
+      internalID: 21300105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_06
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c30e9b55b682069ea431f6f021aa9f75
+      internalID: 21300106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_07
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3507c478f02449cf353ef2061444d286
+      internalID: 21300107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_08
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 536
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b5fcb4f44db3d594e422dff651e7f5ed
+      internalID: 21300108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_09
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f7782b0fc628f8a1222587db683275b
+      internalID: 21300109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_10
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 24889842aa4cb3c4ada7a7ca3f552d0c
+      internalID: 21300110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_11
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7082448a09c4a8fc781d6213a72fe40e
+      internalID: 21300111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_12
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 280
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a40a0185670abd753a0d354c2e7cd46f
+      internalID: 21300112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_13
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18f76c7a3184d5f7af0ed6f18db48c11
+      internalID: 21300113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_14
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf7aec6e843d8fa559b2a67c26711acf
+      internalID: 21300114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_15
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e7d396a07b4299930b983df7f436a4ae
+      internalID: 21300115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Baterista_Comandos_016_031_16
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 24
+        width: 208
+        height: 208
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf9f03a9561dc35690a858b080ab5869
+      internalID: 21300116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondarySpriteTextures: []
+    nameFileIdTable:
+      Baterista_Comandos_016_031_01: 21300101
+      Baterista_Comandos_016_031_02: 21300102
+      Baterista_Comandos_016_031_03: 21300103
+      Baterista_Comandos_016_031_04: 21300104
+      Baterista_Comandos_016_031_05: 21300105
+      Baterista_Comandos_016_031_06: 21300106
+      Baterista_Comandos_016_031_07: 21300107
+      Baterista_Comandos_016_031_08: 21300108
+      Baterista_Comandos_016_031_09: 21300109
+      Baterista_Comandos_016_031_10: 21300110
+      Baterista_Comandos_016_031_11: 21300111
+      Baterista_Comandos_016_031_12: 21300112
+      Baterista_Comandos_016_031_13: 21300113
+      Baterista_Comandos_016_031_14: 21300114
+      Baterista_Comandos_016_031_15: 21300115
+      Baterista_Comandos_016_031_16: 21300116
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

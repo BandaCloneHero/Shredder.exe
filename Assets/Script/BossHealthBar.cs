@@ -39,7 +39,7 @@ namespace YARG
         public bool IsDefeated { get; private set; }
         public event System.Action Defeated;
 
-        public int CurrentPhase => currentHealth <= maxHealth * 0.5f ? 2 : 1;
+        public int CurrentPhase => transformed || currentHealth <= maxHealth * 0.5f ? 2 : 1;
 
         public void SetExpectedNoteCount(int noteCount)
         {
@@ -76,7 +76,7 @@ namespace YARG
             healthSlider.value = displayedHealth;
         }
 
-        public void RegisterNoteHit(double noteTime, double hitTime)
+        public void RegisterNoteHit(double noteTime, double hitTime, float damageMultiplier = 1f)
         {
             if (currentHealth <= 0f || expectedNoteCount <= 0) return;
             currentCombo++;
@@ -87,7 +87,15 @@ namespace YARG
                 : timingError <= goodHitWindow ? goodDamageMultiplier : looseDamageMultiplier;
             float comboMultiplier = currentCombo >= 30 ? 1.1f : currentCombo >= 10 ? 1.05f : 1f;
             float damagePerHit = maxHealth / (expectedNoteCount * Mathf.Max(0.01f, soloTargetHitRate));
-            TakeDamage(damagePerHit * timingMultiplier * comboMultiplier);
+            TakeDamage(damagePerHit * timingMultiplier * comboMultiplier * Mathf.Clamp01(damageMultiplier));
+        }
+
+        public float RecoverHealth(float amount)
+        {
+            if (IsDefeated || amount <= 0f) return 0f;
+            float previousHealth = currentHealth;
+            currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+            return currentHealth - previousHealth;
         }
 
         public void RegisterNoteMiss()

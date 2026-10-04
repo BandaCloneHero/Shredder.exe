@@ -260,6 +260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cameraContainer: {fileID: 4748893067900258300}
   _camera: {fileID: 4748893067600211345}
+  _background: {fileID: 3562108866769980300}
 --- !u!1 &4748893069150177235
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,7 +518,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: a9901341505fef448b9282766d7bf1ae, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 983b941482684592b74be10ec68fd544, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

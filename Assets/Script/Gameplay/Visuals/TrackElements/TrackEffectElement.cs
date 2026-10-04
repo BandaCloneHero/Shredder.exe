@@ -345,8 +345,11 @@ namespace YARG.Gameplay.Visuals
             return true;
         }
 
+        private float _lastVisualNoteSpeed;
+
         protected void RescaleForZ()
         {
+            _lastVisualNoteSpeed = Player.NoteSpeed;
             // More correctly, this would get the unscaled size of the object
             // Since we currently use Unity's plane, this works
             const float zSize = 10.0f;
@@ -614,6 +617,11 @@ namespace YARG.Gameplay.Visuals
 
         protected override void UpdateElement()
         {
+            if (!Mathf.Approximately(_lastVisualNoteSpeed, Player.NoteSpeed))
+            {
+                RescaleForZ();
+                ScaleAndRepositionDrumFill();
+            }
             if (_visibilityInTransition)
             {
                 var elapsed = (float) (GameManager.VisualTime - _visibilityStartTime);

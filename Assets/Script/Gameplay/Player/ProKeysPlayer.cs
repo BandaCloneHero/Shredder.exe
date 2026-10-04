@@ -348,6 +348,7 @@ namespace YARG.Gameplay.Player
 
         private void OnKeyStateChange(int key, bool isPressed)
         {
+            playerReaction?.SynchronizeKeyboardKey(key, isPressed);
             _trackOverlay.SetKeyHeld(key, isPressed);
             _keysArray.SetPressed(key, isPressed);
             if (isPressed)

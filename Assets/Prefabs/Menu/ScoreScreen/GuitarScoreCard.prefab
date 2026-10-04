@@ -1538,6 +1538,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::YARG.Menu.ScoreScreen.GuitarScoreCard
   _modifierIconPrefab: {fileID: 6951785427522793347, guid: 5dceab9d08cb4eb45942a7d6202fcede, type: 3}
+  bassResultPortrait: {fileID: 21300101, guid: 760d3eff3ced4d5b92cdcd99b95567a5, type: 3}
+  drumsResultPortrait: {fileID: 21300101, guid: 49461b83f4e04f7b853d04e403bb8c97, type: 3}
+  guitarResultPortrait: {fileID: 21300101, guid: 420c5467081b47f3a7989974c19d9e8d, type: 3}
+  keysResultPortrait: {fileID: 21300101, guid: 551522effdc948e59ab2a474d637bf29, type: 3}
   _accuracyPercent: {fileID: 3597548310742026918}
   _playerName: {fileID: 3597548309927732363}
   _instrument: {fileID: 3597548309600281831}

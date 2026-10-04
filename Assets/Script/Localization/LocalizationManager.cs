@@ -12,6 +12,7 @@ namespace YARG.Localization
     public static class LocalizationManager
     {
         private const string DEFAULT_CULTURE = "en-US";
+        private const string STARTUP_CULTURE = "pt-BR";
 
         public static string CultureCode { get; private set; }
 
@@ -25,7 +26,7 @@ namespace YARG.Localization
         {
             if (string.IsNullOrEmpty(cultureCode))
             {
-                CultureCode = DEFAULT_CULTURE;
+                CultureCode = STARTUP_CULTURE;
             }
             else
             {
@@ -37,7 +38,7 @@ namespace YARG.Localization
 
         public static async UniTask LoadLanguage(LoadingContext loadingContext)
         {
-            loadingContext.SetLoadingText("Loading language...");
+            loadingContext.SetLoadingText(CultureCode == "pt-BR" ? "Carregando idioma..." : "Loading language...");
             await UniTask.RunOnThreadPool(() =>
             {
                 // Attempt to load the selected language

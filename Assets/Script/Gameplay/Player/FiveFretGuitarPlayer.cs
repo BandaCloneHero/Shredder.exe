@@ -387,10 +387,14 @@ namespace YARG.Gameplay.Player
 
         private void UpdateFretArray()
         {
+            int characterButtons = 0;
             for (var action = GuitarAction.GreenFret; action <= GuitarAction.OrangeFret; action++)
             {
-                _fretArray.SetPressed((int)GetFretIndex(action), Engine.IsFretHeld(action));
+                bool pressed = Engine.IsFretHeld(action);
+                _fretArray.SetPressed((int)GetFretIndex(action), pressed);
+                if (pressed) characterButtons |= 1 << (int)action;
             }
+            playerReaction?.SynchronizeGuitarButtons(characterButtons);
         }
 
         private void SpawnRangeIndicator(FiveFretRangeShift nextShift)

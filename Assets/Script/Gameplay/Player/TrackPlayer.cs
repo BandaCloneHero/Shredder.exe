@@ -4,10 +4,12 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using YARG.Assets.Script.Helpers;
+using YARG.Assets.Script.Gameplay.Player;
 using YARG.Core;
 using YARG.Core.Audio;
 using YARG.Core.Chart;
 using YARG.Core.Engine;
+using YARG.Core.Input;
 using YARG.Core.Logging;
 using YARG.Gameplay.HUD;
 using YARG.Gameplay.Visuals;
@@ -21,6 +23,14 @@ namespace YARG.Gameplay.Player
 {
     public abstract class TrackPlayer : BasePlayer
     {
+        protected override void OnInputQueued(GameInput input)
+        {
+            base.OnInputQueued(input);
+            playerReaction?.ConfigureCommandPoses(Player.Profile.GameMode,
+                this is ProKeysPlayer { SevenWhiteKeysMode: true }, Player.Profile.IsBot,
+                Player.Profile.CurrentInstrument, this is FiveLaneKeysPlayer);
+            playerReaction?.QueueCommandInput(input);
+        }
         public event Action<double, double> BossNoteHit;
         public event Action BossNoteMissed;
 
@@ -59,6 +69,8 @@ namespace YARG.Gameplay.Player
         protected HighwayCameraRendering HighwayCameraRendering;
         [SerializeField]
         protected ReactionController playerReaction;
+        public void ShowBossDefenseReaction() => playerReaction?.TriggerDefenseReaction();
+        public void ShowBossFailureReaction() => playerReaction?.TriggerBossFailureReaction();
         [SerializeField]
         protected TrackMaterial TrackMaterial;
         [SerializeField]
@@ -126,6 +138,9 @@ namespace YARG.Gameplay.Player
             TrackView = trackView;
             playerReaction = TrackView.GetComponentInChildren<ReactionController>(true);
             playerReaction?.ConfigureForInstrument(player.Profile.CurrentInstrument);
+            playerReaction?.ConfigureCommandPoses(player.Profile.GameMode,
+                this is ProKeysPlayer { SevenWhiteKeysMode: true }, player.Profile.IsBot,
+                player.Profile.CurrentInstrument, this is FiveLaneKeysPlayer);
 
             Beatlines = SyncTrack.Beatlines;
             BeatlineIndex = 0;
@@ -439,6 +454,9 @@ namespace YARG.Gameplay.Player
 
         protected override void UpdateVisuals(double visualTime)
         {
+            playerReaction?.ConfigureCommandPoses(Player.Profile.GameMode,
+                this is ProKeysPlayer { SevenWhiteKeysMode: true }, Player.Profile.IsBot,
+                Player.Profile.CurrentInstrument, this is FiveLaneKeysPlayer);
             // Allow the HUD to track the highway with animations
             TrackView.UpdateHUDPosition(HighwayIndex, HighwayCount);
 
@@ -1030,6 +1048,14 @@ namespace YARG.Gameplay.Player
         protected virtual void OnNoteHit(int index, TNote note)
         {
             RaiseBossNoteHit(note.Time, Engine.CurrentTime);
+
+            if (Player.Profile.IsBot && !GameManager.IsSeekingReplay && !GameManager.Paused)
+            {
+                playerReaction?.ConfigureCommandPoses(Player.Profile.GameMode,
+                    this is ProKeysPlayer { SevenWhiteKeysMode: true }, true,
+                    Player.Profile.CurrentInstrument, this is FiveLaneKeysPlayer);
+                playerReaction?.QueueBotNote(note, Engine.CurrentTime);
+            }
 
             if (!Player.Profile.IsBot)
             {

@@ -564,6 +564,12 @@ namespace YARG.Gameplay.Player
 
         private void OnPadHit(DrumsAction action, bool wasNoteHit, bool wasNoteHitCorrectly, bool wasOverhitInLane, DrumNoteType type, float velocity)
         {
+            if (velocity > 0f && !GameManager.IsSeekingReplay && !GameManager.Paused)
+            {
+                playerReaction?.ConfigureCommandPoses(Player.Profile.GameMode, false,
+                    Player.Profile.IsBot, Player.Profile.CurrentInstrument);
+                playerReaction?.QueueDrumStrike(action, Engine.CurrentTime);
+            }
             var fret = DrumsActionToPad(action);
 
             // This is done here for drums rather than in-engine because engine doesn't know about pad ordering

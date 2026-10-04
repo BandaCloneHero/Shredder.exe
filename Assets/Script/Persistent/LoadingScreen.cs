@@ -117,6 +117,33 @@ namespace YARG
 
     public sealed class LoadingContext : IDisposable
     {
+        private static string TranslateLoadingText(string text)
+        {
+            string key = text switch
+            {
+                "Loading..." => "Loading.Progress",
+                "Loading song cache..." => "Loading.Cache",
+                "Loading songs..." => "Loading.Songs",
+                "Sorting songs..." => "Loading.SortSongs",
+                "Writing song cache..." => "Loading.WriteCache",
+                "Writing bad songs..." => "Loading.BadSongs",
+                "Loading replay..." => "Loading.Replay",
+                "Loading chart..." => "Loading.Chart",
+                "Loading audio..." => "Loading.Audio",
+                "Reading song sources..." => "Loading.ReadSources",
+                "Loading source icons..." => "Loading.Icons",
+                "Loading song sources..." => "Loading.Sources",
+                "Checking version..." => "Loading.CheckVersion",
+                "Looking for new version..." => "Loading.FindVersion",
+                "Downloading new version..." => "Loading.DownloadVersion",
+                "Extracting new version..." => "Loading.ExtractVersion",
+                "Loading genre mappings..." => "Loading.Genres",
+                "Downloading genre mappings..." => "Loading.DownloadGenres",
+                _ => null
+            };
+            return key != null && LocalizationManager.TryGetLocalizedKey(key, out var translated)
+                ? translated : text;
+        }
         private bool _disposed;
 
         private struct QueuedTask
@@ -136,13 +163,13 @@ namespace YARG
 
         public void SetLoadingText(string phrase, string sub = null)
         {
-            LoadingScreen.Instance.LoadingPhrase.text = phrase;
-            LoadingScreen.Instance.SubPhrase.text = sub;
+            LoadingScreen.Instance.LoadingPhrase.text = TranslateLoadingText(phrase);
+            LoadingScreen.Instance.SubPhrase.text = TranslateLoadingText(sub);
         }
 
         public void SetSubText(string sub)
         {
-            LoadingScreen.Instance.SubPhrase.text = sub;
+            LoadingScreen.Instance.SubPhrase.text = TranslateLoadingText(sub);
         }
 
         /// <summary>

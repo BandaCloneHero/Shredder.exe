@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
+using DG.Tweening;
 using YARG.Helpers.Extensions;
 using YARG.Core.Engine;
 using YARG.Core.Extensions;
@@ -103,6 +104,14 @@ namespace YARG.Menu.ScoreScreen
 
 
         private ScoreCardColorizer _colorizer;
+        [SerializeField] private Sprite guitarResultPortrait;
+        [SerializeField] private Sprite bassResultPortrait;
+        [SerializeField] private Sprite drumsResultPortrait;
+        [SerializeField] private Sprite keysResultPortrait;
+        private GameObject _resultPortrait;
+        private Tween _scoreReveal;
+        private Tween _cardReveal;
+        private CanvasGroup _revealGroup;
         private GameObject _offsetHistogramObject;
         private RectTransform _offsetHistogramRootRect;
         private RectTransform _offsetHistogramContentRect;
@@ -123,6 +132,7 @@ namespace YARG.Menu.ScoreScreen
         private void Awake()
         {
             _colorizer = GetComponent<ScoreCardColorizer>();
+            ScoreScreenText.Apply(transform);
         }
 
         public void Initialize(bool isHighScore, YargPlayer player, T stats, float averageMultiplier)
@@ -135,11 +145,12 @@ namespace YARG.Menu.ScoreScreen
 
         public virtual void SetCardContents()
         {
+            ShowResultPortrait();
             SetBossContribution();
             _playerName.text = Player.Profile.Name;
 
             _instrument.text = Player.Profile.CurrentInstrument.ToLocalizedName();
-            _difficulty.text = Player.Profile.CurrentDifficulty.ToDisplayName();
+            _difficulty.text = Localize.Key("Enum.Difficulty", Player.Profile.CurrentDifficulty.ToString());
 
             if (_difficultyRing != null)
             {
@@ -195,6 +206,7 @@ namespace YARG.Menu.ScoreScreen
             }
 
             _score.text = Stats.TotalScore.ToString("N0");
+            RevealScore();
             _starView.SetStars((int) Stats.Stars);
 
             _notesHit.text = $"{ColorizePrimary(Stats.NotesHit)} / {ColorizeSecondary(Stats.TotalNotes)}";
@@ -527,6 +539,84 @@ namespace YARG.Menu.ScoreScreen
 
         private GameObject _bossContribution;
 
+        private void ShowResultPortrait()
+        {
+            if (_resultPortrait != null || _statsRect == null || _statsRect.content == null) return;
+            Sprite portrait = Player.Profile.CurrentInstrument switch
+            {
+                YARG.Core.Instrument.FiveFretBass or YARG.Core.Instrument.SixFretBass
+                    or YARG.Core.Instrument.ProBass_17Fret or YARG.Core.Instrument.ProBass_22Fret => bassResultPortrait,
+                YARG.Core.Instrument.FourLaneDrums or YARG.Core.Instrument.ProDrums
+                    or YARG.Core.Instrument.FiveLaneDrums or YARG.Core.Instrument.EliteDrums => drumsResultPortrait,
+                YARG.Core.Instrument.Keys or YARG.Core.Instrument.ProKeys => keysResultPortrait,
+                YARG.Core.Instrument.Vocals or YARG.Core.Instrument.Harmony => null,
+                _ => guitarResultPortrait
+            };
+            if (portrait == null) return;
+            _resultPortrait = new GameObject("Character Performance", typeof(RectTransform), typeof(LayoutElement), typeof(Image));
+            _resultPortrait.transform.SetParent(_statsRect.content, false);
+            _resultPortrait.transform.SetAsFirstSibling();
+            var layout = _resultPortrait.GetComponent<LayoutElement>();
+            layout.minHeight = layout.preferredHeight = 150f;
+            var panel = _resultPortrait.GetComponent<Image>();
+            panel.color = new Color(0.025f, 0.04f, 0.085f, 0.94f);
+            panel.raycastTarget = false;
+            var imageObject = new GameObject("Portrait", typeof(RectTransform), typeof(Image));
+            imageObject.transform.SetParent(_resultPortrait.transform, false);
+            var image = imageObject.GetComponent<Image>();
+            image.sprite = portrait;
+            image.preserveAspect = true;
+            image.raycastTarget = false;
+            image.rectTransform.anchorMin = image.rectTransform.anchorMax = new Vector2(0f, 0.5f);
+            image.rectTransform.pivot = new Vector2(0f, 0.5f);
+            image.rectTransform.anchoredPosition = new Vector2(8f, 0f);
+            image.rectTransform.sizeDelta = new Vector2(148f, 140f);
+            var labelObject = new GameObject("Performance", typeof(RectTransform), typeof(TextMeshProUGUI));
+            labelObject.transform.SetParent(_resultPortrait.transform, false);
+            var label = labelObject.GetComponent<TextMeshProUGUI>();
+            label.rectTransform.anchorMin = Vector2.zero;
+            label.rectTransform.anchorMax = Vector2.one;
+            label.rectTransform.offsetMin = new Vector2(165f, 12f);
+            label.rectTransform.offsetMax = new Vector2(-12f, -12f);
+            label.font = _notesHit.font;
+            label.fontSharedMaterial = _notesHit.fontSharedMaterial;
+            label.fontSize = 23f;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 16f;
+            label.fontSizeMax = 23f;
+            label.alignment = TextAlignmentOptions.MidlineLeft;
+            label.raycastTarget = false;
+            label.color = Color.white;
+            string grade = Player.Profile.IsBot ? "AUTOMÁTICO" : Stats.IsFullCombo ? "SEQUÊNCIA COMPLETA"
+                : Stats.Percent >= 0.9f ? "SHOW INCRÍVEL!" : Stats.Percent >= 0.7f ? "BOM SHOW!" : "SIGA NO RITMO!";
+            label.text = $"<color=#59F4C0><b>{grade}</b></color>\n<size=80%>Notas acertadas</size>\n<b>{Stats.Percent * 100f:0.#}%</b>";
+        }
+
+        private void RevealScore()
+        {
+            _scoreReveal?.Kill();
+            _cardReveal?.Kill();
+            if (_revealGroup == null) _revealGroup = GetComponent<CanvasGroup>();
+            // Unity components use Unity's null check, not the C# null-coalescing operator.
+            if (_revealGroup == null) _revealGroup = gameObject.AddComponent<CanvasGroup>();
+            if (_revealGroup == null) return;
+            _revealGroup.alpha = 0f;
+            _cardReveal = _revealGroup.DOFade(1f, 0.4f).SetUpdate(true);
+            int total = Stats.TotalScore;
+            _scoreReveal = DOVirtual.Float(0f, 1f, 0.85f,
+                progress => _score.text = Mathf.RoundToInt(total * progress).ToString("N0"))
+                .SetEase(Ease.OutCubic).SetUpdate(true)
+                .OnComplete(() => _score.text = total.ToString("N0"));
+        }
+
+        private void OnDisable()
+        {
+            _scoreReveal?.Kill();
+            _cardReveal?.Kill();
+            if (_revealGroup != null) _revealGroup.alpha = 1f;
+            if (Stats != null && _score != null) _score.text = Stats.TotalScore.ToString("N0");
+        }
+
         private void SetBossContribution()
         {
             if (_bossContribution != null) Destroy(_bossContribution);
@@ -540,7 +630,8 @@ namespace YARG.Menu.ScoreScreen
                 participated = true;
                 damage += contribution.Damage;
             }
-            float totalDamage = Mathf.Max(0f, battle.MaxHealth - battle.RemainingHealth);
+            float totalDamage = 0f;
+            foreach (var contribution in battle.Players) totalDamage += contribution.Damage;
             float share = totalDamage > 0f ? Mathf.Clamp01(damage / totalDamage) * 100f : 0f;
             _bossContribution = new GameObject("Boss Contribution", typeof(RectTransform),
                 typeof(LayoutElement), typeof(TextMeshProUGUI));
@@ -626,7 +717,7 @@ namespace YARG.Menu.ScoreScreen
         private void ShowTag(string tagText)
         {
             _tagGameObject.SetActive(true);
-            _tagText.text = tagText;
+            _tagText.text = ScoreScreenText.Translate(tagText);
         }
 
         protected string ColorizePrimary(object s)

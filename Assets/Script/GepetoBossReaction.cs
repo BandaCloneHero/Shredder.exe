@@ -12,6 +12,8 @@ public class GepetoBossReaction : MonoBehaviour
     private readonly List<TrackPlayer> subscribedPlayers = new();
     private readonly Dictionary<TrackPlayer, System.Action<double, double>> hitHandlers = new();
     private readonly Dictionary<TrackPlayer, float> playerDamage = new();
+    private readonly Dictionary<TrackPlayer, System.Action> missHandlers = new();
+    private BossAttackController attackController;
     private GameManager gameManager;
     private GepetoVisualAnimator visualAnimator;
 
@@ -20,6 +22,8 @@ public class GepetoBossReaction : MonoBehaviour
         if (bossHealthBar == null)
             bossHealthBar = FindAnyObjectByType<BossHealthBar>();
         visualAnimator = FindAnyObjectByType<GepetoVisualAnimator>();
+        attackController = gameObject.AddComponent<BossAttackController>();
+        attackController.Initialize(bossHealthBar, ApplyAttackBonus);
     }
 
     private void Update()
@@ -48,10 +52,13 @@ public class GepetoBossReaction : MonoBehaviour
             hitHandlers.Add(trackPlayer, handler);
             playerDamage.Add(trackPlayer, 0f);
             trackPlayer.BossNoteHit += handler;
-            trackPlayer.BossNoteMissed += OnNoteMissed;
+            System.Action missHandler = () => OnNoteMissed(trackPlayer);
+            missHandlers.Add(trackPlayer, missHandler);
+            trackPlayer.BossNoteMissed += missHandler;
         }
 
         bossHealthBar.SetExpectedNoteCount(totalNotes);
+        attackController.Tick(gameManager, subscribedPlayers);
     }
 
     private void OnNoteHit(TrackPlayer player, double noteTime, double hitTime)
@@ -61,15 +68,25 @@ public class GepetoBossReaction : MonoBehaviour
 
         if (bossHealthBar == null) return;
         float healthBefore = bossHealthBar.CurrentHealth;
-        bossHealthBar.RegisterNoteHit(noteTime, hitTime);
+        attackController.RegisterHit(player);
+        bossHealthBar.RegisterNoteHit(noteTime, hitTime, attackController.DamageMultiplier(player));
         playerDamage[player] += Mathf.Max(0f, healthBefore - bossHealthBar.CurrentHealth);
     }
 
-    private void OnNoteMissed()
+    private void ApplyAttackBonus(TrackPlayer player, float amount)
+    {
+        if (bossHealthBar == null) return;
+        float healthBefore = bossHealthBar.CurrentHealth;
+        bossHealthBar.TakeDamage(amount);
+        playerDamage[player] += Mathf.Max(0f, healthBefore - bossHealthBar.CurrentHealth);
+    }
+
+    private void OnNoteMissed(TrackPlayer player)
     {
         if (gameManager != null && gameManager.IsSeekingReplay)
             return;
 
+        attackController.RegisterMiss(player);
         bossHealthBar?.RegisterNoteMiss();
         visualAnimator?.TriggerMissFeedback();
     }
@@ -81,7 +98,8 @@ public class GepetoBossReaction : MonoBehaviour
             if (player == null) continue;
             if (hitHandlers.TryGetValue(player, out var handler))
                 player.BossNoteHit -= handler;
-            player.BossNoteMissed -= OnNoteMissed;
+            if (missHandlers.TryGetValue(player, out var missHandler))
+                player.BossNoteMissed -= missHandler;
         }
     }
 

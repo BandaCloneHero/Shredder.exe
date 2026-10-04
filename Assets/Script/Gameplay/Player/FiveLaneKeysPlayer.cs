@@ -382,10 +382,14 @@ public override bool ShouldUpdateInputsOnResume => true;
 
         private void UpdateFretArray()
         {
+            int characterButtons = 0;
             for (var action = FiveLaneKeysAction.GreenKey; action <= FiveLaneKeysAction.OrangeKey; action++)
             {
-                _fretArray.SetPressed((int)GetFretIndex(action), Engine.IsKeyHeld(action));
+                bool pressed = Engine.IsKeyHeld(action);
+                _fretArray.SetPressed((int)GetFretIndex(action), pressed);
+                if (pressed) characterButtons |= 1 << (int)action;
             }
+            playerReaction?.SynchronizeGuitarButtons(characterButtons);
 
             if (UsingOpenLane)
             {
