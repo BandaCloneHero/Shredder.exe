@@ -56,6 +56,7 @@
                     pausada: estatisticas.pausada,
                     energiaFinal: estatisticas.energiaFinal,
                     dificuldade: estatisticas.dificuldade,
+                    concluida: estatisticas.concluida,
                 };
             }
             const pendentes = readJson(PENDING_RESULTS_KEY, {});

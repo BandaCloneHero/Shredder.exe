@@ -129,6 +129,7 @@ namespace YARG.Gameplay
         public double SongLength { get; private set; }
 
         public bool IsPractice      { get; private set; }
+        private bool _wasPausedDuringSong;
 
         public bool IsReplay => ReplayInfo != null && !GlobalVariables.State.PlayingWithReplay;
 
@@ -376,6 +377,8 @@ namespace YARG.Gameplay
 
         private void PauseCore(bool showMenu)
         {
+            if (Started && SongTime >= 0 && SongTime < SongLength)
+                _wasPausedDuringSong = true;
             if (showMenu)
             {
                 if (!GlobalVariables.State.PlayingWithReplay && ReplayInfo != null)
@@ -623,12 +626,16 @@ namespace YARG.Gameplay
                     IsHighScore = player.Score > player.LastHighScore,
                     Player = player.Player,
                     Stats = player.BaseStats,
+                    FinalEnergy = player.EnergyPercent,
                     AverageMultiplier = player.BaseEngine.BaseNoteScore == 0 ?
                         0 :
                         // PendingScore should be 0 at this point, so no reason to add it
                         (float) player.BaseStats.CommittedScore / player.BaseEngine.BaseNoteScore,
                 }).ToArray(),
                 BandScore = BandScore,
+                WasPaused = _wasPausedDuringSong,
+                IsLiveGame = !IsPractice && !IsReplay,
+                ReportId = Guid.NewGuid().ToString("N"),
                 BandStars = (int) BandStars,
                 ReplayInfo = replayInfo,
             };

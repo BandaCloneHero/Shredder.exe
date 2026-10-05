@@ -5,8 +5,9 @@ const fs = require("fs");
 const path = require("path");
 const { scrypt, randomBytes, randomUUID, timingSafeEqual, createHash } = require("crypto");
 const { promisify } = require("util");
-const { criarPersistenciaPartidas, validarResultado, inicializarPerfil } = require("./partidas");
+const { criarPersistenciaPartidas, validarResultado, inicializarPerfil, ENCERRAMENTO_FEIRA } = require("./partidas");
 const { catalogoLoja, itensPorId } = require("./catalogo-loja");
+const { salvarArquivoAvatar } = require("./avatar-personalizado");
 
 const scryptAsync = promisify(scrypt);
 const app = express();
@@ -15,11 +16,17 @@ const io = new Server(server);
 
 app.use(express.json());
 app.use(require('./site-navigation'));
-app.use(express.static(path.join(__dirname, "../docs")));
+app.use(express.static(path.join(__dirname, "../docs"), {
+    setHeaders(res, filePath) {
+        if (filePath.endsWith(".webp")) res.setHeader("Cache-Control", "public, max-age=604800");
+    },
+}));
 
 const ACCOUNTS_FILE = path.join(__dirname, "accounts.json");
 const SESSIONS_FILE = path.join(__dirname, "sessions.json");
-const partidas = criarPersistenciaPartidas(ACCOUNTS_FILE);
+const partidas = criarPersistenciaPartidas(ACCOUNTS_FILE, {
+    encerramentoFeira: process.env.FEIRA_ENCERRA_EM || ENCERRAMENTO_FEIRA,
+});
 let accountStore = { accounts: {} };
 let sessions = new Map();
 const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
@@ -81,6 +88,26 @@ function saveSessions() {
 
 loadAccounts();
 loadSessions();
+
+function publicarConquistasEmLote(salvo) {
+    for (const jogador of salvo.notificacoesPorJogador || []) {
+        io.to(`conquistas:${normalizeUsername(jogador.username)}`).emit("conquistaDesbloqueada", {
+            notificacoes: jogador.notificacoesConquistas,
+        });
+    }
+}
+
+function finalizarConquistaDaFeira() {
+    const salvo = partidas.encerrarFeira();
+    if (salvo.raiz) accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
+    publicarConquistasEmLote(salvo);
+}
+
+// Congela os vencedores antes de aceitar resultados posteriores ao encerramento.
+app.use((_req, res, next) => {
+    try { finalizarConquistaDaFeira(); next(); }
+    catch (error) { console.error("> Falha ao encerrar a feira:", error); res.status(503).json({ ok: false, error: "Falha ao registrar o encerramento da feira." }); }
+});
 
 async function passwordHash(password, salt) {
     const buffer = await scryptAsync(password, salt, 64);
@@ -295,6 +322,7 @@ app.get("/api/perfil/:username", (req, res) => {
                 account.username || normalizeUsername(req.params.username),
             nickname: account.nickname || account.username || "OPERADOR",
             avatar: account.avatar || "",
+            customAvatar: account.customAvatar || "",
             tituloEquipado:
                 account.tituloEquipado ||
                 account.currentTitle ||
@@ -329,13 +357,29 @@ app.post("/api/perfil/avatar", (req, res) => {
     const session = getAuthenticatedSession(req);
     if (!session) return res.status(401).json({ ok: false, error: "Entre na sua conta para alterar a foto de perfil." });
     const avatar = req.body?.avatar;
-    if (typeof avatar !== "string" || (avatar !== "" && !PROFILE_AVATAR_IDS.has(avatar))) {
+    const customAvatarPermitido = typeof avatar === "string" && /^custom\/[a-f0-9-]{36}$/.test(avatar) &&
+        avatar === session.account.customAvatar && isOfficialOperator(req).ok;
+    if (typeof avatar !== "string" || (avatar !== "" && !PROFILE_AVATAR_IDS.has(avatar) && !customAvatarPermitido)) {
         return res.status(400).json({ ok: false, error: "Avatar inválido. Escolha uma das imagens disponíveis." });
     }
     session.account.avatar = avatar;
     session.account.updatedAt = new Date().toISOString();
     saveAccounts();
     return res.json({ ok: true, avatar });
+});
+
+app.post("/api/operador/avatar", (req, res, next) => {
+    if (exigirOperadorOficial(req, res)) next();
+}, express.raw({ type: "image/webp", limit: "128kb" }), (req, res) => {
+    try {
+        const session = getAuthenticatedSession(req);
+        const avatar = salvarArquivoAvatar(req.body, path.join(__dirname, "../docs/images/avatars/custom"));
+        const salvo = partidas.salvarAvatarPersonalizado(session.accountKey, avatar);
+        accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
+        return res.status(201).json({ ok: true, avatar: salvo.avatar, customAvatar: salvo.customAvatar });
+    } catch (error) {
+        return res.status(error.status || 500).json({ ok: false, error: error.status ? error.message : "Não foi possível salvar o avatar." });
+    }
 });
 
 app.get("/api/loja/catalogo", (_req, res) => {
@@ -414,12 +458,26 @@ app.post("/api/fases/selecionar", (req, res) => {
     try {
         const salvo = partidas.selecionarFase(session.accountKey, req.body?.fase);
         accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
-        return res.json({ ok: true, fases: salvo.fases });
+        if (salvo.novasConquistas?.length) io.to(`conquistas:${session.accountKey}`).emit("conquistaDesbloqueada", { notificacoes: salvo.notificacoesConquistas });
+        return res.json({ ok: true, fases: salvo.fases, novasConquistas: salvo.novasConquistas });
     } catch (error) {
         return res.status(error.status || 500).json({
             ok: false,
             error: error.status ? error.message : "Falha ao registrar a fase.",
         });
+    }
+});
+
+app.post("/api/fases/favoritar", (req, res) => {
+    const session = getAuthenticatedSession(req);
+    if (!session) return res.status(401).json({ ok: false, error: "Sessão expirada ou inválida." });
+    try {
+        const salvo = partidas.favoritarFase(session.accountKey, req.body?.fase, req.body?.favorita);
+        accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
+        if (salvo.novasConquistas?.length) io.to(`conquistas:${session.accountKey}`).emit("conquistaDesbloqueada", { notificacoes: salvo.notificacoesConquistas });
+        return res.json({ ok: true, fases: salvo.fases, novasConquistas: salvo.novasConquistas });
+    } catch (error) {
+        return res.status(error.status || 500).json({ ok: false, error: error.status ? error.message : "Falha ao favoritar a fase." });
     }
 });
 
@@ -539,6 +597,10 @@ app.post("/api/operador/salvar-pontuacao", (req, res) => {
             currency: dados.currency,
             fase: dados.fase,
             favorita: dados.favorita,
+            pausada: dados.pausada,
+            energiaFinal: dados.energiaFinal,
+            dificuldade: dados.dificuldade,
+            concluida: dados.concluida,
         });
     } catch (error) {
         return res.status(400).json({ ok: false, erro: error.message });
@@ -592,6 +654,7 @@ app.post("/api/operador/salvar-pontuacao-banda", (req, res) => {
         });
         accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
         io.emit("rankingAtualizado", { records: salvo.records });
+        publicarConquistasEmLote(salvo);
         return res.status(201).json({ ok: true, mensagem: "Pontuação da banda salva." });
     } catch (error) {
         return res.status(error.status || 500).json({
@@ -672,10 +735,20 @@ app.post("/api/operador/resultados-executavel", (req, res) => {
             notasAcertadas: item.notasAcertadas,
             notasErradas: item.notasErradas,
             fullCombo: item.fullCombo,
+            ...(item.pausada === undefined ? {} : { pausada: item.pausada }),
+            ...(item.energiaFinal === undefined ? {} : { energiaFinal: item.energiaFinal }),
+            ...(item.dificuldade === undefined ? {} : { dificuldade: item.dificuldade }),
+            ...(item.concluida === undefined ? {} : { concluida: item.concluida }),
         });
         if (!normalizarInstrumentoExecutavel(item.instrumento)) {
             return res.status(400).json({ ok: false, erro: `Instrumento não reconhecido no resultado: ${item.instrumento}.` });
         }
+        try {
+            validarResultado({
+                ...recebidos[recebidos.length - 1], operadorId: "unity", username: "unity",
+                instrumento: normalizarInstrumentoExecutavel(item.instrumento),
+            });
+        } catch (error) { return res.status(400).json({ ok: false, erro: error.message }); }
     }
     const ticket = ticketsNaFila().find((item) => !item.resultadosExecutavel);
     if (!ticket) {
@@ -842,6 +915,7 @@ io.on("connection", (socket) => {
 
     socket.on("partidaFinalizada", (resultado, callback) => {
         try {
+            finalizarConquistaDaFeira();
             // Identidade leve existente: username/operadorId informados pelo cliente.
             // Isto não constitui validação antitrapaça nem altera a autenticação.
             const resultadoValidado = validarResultado(resultado);
@@ -934,6 +1008,7 @@ io.on("connection", (socket) => {
 
         const resultadosSalvos = [];
         try {
+            finalizarConquistaDaFeira();
             for (const item of ticket.resultadosExecutavel) {
                 const jogador = ticket.jogadores.find((pessoa) => normalizarInstrumentoExecutavel(pessoa.instrumento) === item.instrumentoNormalizado);
                 if (!jogador || !jogador.nome || !jogador.id) throw new Error("Não foi possível identificar a conta do jogador pelo ticket.");
@@ -951,6 +1026,10 @@ io.on("connection", (socket) => {
                     notasAcertadas: item.notasAcertadas,
                     notasErradas: item.notasErradas,
                     fullCombo: item.fullCombo,
+                    pausada: item.pausada,
+                    energiaFinal: item.energiaFinal,
+                    dificuldade: item.dificuldade,
+                    concluida: item.concluida,
                     ...(ticket.modo?.tipo === "historia" && Number.isSafeInteger(ticket.modo.fase) && ticket.modo.fase > 0 ? { fase: ticket.modo.fase } : {}),
                 });
                 const salvo = partidas.salvar(resultado);
@@ -966,7 +1045,11 @@ io.on("connection", (socket) => {
             if (ticket.banda) {
                 const membros = ticket.resultadosExecutavel.map((item) => {
                     const jogador = ticket.jogadores.find((pessoa) => normalizarInstrumentoExecutavel(pessoa.instrumento) === item.instrumentoNormalizado);
-                    return { nome: jogador.nome, instrumento: item.instrumentoNormalizado, pontuacao: item.pontuacao };
+                    return {
+                        nome: jogador.nome, instrumento: item.instrumentoNormalizado, pontuacao: item.pontuacao,
+                        ...(item.precisao === undefined ? {} : { precisao: item.precisao }),
+                        ...(item.concluida === undefined ? {} : { concluida: item.concluida }),
+                    };
                 });
                 const pontuacaoBanda = Number.isSafeInteger(ticket.pontuacaoBanda)
                     ? ticket.pontuacaoBanda
@@ -979,8 +1062,20 @@ io.on("connection", (socket) => {
                     pontuacao: pontuacaoBanda,
                     membros,
                 });
+                accountStore = salvoBanda.raiz.accounts ? salvoBanda.raiz : { accounts: salvoBanda.raiz };
+                publicarConquistasEmLote(salvoBanda);
                 io.to("ranking").emit("rankingAtualizado", { records: salvoBanda.records });
                 resultadosSalvos.push({ nome: ticket.banda.nome, pontuacao: pontuacaoBanda, tipo: "banda" });
+            } else if (ticket.resultadosExecutavel.length === 4) {
+                const salvoBanda = partidas.registrarParticipacaoBanda(ticket.resultadosExecutavel.map(item => ({
+                    nome: ticket.jogadores.find(jogador => normalizarInstrumentoExecutavel(jogador.instrumento) === item.instrumentoNormalizado).nome,
+                    instrumento: item.instrumentoNormalizado,
+                    pontuacao: item.pontuacao,
+                    precisao: item.precisao,
+                    ...(item.concluida === undefined ? {} : { concluida: item.concluida }),
+                })));
+                accountStore = salvoBanda.raiz.accounts ? salvoBanda.raiz : { accounts: salvoBanda.raiz };
+                publicarConquistasEmLote(salvoBanda);
             }
         } catch (error) {
             console.error("> Falha ao confirmar resultados do ticket:", error);
@@ -1312,6 +1407,12 @@ io.on("connection", (socket) => {
 });
 
 const PORT = Number(process.env.PORT) || 3000;
+const timerEncerramentoFeira = setInterval(() => {
+    try { finalizarConquistaDaFeira(); }
+    catch (error) { console.error("> Falha ao premiar a feira:", error); }
+}, 10000);
+timerEncerramentoFeira.unref();
+finalizarConquistaDaFeira();
 server.listen(PORT, () => {
     console.log(`> Servidor rodando na porta ${PORT}`);
 });

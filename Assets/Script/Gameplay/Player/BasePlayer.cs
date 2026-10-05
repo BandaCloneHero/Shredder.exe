@@ -91,6 +91,7 @@ namespace YARG.Gameplay.Player
         public abstract BaseEngine BaseEngine { get; }
 
         public BaseStats BaseStats => BaseEngine.BaseStats;
+        public float EnergyPercent => Mathf.Clamp01(EngineContainer.Happiness) * 100f;
         public BaseEngineParameters BaseParameters => BaseEngine.BaseParameters;
 
         /// <summary>

@@ -31,6 +31,11 @@ const PROFILE_ACHIEVEMENTS = [
     { id: "desafinador_profissional", label: "DESAFINADOR PROFISSIONAL", icon: "⊗", rarity: "Oculta", rarityKey: "hidden", difficulty: "Curiosa", how: "Acumule 100 notas erradas." },
 ];
 
+function achievementArtworkMarkup(id, { eager = false } = {}) {
+    if (!PROFILE_ACHIEVEMENTS.some(achievement => achievement.id === id)) return "";
+    return `<img class="achievement-artwork" src="assets/achievements/${id}.webp?v=1" alt="" aria-hidden="true" width="256" height="256" loading="${eager ? "eager" : "lazy"}" decoding="async">`;
+}
+
 function achievementRarityClass(rarityKey) {
     const knownRarities = new Set(["common", "uncommon", "rare", "epic", "legendary", "hidden"]);
     return `rarity-${knownRarities.has(rarityKey) ? rarityKey : "common"}`;
@@ -50,4 +55,3 @@ const ORDERED_PROFILE_ACHIEVEMENTS = [...PROFILE_ACHIEVEMENTS].sort(
         (ACHIEVEMENT_RARITY_ORDER[left.rarityKey] ?? Infinity) -
         (ACHIEVEMENT_RARITY_ORDER[right.rarityKey] ?? Infinity),
 );
-

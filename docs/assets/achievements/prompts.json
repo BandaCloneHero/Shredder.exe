@@ -1,0 +1,180 @@
+{
+  "generator": "built-in image_gen",
+  "style": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge.",
+  "achievements": [
+    {
+      "id": "primeiros_acordes",
+      "label": "PRIMEIROS ACORDES",
+      "rarity": "common",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Achievement PRIMEIROS ACORDES: complete your first match. Subject: a silver guitar pick holding a small embossed musical note, with a single tiny rising star at the top, conveying a first musical accomplishment. Style: polished sculpted 3D game achievement emblem, rock concert aesthetic, dark gunmetal beveled circular medallion, luminous silver accents (#aeb8c8), richly finished but bold uncluttered silhouette readable at 64px. Straight frontal view, centered emblem occupies 80% of square canvas, balanced 10% margins, subtle studio highlights, restrained glow, crisp contour. Transparent background outside the medallion, actual alpha. No words, letters, digits, watermark, scene, hands, or extra badges. Generate exactly one standalone badge."
+    },
+    {
+      "id": "aquecimento",
+      "rarity": "common",
+      "label": "AQUECIMENTO",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: AQUECIMENTO. Subject: A small guitar amplifier with five bold glowing indicator lights and warm sound waves, representing five warm-up matches. Color palette: silver #aeb8c8 on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "ritmo_de_ferro",
+      "rarity": "uncommon",
+      "label": "RITMO DE FERRO",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: RITMO DE FERRO. Subject: An industrial steel metronome with a sun-shaped dial and ten small rivets arranged on the dial, representing ten matches in one day. Color palette: lime green #b9ec57 on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "sem_errar_o_compasso",
+      "rarity": "uncommon",
+      "label": "SEM ERRAR O COMPASSO",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: SEM ERRAR O COMPASSO. Subject: A continuous unbroken circular ribbon of musical staff wrapping around a strong central musical note and a small forward play triangle, representing finishing a song without pausing. Color palette: lime green #b9ec57 on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "on_fire",
+      "rarity": "uncommon",
+      "label": "ON FIRE",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: ON FIRE. Subject: A guitar pick engulfed in sculpted vivid flames, a perfect unbroken chain curving underneath, representing a Full Combo. Color palette: lime green #b9ec57 on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "cirurgico",
+      "rarity": "rare",
+      "label": "CIRÚRGICO",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: CIRÚRGICO. Subject: A razor-sharp guitar pick precisely centered in a luminous concentric target, with a tiny four-point precision sparkle, representing absolute perfect accuracy. Color palette: electric cyan #36d7ff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "no_limite",
+      "rarity": "rare",
+      "label": "NO LIMITE",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: NO LIMITE. Subject: A glowing accuracy gauge with needle hovering a hair before its final top marker, and a musical note at the center, representing almost perfect accuracy. Color palette: electric cyan #36d7ff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "virada_insana",
+      "rarity": "rare",
+      "label": "VIRADA INSANA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: VIRADA INSANA. Subject: An almost depleted energy battery with one tiny red charge bar, pierced upward by a triumphant cyan lightning bolt and a musical note, representing winning with very little energy. Color palette: electric cyan #36d7ff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "especialista",
+      "rarity": "epic",
+      "label": "ESPECIALISTA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: ESPECIALISTA. Subject: A master guitar pick with a brilliant central gem encircled by ten small distinct musical-note medallions, representing full combos on ten different songs. Color palette: violet magenta #d95cff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "multi_instrumentista",
+      "rarity": "rare",
+      "label": "MULTI-INSTRUMENTISTA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: MULTI-INSTRUMENTISTA. Subject: Four equally legible crossed musical instrument symbols: a six-string electric guitar, a four-string bass, paired drumsticks with small drum, and a compact piano keyboard, representing playing all four instruments. Color palette: electric cyan #36d7ff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "perfeccionista",
+      "rarity": "epic",
+      "label": "PERFECCIONISTA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: PERFECCIONISTA. Subject: A single crystalline musical note reflected symmetrically in a faceted jewel, with five bright small stars arcing above it, representing five perfect full combos on one instrument. Color palette: violet magenta #d95cff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "mestre_guitarra",
+      "rarity": "epic",
+      "label": "MESTRE DA GUITARRA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: MESTRE DA GUITARRA. Subject: A striking six-string electric guitar with a small sculpted crown on its headstock, and five small stars below, representing five full combos on guitar. Color palette: violet magenta #d95cff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "mestre_baixo",
+      "rarity": "epic",
+      "label": "MESTRE DO BAIXO",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: MESTRE DO BAIXO. Subject: An elegant four-string electric bass with clearly visible four tuning pegs and long neck, small crown above headstock and five stars below, representing five full combos on bass. Make bass silhouette unmistakably distinct from a six-string guitar. Color palette: violet magenta #d95cff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "mestre_bateria",
+      "rarity": "epic",
+      "label": "MESTRE DA BATERIA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: MESTRE DA BATERIA. Subject: A bold snare drum with crossed drumsticks and two small cymbals, a small crown above and five stars below, representing five full combos on drums. Color palette: violet magenta #d95cff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "mestre_teclado",
+      "rarity": "epic",
+      "label": "MESTRE DO TECLADO",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: MESTRE DO TECLADO. Subject: A compact piano keyboard with clearly differentiated black and white keys, a small crown above and five stars below, representing five full combos on keyboard. Color palette: violet magenta #d95cff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "banda_afinada",
+      "rarity": "rare",
+      "label": "BANDA AFINADA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: BANDA AFINADA. Subject: Four interlocking illuminated musical emblems of guitar, bass, drum and keyboard arranged as a balanced unified quartet around a central music note, representing a complete four-instrument band. Color palette: electric cyan #36d7ff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "show_perfeito",
+      "rarity": "legendary",
+      "label": "SHOW PERFEITO",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: SHOW PERFEITO. Subject: A splendid concert stage trophy containing four bright musical stars beneath a shared golden spotlight arch, with a guitar, bass, drum and keyboard engraved in its base, representing an entire band playing with outstanding accuracy. Color palette: luminous gold #ffe36d on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "colecionador_de_fases",
+      "rarity": "epic",
+      "label": "COLECIONADOR DE FASES",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: COLECIONADOR DE FASES. Subject: A fan of five miniature concert-stage tickets, each with an open-padlock silhouette and a small musical note, representing unlocking five campaign stages. Tickets contain symbols only, no lettering. Color palette: violet magenta #d95cff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "dono_do_palco",
+      "rarity": "legendary",
+      "label": "DONO DO PALCO",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: DONO DO PALCO. Subject: A triumphant royal crown above a rock concert stage with five luminous spotlights and a powerful central guitar silhouette, representing mastery of all five stages at maximum difficulty. Color palette: luminous gold #ffe36d on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "favorita_da_casa",
+      "rarity": "common",
+      "label": "FAVORITA DA CASA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: FAVORITA DA CASA. Subject: A warm sculpted heart in front of a fan of exactly five small concert tickets with star-shaped perforations, representing favoriting all five stages. Tickets contain no words. Color palette: silver #aeb8c8 on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "maratonista",
+      "rarity": "epic",
+      "label": "MARATONISTA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: MARATONISTA. Subject: A winged guitar pick racing along a looping musical staff track with a finish-line ribbon, representing endurance across fifty played matches. Color palette: violet magenta #d95cff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "incansavel",
+      "rarity": "legendary",
+      "label": "INCANSÁVEL",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: INCANSÁVEL. Subject: A monumental glowing infinity loop formed from guitar strings with a powerful lightning bolt at its crossing, representing inexhaustible energy over one hundred played matches. Color palette: luminous gold #ffe36d on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "lenda_viva",
+      "rarity": "legendary",
+      "label": "LENDA VIVA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: LENDA VIVA. Subject: An iconic golden rock-star guitar rising from a grand laurel wreath with radiant halo and a diamond star, representing legendary achievement after fifty completed matches. Color palette: luminous gold #ffe36d on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "rei_do_ranking",
+      "rarity": "legendary",
+      "label": "REI DO RANKING",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: REI DO RANKING. Subject: A regal crown on the tallest of three leaderboard podium blocks, with a guitar pick and laurel leaves, representing first place in an instrument ranking. Podiums have no digits or lettering. Color palette: luminous gold #ffe36d on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "estrela_da_feira",
+      "rarity": "hidden",
+      "label": "ESTRELA DA FEIRA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: ESTRELA DA FEIRA. Subject: A bright coral-pink star trophy in front of a small festive fair pavilion silhouette and two subtle celebratory confetti sparks, representing first place when the event closes. Color palette: coral pink #ff647a on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "tentativa_corajosa",
+      "rarity": "hidden",
+      "label": "TENTATIVA CORAJOSA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: TENTATIVA CORAJOSA. Subject: A dented but upright guitar pick shield bearing a brave waving small flag and a fractured musical note, representing courage to finish a song despite low accuracy. Color palette: coral pink #ff647a on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "quase_la",
+      "rarity": "hidden",
+      "label": "QUASE LÁ",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: QUASE LÁ. Subject: An almost complete glowing circular chain of musical notes with exactly one broken dark link at the top, a tiny fading spark at that single gap, representing losing a full combo by one missed note. Color palette: coral pink #ff647a on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "volta_por_cima",
+      "rarity": "rare",
+      "label": "VOLTA POR CIMA",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: VOLTA POR CIMA. Subject: A strong luminous upward-curving arrow rising above a previous small score-bar marker, with a musical note and rising steps, representing a major improvement over a previous personal record. Color palette: electric cyan #36d7ff on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    },
+    {
+      "id": "desafinador_profissional",
+      "rarity": "hidden",
+      "label": "DESAFINADOR PROFISSIONAL",
+      "prompt": "Use case: stylized-concept. Asset type: single square achievement badge for Shredder.exe music rhythm videogame. Style/medium: polished sculpted 3D game achievement emblem, rock concert aesthetic. Consistent round dark gunmetal medallion with beveled metallic ring and four small rim bolts, embossed central subject, richly finished but bold uncluttered silhouette readable at 64px. Composition: straight frontal view, centered single medallion occupying 80-85% of square canvas with clear margins. Subtle studio highlights, crisp contour, restrained accent glow. Background: actual alpha transparency outside the medallion. No words, letters, digits, watermarks, scene background, hands or multiple badges. Generate exactly one standalone badge. Achievement: DESAFINADOR PROFISSIONAL. Subject: A mischievous crooked musical note with a cracked guitar pick and deliberately jagged discordant sound waves, representing accumulating many missed notes. Playful expressive emblem, no face needed. Color palette: coral pink #ff647a on charcoal gunmetal. Keep the medallion design consistent across the collection."
+    }
+  ]
+}

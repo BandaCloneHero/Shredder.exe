@@ -38,7 +38,7 @@ window.createAchievementNotifications = ({ confirm, open }) => {
         element.tabIndex = 0;
         element.setAttribute('aria-label', `Conquista ${achievement.label}. Clique para ver na galeria.`);
         // O conteúdo vem exclusivamente do catálogo local de conquistas.
-        element.innerHTML = `<div class="achievement-toast-icon">${achievement.icon}</div><div><span>CONQUISTA DESBLOQUEADA</span><strong>${achievement.label}</strong><small>${achievement.rarity.toUpperCase()} · ${achievement.difficulty.toUpperCase()}</small></div>`;
+        element.innerHTML = `<div class="achievement-toast-icon">${achievementArtworkMarkup(achievement.id, { eager: true })}</div><div><span>CONQUISTA DESBLOQUEADA</span><strong>${achievement.label}</strong><small>${achievement.rarity.toUpperCase()} · ${achievement.difficulty.toUpperCase()}</small></div>`;
         element.addEventListener('click', () => finish(true));
         element.addEventListener('keydown', event => {
             if (event.key !== 'Enter' && event.key !== ' ') return;

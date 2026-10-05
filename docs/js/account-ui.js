@@ -1,3 +1,9 @@
+function shredderAvatarUrl(avatar) {
+  if (typeof avatar === 'string' && /^custom\/[a-f0-9-]{36}$/.test(avatar)) return `images/avatars/${avatar}.webp`;
+  if (typeof avatar === 'string' && /^[a-z0-9-]+$/.test(avatar)) return `images/avatars/${avatar}.webp?v=1`;
+  return '';
+}
+
 class ShredderAccountUI {
   constructor(accountManager) {
     this.account = accountManager;
@@ -79,7 +85,7 @@ class ShredderAccountUI {
       .shredder-avatar-stage[data-effect='effect-dragon']::after { inset: -3px; border: 2px solid transparent; background: linear-gradient(#111, #111) padding-box, conic-gradient(#ff542e, #ffe36d, #d95cff, #00f0ff, #b6ff3b, #ff542e) border-box; box-shadow: 0 0 10px #d95cff; animation: shredder-mini-orbit 3s linear infinite; }
       .shredder-avatar-stage[data-effect='effect-headliner']::after { inset: -3px; border: 3px double #ffe36d; box-shadow: 0 0 15px #ffb51b, inset 0 0 7px #ffb51b; animation: shredder-mini-pulse 1.7s ease-in-out infinite; }
       .shredder-player-icon[data-frame='frame-cyberpunk'] { border-color: #00f0ff; box-shadow: 0 0 8px #00f0ff; }
-      .shredder-player-icon[data-frame='frame-cyberpunk']::before { background-image: url('images/moldura-cyberpunk-musical.png'); filter: drop-shadow(0 0 4px #00f0ff); }
+      .shredder-player-icon[data-frame='frame-cyberpunk']::before { background-image: url('images/moldura-cyberpunk-musical.webp?v=1'); filter: drop-shadow(0 0 4px #00f0ff); }
       .shredder-player-icon[data-frame='frame-magma'] { border: 2px double #ff542e; box-shadow: 0 0 8px #ff321d; }
       .shredder-player-icon[data-frame='frame-frost'] { border: 2px dashed #9af7ff; box-shadow: 0 0 8px #75eaff; }
       .shredder-player-icon[data-frame='frame-gold'] { border: 2px double #ffd76b; box-shadow: 0 0 9px #ffb51b; }
@@ -238,8 +244,8 @@ class ShredderAccountUI {
     icon.dataset.frame = equipped.moldura || '';
     icon.dataset.background = equipped.fundo || '';
     const avatarIds = ['night-sentinel', 'astral-oracle', 'fox-wanderer', 'dune-explorer', 'deep-diver', 'crystal-golem', 'forest-spirit', 'nocturne', 'alien-roamer', 'neon-android', 'starfarer', 'void-knight', 'frost-mage', 'sun-guardian', 'shadow-scout', 'brass-automaton', 'mothling', 'neon-familiar', 'rune-guardian', 'aurora-entity', 'pulse-vanguard', 'neon-reaper', 'beat-runner', 'soundcrow'];
-    icon.dataset.avatar = avatarIds.includes(avatar) ? avatar : '';
-    icon.style.backgroundImage = icon.dataset.avatar ? `url("images/avatars/${icon.dataset.avatar}.png?v=4")` : '';
+    icon.dataset.avatar = avatarIds.includes(avatar) || /^custom\/[a-f0-9-]{36}$/.test(avatar) ? avatar : '';
+    icon.style.backgroundImage = icon.dataset.avatar ? `url("${shredderAvatarUrl(icon.dataset.avatar)}")` : '';
     icon.style.backgroundSize = icon.dataset.avatar ? 'cover' : '';
     icon.style.backgroundPosition = icon.dataset.avatar ? 'center' : '';
     icon.style.backgroundRepeat = icon.dataset.avatar ? 'no-repeat' : '';

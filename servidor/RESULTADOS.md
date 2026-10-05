@@ -33,7 +33,7 @@ O ranking público permite selecionar Freeplay ou Modo História e, dentro do mo
 - Bandas: mantém a regra de soma das pontuações dos registros vinculados à banda que o ranking já utilizava. O callback real precisa fornecer `{ id, nome }` ou definir `player.banda`; sem banda o resultado conta apenas na aba individual. Decidir se futuramente a classificação será por sessão, melhor música ou temporada.
 - `songsCompleted`: músicas distintas **por instrumento**, rastreadas em `songRecords[musica].instrumentosCompletados`. Dados antigos sem esse histórico são preservados; a primeira execução após a integração passa a registrar a associação. Uma migração precisa de histórico real para deduplicar com totais antigos.
 - `fullCombos`: contador cumulativo de execuções com full combo; `maxScore`, `maxCombo` e `bestAccuracy` nunca diminuem.
-- `on_fire`: concedido por full combo conforme o exemplo solicitado. Os critérios de `primeiros_acordes`, `cirurgico`, `perfeccionista`, `lenda_viva` e `desafinador_profissional` permanecem `null` em `CRITERIOS_ACHIEVEMENTS`; definir regras antes de ativar. Conquistas existentes são preservadas.
+- As 29 conquistas têm critérios automáticos. Conquistas existentes são preservadas; resultados e notificações repetidos não duplicam progresso. Veja os critérios abaixo.
 - Os limites numéricos de validação estão comentados em `validarResultado`; ajustar ao catálogo real do jogo. A identidade leve enviada pelo cliente permanece como no fluxo existente; não foi introduzida autenticação nova nem verificação antitrapaça.
 - Recordes já presentes em `instrumentStats` aparecem no ranking. Nenhuma migração de dados externos do Firestore foi realizada.
 
@@ -59,8 +59,60 @@ Perfil, moedas e estatísticas são gravados juntos atomicamente. Um reenvio com
 
 A seção “Editar perfil e conquistas” de `/operador.html` carrega a conta antes da edição. Permite alterar username, definir nova senha, editar nickname/avatar/título, ajustar o saldo total, partidas jogadas, totais de notas, instrumento favorito e os cinco indicadores de cada um dos quatro instrumentos. O saldo nessa seção é absoluto; “moedas ganhas na sessão”, no formulário de partida, continua sendo um acréscimo.
 
-As seis conquistas do catálogo são exibidas como checkboxes. As existentes aparecem marcadas; desmarcar remove a conquista ao salvar. IDs adicionais já presentes na conta também são exibidos e preservados. A concessão automática por partida continua funcionando (por exemplo, um novo full combo pode conceder `on_fire` novamente após uma remoção manual).
+As 29 conquistas do catálogo são exibidas como checkboxes. As existentes aparecem marcadas; desmarcar remove a conquista ao salvar. IDs adicionais já presentes na conta também são exibidos e preservados. A concessão automática por partida continua funcionando (por exemplo, um novo full combo pode conceder `on_fire` novamente após uma remoção manual).
 
 `GET /api/operador/perfil/:username` retorna apenas os campos necessários à edição e uma revisão opaca, nunca salt/hash/senha. `POST /api/operador/salvar-perfil` recebe `{ username, revisao, alteracoes, novaSenha? }`; `alteracoes` usa caminhos como `instrumentStats.guitarra.maxScore`. O endpoint rejeita campos fora da lista permitida. A nova senha usa scrypt e salt novo; campos em branco mantêm a senha atual. Username já cadastrado é rejeitado. Alterar username ou senha encerra sessões da conta, exigindo login novamente.
 
 A edição relê o arquivo e rejeita revisão desatualizada (HTTP 409), evitando sobrescrever resultados recebidos enquanto o painel estava aberto, inclusive durante o cálculo do scrypt. Ajustes de perfil não registram partidas nem reescrevem o histórico. `createdAt` é exibido e preservado; `updatedAt` é mantido pelo servidor. A interface específica por música/histórico está adiada conforme solicitado. Alterações do recorde individual refletem no ranking individual; pontuações históricas de bandas são preservadas.
+
+
+## Conquistas automáticas
+
+Resultados confirmados pelo operador concedem conquistas automaticamente; não é necessário marcar os checkboxes de conquista. A confirmação do ticket continua associando os resultados do executável às contas dos jogadores. Favoritos são alterados pelo próprio jogador em `POST /api/fases/favoritar`; selecionar/desbloquear fases também avalia a conquista correspondente.
+
+O executável deve ser recompilado com as mudanças em `OperatorScoreReporter`, `GameManager`, `BasePlayer` e `ScoreScreenContainer`. O envio inclui `pausada`, `energiaFinal` (0–100), `dificuldade` e `concluida`. Expert e ExpertPlus são enviados como `maxima`. Bots, treino e replay não geram resultados. Reenvios usam o mesmo `loteId`; falhas transitórias recebem até três tentativas. Executáveis antigos continuam aceitos, mas campos ausentes não concedem conquistas que dependem de pausa, energia ou dificuldade.
+
+| Conquista | Critério |
+| --- | --- |
+| Primeiros Acordes | Concluir uma música |
+| Aquecimento | Jogar 5 partidas |
+| Ritmo de Ferro | Jogar 10 partidas no mesmo dia UTC |
+| Sem Errar o Compasso | Concluir sem pausar |
+| On Fire | Concluir com full combo |
+| Cirúrgico | Concluir com 100% de precisão |
+| No Limite | Concluir com pelo menos 99%, abaixo de 100% |
+| Virada Insana | Concluir com energia final de 0% a 10% |
+| Especialista | Full combo em 10 músicas diferentes |
+| Multi Instrumentista | Concluir uma música em cada instrumento |
+| Perfeccionista | 5 full combos no mesmo instrumento |
+| Mestre da Guitarra/Baixo/Bateria/Teclado | 5 full combos no instrumento correspondente (4 conquistas) |
+| Colecionador de Fases | Desbloquear as fases 1 a 5 |
+| Dono do Palco | Concluir as fases 1 a 5 em História na dificuldade máxima |
+| Favorita da Casa | Favoritar as fases 1 a 5 |
+| Maratonista | Jogar 50 partidas |
+| Incansável | Jogar 100 partidas |
+| Lenda Viva | Concluir 50 músicas, incluindo repetições |
+| Desafinador Profissional | Acumular 100 notas erradas |
+| Tentativa Corajosa | Concluir com menos de 50% de precisão |
+| Quase Lá | Concluir com exatamente uma nota errada, sem full combo |
+| Volta por Cima | Superar em pelo menos 25% o recorde anterior do instrumento |
+| Rei do Ranking | Alcançar a maior pontuação individual do instrumento na música/modo |
+| Banda Afinada | Participar com quatro contas distintas, uma por instrumento |
+| Show Perfeito | Banda completa com todos concluindo acima de 95% de precisão |
+| Estrela da Feira | Liderar um ranking no encerramento da feira |
+
+Bandas sem nome também concedem as conquistas de participação aos quatro jogadores, sem inventar um registro de ranking de banda. Cada conquista gera uma notificação persistida e enviada à conta; a concessão não se repete em um reenvio do resultado.
+
+### Encerramento da feira
+
+A data padrão é **19/11/2026, 17h30, horário de Brasília** (`2026-11-19T17:30:00-03:00`), conforme a estimativa informada. Pode ser alterada pela variável de ambiente `FEIRA_ENCERRA_EM`, com data ISO e fuso explícito.
+
+O servidor verifica o encerramento a cada dez segundos, na inicialização e antes de gravar novos resultados. Concede `estrela_da_feira` ao primeiro colocado de cada instrumento e aos integrantes da banda vencedora, considerando cada música/modo do ranking público. Empates usam a ordem de nomes do ranking. A decisão fica em `fairAchievement` no arquivo de contas e sobrevive a reinicializações. O servidor precisa permanecer ligado para avaliar no horário; se estiver desligado, processa os rankings persistidos ao reiniciar.
+
+## Foto própria do operador
+
+Em `operador.html`, a seção **Minha foto de perfil** permite selecionar PNG, JPG ou WebP de até 8 MB, visualizar o recorte central e salvar na própria conta. O navegador prepara uma miniatura WebP de 256 × 256 antes do envio, com limite de 128 KB. A foto aparece no perfil e nos demais locais que exibem o avatar; também fica disponível como “Minha foto” no seletor do perfil.
+
+`POST /api/operador/avatar` exige sessão de operador oficial antes de processar o arquivo. A conta vem da sessão autenticada; o cliente não escolhe outra conta. O servidor valida o contêiner WebP, limites de tamanho e dimensões, rejeita animação e gera o nome do arquivo. Imagens ficam em `docs/images/avatars/custom/`, e o identificador fica em `avatar` e `customAvatar` da conta. Preserve essa pasta junto com o arquivo de contas nas implantações e backups.
+
+Se o formulário de edição do próprio perfil estava aberto durante o envio da foto, recarregue a conta antes de salvar a edição, pois a revisão mudou.

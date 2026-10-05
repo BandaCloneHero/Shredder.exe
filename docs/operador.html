@@ -88,6 +88,19 @@
         <p class="eyebrow">ESTAÇÃO // REGISTRO DE RESULTADOS</p>
         <h1>Painel do <span>Operador.</span></h1>
         <p class="operator-intro">Confira os resultados enviados pelo executável e confirme a associação com os jogadores do ticket. O servidor atualiza perfil e ranking somente após a confirmação.</p>
+        <details class="operator-mode">
+            <summary>Minha foto de perfil</summary>
+            <form id="operator-avatar-form" class="operator-form panel-cut">
+                <p class="operator-help">Escolha uma foto para sua própria conta de operador. A imagem será recortada no centro e preparada em tamanho leve para o perfil.</p>
+                <div class="operator-field">
+                    <label for="operator-avatar-file">Foto (PNG, JPG ou WebP, até 8 MB)</label>
+                    <input id="operator-avatar-file" type="file" accept="image/png,image/jpeg,image/webp">
+                </div>
+                <img id="operator-avatar-preview" alt="Prévia da sua foto de perfil" width="128" height="128" hidden style="margin: 1rem 0; border-radius: 50%; object-fit: cover; border: 1px solid var(--cyan)">
+                <button id="operator-avatar-upload" class="button button-primary" type="submit" disabled>Salvar minha foto</button>
+                <p id="operator-avatar-status" class="operator-status" role="status" aria-live="polite"></p>
+            </form>
+        </details>
         <section class="incoming-results" aria-labelledby="incoming-title">
             <h2 id="incoming-title">Tickets de sessão recebidos</h2>
             <p class="operator-help">Os tickets entram em uma fila FIFO global. Cada lote do YARG é associado ao ticket mais antigo sem resultados; confira os nomes e pontuações e confirme para salvar e liberar a fila.</p>
@@ -345,6 +358,7 @@
     <script src="app.js"></script>
     <script src="js/achievement-live.js"></script>
     <script src="js/operador-access.js"></script>
+    <script src="js/operador-avatar.js"></script>
     <script>
         function operatorAuthHeaders(headers = {}) {
             const token = localStorage.getItem("shredder.account.token.v1");

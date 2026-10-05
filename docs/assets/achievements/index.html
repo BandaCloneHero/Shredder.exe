@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shredder.exe — Artes das conquistas</title>
+<style>
+body{margin:0;padding:32px;background:#11131a;color:#eef0f6;font:16px system-ui,sans-serif}main{max-width:1400px;margin:auto}h1{margin:0 0 12px}p{color:#aeb8c8}section{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}a{display:block;color:inherit;text-decoration:none;background:#1a1d28;border:1px solid #34394a;border-radius:16px;padding:18px;text-align:center}img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain}h2{font-size:15px;margin:14px 0 6px}small{color:#aeb8c8}
+</style>
+<main><h1>Artes das conquistas</h1><p>29 badges do Shredder.exe. Clique em uma arte para abrir o PNG original.</p><section id="collection"></section></main>
+<script src="../../js/achievement-catalog.js"></script>
+<script>
+const container=document.getElementById('collection');
+for(const badge of PROFILE_ACHIEVEMENTS){
+ const card=document.createElement('a');card.href=badge.id+'.png';
+ const img=document.createElement('img');img.src=badge.id+'.webp?v=1';img.alt=badge.label;img.loading='lazy';img.decoding='async';img.width=256;img.height=256;
+ const title=document.createElement('h2');title.textContent=badge.label;
+ const description=document.createElement('small');description.textContent=badge.rarity+' · '+badge.how;
+ card.append(img,title,description);container.append(card);
+}
+</script>
+</html>

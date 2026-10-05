@@ -16,8 +16,8 @@ using YARG.Localization;
 namespace YARG.Integration
 {
     /// <summary>
-    /// Sends completed Unity score cards to the operator's FIFO review queue.
-    /// The web profile and ranking are updated only after operator confirmation.
+    /// Sends completed Unity score cards and achievement telemetry to the FIFO queue.
+    /// Confirmed results automatically update the web profile, ranking and achievements.
     /// </summary>
     public static class OperatorScoreReporter
     {
@@ -44,16 +44,20 @@ namespace YARG.Integration
             public int notasAcertadas;
             public int notasErradas;
             public bool fullCombo;
+            public bool pausada;
+            public float energiaFinal;
+            public string dificuldade;
+            public bool concluida;
         }
 
         public static IEnumerator Send(ScoreScreenStats scoreScreenStats, SongEntry song)
         {
-            if (song == null)
+            if (song == null || !scoreScreenStats.IsLiveGame)
                 yield break;
 
             var batch = new ResultBatch
             {
-                loteId = Guid.NewGuid().ToString("N"),
+                loteId = scoreScreenStats.ReportId,
                 musica = song.Name,
                 pontuacaoBanda = Mathf.Max(0, scoreScreenStats.BandScore),
                 resultados = new List<PlayerResult>()
@@ -66,7 +70,7 @@ namespace YARG.Integration
             {
                 var profile = playerScore.Player?.Profile;
                 BaseStats stats = playerScore.Stats;
-                if (profile == null || stats == null || profile.IsBot)
+                if (profile == null || stats == null || profile.IsBot || playerScore.Player.IsReplay)
                     continue;
 
                 batch.resultados.Add(new PlayerResult
@@ -79,24 +83,35 @@ namespace YARG.Integration
                     maiorCombo = Mathf.Max(0, stats.MaxCombo),
                     notasAcertadas = Mathf.Max(0, stats.NotesHit),
                     notasErradas = Mathf.Max(0, stats.NotesMissed),
-                    fullCombo = stats.IsFullCombo
+                    fullCombo = stats.IsFullCombo,
+                    pausada = scoreScreenStats.WasPaused,
+                    energiaFinal = Mathf.Clamp(playerScore.FinalEnergy, 0f, 100f),
+                    dificuldade = profile.CurrentDifficulty is Difficulty.Expert or Difficulty.ExpertPlus
+                        ? "maxima" : profile.CurrentDifficulty.ToString().ToLowerInvariant(),
+                    concluida = true
                 });
             }
 
             if (batch.resultados.Count == 0)
                 yield break;
 
-            using var request = new UnityWebRequest(Endpoint, UnityWebRequest.kHttpVerbPOST);
             byte[] body = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(batch));
-            request.uploadHandler = new UploadHandlerRaw(body);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-            request.timeout = 10;
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
+            for (int attempt = 0; attempt < 3; attempt++)
             {
-                Debug.LogWarning($"Não foi possível enviar os resultados ao painel do operador: {request.error}");
+                using var request = new UnityWebRequest(Endpoint, UnityWebRequest.kHttpVerbPOST);
+                request.uploadHandler = new UploadHandlerRaw(body);
+                request.downloadHandler = new DownloadHandlerBuffer();
+                request.SetRequestHeader("Content-Type", "application/json");
+                request.timeout = 10;
+                yield return request.SendWebRequest();
+                if (request.result == UnityWebRequest.Result.Success)
+                    yield break;
+                if (attempt == 2 || (request.responseCode >= 400 && request.responseCode < 500 && request.responseCode != 429))
+                {
+                    Debug.LogWarning($"Não foi possível sincronizar os resultados: {request.error} {request.downloadHandler.text}");
+                    yield break;
+                }
+                yield return new WaitForSecondsRealtime(2 << attempt);
             }
         }
 

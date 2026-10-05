@@ -18,3 +18,60 @@
   if (linhas.length) console.table(linhas);
   else console.log("Nenhuma chave correspondente encontrada neste armazenamento.");
 })();
+
+
+============================================================
+RESUMO PARA O OUTRO CODEX — REFORMULAÇÃO DO BOSS GEPETO
+============================================================
+
+Objetivo
+--------
+Reformular o boss Gepeto para que o combate combine melhor com um jogo de ritmo e seja possível vencer jogando solo numa música normal. O usuário observou nos testes que um jogador não consegue causar muito dano; por isso, duas barras/fases completas ou ressurreições provavelmente deixariam a luta longa demais.
+
+O usuário ainda não pediu para implementar as mudanças. Este arquivo serve para levar o contexto e a proposta a outro Codex. As alterações podem ser feitas diretamente nos scripts C# e nos arquivos de texto da cena Unity, sem abrir a Unity, mas a validação visual e de execução exigirá testar depois dentro do editor/jogo.
+
+Arquivos e contexto
+-------------------
+- Assets/Script/BossHealthBar.cs: controla vida, dano por nota e dano por marcos de pontuação.
+- Assets/Script/BossPhaseManager.cs: controla as ressurreições do boss.
+- Assets/Script/BossUIController.cs: calcula fase visual pela porcentagem de vida e muda cor/notificação da barra.
+- Assets/Script/GepetoBossReaction.cs: observa acertos, aplica dano por notas e reage à pontuação crítica.
+- Assets/Script/GepetoVisualAnimator.cs: controla animações usando uma lista de sprites.
+- Assets/Script/Gameplay/Player/TrackPlayer.cs: contém BossNoteHit, BossNoteMissed e BossEventCount; verificar como esses eventos podem alimentar o boss.
+- Assets/Scenes/Gameplay.unity: contém as referências e os valores serializados dos componentes do boss.
+
+Valores atuais serializados na Gameplay.unity
+---------------------------------------------
+- Vida máxima: 100.
+- Dano por nota: 0,4.
+- Intervalo global entre danos de nota: 3 segundos — na prática, cerca de 0,13 de dano por segundo mesmo com muitos acertos.
+- Dano crítico a cada 75.000 pontos: 7.
+- O boss ressuscita duas vezes.
+
+Problemas observados no código atual
+------------------------------------
+- Cada nota acertada tem dano fixo e o cooldown limita o dano total; em chart rápido, acertar mais notas não aumenta proporcionalmente o dano.
+- Marcos fixos de pontuação podem variar muito conforme música, instrumento, dificuldade e número de jogadores.
+- O BossPhaseManager restaura vida, mas não parece aplicar uma mudança funcional de dificuldade.
+- GepetoVisualAnimator.TriggerPhase2Transformation() existe, mas não parece ser chamado pelo gerenciador de fases.
+- GepetoBossReaction e GepetoVisualAnimator alteram a mesma Image do personagem, então podem disputar o sprite exibido.
+- Há eventos de nota perdida no TrackPlayer, mas o boss atual aparentemente não os usa.
+- A lógica de combate está espalhada em scripts diferentes; vida, fase, reação e animação podem ficar dessincronizadas.
+
+Direção de design proposta
+--------------------------
+1. Usar uma única barra de vida e remover ressurreições por padrão. O progresso da banda não deve ser apagado quando o boss chega a zero.
+2. Manter variedade visual: o Gepeto pode mudar de expressão/aparência em torno de 50% da vida, mas essa mudança não restaura vida nem dobra a duração da luta.
+3. Fazer acertos causarem dano relacionado à qualidade/precisão da execução, após investigar os dados de hit que o jogo já disponibiliza.
+4. Erros devem quebrar sequência e reduzir o dano da banda ou provocar uma reação visual. A preferência inicial é não curar o boss por erro, ou manter qualquer recuperação muito pequena e limitada, para evitar frustração.
+5. Calibrar vida/dano para que uma pessoa solo consiga vencer uma música comum com desempenho razoável. Não depender apenas de uma pontuação fixa como 75.000.
+6. Dar feedback visual claro para acertos, erros e mudança de estado. Centralizar os estados/regras para a barra, expressões e animações sempre refletirem o mesmo estado do boss.
+7. Verificar multiplayer, instrumentos com quantidades diferentes de notas, músicas curtas, pausas, busca em replay e fim da música.
+
+Trabalho recomendado antes de implementar
+-----------------------------------------
+Inspecionar como o jogo fornece precisão do hit, combo, faixa/instrumento, número de jogadores, seções musicais e fim de música. Depois definir e documentar números verificáveis, como o dano esperado por música e a quantidade de acertos necessária para vencer solo. Implementar o ciclo de combate coerentemente e só então validar visualmente na Unity.
+
+Decisão de design ainda aberta
+------------------------------
+Definir se os erros apenas reduzem o dano/rompem combo, ou se também dão alguma recuperação de vida ao boss. Recomendação inicial: erros reduzem o dano e geram feedback, sem cura significativa.

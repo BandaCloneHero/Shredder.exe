@@ -681,6 +681,14 @@ input {
 .inventory-profile-preview strong { color: var(--text); font: 600 .78rem var(--tech); }
 .inventory-profile-preview span { color: var(--muted); font-size: .72rem; }
 .customization-card { contain: layout paint style; }
+.customization-grid .customization-card { content-visibility: auto; contain-intrinsic-size: auto 178px; }
+.inventory-items-grid .customization-card { contain-intrinsic-size: auto 150px; }
+.profile-inventory-dialog:not([open]) *,
+.profile-inventory-dialog:not([open]) *::before,
+.profile-inventory-dialog:not([open]) *::after,
+.inventory-dialog-panel[hidden] *,
+.inventory-dialog-panel[hidden] *::before,
+.inventory-dialog-panel[hidden] *::after { animation-play-state: paused !important; }
 .inventory-items-grid { content-visibility: auto; contain-intrinsic-size: auto 320px; }
 .shop-preview { color: var(--cyan); font-size: 2.5rem; }
 .shop-preview img { position: absolute; width: 100%; height: 100%; object-fit: contain; }
@@ -719,7 +727,7 @@ input {
 .profile-avatar-stage .profile-player-icon::after { position: absolute; content: ""; border-radius: 50%; pointer-events: none; }
 .profile-avatar-stage .profile-player-icon::before { z-index: 3; inset: 1px; border: 2px solid var(--cyan); box-shadow: 0 0 13px rgba(0, 240, 255, 0.45), inset 0 0 9px rgba(0, 240, 255, 0.2); }
 .profile-avatar-stage .profile-player-icon::after { z-index: 1; inset: -5px; border: 1px solid transparent; }
-.profile-avatar-stage .profile-player-icon[data-frame="frame-cyberpunk"]::before { inset: -3px; border: 0; background: url("images/moldura-cyberpunk-musical.png") center / contain no-repeat; filter: drop-shadow(0 0 5px var(--cyan)); }
+.profile-avatar-stage .profile-player-icon[data-frame="frame-cyberpunk"]::before { inset: -3px; border: 0; background: url("images/moldura-cyberpunk-musical.webp?v=1") center / contain no-repeat; filter: drop-shadow(0 0 5px var(--cyan)); }
 .profile-avatar-stage .profile-player-icon[data-frame="frame-neon"]::before { border-color: var(--cyan); box-shadow: 0 0 18px var(--cyan), inset 0 0 11px rgba(0, 240, 255, 0.5); }
 .profile-avatar-stage .profile-player-icon[data-frame="frame-magma"]::before { border: 3px double #ff542e; box-shadow: 0 0 17px #ff321d, inset 0 0 10px #ff542e; }
 .profile-avatar-stage .profile-player-icon[data-frame="frame-frost"]::before { border: 2px dashed #9af7ff; box-shadow: 0 0 17px #75eaff, inset 0 0 10px #75eaff; }
@@ -1218,7 +1226,7 @@ input {
 
 .profile-badge {
     display: grid;
-    grid-template-columns: 48px 1fr;
+    grid-template-columns: 64px minmax(0, 1fr);
     align-items: center;
     gap: 0 0.8rem;
     min-height: 92px;
@@ -1232,9 +1240,8 @@ input {
     grid-row: span 2;
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
-    border: 1px solid currentColor;
+    width: 64px;
+    height: 64px;
     color: var(--muted);
     font: 600 1.3rem var(--tech);
 }
@@ -1266,6 +1273,34 @@ input {
 .profile-badge.is-locked {
     filter: grayscale(1);
     opacity: 0.52;
+}
+
+.achievement-artwork {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.stage-option { display: grid; gap: .5rem; }
+.stage-option .stage-card { width: 100%; }
+.stage-favorite { padding: .6rem; border: 1px solid var(--line); background: var(--bg); color: var(--muted); font: 600 .65rem var(--tech); cursor: pointer; }
+.stage-favorite[aria-pressed="true"], .stage-favorite:hover:not(:disabled) { color: var(--lime); border-color: var(--lime); }
+.stage-favorite:disabled { opacity: .45; cursor: default; }
+
+.profile-badge strong,
+.achievement-detail strong,
+.achievement-toast strong {
+    overflow-wrap: anywhere;
+}
+
+.is-unlocked .achievement-artwork,
+.achievement-toast .achievement-artwork {
+    filter: drop-shadow(0 0 6px var(--achievement-glow));
+}
+
+.achievement-detail:not(.is-unlocked) .achievement-artwork {
+    filter: grayscale(1);
 }
 
 /* A paleta é fixa por raridade, em todos os lugares onde a conquista aparece. */
@@ -1300,7 +1335,7 @@ input {
     top: max(1rem, env(safe-area-inset-top));
     right: max(1rem, env(safe-area-inset-right));
     display: grid;
-    grid-template-columns: 58px minmax(0, 1fr);
+    grid-template-columns: 76px minmax(0, 1fr);
     gap: 0.85rem;
     align-items: center;
     width: min(420px, calc(100vw - 2rem));
@@ -1347,12 +1382,9 @@ input {
 .achievement-toast-icon {
     display: grid;
     place-items: center;
-    width: 58px;
-    height: 58px;
-    border: 1px solid var(--achievement-color);
+    width: 76px;
+    height: 76px;
     color: var(--achievement-color);
-    background: var(--achievement-glow);
-    box-shadow: 0 0 18px var(--achievement-glow);
     font: 700 1.7rem var(--tech);
 }
 
@@ -1453,7 +1485,7 @@ input {
 
 .achievement-detail {
     display: grid;
-    grid-template-columns: 48px 1fr auto;
+    grid-template-columns: 80px minmax(0, 1fr) auto;
     gap: 0.8rem;
     align-items: center;
     padding: 0.9rem;
@@ -1466,9 +1498,8 @@ input {
 .achievement-detail > b {
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
-    border: 1px solid currentColor;
+    width: 80px;
+    height: 80px;
     color: var(--muted);
     font: 600 1.25rem var(--tech);
 }
@@ -1577,6 +1608,22 @@ input {
 }
 
 @media (max-width: 560px) {
+    .achievement-detail {
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 0.5rem 0.8rem;
+    }
+
+    .achievement-detail > b {
+        grid-row: span 2;
+        width: 64px;
+        height: 64px;
+    }
+
+    .achievement-detail > small {
+        grid-column: 2;
+        text-align: left;
+    }
+
     .avatar-picker-dialog { width: calc(100% - 1rem); max-height: calc(100vh - 1rem); padding: 1rem; }
     .avatar-picker-options { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
     .avatar-choice { padding: .5rem; }

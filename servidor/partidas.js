@@ -5,6 +5,8 @@ const { CONQUISTAS, perfilPublico, revisaoPerfil, aplicarAjustesPerfil, erroPerf
 const INSTRUMENTOS = ['guitarra', 'baixo', 'bateria', 'teclado'];
 const MAX_FASE = 100000;
 const TOTAL_FASES_CAMPANHA = 5;
+const ENCERRAMENTO_FEIRA = '2026-11-19T17:30:00-03:00';
+const FASES_CAMPANHA = Array.from({ length: TOTAL_FASES_CAMPANHA }, (_, index) => index + 1);
 
 function validarListaFases(valor, campo) {
     if (!Array.isArray(valor) || valor.some(fase => !Number.isSafeInteger(fase) || fase < 1 || fase > MAX_FASE)) {
@@ -56,6 +58,7 @@ function inicializarPerfil(conta, username = conta.username, timestamp = new Dat
     conta.username ??= username;
     conta.nickname ??= conta.username;
     conta.avatar ??= '';
+    conta.customAvatar ??= '';
     conta.currency ??= 0;
     conta.gamesPlayed ??= 0;
     conta.currentTitle ??= 'Novato do Rock';
@@ -137,12 +140,14 @@ function validarResultado(dados) {
     if (dados.favorita !== undefined && typeof dados.favorita !== 'boolean') throw new Error('Favorito de fase inválido.');
     if (dados.favorita !== undefined && dados.fase === undefined) throw new Error('Informe a fase ao alterar o favorito.');
     if (dados.pausada !== undefined && typeof dados.pausada !== 'boolean') throw new Error('Estado de pausa inválido.');
+    if (dados.concluida !== undefined && typeof dados.concluida !== 'boolean') throw new Error('Conclusão de partida inválida.');
     if (dados.energiaFinal !== undefined && (!Number.isFinite(dados.energiaFinal) || dados.energiaFinal < 0 || dados.energiaFinal > 100)) throw new Error('Energia final inválida (0–100).');
-    if (dados.dificuldade !== undefined && !['maxima'].includes(dados.dificuldade)) throw new Error('Dificuldade inválida.');
+    if (dados.dificuldade !== undefined && !['maxima', 'easy', 'medium', 'hard', 'expert', 'expertplus', 'beginner'].includes(dados.dificuldade)) throw new Error('Dificuldade inválida.');
     return {
         ...Object.fromEntries(['partidaId', 'operadorId', 'username', 'pontuacao', 'precisao', 'maiorCombo', 'fullCombo', 'notasAcertadas', 'notasErradas', 'musica'].map(k => [k, dados[k]])),
         instrumento, banda, modo, ...perfil,
         ...(dados.pausada === undefined ? {} : { pausada: dados.pausada }),
+        ...(dados.concluida === undefined ? {} : { concluida: dados.concluida }),
         ...(dados.energiaFinal === undefined ? {} : { energiaFinal: dados.energiaFinal }),
         ...(dados.dificuldade === undefined ? {} : { dificuldade: dados.dificuldade }),
         ...(dados.fase === undefined ? {} : { fase: dados.fase }),
@@ -169,17 +174,17 @@ function registrarFase(conta, fase, favorita, timestamp, desbloquearProxima = fa
 }
 
 const CRITERIOS_ACHIEVEMENTS = {
-    primeiros_acordes: conta => conta.gamesPlayed >= 1,
+    primeiros_acordes: conta => Object.values(conta.resultadosPartidas).some(partida => partida.concluida !== false),
     aquecimento: conta => conta.gamesPlayed >= 5,
     ritmo_de_ferro: conta => Object.values(conta.achievementProgress.gamesByDay).some(total => total >= 10),
     sem_errar_o_compasso: (_conta, resultado) => resultado.pausada === false,
     on_fire: (_conta, resultado) => resultado.fullCombo,
     cirurgico: (_conta, resultado) => resultado.precisao === 100,
     no_limite: (_conta, resultado) => resultado.precisao >= 99 && resultado.precisao < 100,
-    virada_insana: (_conta, resultado) => resultado.energiaFinal > 0 && resultado.energiaFinal <= 10,
+    virada_insana: (_conta, resultado) => resultado.energiaFinal >= 0 && resultado.energiaFinal <= 10,
     especialista: (conta, resultado) => {
         const partidas = [...Object.values(conta.resultadosPartidas || {}), resultado];
-        return new Set(partidas.filter(partida => partida.fullCombo).map(partida => partida.musica)).size >= 10;
+        return new Set(partidas.filter(partida => partida.fullCombo && partida.concluida !== false).map(partida => partida.musica)).size >= 10;
     },
     multi_instrumentista: conta => INSTRUMENTOS.every(instrumento => conta.instrumentStats[instrumento].songsCompleted >= 1),
     perfeccionista: (conta, resultado) => conta.instrumentStats[resultado.instrumento].fullCombos >= 5,
@@ -187,17 +192,17 @@ const CRITERIOS_ACHIEVEMENTS = {
     mestre_baixo: conta => conta.instrumentStats.baixo.fullCombos >= 5,
     mestre_bateria: conta => conta.instrumentStats.bateria.fullCombos >= 5,
     mestre_teclado: conta => conta.instrumentStats.teclado.fullCombos >= 5,
-    colecionador_de_fases: conta => conta.fases.desbloqueadas.filter(fase => fase <= TOTAL_FASES_CAMPANHA).length >= TOTAL_FASES_CAMPANHA,
+    colecionador_de_fases: conta => FASES_CAMPANHA.every(fase => conta.fases.desbloqueadas.includes(fase)),
     dono_do_palco: (conta, resultado) => {
         const fasesConcluidas = new Set([...Object.values(conta.resultadosPartidas || {}), resultado]
-            .filter(partida => partida.fase && partida.dificuldade === 'maxima')
+            .filter(partida => partida.modo === 'historia' && FASES_CAMPANHA.includes(partida.fase) && partida.dificuldade === 'maxima' && partida.concluida !== false)
             .map(partida => partida.fase));
-        return fasesConcluidas.size >= TOTAL_FASES_CAMPANHA;
+        return FASES_CAMPANHA.every(fase => fasesConcluidas.has(fase));
     },
-    favorita_da_casa: conta => conta.fases.favoritas.length >= TOTAL_FASES_CAMPANHA,
+    favorita_da_casa: conta => FASES_CAMPANHA.every(fase => conta.fases.favoritas.includes(fase)),
     maratonista: conta => conta.gamesPlayed >= 50,
     incansavel: conta => conta.gamesPlayed >= 100,
-    lenda_viva: conta => conta.gamesPlayed >= 50,
+    lenda_viva: conta => Object.values(conta.resultadosPartidas).filter(partida => partida.concluida !== false).length >= 50,
     desafinador_profissional: conta => conta.lifetimeStats.totalMisses >= 100,
     tentativa_corajosa: (_conta, resultado) => resultado.precisao < 50,
     quase_la: (_conta, resultado) => !resultado.fullCombo && resultado.notasErradas === 1,
@@ -210,10 +215,64 @@ function registrarNotificacoesConquistas(conta, ids, timestamp = new Date().toIS
     return notificacoes;
 }
 
-function criarPersistenciaPartidas(arquivo) {
+function desbloquearConquistas(conta, ids, timestamp) {
+    const anteriores = new Set(conta.achievements);
+    const novasConquistas = [...new Set(ids)].filter(id => !anteriores.has(id));
+    conta.achievements.push(...novasConquistas);
+    return { novasConquistas, notificacoesConquistas: registrarNotificacoesConquistas(conta, novasConquistas, timestamp) };
+}
+
+function validarMembrosBanda(membrosEnviados) {
+    const texto = (valor, max) => typeof valor === 'string' && valor.trim().length > 0 && valor.length <= max;
+    if (!Array.isArray(membrosEnviados) || membrosEnviados.length > INSTRUMENTOS.length) {
+        throw erroPerfil('Integrantes da banda inválidos.');
+    }
+    const membros = membrosEnviados.map(membro => {
+        if (!texto(membro?.nome, 100) || !INSTRUMENTOS.includes(membro.instrumento) ||
+            !Number.isSafeInteger(membro.pontuacao) || membro.pontuacao < 0 || membro.pontuacao > 1e9) {
+            throw erroPerfil('Integrante da banda inválido.');
+        }
+        if (membro.precisao !== undefined && (!Number.isFinite(membro.precisao) || membro.precisao < 0 || membro.precisao > 100)) throw erroPerfil('Precisão de integrante inválida.');
+        if (membro.concluida !== undefined && typeof membro.concluida !== 'boolean') throw erroPerfil('Conclusão de integrante inválida.');
+        return {
+            nome: membro.nome.trim(), instrumento: membro.instrumento, pontuacao: membro.pontuacao,
+            ...(membro.precisao === undefined ? {} : { precisao: membro.precisao }),
+            ...(membro.concluida === undefined ? {} : { concluida: membro.concluida }),
+        };
+    });
+    return membros;
+}
+
+function premiarBanda(raiz, membros, contas) {
+    const bandaCompleta = membros.length === INSTRUMENTOS.length &&
+        INSTRUMENTOS.every(instrumento => membros.some(membro => membro.instrumento === instrumento)) &&
+        new Set(membros.map(membro => membro.nome.toLowerCase())).size === INSTRUMENTOS.length;
+    const notificacoesPorJogador = [];
+    if (bandaCompleta) {
+        const ids = ['banda_afinada'];
+        if (membros.every(membro => membro.precisao > 95 && membro.concluida !== false)) ids.push('show_perfeito');
+        for (const membro of membros) {
+            const key = membro.nome.toLowerCase();
+            const conta = contas(raiz)[key];
+            if (!conta) continue;
+            inicializarPerfil(conta, key);
+            const timestamp = new Date().toISOString();
+            const conquistas = desbloquearConquistas(conta, ids, timestamp);
+            if (!conquistas.novasConquistas.length) continue;
+            conta.updatedAt = timestamp;
+            notificacoesPorJogador.push({ username: conta.username, ...conquistas });
+        }
+    }
+    return notificacoesPorJogador;
+}
+
+function criarPersistenciaPartidas(arquivo, { encerramentoFeira = ENCERRAMENTO_FEIRA } = {}) {
+    const fimFeira = Date.parse(encerramentoFeira);
+    if (!Number.isFinite(fimFeira)) throw new Error('Data de encerramento da feira inválida.');
+    let feiraPremiada = false;
     const ler = () => JSON.parse(fs.readFileSync(arquivo, 'utf8'));
     const contas = raiz => raiz.accounts || Object.fromEntries(
-        Object.entries(raiz).filter(([chave]) => chave !== 'bandRecords'),
+        Object.entries(raiz).filter(([chave]) => !['bandRecords', 'fairAchievement'].includes(chave)),
     );
     const gravar = raiz => {
         const temporario = `${arquivo}.${randomUUID()}.tmp`;
@@ -261,6 +320,19 @@ function criarPersistenciaPartidas(arquivo) {
         return [...individuais, ...bandas];
     };
     return {
+        salvarAvatarPersonalizado(username, avatar) {
+            if (typeof avatar !== 'string' || !/^custom\/[a-f0-9-]{36}$/.test(avatar)) throw erroPerfil('Avatar personalizado inválido.');
+            const raiz = ler();
+            const key = String(username || '').trim().toLowerCase();
+            const conta = contas(raiz)[key];
+            if (!conta) throw erroPerfil('Conta não encontrada.', 404);
+            inicializarPerfil(conta, key);
+            conta.avatar = avatar;
+            conta.customAvatar = avatar;
+            conta.updatedAt = new Date().toISOString();
+            gravar(raiz);
+            return { raiz, avatar, customAvatar: avatar };
+        },
         lerPerfilOperador(username) {
             const raiz = ler();
             const key = String(username || '').trim().toLowerCase();
@@ -357,6 +429,74 @@ function criarPersistenciaPartidas(arquivo) {
             return true;
         },
         ranking: () => registros(ler()),
+        encerrarFeira(agora = new Date()) {
+            const timestamp = new Date(agora).toISOString();
+            if (Date.parse(timestamp) < fimFeira) return { encerrada: false, notificacoesPorJogador: [] };
+            if (feiraPremiada) return { encerrada: true, duplicado: true, notificacoesPorJogador: [] };
+            const raiz = ler();
+            if (raiz.fairAchievement) {
+                feiraPremiada = true;
+                return { encerrada: true, duplicado: true, notificacoesPorJogador: [] };
+            }
+            const escopos = new Map();
+            for (const registro of registros(raiz)) {
+                if (!registro.musica) continue;
+                const modo = registro.modo || 'freeplay';
+                const key = JSON.stringify([modo, registro.musica]);
+                const escopo = escopos.get(key) || { modo, musica: registro.musica, ranking: [] };
+                escopo.ranking.push(registro);
+                escopos.set(key, escopo);
+            }
+            const vencedores = new Set();
+            const lideres = [];
+            const ordenar = (a, b) => b.pontuacao - a.pontuacao || a.nome.localeCompare(b.nome);
+            for (const { ranking, modo, musica } of escopos.values()) {
+                for (const instrumento of INSTRUMENTOS) {
+                    const candidatos = ranking.filter(item => item.jogadorId && item.instrumento?.toLowerCase() === instrumento)
+                        .map(item => ({ nome: item.nome, key: item.jogadorId, pontuacao: item.pontuacaoIndividual ?? item.pontuacao }))
+                        .filter(item => item.pontuacao > 0).sort(ordenar);
+                    if (!candidatos.length) continue;
+                    vencedores.add(candidatos[0].key);
+                    lideres.push({ ranking: instrumento, modo, musica, username: candidatos[0].nome, pontuacao: candidatos[0].pontuacao });
+                }
+                const bandas = new Map();
+                for (const item of ranking) {
+                    if (!item.banda) continue;
+                    const grupo = bandas.get(item.banda.id) || { nome: item.banda.nome, explicita: -1, membros: new Map(), integrantes: [] };
+                    if (!item.jogadorId && item.pontuacao > grupo.explicita) {
+                        grupo.explicita = item.pontuacao;
+                        grupo.integrantes = item.membros || [];
+                    } else if (item.jogadorId && item.pontuacao > (grupo.membros.get(item.jogadorId)?.pontuacao ?? -1)) {
+                        grupo.membros.set(item.jogadorId, { nome: item.nome, pontuacao: item.pontuacao });
+                    }
+                    bandas.set(item.banda.id, grupo);
+                }
+                const rankingBandas = [...bandas.values()].map(banda => ({
+                    nome: banda.nome,
+                    pontuacao: banda.explicita >= 0 ? banda.explicita : [...banda.membros.values()].reduce((total, item) => total + item.pontuacao, 0),
+                    membros: banda.explicita >= 0 ? banda.integrantes : [...banda.membros.values()],
+                })).filter(item => item.pontuacao > 0).sort(ordenar);
+                if (rankingBandas.length) {
+                    for (const membro of rankingBandas[0].membros) vencedores.add(membro.nome.toLowerCase());
+                    lideres.push({ ranking: 'bandas', modo, musica, banda: rankingBandas[0].nome, pontuacao: rankingBandas[0].pontuacao });
+                }
+            }
+            const notificacoesPorJogador = [];
+            for (const key of vencedores) {
+                const conta = contas(raiz)[key];
+                if (!conta) continue;
+                inicializarPerfil(conta, key);
+                const conquistas = desbloquearConquistas(conta, ['estrela_da_feira'], timestamp);
+                if (conquistas.novasConquistas.length) {
+                    conta.updatedAt = timestamp;
+                    notificacoesPorJogador.push({ username: conta.username, ...conquistas });
+                }
+            }
+            raiz.fairAchievement = { encerramento: new Date(fimFeira).toISOString(), processadoEm: timestamp, lideres };
+            gravar(raiz);
+            feiraPremiada = true;
+            return { raiz, encerrada: true, notificacoesPorJogador };
+        },
         selecionarFase(username, fase) {
             if (!Number.isSafeInteger(fase) || fase < 1 || fase > MAX_FASE) throw erroPerfil('Fase inválida.');
             const raiz = ler();
@@ -366,9 +506,36 @@ function criarPersistenciaPartidas(arquivo) {
             const timestamp = new Date().toISOString();
             inicializarPerfil(conta, key, timestamp);
             registrarFase(conta, fase, undefined, timestamp);
+            const ids = CRITERIOS_ACHIEVEMENTS.colecionador_de_fases(conta) ? ['colecionador_de_fases'] : [];
+            const conquistas = desbloquearConquistas(conta, ids, timestamp);
             conta.updatedAt = timestamp;
             gravar(raiz);
-            return { raiz, fases: conta.fases };
+            return { raiz, fases: conta.fases, ...conquistas };
+        },
+        favoritarFase(username, fase, favorita) {
+            if (!FASES_CAMPANHA.includes(fase) || typeof favorita !== 'boolean') throw erroPerfil('Favorito de fase inválido.');
+            const raiz = ler();
+            const key = String(username || '').trim().toLowerCase();
+            const conta = contas(raiz)[key];
+            if (!conta) throw erroPerfil('Conta não encontrada.', 404);
+            inicializarPerfil(conta, key);
+            if (!conta.fases.desbloqueadas.includes(fase)) throw erroPerfil('A fase ainda não foi desbloqueada.', 403);
+            if (favorita && !conta.fases.favoritas.includes(fase)) conta.fases.favoritas.push(fase);
+            if (!favorita) conta.fases.favoritas = conta.fases.favoritas.filter(item => item !== fase);
+            conta.fases.favoritas.sort((a, b) => a - b);
+            const timestamp = new Date().toISOString();
+            const ids = CRITERIOS_ACHIEVEMENTS.favorita_da_casa(conta) ? ['favorita_da_casa'] : [];
+            const conquistas = desbloquearConquistas(conta, ids, timestamp);
+            conta.updatedAt = timestamp;
+            gravar(raiz);
+            return { raiz, fases: conta.fases, ...conquistas };
+        },
+        registrarParticipacaoBanda(membrosEnviados) {
+            const membros = validarMembrosBanda(membrosEnviados);
+            const raiz = ler();
+            const notificacoesPorJogador = premiarBanda(raiz, membros, contas);
+            if (notificacoesPorJogador.length) gravar(raiz);
+            return { raiz, notificacoesPorJogador };
         },
         salvarPontuacaoBanda(payload) {
             if (!payload || typeof payload !== 'object') throw erroPerfil('Pontuação de banda inválida.');
@@ -381,17 +548,7 @@ function criarPersistenciaPartidas(arquivo) {
             }
             if (payload.musica !== undefined && !texto(payload.musica, 200)) throw erroPerfil('Música da banda inválida.');
             if (payload.modo !== undefined && !['freeplay', 'historia'].includes(payload.modo)) throw erroPerfil('Modo da banda inválido.');
-            const membrosEnviados = payload.membros ?? [];
-            if (!Array.isArray(membrosEnviados) || membrosEnviados.length > INSTRUMENTOS.length) {
-                throw erroPerfil('Integrantes da banda inválidos.');
-            }
-            const membros = membrosEnviados.map(membro => {
-                if (!texto(membro?.nome, 100) || !INSTRUMENTOS.includes(membro.instrumento) ||
-                    !Number.isSafeInteger(membro.pontuacao) || membro.pontuacao < 0 || membro.pontuacao > 1e9) {
-                    throw erroPerfil('Integrante da banda inválido.');
-                }
-                return { nome: membro.nome.trim(), instrumento: membro.instrumento, pontuacao: membro.pontuacao };
-            });
+            const membros = validarMembrosBanda(payload.membros ?? []);
             const raiz = ler();
             raiz.bandRecords ??= {};
             if (typeof raiz.bandRecords !== 'object' || Array.isArray(raiz.bandRecords)) throw erroPerfil('Registros de bandas inválidos.');
@@ -402,7 +559,7 @@ function criarPersistenciaPartidas(arquivo) {
                     existente.modo === payload.modo && existente.pontuacao === payload.pontuacao &&
                     JSON.stringify(existente.membros || []) === JSON.stringify(membros);
                 if (!mesmaPontuacao) throw erroPerfil('ID de pontuação de banda já usado.', 409);
-                return { raiz, records: registros(raiz), duplicado: true };
+                return { raiz, records: registros(raiz), duplicado: true, notificacoesPorJogador: [] };
             }
             raiz.bandRecords[payload.partidaId] = {
                 partidaId: payload.partidaId,
@@ -413,8 +570,9 @@ function criarPersistenciaPartidas(arquivo) {
                 ...(payload.modo === undefined ? {} : { modo: payload.modo }),
                 createdAt: new Date().toISOString(),
             };
+            const notificacoesPorJogador = premiarBanda(raiz, membros, contas);
             gravar(raiz);
-            return { raiz, records: registros(raiz) };
+            return { raiz, records: registros(raiz), notificacoesPorJogador };
         },
         salvar(payload) {
             const resultado = validarResultado(payload);
@@ -434,7 +592,7 @@ function criarPersistenciaPartidas(arquivo) {
             inicializarPerfil(conta, resultado.username.trim(), timestamp);
             // Uma partida concluída em uma fase registra a escolha e libera a
             // próxima. Partidas em modo livre continuam compatíveis ao omitir fase.
-            registrarFase(conta, resultado.fase, resultado.favorita, timestamp, true);
+            registrarFase(conta, resultado.fase, resultado.favorita, timestamp, resultado.concluida !== false);
             if (resultado.nickname !== undefined) conta.nickname = resultado.nickname;
             if (resultado.currentTitle !== undefined) {
                 conta.currentTitle = resultado.currentTitle;
@@ -463,7 +621,7 @@ function criarPersistenciaPartidas(arquivo) {
             stats.maxCombo = Math.max(stats.maxCombo || 0, resultado.maiorCombo);
             stats.bestAccuracy = Math.max(stats.bestAccuracy || 0, resultado.precisao);
             // fullCombos é um contador de execuções com full combo, nunca diminui.
-            stats.fullCombos = (stats.fullCombos || 0) + Number(resultado.fullCombo);
+            stats.fullCombos = (stats.fullCombos || 0) + Number(resultado.fullCombo && resultado.concluida !== false);
             if (Array.isArray(conta.songRecords)) {
                 conta.songRecords = Object.fromEntries(conta.songRecords.map(r => [r.musica, {
                     ...r, plays: r.plays ?? r.vezesJogada ?? 0,
@@ -475,7 +633,7 @@ function criarPersistenciaPartidas(arquivo) {
             conta.songRecords ||= {};
             const record = Object.hasOwn(conta.songRecords, resultado.musica) ? conta.songRecords[resultado.musica] : {};
             record.instrumentosCompletados ||= [];
-            const primeira = !record.instrumentosCompletados.includes(resultado.instrumento);
+            const primeira = resultado.concluida !== false && !record.instrumentosCompletados.includes(resultado.instrumento);
             stats.songsCompleted = (stats.songsCompleted || 0) + Number(primeira);
             if (primeira) record.instrumentosCompletados.push(resultado.instrumento);
             record.plays = (record.plays || 0) + 1;
@@ -495,15 +653,16 @@ function criarPersistenciaPartidas(arquivo) {
             const achievementsAnteriores = new Set(conta.achievements || []);
             const achievements = new Set(achievementsAnteriores);
             for (const [id, criterio] of Object.entries(CRITERIOS_ACHIEVEMENTS)) {
+                if (resultado.concluida === false && ['sem_errar_o_compasso', 'on_fire', 'cirurgico', 'no_limite', 'virada_insana', 'tentativa_corajosa', 'quase_la', 'volta_por_cima'].includes(id)) continue;
                 if (criterio?.(conta, resultado, { pontuacaoAnterior })) achievements.add(id);
             }
             const melhorDoInstrumento = Math.max(
                 0,
                 ...registros(raiz)
-                    .filter(registro => registro.jogadorId && registro.instrumento?.toLowerCase() === resultado.instrumento)
+                    .filter(registro => registro.jogadorId && registro.instrumento?.toLowerCase() === resultado.instrumento && registro.musica === resultado.musica && registro.modo === resultado.modo)
                     .map(registro => registro.pontuacaoIndividual ?? registro.pontuacao),
             );
-            if (resultado.pontuacao >= melhorDoInstrumento) achievements.add('rei_do_ranking');
+            if (stats.maxScore > 0 && stats.maxScore >= melhorDoInstrumento) achievements.add('rei_do_ranking');
             conta.achievements = [...achievements];
             const novasConquistas = conta.achievements.filter(id => !achievementsAnteriores.has(id));
             const notificacoesConquistas = registrarNotificacoesConquistas(conta, novasConquistas, timestamp);
@@ -513,4 +672,4 @@ function criarPersistenciaPartidas(arquivo) {
         },
     };
 }
-module.exports = { criarPersistenciaPartidas, validarResultado, inicializarPerfil, inicializarFases };
+module.exports = { criarPersistenciaPartidas, validarResultado, inicializarPerfil, inicializarFases, ENCERRAMENTO_FEIRA };

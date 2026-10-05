@@ -11,7 +11,7 @@ function fixture(t) {
     fs.writeFileSync(file, JSON.stringify({ accounts: { ana: { username: 'Ana', salt: 'unchanged', passwordHash: 'unchanged' }, bia: { username: 'Bia' } } }));
     return { file, store: criarPersistenciaPartidas(file), read: () => JSON.parse(fs.readFileSync(file)) };
 }
-const result = (overrides = {}) => ({ partidaId: 'one', operadorId: 'op1', username: 'Ana', instrumento: 'Guitarra', pontuacao: 1000, precisao: 100, maiorCombo: 10, fullCombo: true, notasAcertadas: 10, notasErradas: 0, musica: 'Song', banda: { id: 'band', nome: 'Band' }, ...overrides });
+const result = (overrides = {}) => ({ partidaId: 'one', operadorId: 'op1', username: 'Ana', instrumento: 'Guitarra', modo: overrides.fase === undefined ? 'freeplay' : 'historia', pontuacao: 1000, precisao: 100, maiorCombo: 10, fullCombo: true, notasAcertadas: 10, notasErradas: 0, musica: 'Song', banda: { id: 'band', nome: 'Band' }, ...overrides });
 test('persiste perfil, recordes, conquistas e ranking após reinicializar', t => {
     const { store, file, read } = fixture(t);
     store.salvar(result());
