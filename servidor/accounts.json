@@ -144,7 +144,8 @@
       "achievementProgress": {
         "gamesByDay": {}
       },
-      "achievementNotifications": []
+      "achievementNotifications": [],
+      "customAvatar": ""
     },
     "davijohann": {
       "username": "DaviJohann",
@@ -206,7 +207,8 @@
       "achievementProgress": {
         "gamesByDay": {}
       },
-      "achievementNotifications": []
+      "achievementNotifications": [],
+      "customAvatar": ""
     },
     "daviteste123": {
       "username": "daviteste123",
@@ -268,7 +270,8 @@
       "achievementProgress": {
         "gamesByDay": {}
       },
-      "achievementNotifications": []
+      "achievementNotifications": [],
+      "customAvatar": ""
     },
     "davitest123": {
       "username": "davitest123",
@@ -478,7 +481,8 @@
           "2026-09-30": 2
         }
       },
-      "achievementNotifications": []
+      "achievementNotifications": [],
+      "customAvatar": ""
     },
     "davi12345": {
       "username": "davi12345",
@@ -540,7 +544,8 @@
       "achievementProgress": {
         "gamesByDay": {}
       },
-      "achievementNotifications": []
+      "achievementNotifications": [],
+      "customAvatar": ""
     },
     "alparenga": {
       "username": "alparenga",
@@ -665,17 +670,18 @@
           "conquistaId": "rei_do_ranking",
           "criadaEm": "2026-10-01T18:58:37.923Z"
         }
-      ]
+      ],
+      "customAvatar": ""
     },
     "davijohannbecker": {
       "username": "DAVIJOHANNBECKER",
       "salt": "59580c3b07f5a379e210f82f8863565d",
       "passwordHash": "c79d01f88afdc31ff62269d51ccbd3a640de22e1e25d64349ba6e6d3a024832138da89a8b311e26167bb14a50405ebeb9679e01b3a8954bc6fb9ce33e6aa3734",
       "nickname": "DAVIJOHANNBECKER",
-      "avatar": "soundcrow",
+      "avatar": "custom/38671e26-b312-454b-a634-025fede4bf26",
       "currency": 67676767675005,
       "gamesPlayed": 4,
-      "currentTitle": "Novato do Rock",
+      "currentTitle": "Lenda das Seis Cordas",
       "lifetimeStats": {
         "totalNotesHit": 9643,
         "totalMisses": 5768
@@ -796,7 +802,7 @@
         "desafinador_profissional"
       ],
       "createdAt": "2026-09-27T13:26:28.094Z",
-      "updatedAt": "2026-10-05T15:28:26.512Z",
+      "updatedAt": "2026-10-05T22:39:38.292Z",
       "fases": {
         "desbloqueadas": [
           1,
@@ -934,11 +940,14 @@
         ],
         "equipped": {
           "moldura": "frame-royal",
-          "efeito": "effect-void-sovereign"
+          "efeito": "effect-void-sovereign",
+          "título": "title-guitar-hero"
         },
-        "starterCreditsGranted": false
+        "starterCreditsGranted": false,
+        "previousTitle": "Novato do Rock"
       },
-      "moedas": 67676767675005
+      "moedas": 67676767675005,
+      "customAvatar": "custom/38671e26-b312-454b-a634-025fede4bf26"
     },
     "seraquesalva": {
       "username": "seraquesalva",
@@ -1005,7 +1014,8 @@
         "favoritas": [],
         "selecionada": null,
         "historicoSelecionadas": []
-      }
+      },
+      "customAvatar": ""
     },
     "joao": {
       "username": "Joao",
@@ -1097,7 +1107,8 @@
         "favoritas": [],
         "selecionada": null,
         "historicoSelecionadas": []
-      }
+      },
+      "customAvatar": ""
     }
   },
   "bandRecords": {

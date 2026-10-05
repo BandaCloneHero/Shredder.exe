@@ -7,7 +7,7 @@ const { randomUUID } = require('node:crypto');
 // https://developers.google.com/speed/webp/docs/riff_container
 function validarAvatarWebP(buffer) {
     const invalid = () => { const error = new Error('Avatar inválido. Envie uma imagem pelo seletor do painel.'); error.status = 400; throw error; };
-    if (!Buffer.isBuffer(buffer) || buffer.length < 30 || buffer.length > 128 * 1024 ||
+    if (!Buffer.isBuffer(buffer) || buffer.length < 26 || buffer.length > 128 * 1024 ||
         buffer.toString('ascii', 0, 4) !== 'RIFF' || buffer.toString('ascii', 8, 12) !== 'WEBP' ||
         buffer.readUInt32LE(4) + 8 !== buffer.length) invalid();
     let canvas, image, offset = 12;
@@ -16,7 +16,10 @@ function validarAvatarWebP(buffer) {
         const chunk = buffer.toString('ascii', offset, offset + 4);
         const length = buffer.readUInt32LE(offset + 4);
         const start = offset + 8, end = start + length;
-        if (end + (length % 2) > buffer.length || !['VP8X', 'ALPH', 'VP8 ', 'VP8L'].includes(chunk)) invalid();
+        // Browser canvas encoders can include an ICC color profile. Static WebP
+        // metadata is retained as opaque bytes; its enclosing chunk must still
+        // fit within the validated file. Animation chunks remain disallowed.
+        if (end + (length % 2) > buffer.length || !['VP8X', 'ICCP', 'EXIF', 'XMP ', 'ALPH', 'VP8 ', 'VP8L'].includes(chunk)) invalid();
         if (chunk === 'VP8X') {
             if (canvas || offset !== 12 || length !== 10 || (buffer[start] & 0x02)) invalid();
             canvas = [buffer.readUIntLE(start + 4, 3) + 1, buffer.readUIntLE(start + 7, 3) + 1];
