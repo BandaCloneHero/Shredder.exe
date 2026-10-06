@@ -5,9 +5,11 @@ const fs = require("fs");
 const path = require("path");
 const { scrypt, randomBytes, randomUUID, timingSafeEqual, createHash } = require("crypto");
 const { promisify } = require("util");
-const { criarPersistenciaPartidas, validarResultado, inicializarPerfil, ENCERRAMENTO_FEIRA } = require("./partidas");
+const { criarPersistenciaPartidas, validarResultado, inicializarPerfil, ENCERRAMENTO_FEIRA, FASES_CAMPANHA } = require("./partidas");
 const { catalogoLoja, itensPorId } = require("./catalogo-loja");
 const { salvarArquivoAvatar } = require("./avatar-personalizado");
+const { validarNomePublico } = require("./protecao-nomes");
+const { progressoConquistas } = require("./progresso-conquistas");
 
 const scryptAsync = promisify(scrypt);
 const app = express();
@@ -204,6 +206,11 @@ app.post("/api/auth/register", async (req, res) => {
         });
     }
 
+    try {
+        validarNomePublico(cleanUsername, "Nome de conta");
+    } catch (error) {
+        return res.status(400).json({ ok: false, error: error.message, code: error.code });
+    }
     const key = normalizeUsername(cleanUsername);
     if (accountStore.accounts[key]) {
         return res
@@ -323,6 +330,7 @@ app.get("/api/perfil/:username", (req, res) => {
             nickname: account.nickname || account.username || "OPERADOR",
             avatar: account.avatar || "",
             customAvatar: account.customAvatar || "",
+            customAvatarUnlocked: account.cosmetics?.owned?.includes("custom-avatar-upload") || false,
             tituloEquipado:
                 account.tituloEquipado ||
                 account.currentTitle ||
@@ -343,6 +351,7 @@ app.get("/api/perfil/:username", (req, res) => {
             achievements: Array.isArray(account.achievements)
                 ? account.achievements
                 : [],
+            achievementProgress: progressoConquistas(account),
             fases: account.fases || {
                 desbloqueadas: [1],
                 favoritas: [],
@@ -358,7 +367,7 @@ app.post("/api/perfil/avatar", (req, res) => {
     if (!session) return res.status(401).json({ ok: false, error: "Entre na sua conta para alterar a foto de perfil." });
     const avatar = req.body?.avatar;
     const customAvatarPermitido = typeof avatar === "string" && /^custom\/[a-f0-9-]{36}$/.test(avatar) &&
-        avatar === session.account.customAvatar && isOfficialOperator(req).ok;
+        avatar === session.account.customAvatar && (session.account.cosmetics?.owned?.includes("custom-avatar-upload") || isOfficialOperator(req).ok);
     if (typeof avatar !== "string" || (avatar !== "" && !PROFILE_AVATAR_IDS.has(avatar) && !customAvatarPermitido)) {
         return res.status(400).json({ ok: false, error: "Avatar inválido. Escolha uma das imagens disponíveis." });
     }
@@ -368,9 +377,7 @@ app.post("/api/perfil/avatar", (req, res) => {
     return res.json({ ok: true, avatar });
 });
 
-app.post("/api/operador/avatar", (req, res, next) => {
-    if (exigirOperadorOficial(req, res)) next();
-}, express.raw({ type: "image/webp", limit: "128kb" }), (req, res) => {
+function salvarFotoPerfil(req, res) {
     try {
         const session = getAuthenticatedSession(req);
         const avatar = salvarArquivoAvatar(req.body, path.join(__dirname, "../docs/images/avatars/custom"));
@@ -380,7 +387,20 @@ app.post("/api/operador/avatar", (req, res, next) => {
     } catch (error) {
         return res.status(error.status || 500).json({ ok: false, error: error.status ? error.message : "Não foi possível salvar o avatar." });
     }
-});
+}
+
+app.post("/api/operador/avatar", (req, res, next) => {
+    if (exigirOperadorOficial(req, res)) next();
+}, express.raw({ type: "image/webp", limit: "128kb" }), salvarFotoPerfil);
+
+app.post("/api/perfil/avatar-imagem", (req, res, next) => {
+    const session = getAuthenticatedSession(req);
+    if (!session) return res.status(401).json({ ok: false, error: "Entre na sua conta para enviar uma foto." });
+    if (!session.account.cosmetics?.owned?.includes("custom-avatar-upload") && !isOfficialOperator(req).ok) {
+        return res.status(403).json({ ok: false, error: "Compre Foto Própria na loja do perfil para enviar sua imagem." });
+    }
+    next();
+}, express.raw({ type: "image/webp", limit: "128kb" }), salvarFotoPerfil);
 
 app.get("/api/loja/catalogo", (_req, res) => {
     return res.json({ ok: true, items: catalogoLoja });
@@ -413,6 +433,8 @@ app.post("/api/loja/:action", (req, res) => {
         account.moedas = account.currency;
         account.cosmetics.owned.push(itemId);
         account.cosmetics.starterCreditsGranted ||= starterCreditsGranted;
+    } else if (item.unlock) {
+        return res.status(400).json({ ok: false, error: "Este desbloqueio é permanente. Envie sua imagem em Escolher foto de perfil." });
     } else if (action === "equipar") {
         if (!account.cosmetics.owned.includes(itemId)) return res.status(403).json({ ok: false, error: "Compre este acessório antes de equipá-lo." });
         if (item.slot === "título" && account.cosmetics.equipped[item.slot] !== itemId) {
@@ -626,6 +648,7 @@ app.post("/api/operador/salvar-pontuacao", (req, res) => {
         if (error.message === "Conta não encontrada.") {
             return res.status(404).json({ ok: false, erro: error.message });
         }
+        if (error.status) return res.status(error.status).json({ ok: false, erro: error.message });
         console.error("> Falha ao salvar resultado do painel:", error);
         return res.status(500).json({
             ok: false,
@@ -678,6 +701,20 @@ function ticketsNaFila() {
         .sort((a, b) => (a.ordemFila || Date.parse(a.emitidoEm)) - (b.ordemFila || Date.parse(b.emitidoEm)));
 }
 
+function validarFaseDosJogadores(jogadores, fase) {
+    if (!FASES_CAMPANHA.includes(fase)) throw new Error("Fase da campanha inválida.");
+    const raiz = JSON.parse(fs.readFileSync(ACCOUNTS_FILE, "utf8"));
+    const contas = raiz.accounts || raiz;
+    for (const jogador of jogadores) {
+        const nome = jogador.nome || jogador.username;
+        const key = normalizeUsername(nome);
+        const conta = Object.hasOwn(contas, key) && contas[key];
+        if (!conta) throw new Error("Um jogador da sala não tem conta cadastrada.");
+        const fases = inicializarPerfil(conta, key).fases;
+        if (!fases.desbloqueadas.includes(fase)) throw new Error(`A fase ${fase} está bloqueada para ${nome}. Derrotem o boss da fase anterior primeiro.`);
+    }
+}
+
 function normalizarInstrumentoExecutavel(valor) {
     const chave = String(valor || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
     const aliases = {
@@ -700,7 +737,8 @@ app.post("/api/operador/resultados-executavel", (req, res) => {
     const dados = req.body || {};
     if (typeof dados.musica !== "string" || !dados.musica.trim() || dados.musica.length > 200 ||
         !Array.isArray(dados.resultados) || dados.resultados.length > MAX_JOGADORES_SALA ||
-        (dados.pontuacaoBanda !== undefined && (!Number.isSafeInteger(dados.pontuacaoBanda) || dados.pontuacaoBanda < 0 || dados.pontuacaoBanda > 4e9))) {
+        (dados.pontuacaoBanda !== undefined && (!Number.isSafeInteger(dados.pontuacaoBanda) || dados.pontuacaoBanda < 0 || dados.pontuacaoBanda > 4e9)) ||
+        (dados.bossDerrotado !== undefined && typeof dados.bossDerrotado !== "boolean")) {
         return res.status(400).json({ ok: false, erro: "Dados de resultado inválidos." });
     }
     const loteId = typeof dados.loteId === "string" && /^[a-f0-9-]{16,64}$/i.test(dados.loteId) ? dados.loteId : null;
@@ -735,6 +773,7 @@ app.post("/api/operador/resultados-executavel", (req, res) => {
             notasAcertadas: item.notasAcertadas,
             notasErradas: item.notasErradas,
             fullCombo: item.fullCombo,
+            ...(dados.bossDerrotado === undefined ? {} : { bossDerrotado: dados.bossDerrotado }),
             ...(item.pausada === undefined ? {} : { pausada: item.pausada }),
             ...(item.energiaFinal === undefined ? {} : { energiaFinal: item.energiaFinal }),
             ...(item.dificuldade === undefined ? {} : { dificuldade: item.dificuldade }),
@@ -766,6 +805,7 @@ app.post("/api/operador/resultados-executavel", (req, res) => {
     ticket.resultadosExecutavel = recebidos.map(({ instrumentoNormalizado, ...resultado }) => ({ ...resultado, instrumentoNormalizado }));
     ticket.musica = dados.musica.trim();
     ticket.pontuacaoBanda = dados.pontuacaoBanda;
+    ticket.bossDerrotado = dados.bossDerrotado;
     ticket.estado = "aguardando_confirmacao";
     if (loteId) {
         lotesExecutavelRecebidos.set(loteId, ticket.ticketId);
@@ -800,6 +840,7 @@ function criarEstruturaSala(roomId, roomName, banda, criadorUsername, donoId, so
         resultadosRecentes: [],
         ticketsPendentes: [],
         ultimoTicket: null,
+        campanha: null,
     };
 }
 
@@ -828,6 +869,8 @@ function enviarEstadoSala(salaId) {
         donoId: sala.donoId,
         socketDonoId: sala.socketDonoId,
         instrumentos: sala.instrumentos,
+        campanha: sala.campanha,
+        ticketPendente: Boolean(sala.ticketsPendentes?.length),
         operadores: Object.values(sala.operadores).map(
             (operador) => operador.nome,
         ),
@@ -1009,6 +1052,8 @@ io.on("connection", (socket) => {
         const resultadosSalvos = [];
         try {
             finalizarConquistaDaFeira();
+            if (ticket.modo?.tipo === "historia") validarFaseDosJogadores(ticket.jogadores, ticket.modo.fase);
+            const bossVitoriaConfirmada = ticket.bossDerrotado === true && ticket.resultadosExecutavel.every(item => item.concluida !== false);
             for (const item of ticket.resultadosExecutavel) {
                 const jogador = ticket.jogadores.find((pessoa) => normalizarInstrumentoExecutavel(pessoa.instrumento) === item.instrumentoNormalizado);
                 if (!jogador || !jogador.nome || !jogador.id) throw new Error("Não foi possível identificar a conta do jogador pelo ticket.");
@@ -1030,9 +1075,10 @@ io.on("connection", (socket) => {
                     energiaFinal: item.energiaFinal,
                     dificuldade: item.dificuldade,
                     concluida: item.concluida,
+                    bossDerrotado: ticket.bossDerrotado === undefined ? undefined : bossVitoriaConfirmada,
                     ...(ticket.modo?.tipo === "historia" && Number.isSafeInteger(ticket.modo.fase) && ticket.modo.fase > 0 ? { fase: ticket.modo.fase } : {}),
                 });
-                const salvo = partidas.salvar(resultado);
+                const salvo = partidas.salvar(resultado, { origemExecutavel: true });
                 accountStore = salvo.raiz.accounts ? salvo.raiz : { accounts: salvo.raiz };
                 io.to("ranking").emit("rankingAtualizado", { records: salvo.records });
                 if (salvo.novasConquistas?.length) {
@@ -1090,6 +1136,18 @@ io.on("connection", (socket) => {
             sala.ticketsPendentes = sala.ticketsPendentes.filter((item) => item.ticketId !== ticket.ticketId);
             if (sala.ultimoTicket?.ticketId === ticket.ticketId) sala.ultimoTicket = null;
             io.to(`operador-resultados:${ticket.roomId}`).emit("ticket_sessao_removido", { ticketId: ticket.ticketId });
+            if (ticket.modo?.tipo === "historia") {
+                const venceu = ticket.bossDerrotado === true && ticket.resultadosExecutavel.every(item => item.concluida !== false);
+                sala.campanha = {
+                    fase: ticket.modo.fase,
+                    bossDerrotado: ticket.bossDerrotado ?? null,
+                    venceu,
+                    proximaFase: venceu && ticket.modo.fase < FASES_CAMPANHA.length ? ticket.modo.fase + 1 : ticket.modo.fase,
+                    campanhaConcluida: venceu && ticket.modo.fase === FASES_CAMPANHA.length,
+                };
+                io.to(ticket.roomId).emit("resultado_boss_confirmado", sala.campanha);
+            }
+            enviarEstadoSala(ticket.roomId);
         }
         io.to("operador-resultados-global").emit("ticket_sessao_removido", { ticketId: ticket.ticketId });
         if (typeof callback === "function") callback({ ok: true, resultados: resultadosSalvos });
@@ -1164,6 +1222,15 @@ io.on("connection", (socket) => {
                 return;
             }
 
+            try {
+                validarNomePublico(nomeUsuario, "Nome de jogador");
+                validarNomePublico(nomeSala, "Nome da sala");
+                validarNomePublico(nomeBanda, "Nome da banda");
+            } catch (error) {
+                if (typeof callback === "function") callback({ ok: false, erro: error.message });
+                else socket.emit("erro", error.message);
+                return;
+            }
             const roomId = criarSala();
             const bandId = nomeBanda.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
                 .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 100);
@@ -1181,6 +1248,13 @@ io.on("connection", (socket) => {
             if (!roomId || !id || !salas[roomId]) {
                 if (typeof callback === "function")
                     callback({ ok: false, erro: "Sala não encontrada." });
+                return;
+            }
+            try {
+                validarNomePublico(nomeUsuario, "Nome de jogador");
+            } catch (error) {
+                if (typeof callback === "function") callback({ ok: false, erro: error.message });
+                else socket.emit("erro", error.message);
                 return;
             }
             entrarNaSala(socket, roomId, id, nomeUsuario, callback);
@@ -1222,6 +1296,12 @@ io.on("connection", (socket) => {
             return;
         }
 
+        if ((sala.ultimoTicket?.modo?.tipo === "historia" || sala.campanha) && !sala.campanha?.venceu) {
+            const erro = "A próxima fase depende da vitória contra o boss confirmada pelo executável.";
+            if (typeof callback === "function") callback({ ok: false, erro });
+            else socket.emit("erro", erro);
+            return;
+        }
         io.to(roomId).emit("sala_avancou_fase", { roomId });
         if (typeof callback === "function") callback({ ok: true });
     });
@@ -1244,6 +1324,17 @@ io.on("connection", (socket) => {
             // Compatibilidade com salas criadas antes da fila de tickets existir.
             if (!Array.isArray(sala.ticketsPendentes)) sala.ticketsPendentes = [];
 
+            try {
+                if (sala.ticketsPendentes.length) throw new Error("Esta sala já tem um ticket aguardando resultado ou confirmação.");
+                if (!modo || !["historia", "freeplay"].includes(modo.tipo)) throw new Error("Modo de jogo inválido.");
+                if (modo.tipo === "historia") validarFaseDosJogadores(sala.jogadores, modo.fase);
+            } catch (error) {
+                if (typeof callback === "function") callback({ ok: false, erro: error.message });
+                else socket.emit("erro", error.message);
+                return;
+            }
+            sala.campanha = null;
+
             io.to(roomId).emit("sala_emitiu_ticket", { roomId, modo });
             const ticket = {
                 ticketId: randomUUID(),
@@ -1262,12 +1353,20 @@ io.on("connection", (socket) => {
             ticketsSessaoPendentes.push(ticket);
             sala.ticketsPendentes.push(ticket);
             sala.ultimoTicket = ticket;
+            enviarEstadoSala(roomId);
             io.to("operador-resultados-global").emit("ticket_sessao_recebido", ticket);
             if (typeof callback === "function") callback({ ok: true });
         },
     );
 
     function entrarNaSala(cliente, salaId, operadorId, operadorNome, callback) {
+        try {
+            validarNomePublico(operadorNome, "Nome de jogador");
+        } catch (error) {
+            if (typeof callback === "function") callback({ ok: false, erro: error.message });
+            else cliente.emit("erro", error.message);
+            return;
+        }
         const sala = salas[salaId];
         const jogadorExistente = sala.jogadores.find(
             (jogador) => jogador.id === operadorId,

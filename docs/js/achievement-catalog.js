@@ -18,7 +18,7 @@ const PROFILE_ACHIEVEMENTS = [
     { id: "banda_afinada", label: "BANDA AFINADA", icon: "♜", rarity: "Rara", rarityKey: "rare", difficulty: "Avançada", how: "Participe de uma banda completa, com os quatro instrumentos." },
     { id: "show_perfeito", label: "SHOW PERFEITO", icon: "✺", rarity: "Lendária", rarityKey: "legendary", difficulty: "Mestre", how: "Conclua um show de banda com todos acima de 95% de precisão." },
     { id: "colecionador_de_fases", label: "COLECIONADOR DE FASES", icon: "▣", rarity: "Épica", rarityKey: "epic", difficulty: "Especialista", how: "Desbloqueie as cinco fases da campanha." },
-    { id: "dono_do_palco", label: "DONO DO PALCO", icon: "♛", rarity: "Lendária", rarityKey: "legendary", difficulty: "Mestre", how: "Conclua as cinco fases na dificuldade máxima." },
+    { id: "dono_do_palco", label: "DONO DO PALCO", icon: "♛", rarity: "Lendária", rarityKey: "legendary", difficulty: "Mestre", how: "Derrote os bosses das cinco fases na dificuldade máxima." },
     { id: "favorita_da_casa", label: "FAVORITA DA CASA", icon: "♥", rarity: "Comum", rarityKey: "common", difficulty: "Iniciante", how: "Marque as cinco fases como favoritas." },
     { id: "maratonista", label: "MARATONISTA", icon: "➜", rarity: "Épica", rarityKey: "epic", difficulty: "Especialista", how: "Jogue 50 partidas." },
     { id: "incansavel", label: "INCANSÁVEL", icon: "∞", rarity: "Lendária", rarityKey: "legendary", difficulty: "Mestre", how: "Jogue 100 partidas." },

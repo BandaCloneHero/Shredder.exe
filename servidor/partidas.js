@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { randomUUID } = require('crypto');
+const { validarNomePublico } = require('./protecao-nomes');
 const { CONQUISTAS, perfilPublico, revisaoPerfil, aplicarAjustesPerfil, erroPerfil } = require('./perfil-operador');
 const INSTRUMENTOS = ['guitarra', 'baixo', 'bateria', 'teclado'];
 const MAX_FASE = 100000;
@@ -28,10 +29,12 @@ function inicializarFases(conta) {
     }
     conta.fases.desbloqueadas ??= [1];
     conta.fases.favoritas ??= [];
+    conta.fases.concluidas ??= [];
     conta.fases.selecionada ??= null;
     conta.fases.historicoSelecionadas ??= [];
     validarListaFases(conta.fases.desbloqueadas, 'desbloqueadas');
     validarListaFases(conta.fases.favoritas, 'favoritas');
+    validarListaFases(conta.fases.concluidas, 'concluidas');
     // Progresso de campanha é sequencial: liberar a fase N também implica que
     // todas as fases anteriores já foram liberadas.
     conta.fases.desbloqueadas = completarFasesAnteriores(conta.fases.desbloqueadas);
@@ -126,7 +129,10 @@ function validarResultado(dados) {
             throw new Error(`Campo inválido: ${campo}.`);
         }
         // Campo opcional vazio não apaga o valor já cadastrado.
-        if (dados[campo].trim()) perfil[campo] = dados[campo].trim();
+        if (dados[campo].trim()) {
+            if (campo === 'nickname') validarNomePublico(dados[campo], 'Apelido');
+            perfil[campo] = dados[campo].trim();
+        }
     }
     if (dados.currency !== undefined) {
         if (!Number.isSafeInteger(dados.currency) || dados.currency < 0 || dados.currency > 1e9) {
@@ -141,6 +147,7 @@ function validarResultado(dados) {
     if (dados.favorita !== undefined && dados.fase === undefined) throw new Error('Informe a fase ao alterar o favorito.');
     if (dados.pausada !== undefined && typeof dados.pausada !== 'boolean') throw new Error('Estado de pausa inválido.');
     if (dados.concluida !== undefined && typeof dados.concluida !== 'boolean') throw new Error('Conclusão de partida inválida.');
+    if (dados.bossDerrotado !== undefined && typeof dados.bossDerrotado !== 'boolean') throw erroPerfil('Resultado do boss inválido.');
     if (dados.energiaFinal !== undefined && (!Number.isFinite(dados.energiaFinal) || dados.energiaFinal < 0 || dados.energiaFinal > 100)) throw new Error('Energia final inválida (0–100).');
     if (dados.dificuldade !== undefined && !['maxima', 'easy', 'medium', 'hard', 'expert', 'expertplus', 'beginner'].includes(dados.dificuldade)) throw new Error('Dificuldade inválida.');
     return {
@@ -148,6 +155,7 @@ function validarResultado(dados) {
         instrumento, banda, modo, ...perfil,
         ...(dados.pausada === undefined ? {} : { pausada: dados.pausada }),
         ...(dados.concluida === undefined ? {} : { concluida: dados.concluida }),
+        ...(dados.bossDerrotado === undefined ? {} : { bossDerrotado: dados.bossDerrotado }),
         ...(dados.energiaFinal === undefined ? {} : { energiaFinal: dados.energiaFinal }),
         ...(dados.dificuldade === undefined ? {} : { dificuldade: dados.dificuldade }),
         ...(dados.fase === undefined ? {} : { fase: dados.fase }),
@@ -162,7 +170,11 @@ function registrarFase(conta, fase, favorita, timestamp, desbloquearProxima = fa
         if (!fases.desbloqueadas.includes(valor)) fases.desbloqueadas.push(valor);
     };
     desbloquear(fase);
-    if (desbloquearProxima && fase < MAX_FASE) desbloquear(fase + 1);
+    if (desbloquearProxima) {
+        if (!fases.concluidas.includes(fase)) fases.concluidas.push(fase);
+        if (fase < TOTAL_FASES_CAMPANHA) desbloquear(fase + 1);
+        fases.concluidas.sort((a, b) => a - b);
+    }
     fases.desbloqueadas = completarFasesAnteriores(fases.desbloqueadas);
     fases.selecionada = fase;
     fases.historicoSelecionadas.push({ fase, selecionadaEm: timestamp });
@@ -195,7 +207,7 @@ const CRITERIOS_ACHIEVEMENTS = {
     colecionador_de_fases: conta => FASES_CAMPANHA.every(fase => conta.fases.desbloqueadas.includes(fase)),
     dono_do_palco: (conta, resultado) => {
         const fasesConcluidas = new Set([...Object.values(conta.resultadosPartidas || {}), resultado]
-            .filter(partida => partida.modo === 'historia' && FASES_CAMPANHA.includes(partida.fase) && partida.dificuldade === 'maxima' && partida.concluida !== false)
+            .filter(partida => partida.modo === 'historia' && FASES_CAMPANHA.includes(partida.fase) && partida.dificuldade === 'maxima' && partida.concluida !== false && partida.bossDerrotado === true)
             .map(partida => partida.fase));
         return FASES_CAMPANHA.every(fase => fasesConcluidas.has(fase));
     },
@@ -498,13 +510,14 @@ function criarPersistenciaPartidas(arquivo, { encerramentoFeira = ENCERRAMENTO_F
             return { raiz, encerrada: true, notificacoesPorJogador };
         },
         selecionarFase(username, fase) {
-            if (!Number.isSafeInteger(fase) || fase < 1 || fase > MAX_FASE) throw erroPerfil('Fase inválida.');
+            if (!FASES_CAMPANHA.includes(fase)) throw erroPerfil('Fase inválida.');
             const raiz = ler();
             const key = String(username || '').trim().toLowerCase();
             if (!Object.hasOwn(contas(raiz), key)) throw erroPerfil('Conta não encontrada.', 404);
             const conta = contas(raiz)[key];
             const timestamp = new Date().toISOString();
             inicializarPerfil(conta, key, timestamp);
+            if (!conta.fases.desbloqueadas.includes(fase)) throw erroPerfil('Derrote o boss da fase anterior para liberar esta fase.', 403);
             registrarFase(conta, fase, undefined, timestamp);
             const ids = CRITERIOS_ACHIEVEMENTS.colecionador_de_fases(conta) ? ['colecionador_de_fases'] : [];
             const conquistas = desbloquearConquistas(conta, ids, timestamp);
@@ -574,7 +587,7 @@ function criarPersistenciaPartidas(arquivo, { encerramentoFeira = ENCERRAMENTO_F
             gravar(raiz);
             return { raiz, records: registros(raiz), notificacoesPorJogador };
         },
-        salvar(payload) {
+        salvar(payload, { origemExecutavel = false } = {}) {
             const resultado = validarResultado(payload);
             // Região crítica síncrona, sem await: no único processo Node, duas partidas
             // não intercalam leitura/alteração/escrita. Vários workers exigiriam lock externo.
@@ -590,9 +603,21 @@ function criarPersistenciaPartidas(arquivo, { encerramentoFeira = ENCERRAMENTO_F
             }
             const timestamp = new Date().toISOString();
             inicializarPerfil(conta, resultado.username.trim(), timestamp);
-            // Uma partida concluída em uma fase registra a escolha e libera a
-            // próxima. Partidas em modo livre continuam compatíveis ao omitir fase.
-            registrarFase(conta, resultado.fase, resultado.favorita, timestamp, resultado.concluida !== false);
+            // Somente o resultado do executável confirmado no ticket pode
+            // comprovar a vitória. Terminar a música sozinho não libera fases.
+            if (resultado.bossDerrotado === true && !origemExecutavel) throw erroPerfil('A vitória sobre o boss precisa ser confirmada pelo resultado do executável.', 403);
+            if (resultado.modo === 'historia') {
+                if (!FASES_CAMPANHA.includes(resultado.fase)) throw erroPerfil('Informe uma fase válida da campanha.');
+                if (!conta.fases.desbloqueadas.includes(resultado.fase)) throw erroPerfil('A fase ainda está bloqueada para este jogador.', 403);
+                registrarFase(conta, resultado.fase, resultado.favorita, timestamp,
+                    origemExecutavel && resultado.bossDerrotado === true && resultado.concluida !== false);
+                if (origemExecutavel) conta.fases.ultimaBatalha = {
+                    fase: resultado.fase, partidaId: resultado.partidaId,
+                    bossDerrotado: resultado.bossDerrotado ?? null,
+                    venceu: resultado.bossDerrotado === true && resultado.concluida !== false,
+                    registradaEm: timestamp,
+                };
+            }
             if (resultado.nickname !== undefined) conta.nickname = resultado.nickname;
             if (resultado.currentTitle !== undefined) {
                 conta.currentTitle = resultado.currentTitle;
@@ -672,4 +697,4 @@ function criarPersistenciaPartidas(arquivo, { encerramentoFeira = ENCERRAMENTO_F
         },
     };
 }
-module.exports = { criarPersistenciaPartidas, validarResultado, inicializarPerfil, inicializarFases, ENCERRAMENTO_FEIRA };
+module.exports = { criarPersistenciaPartidas, validarResultado, inicializarPerfil, inicializarFases, ENCERRAMENTO_FEIRA, INSTRUMENTOS, FASES_CAMPANHA };

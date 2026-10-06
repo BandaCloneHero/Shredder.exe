@@ -1,5 +1,6 @@
 // Fonte única dos itens da loja. A API usa este catálogo para exibir e validar compras.
 const catalogoLoja = [
+    { id: "custom-avatar-upload", name: "Foto Própria", type: "FOTO DE PERFIL", slot: "acessório", price: 2000, preview: "▣", description: "Por 2.000 tijolinhos, desbloqueie o envio de uma foto própria no perfil. Compra única; troque a foto quando quiser.", rarityKey: "rare", unlock: true },
     { id: "pick-patch", name: "Patch Palheta", type: "ACESSÓRIO", slot: "acessório", price: 0, preview: "⌁", description: "Um detalhe para marcar seu primeiro visual.", rarityKey: "common" },
     { id: "frame-cyberpunk", name: "Cyberpunk Musical", type: "MOLDURA", slot: "moldura", price: 12, preview: "⌁", description: "Neon e música em uma moldura de palco.", rarityKey: "rare" },
     { id: "frame-neon", name: "Moldura Neon", type: "MOLDURA", slot: "moldura", price: 8, preview: "✦", description: "Brilho ciano para sua identidade.", rarityKey: "uncommon" },

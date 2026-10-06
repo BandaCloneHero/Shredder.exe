@@ -12,6 +12,7 @@ namespace YARG.Menu.ScoreScreen
 
         public YargPlayer Player;
         public BaseStats  Stats;
+        public float FinalEnergy;
     }
 
     public struct ScoreScreenStats
@@ -21,6 +22,9 @@ namespace YARG.Menu.ScoreScreen
 
         public int BandStars;
         public int BandScore;
+        public bool WasPaused;
+        public bool IsLiveGame;
+        public string ReportId;
 
 #nullable enable
         public ReplayInfo? ReplayInfo;

@@ -1,4 +1,5 @@
 const { createHash } = require('crypto');
+const { validarNomePublico } = require('./protecao-nomes');
 
 const CONQUISTAS = [
     ['primeiros_acordes', 'Primeiros acordes'], ['aquecimento', 'Aquecimento'],
@@ -56,6 +57,7 @@ function perfilPublico(conta) {
         ? {
             desbloqueadas: Array.isArray(conta.fases.desbloqueadas) ? conta.fases.desbloqueadas : [1],
             favoritas: Array.isArray(conta.fases.favoritas) ? conta.fases.favoritas : [],
+            concluidas: Array.isArray(conta.fases.concluidas) ? conta.fases.concluidas : [],
             selecionada: Number.isSafeInteger(conta.fases.selecionada) ? conta.fases.selecionada : null,
             historicoSelecionadas: Array.isArray(conta.fases.historicoSelecionadas) ? conta.fases.historicoSelecionadas : [],
         }
@@ -116,6 +118,7 @@ function aplicarAjustesPerfil(conta, alteracoes) {
             continue;
         }
         const regra = CAMPOS[campo];
+        if (campo === 'username' || campo === 'nickname') validarNomePublico(valor, campo === 'username' ? 'Username' : 'Apelido');
         if (regra.tipo === 'username') {
             if (typeof valor !== 'string' || !/^[a-zA-Z0-9_]{3,24}$/.test(valor) || ['__proto__', 'constructor', 'prototype'].includes(valor.toLowerCase())) throw erroPerfil('Username deve ter de 3 a 24 letras, números ou sublinhados.');
         } else if (regra.tipo === 'texto' || regra.tipo === 'avatar') {

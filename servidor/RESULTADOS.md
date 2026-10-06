@@ -68,6 +68,14 @@ A edição relê o arquivo e rejeita revisão desatualizada (HTTP 409), evitando
 
 ## Conquistas automáticas
 
+### Progresso no perfil
+
+O perfil público inclui `achievementProgress`, com os contadores calculados por `progresso-conquistas.js`. Cada entrada contém `atual`, `meta`, `percentual`, `desbloqueada`, `tipo` e `texto`. A resposta transmite os contadores, sem enviar o histórico completo das partidas. A leitura não altera contas nem concede conquistas.
+
+O perfil exibe contadores e barras nos destaques e na janela **Ver todas**, junto do total de conquistas desbloqueadas. Os dados são atualizados ao carregar o perfil. Contadores usam o mesmo conjunto de fases/instrumentos da concessão automática; conclusões, músicas diferentes com Full Combo e fases na dificuldade máxima vêm dos resultados persistidos. Progresso antigo que não tem histórico registrado não é inventado. Ritmo de Ferro mostra o maior total registrado em um dia UTC.
+
+Objetivos de uma única partida e de banda aparecem como pendentes até a concessão: resultados de tentativas diferentes não são somados. Conquistas já concedidas ficam concluídas mesmo quando o progresso ou o resultado original não está disponível. Metas numéricas atingidas que ainda não foram concedidas continuam identificadas como bloqueadas. Conquistas de raridade oculta são omitidas da lista, do total visível e do progresso retornado até serem concedidas à conta exibida. Depois da concessão, aparecem normalmente com imagem e descrição.
+
 Resultados confirmados pelo operador concedem conquistas automaticamente; não é necessário marcar os checkboxes de conquista. A confirmação do ticket continua associando os resultados do executável às contas dos jogadores. Favoritos são alterados pelo próprio jogador em `POST /api/fases/favoritar`; selecionar/desbloquear fases também avalia a conquista correspondente.
 
 O executável deve ser recompilado com as mudanças em `OperatorScoreReporter`, `GameManager`, `BasePlayer` e `ScoreScreenContainer`. O envio inclui `pausada`, `energiaFinal` (0–100), `dificuldade` e `concluida`. Expert e ExpertPlus são enviados como `maxima`. Bots, treino e replay não geram resultados. Reenvios usam o mesmo `loteId`; falhas transitórias recebem até três tentativas. Executáveis antigos continuam aceitos, mas campos ausentes não concedem conquistas que dependem de pausa, energia ou dificuldade.
@@ -87,7 +95,7 @@ O executável deve ser recompilado com as mudanças em `OperatorScoreReporter`, 
 | Perfeccionista | 5 full combos no mesmo instrumento |
 | Mestre da Guitarra/Baixo/Bateria/Teclado | 5 full combos no instrumento correspondente (4 conquistas) |
 | Colecionador de Fases | Desbloquear as fases 1 a 5 |
-| Dono do Palco | Concluir as fases 1 a 5 em História na dificuldade máxima |
+| Dono do Palco | Derrotar os bosses das fases 1 a 5 em História na dificuldade máxima |
 | Favorita da Casa | Favoritar as fases 1 a 5 |
 | Maratonista | Jogar 50 partidas |
 | Incansável | Jogar 100 partidas |
@@ -116,3 +124,25 @@ Em `operador.html`, a seção **Minha foto de perfil** permite selecionar PNG, J
 `POST /api/operador/avatar` exige sessão de operador oficial antes de processar o arquivo. A conta vem da sessão autenticada; o cliente não escolhe outra conta. O servidor valida o contêiner WebP, limites de tamanho e dimensões, rejeita animação e gera o nome do arquivo. Imagens ficam em `docs/images/avatars/custom/`, e o identificador fica em `avatar` e `customAvatar` da conta. Preserve essa pasta junto com o arquivo de contas nas implantações e backups.
 
 Se o formulário de edição do próprio perfil estava aberto durante o envio da foto, recarregue a conta antes de salvar a edição, pois a revisão mudou.
+
+
+### Desbloqueio Foto Própria na loja
+
+Qualquer jogador pode comprar **Foto Própria** (`custom-avatar-upload`) por **2.000 tijolinhos**, usando a compra normal da loja. Até a conversão geral da moeda, o preço debita 2000 unidades do saldo atual de `currency`/`moedas`. A compra é permanente e fica em `cosmetics.owned`; não ocupa um espaço de equipamento. Depois da compra, abra **Escolher foto de perfil** para enviar ou trocar sua imagem. No inventário, o item oferece **Enviar minha foto**.
+
+`POST /api/perfil/avatar-imagem` exige sessão autenticada e posse do desbloqueio (ou acesso oficial de operador) antes de processar os bytes da imagem. Usa os mesmos limites e armazenamento da foto do operador. A rota que seleciona avatares existentes também aceita a foto já salva da própria conta quando a compra está presente. A autorização é verificada pelo servidor, sem confiar no estado do navegador. Operadores continuam podendo enviar pelo painel.
+
+
+## Campanha condicionada à derrota do boss
+
+O executável envia `bossDerrotado` como booleano no lote de resultados, capturando o estado real de `ScoreScreenStats.BossBattle.Defeated`. Se não houver boss na cena, o campo é omitido. `GameManager` captura a batalha existente e também aceita cenas com `BossHealthBar` sem `GepetoBossReaction`. Foram restaurados os campos da estrutura de resultados necessários à integração de pausa, energia e identidade de lote, preservando os dados do boss.
+
+O servidor associa a fase ao ticket FIFO, e não a um número de fase enviado pelo jogador. Receber o lote ainda não altera o progresso: permanece a confirmação de conta/pontuação pelo operador oficial. A vitória é comum aos jogadores daquele ticket. Todos precisam ter a fase liberada para emitir o ticket. Ao confirmar, `bossDerrotado: true` e partidas concluídas liberam somente a fase seguinte para os participantes. `false`, campo ausente ou partida não concluída mantêm a próxima fase bloqueada. Freeplay não libera fases da campanha.
+
+A confirmação do ticket é o único caminho normal que chama `partidas.salvar` com `origemExecutavel: true`. Resultados enviados diretamente pelo navegador não podem comprovar uma vitória. A seleção de fase pela API não desbloqueia uma fase: uma fase bloqueada responde 403. A emissão de tickets valida a fase de cada jogador e impede um segundo ticket pendente na mesma sala. O progresso antigo permanece preservado; esta mudança não reinicia a campanha das contas existentes.
+
+`fases.concluidas` guarda as fases com bosses derrotados, inclusive a quinta fase. A campanha termina na fase 5, sem criar uma fase 6. `fases.ultimaBatalha` guarda o último resultado confirmado do executável. Dono do Palco e seu contador exigem vitória contra o boss em cada fase na dificuldade máxima.
+
+A sala recebe o estado atualizado após a confirmação. Em `ticket.html`, vitória mostra **Jogar fase seguinte**, derrota mostra **Repetir fase**, e a vitória final mostra **Campanha concluída**. Somente o proprietário emite o próximo ticket; o restante do grupo vê o mesmo resultado. Enquanto uma revisão está pendente, a sala aguarda confirmação. Ao voltar à seleção, as fases vêm do servidor: flags de localStorage não liberam fases.
+
+É necessário publicar os arquivos do servidor e das páginas, reiniciar o processo Node e **recompilar o YARG**. Um executável antigo sem `bossDerrotado` continua salvando pontuações, mas não comprova vitória nem libera fases novas. Resultados só são enviados quando o jogo chega à tela de pontuação; se a música for interrompida antes disso, a fase permanece bloqueada e o ticket pode ser reutilizado para a repetição ou removido pelo operador. Não foram executados testes nem uma compilação Unity nesta alteração.

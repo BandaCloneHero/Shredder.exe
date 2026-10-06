@@ -1,9 +1,11 @@
 (() => {
-    const form = document.getElementById('operator-avatar-form');
-    const input = document.getElementById('operator-avatar-file');
-    const button = document.getElementById('operator-avatar-upload');
-    const preview = document.getElementById('operator-avatar-preview');
-    const status = document.getElementById('operator-avatar-status');
+    const profileUpload = !!document.getElementById('profile-avatar-form');
+    const prefix = profileUpload ? 'profile' : 'operator';
+    const form = document.getElementById(`${prefix}-avatar-form`);
+    const input = document.getElementById(`${prefix}-avatar-file`);
+    const button = document.getElementById(`${prefix}-avatar-upload`);
+    const preview = document.getElementById(profileUpload ? 'profile-avatar-upload-preview' : 'operator-avatar-preview');
+    const status = document.getElementById(profileUpload ? 'profile-avatar-upload-status' : 'operator-avatar-status');
     if (!form || !input || !button || !preview || !status) return;
     let prepared = null, previewUrl = null, generation = 0, uploading = false;
 
@@ -51,7 +53,7 @@
         status.textContent = 'SALVANDO SUA FOTO...';
         try {
             const token = window.shredderAccount?.snapshot().token;
-            const response = await fetch('/api/operador/avatar', {
+            const response = await fetch(form.dataset.endpoint || '/api/operador/avatar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'image/webp', Accept: 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
                 body: prepared,
@@ -63,8 +65,9 @@
             previewUrl = null;
             prepared = null;
             input.value = '';
+            form.dispatchEvent(new CustomEvent('avatar-saved', { detail: payload }));
             window.shredderAccount?.notify();
-            status.textContent = 'FOTO ATUALIZADA. Se estiver editando seu perfil abaixo, carregue-o novamente antes de salvar.';
+            status.textContent = profileUpload ? 'FOTO DE PERFIL ATUALIZADA.' : 'FOTO ATUALIZADA. Se estiver editando seu perfil abaixo, carregue-o novamente antes de salvar.';
         } catch (error) {
             status.textContent = error.message || 'Falha no envio. Sua foto continua disponível para tentar novamente.';
         } finally {

@@ -39,6 +39,7 @@
             ['STATUS', ticket.resultadosExecutavel ? 'AGUARDANDO CONFIRMAÇÃO' : 'AGUARDANDO RESULTADO'],
             ['MÚSICA', ticket.musica || '—'],
             ['BANDA', ticket.banda?.nome || 'SEM BANDA'],
+            ...(mode.tipo === 'historia' && ticket.resultadosExecutavel ? [['BOSS', ticket.bossDerrotado === true ? 'DERROTADO · avanço após confirmação' : ticket.bossDerrotado === false ? 'NÃO DERROTADO · repetir fase' : 'VITÓRIA NÃO INFORMADA · fase bloqueada']] : []),
             ...(ticket.resultadosExecutavel && ticket.banda ? [['PONTUAÇÃO TOTAL DA BANDA', Number(ticket.pontuacaoBanda ?? ticket.resultadosExecutavel.reduce((total, item) => total + item.pontuacao, 0)).toLocaleString('pt-BR')]] : []),
         ]) {
             const group = document.createElement('div');

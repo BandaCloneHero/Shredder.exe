@@ -29,6 +29,8 @@ namespace YARG.Integration
             public string loteId;
             public string musica;
             public int pontuacaoBanda;
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public bool? bossDerrotado;
             public List<PlayerResult> resultados;
         }
 
@@ -60,6 +62,7 @@ namespace YARG.Integration
                 loteId = scoreScreenStats.ReportId,
                 musica = song.Name,
                 pontuacaoBanda = Mathf.Max(0, scoreScreenStats.BandScore),
+                bossDerrotado = scoreScreenStats.BossBattle?.Defeated,
                 resultados = new List<PlayerResult>()
             };
 

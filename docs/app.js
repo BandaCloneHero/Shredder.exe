@@ -80,6 +80,18 @@ function profileInstrumentMarkup(profile, instrumentId) {
         <div class="profile-stat"><span>FULL COMBOS</span><strong>${formatScore(profileNumber(stats.fullCombos))}</strong></div>`;
 }
 
+function achievementProgressMarkup(profile, id, unlocked) {
+    const progresso = profile.achievementProgress?.[id];
+    if (!progresso) return unlocked ? '' : '<div class="achievement-progress"><span>Progresso indisponível no momento.</span></div>';
+    const percentual = unlocked ? 100 : Math.max(0, Math.min(100, Number(progresso.percentual) || 0));
+    const contador = progresso.tipo === "contador";
+    const texto = contador ? progresso.texto : unlocked ? "Objetivo concluído" : progresso.tipo === "evento" ? "Aguardando encerramento da feira" : "Objetivo pendente";
+    const barra = contador || unlocked
+        ? `<progress max="100" value="${percentual}" aria-label="Progresso da conquista: ${escapeHtml(texto)}">${percentual}%</progress>`
+        : '';
+    return `<div class="achievement-progress"><span>${escapeHtml(texto)}</span>${barra}${contador && !unlocked && percentual === 100 ? '<span class="achievement-progress-note">Meta atingida · ainda bloqueada</span>' : ''}</div>`;
+}
+
 function renderProfile(profile, isOwnProfile) {
     const hit = profileNumber(profile.lifetimeStats?.totalNotesHit);
     const misses = profileNumber(profile.lifetimeStats?.totalMisses);
@@ -163,20 +175,27 @@ function renderProfile(profile, isOwnProfile) {
               .join("")
         : '<p class="profile-empty">NENHUMA FREQUÊNCIA REGISTRADA.</p>';
 
-    const achievementHighlights = ORDERED_PROFILE_ACHIEVEMENTS.slice(0, 6);
+    const visibleAchievements = ORDERED_PROFILE_ACHIEVEMENTS.filter(({ id, rarityKey }) => rarityKey !== "hidden" || achievements.has(id));
+    const achievementHighlights = visibleAchievements.slice(0, 6);
     document.querySelector("#profile-achievements").innerHTML =
         achievementHighlights.map(({ id, label, rarityKey }) => {
             const unlocked = achievements.has(id);
-            return `<article class="profile-badge ${achievementRarityClass(rarityKey)}${unlocked ? " is-unlocked" : " is-locked"}"><b>${achievementArtworkMarkup(id)}</b><strong>${label}</strong><small>${unlocked ? "DESBLOQUEADA" : "BLOQUEADA // SINAL INSUFICIENTE"}</small></article>`;
+            return `<article class="profile-badge ${achievementRarityClass(rarityKey)}${unlocked ? " is-unlocked" : " is-locked"}"><b>${achievementArtworkMarkup(id)}</b><strong>${label}</strong><small>${unlocked ? "DESBLOQUEADA" : "BLOQUEADA"}</small>${achievementProgressMarkup(profile, id, unlocked)}</article>`;
         }).join("");
     const achievementDialog = document.querySelector("#achievement-dialog");
     const achievementDetails = document.querySelector("#achievement-details");
     const achievementButton = document.querySelector("#open-achievements");
     if (achievementDialog && achievementDetails && achievementButton) {
         const renderAchievementDetails = () => {
-            achievementDetails.innerHTML = ORDERED_PROFILE_ACHIEVEMENTS.map(({ id, label, rarity, rarityKey, difficulty, how }) => {
+            const resumo = document.querySelector("#achievement-progress-summary");
+            if (resumo) {
+                const total = visibleAchievements.length;
+                const obtidas = visibleAchievements.filter(({ id }) => achievements.has(id)).length;
+                resumo.textContent = `${obtidas}/${total} conquistas desbloqueadas · acompanhe seu próximo objetivo abaixo.`;
+            }
+            achievementDetails.innerHTML = visibleAchievements.map(({ id, label, rarity, rarityKey, difficulty, how }) => {
                 const unlocked = achievements.has(id);
-                return `<article id="achievement-detail-${id}" class="achievement-detail ${achievementRarityClass(rarityKey)}${unlocked ? " is-unlocked" : ""}" tabindex="-1"><b>${achievementArtworkMarkup(id)}</b><div><strong>${label}</strong><span class="achievement-rarity">RARIDADE: ${rarity}</span><span>DIFICULDADE: ${difficulty}</span><p>${how}</p></div><small>${unlocked ? "DESBLOQUEADA" : "BLOQUEADA"}</small></article>`;
+                return `<article id="achievement-detail-${id}" class="achievement-detail ${achievementRarityClass(rarityKey)}${unlocked ? " is-unlocked" : ""}" tabindex="-1"><b>${achievementArtworkMarkup(id)}</b><div><strong>${label}</strong><span class="achievement-rarity">RARIDADE: ${rarity}</span><span>DIFICULDADE: ${difficulty}</span><p>${how}</p>${achievementProgressMarkup(profile, id, unlocked)}</div><small>${unlocked ? "DESBLOQUEADA" : "BLOQUEADA"}</small></article>`;
             }).join("");
         };
         if (achievementDialog.open) renderAchievementDetails();
@@ -262,7 +281,9 @@ function renderProfileShop(profile, isOwnProfile) {
         const isEquipped = equipped[item.slot] === item.id;
         let action = "";
         if (mode === "inventory") {
-            action = isEquipped
+            action = item.unlock
+                ? isOwnProfile ? '<button class="button button-ghost" type="button" data-open-photo>ENVIAR MINHA FOTO</button>' : '<span class="customization-status">DESBLOQUEADO</span>'
+                : isEquipped
                 ? '<span class="customization-status is-equipped">EQUIPADO</span>'
                 : isOwnProfile ? `<button class="button button-ghost shop-action" type="button" data-shop-action="equip" data-item="${item.id}">EQUIPAR</button>` : '<span class="customization-status">NO INVENTÁRIO</span>';
         } else if (isOwnProfile) {
@@ -341,6 +362,12 @@ function renderProfileShop(profile, isOwnProfile) {
     if (inventoryDialog && !inventoryDialog.dataset.shopActionsBound) {
         inventoryDialog.dataset.shopActionsBound = "true";
         inventoryDialog.addEventListener("click", async event => {
+            const photoButton = event.target.closest("[data-open-photo]");
+            if (photoButton && inventoryDialog.profileIsOwn) {
+                inventoryDialog.close();
+                document.querySelector("#open-avatar-picker")?.click();
+                return;
+            }
             const button = event.target.closest("[data-shop-action]");
             if (!button || !inventoryDialog.contains(button)) return;
             const profile = inventoryDialog.profileData;
@@ -353,6 +380,7 @@ function renderProfileShop(profile, isOwnProfile) {
                 });
                 profile.moedas = result.currency;
                 profile.cosmetics = result.cosmetics;
+                profile.customAvatarUnlocked = result.cosmetics.owned.includes("custom-avatar-upload");
                 profile.tituloEquipado = result.currentTitle || profile.tituloEquipado;
                 renderProfileAvatar(profile);
                 window.shredderUI?.applyCosmetics(result.cosmetics);
@@ -400,6 +428,11 @@ function setupProfileAvatarPicker(profile, isOwnProfile) {
     if (!dialog || !open || !options) return;
     dialog.profileData = profile;
     const renderOptions = () => {
+        const unlocked = dialog.profileData.customAvatarUnlocked || dialog.profileData.cosmetics?.owned?.includes("custom-avatar-upload");
+        const uploadForm = document.querySelector("#profile-avatar-form");
+        if (uploadForm) uploadForm.hidden = !unlocked || dialog.dataset.canEdit !== "true";
+        const locked = document.querySelector("#profile-photo-locked");
+        if (locked) locked.hidden = !!unlocked;
         const customAvatar = /^custom\/[a-f0-9-]{36}$/.test(dialog.profileData.customAvatar) ? dialog.profileData.customAvatar : "";
         const selectedAvatar = PROFILE_AVATAR_IDS.includes(dialog.profileData.avatar) || dialog.profileData.avatar === customAvatar ? dialog.profileData.avatar : "";
         const choices = customAvatar ? [[customAvatar, "MINHA FOTO"], ...PROFILE_AVATARS] : PROFILE_AVATARS;
@@ -420,6 +453,14 @@ function setupProfileAvatarPicker(profile, isOwnProfile) {
     else options.replaceChildren();
     if (dialog.dataset.bound === "true") return;
     dialog.dataset.bound = "true";
+    document.querySelector("#profile-avatar-form")?.addEventListener("avatar-saved", event => {
+        const activeProfile = dialog.profileData;
+        activeProfile.avatar = event.detail.avatar;
+        activeProfile.customAvatar = event.detail.customAvatar;
+        renderProfileAvatar(activeProfile);
+        window.shredderUI?.applyCosmetics(activeProfile.cosmetics, undefined, undefined, activeProfile.avatar);
+        renderOptions();
+    });
     options.addEventListener("click", async event => {
         const button = event.target.closest("[data-avatar]");
         if (!button || dialog.dataset.canEdit !== "true") return;
@@ -755,6 +796,7 @@ window.updateOwnerControls = function (roomState) {
             control.setAttribute("aria-disabled", String(control.disabled));
         });
     }
+    if (currentPage === "ticket") renderTicketBattle(roomState);
 };
 
 function initializeRoomPresence(player) {
@@ -804,6 +846,13 @@ function initializeRoomPresence(player) {
 
     socket.on("sala_emitiu_ticket", ({ modo } = {}) => {
         if (modo) writeJson(STORAGE.mode, modo);
+        if (currentPage === "ticket") {
+            const stage = document.querySelector("#ticket-stage");
+            if (stage) stage.textContent = modo?.tipo === "historia" ? `FASE ${modo.fase}` : "LIVRE";
+            const type = document.querySelector("#ticket-mode");
+            if (type) type.textContent = modo?.tipo === "historia" ? "MODO HISTÓRIA" : "FREEPLAY";
+            renderTicketBattle(null);
+        }
         if (currentPage !== "ticket") window.location.href = "ticket.html";
     });
 }
@@ -978,20 +1027,14 @@ const STAGES = [
 ];
 
 function fasesLocaisComoPerfil() {
-    const progress = getProgress();
-    const desbloqueadas = progress.reduce(
-        (fases, complete, index) => {
-            if (index === 0 || progress[index - 1] || complete) fases.push(index + 1);
-            return fases;
-        },
-        [],
-    );
-    return { desbloqueadas, favoritas: [], selecionada: null, historicoSelecionadas: [] };
+    // O armazenamento local não comprova vitórias; só o servidor libera fases.
+    return { desbloqueadas: [1], favoritas: [], concluidas: [], selecionada: null, historicoSelecionadas: [] };
 }
 
 function renderStages(fases) {
     const desbloqueadas = new Set(fases.desbloqueadas || [1]);
     const favoritas = new Set(fases.favoritas || []);
+    const concluidas = new Set(fases.concluidas || []);
     const grid = document.querySelector("#stage-grid");
     document.querySelector("#progress-count").textContent =
         `${String([...desbloqueadas].filter(fase => fase <= STAGES.length).length).padStart(2, "0")} / ${String(STAGES.length).padStart(2, "0")}`;
@@ -999,9 +1042,9 @@ function renderStages(fases) {
         .map((stage, index) => {
             const fase = index + 1;
             const isUnlocked = desbloqueadas.has(fase);
-            const isComplete = fase < STAGES.length && desbloqueadas.has(fase + 1);
+            const isComplete = concluidas.has(fase);
             const isFavorite = favoritas.has(fase);
-            return `<div class="stage-option"><button type="button" class="stage-card ${isUnlocked ? "" : "locked"} ${isComplete ? "complete" : ""}" data-stage="${fase}" ${isUnlocked ? "" : "disabled"}><span class="stage-number">0${fase}</span><strong>${stage}</strong><small>${isFavorite ? "★ FAVORITA" : isComplete ? "FREQUÊNCIA CONCLUÍDA" : isUnlocked ? "SINAL DISPONÍVEL" : "BLOQUEADA // COMPLETE A ANTERIOR"}</small>${isComplete ? "<em>✓ EXCELÊNCIA REGISTRADA</em>" : ""}</button><button type="button" class="stage-favorite" data-favorite-stage="${fase}" aria-pressed="${isFavorite}" aria-label="${isFavorite ? 'Remover dos favoritos' : 'Favoritar'}: ${stage}" ${isUnlocked ? "" : "disabled"}>${isFavorite ? "★ FAVORITA" : "☆ FAVORITAR"}</button></div>`;
+            return `<div class="stage-option"><button type="button" class="stage-card ${isUnlocked ? "" : "locked"} ${isComplete ? "complete" : ""}" data-stage="${fase}" ${isUnlocked ? "" : "disabled"}><span class="stage-number">0${fase}</span><strong>${stage}</strong><small>${isFavorite ? "★ FAVORITA" : isComplete ? "BOSS DERROTADO" : isUnlocked ? "SINAL DISPONÍVEL" : "BLOQUEADA // DERROTE O BOSS ANTERIOR"}</small>${isComplete ? "<em>✓ VITÓRIA CONFIRMADA</em>" : ""}</button><button type="button" class="stage-favorite" data-favorite-stage="${fase}" aria-pressed="${isFavorite}" aria-label="${isFavorite ? 'Remover dos favoritos' : 'Favoritar'}: ${stage}" ${isUnlocked ? "" : "disabled"}>${isFavorite ? "★ FAVORITA" : "☆ FAVORITAR"}</button></div>`;
         })
         .join("");
     grid.querySelectorAll(".stage-card:not(.locked)").forEach((card) =>
@@ -1036,7 +1079,8 @@ async function carregarFasesDoPerfil(player) {
         if (!response.ok || !data?.profile?.fases) throw new Error("Perfil sem fases.");
         return data.profile.fases;
     } catch {
-        // Mantém a tela utilizável offline e para contas ainda não migradas.
+        const status = document.querySelector("#mode-status");
+        if (status) status.textContent = "Não foi possível consultar suas fases. Conecte-se ao servidor para continuar a campanha.";
         return fasesLocaisComoPerfil();
     }
 }
@@ -1069,7 +1113,7 @@ async function chooseMode(tipo, fase) {
         return;
     }
 
-    const status = document.querySelector("#mode-status");
+    const status = document.querySelector("#mode-status") || document.querySelector("#ticket-boss-status");
     if (tipo === "historia") {
         if (status) status.textContent = "REGISTRANDO FASE...";
         try {
@@ -1079,12 +1123,11 @@ async function chooseMode(tipo, fase) {
             });
         } catch (error) {
             console.error("Não foi possível registrar a fase:", error);
-            if (status) status.textContent = "SEM SINAL // não foi possível registrar a fase.";
+            if (status) status.textContent = error.message || "SEM SINAL // não foi possível registrar a fase.";
             return;
         }
     }
     const modo = { tipo, fase };
-    writeJson(STORAGE.mode, modo);
     window.socket.emit(
         "owner_emitir_ticket",
         { roomId, operadorId: player.id, modo },
@@ -1094,9 +1137,11 @@ async function chooseMode(tipo, fase) {
                     "Não foi possível emitir o ticket:",
                     response?.erro,
                 );
-                if (status) status.textContent = "SEM SINAL // não foi possível emitir o ticket.";
-            } else if (status) {
-                status.textContent = "";
+                if (status) status.textContent = response?.erro || "SEM SINAL // não foi possível emitir o ticket.";
+            } else {
+                writeJson(STORAGE.mode, modo);
+                if (currentPage === "ticket") renderTicketBattle(window.shredderRoomState);
+                else if (status) status.textContent = "";
             }
         },
     );
@@ -1465,6 +1510,27 @@ async function initializeRanking() {
     if (socket.connected) entrar();
 }
 
+function renderTicketBattle(roomState) {
+    const panel = document.querySelector("#ticket-boss-panel");
+    const status = document.querySelector("#ticket-boss-status");
+    const button = document.querySelector("#ticket-boss-continue");
+    if (!panel || !status || !button) return;
+    const mode = readJson(STORAGE.mode, { tipo: "freeplay", fase: null });
+    panel.hidden = mode.tipo !== "historia";
+    const battle = roomState?.campanha;
+    button.hidden = !battle || battle.campanhaConcluida || roomState?.ticketPendente;
+    button.disabled = !window.socket?.connected || !battle || roomState?.ticketPendente;
+    if (!battle) {
+        status.textContent = "Aguardando o resultado do YARG e a confirmação do ticket. A próxima fase só será liberada se o boss for derrotado.";
+        return;
+    }
+    status.textContent = battle.campanhaConcluida ? "BOSS DERROTADO // CAMPANHA CONCLUÍDA!"
+        : battle.venceu ? `BOSS DERROTADO // FASE ${battle.proximaFase} LIBERADA!`
+        : battle.bossDerrotado === false ? `BOSS NÃO DERROTADO // JOGUEM A FASE ${battle.fase} NOVAMENTE.`
+        : "VITÓRIA CONTRA O BOSS NÃO CONFIRMADA // A PRÓXIMA FASE CONTINUA BLOQUEADA.";
+    button.textContent = battle.venceu ? `Jogar fase ${battle.proximaFase}` : `Repetir fase ${battle.fase}`;
+}
+
 function initializeTicket() {
     const player = ensurePlayer();
     if (!player || !localStorage.getItem(STORAGE.roomId)) {
@@ -1472,6 +1538,11 @@ function initializeTicket() {
         return;
     }
     initializeRoomPresence(player);
+    document.querySelector("#ticket-boss-continue")?.addEventListener("click", () => {
+        const battle = window.shredderRoomState?.campanha;
+        if (!battle || window.shredderRoomState?.ticketPendente) return;
+        chooseMode("historia", battle.proximaFase);
+    });
     const mode = readJson(STORAGE.mode, { tipo: "freeplay", fase: null });
     const lobby = getLobby();
     document.querySelector("#ticket-date").textContent =
@@ -1514,5 +1585,4 @@ if (currentPage === "ticket") initializeTicket();
 if (currentPage === "ranking") initializeRanking();
 if (currentPage === "perfil") initializeProfile();
 
-// O jogo Phaser pode consumir as mesmas chaves ao abrir jogo.html. Ao concluir uma fase,
-// marque progress[fase - 1] = true e persista com writeJson(STORAGE.progress, progress).
+// O servidor é a autoridade da campanha; flags locais não liberam fases.
