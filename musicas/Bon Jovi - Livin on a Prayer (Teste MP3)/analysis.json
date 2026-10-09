@@ -1,0 +1,212 @@
+{
+  "source_file": "musicas/- - Bon Jovi - Living on a Prayer.mp3.mp3",
+  "source_sha256": "771ca7d21261c3e97f3e32db5e6af4bb1bca59836929abb26b7bfd6c6eb70cc4",
+  "duration_seconds": 250.04408163265308,
+  "estimated_bpm": 122.72727272727273,
+  "midi_tempo": 488889,
+  "method": "spectral attacks and harmonic salience from mixed audio; experimental",
+  "instruments": {
+    "guitar": {
+      "Easy": {
+        "attacks": 406,
+        "notes": 406
+      },
+      "Medium": {
+        "attacks": 523,
+        "notes": 523
+      },
+      "Hard": {
+        "attacks": 852,
+        "notes": 1077
+      },
+      "Expert": {
+        "attacks": 1041,
+        "notes": 1331
+      }
+    },
+    "bass": {
+      "Easy": {
+        "attacks": 341,
+        "notes": 341
+      },
+      "Medium": {
+        "attacks": 479,
+        "notes": 479
+      },
+      "Hard": {
+        "attacks": 891,
+        "notes": 891
+      },
+      "Expert": {
+        "attacks": 961,
+        "notes": 961
+      }
+    },
+    "keys": {
+      "Easy": {
+        "attacks": 412,
+        "notes": 412
+      },
+      "Medium": {
+        "attacks": 519,
+        "notes": 900
+      },
+      "Hard": {
+        "attacks": 839,
+        "notes": 1451
+      },
+      "Expert": {
+        "attacks": 1031,
+        "notes": 2219
+      }
+    },
+    "drums": {
+      "Easy": {
+        "attacks": 452,
+        "notes": 839
+      },
+      "Medium": {
+        "attacks": 482,
+        "notes": 1215
+      },
+      "Hard": {
+        "attacks": 926,
+        "notes": 2434
+      },
+      "Expert": {
+        "attacks": 1049,
+        "notes": 2581
+      }
+    }
+  },
+  "track_note_counts": {
+    "TEMPO": {},
+    "EVENTS": {},
+    "PART GUITAR": {
+      "60": 117,
+      "61": 76,
+      "62": 61,
+      "63": 97,
+      "64": 55,
+      "72": 156,
+      "73": 81,
+      "74": 89,
+      "75": 129,
+      "76": 68,
+      "84": 379,
+      "85": 166,
+      "86": 196,
+      "87": 227,
+      "88": 109,
+      "96": 453,
+      "97": 202,
+      "98": 253,
+      "99": 290,
+      "100": 133
+    },
+    "PART BASS": {
+      "60": 97,
+      "61": 112,
+      "62": 69,
+      "63": 40,
+      "64": 23,
+      "72": 142,
+      "73": 143,
+      "74": 102,
+      "75": 61,
+      "76": 31,
+      "84": 279,
+      "85": 300,
+      "86": 160,
+      "87": 97,
+      "88": 55,
+      "96": 304,
+      "97": 320,
+      "98": 171,
+      "99": 104,
+      "100": 62
+    },
+    "PART DRUMS": {
+      "60": 195,
+      "61": 433,
+      "62": 211,
+      "72": 338,
+      "73": 438,
+      "74": 439,
+      "84": 803,
+      "85": 851,
+      "86": 323,
+      "88": 457,
+      "96": 839,
+      "97": 913,
+      "98": 362,
+      "100": 467
+    },
+    "PART REAL_KEYS_E": {
+      "0": 1,
+      "48": 45,
+      "50": 31,
+      "52": 19,
+      "53": 28,
+      "55": 143,
+      "57": 99,
+      "59": 47
+    },
+    "PART REAL_KEYS_M": {
+      "0": 1,
+      "48": 123,
+      "50": 61,
+      "52": 54,
+      "53": 75,
+      "55": 299,
+      "57": 186,
+      "59": 102
+    },
+    "PART REAL_KEYS_H": {
+      "0": 1,
+      "48": 179,
+      "50": 100,
+      "52": 81,
+      "53": 113,
+      "55": 486,
+      "57": 327,
+      "59": 165
+    },
+    "PART REAL_KEYS_X": {
+      "0": 1,
+      "48": 306,
+      "50": 163,
+      "52": 141,
+      "53": 191,
+      "55": 662,
+      "57": 487,
+      "59": 269
+    }
+  },
+  "keyboard_midi_pitches": [
+    48,
+    50,
+    52,
+    53,
+    55,
+    57,
+    59
+  ],
+  "in_game_test": "Not run",
+  "isolated_stems": false,
+  "validation": {
+    "midi_roundtrip": "passed",
+    "paired_nonoverlapping_notes": "passed",
+    "four_instruments_four_difficulties": "passed",
+    "increasing_note_counts": "passed",
+    "seven_white_keys_only": "passed",
+    "full_audio_decode": "passed",
+    "decoded_audio_seconds": 250.04408163265308,
+    "midi_seconds": 250.0443160875,
+    "source_mp3_unchanged": true,
+    "album_size": [
+      122,
+      120
+    ]
+  }
+}
