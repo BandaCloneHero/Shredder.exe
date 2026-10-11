@@ -1,79 +1,81 @@
-# Pro Dia Nascer Feliz — stems e MIDI
+# Pro Dia Nascer Feliz — revisão de guitarra e bateria
 
-Charts para guitarra, baixo, bateria e teclado Pro Keys 7K, nas quatro
-dificuldades. Duração: **4min27s**. Os arquivos originais foram preservados.
+A guitarra e a bateria foram refeitas após o teste no jogo revelar uma guitarra
+quase vazia e golpes de caixa convertidos em bumbo + dois pads.
 
-## Usar no Shredder
+## Carregar a revisão
 
-Adicione esta pasta às pastas de músicas e faça uma busca completa.
-Selecione **Pro Dia Nascer Feliz (stems e MIDI)**, artista **Cazuza**
-(nome usado no arquivo fornecido). Para teclado, selecione **Pro Keys**.
-O modo 7K usa MIDI 48, 50, 52, 53, 55, 57 e 59, e os bindings padrão
-**Z X C V B N M**, salvo personalizações do perfil.
+Esta pasta contém o `notes.mid` revisado. Faça uma **busca completa** no Shredder
+para atualizar o cache e selecione **Pro Dia Nascer Feliz (stems e MIDI)**.
+São quatro instrumentos e quatro dificuldades. Para teclado, use **Pro Keys**;
+o modo 7K mantém Z X C V B N M, salvo bindings personalizados.
 
-## Origem das notas
+## Mudanças
 
-Guitarra, baixo e teclado foram adaptados dos arquivos fornecidos
-`guitar_basic_pitch_transcription.mid`, `bass_basic_pitch_transcription.mid`
-e `keys_basic_pitch_transcription.mid`. A leitura respeita o mapa de tempo
-original. Notas são agrupadas em acordes com tolerância de 35 ms, reduzidas
-conforme a dificuldade e mapeadas para os botões do jogo. O teclado tem suas
-alturas e oitavas adaptadas às sete teclas brancas. Sustentações que colidem
-na mesma tecla são encurtadas até o próximo ataque.
-
-O `drum_basic_pitch_transcription.mid` contém alturas musicais, sem identificar
-bumbo, caixa ou pratos. Por isso, a bateria foi gerada a partir de ataques
-em faixas graves, médias e agudas do WAV **da bateria separado**. Essa
-classificação é aproximada, e não corresponde a uma bateria transcrita à mão.
-
-O MIDI original de guitarra contém **54 notas** em toda a música; o chart
-continua esparso porque usa essa transcrição, sem inventar notas para preenchê-la.
-MIDIs automáticos e stems de separação automática ainda podem conter erros
-ou vazamentos. Eles reduzem a interferência da mixagem, mas não garantem
-uma transcrição perfeita.
+- Guitarra: ataques detectados no WAV separado, incluindo as palhetadas e
+  mudanças harmônicas que o MIDI Basic Pitch havia omitido. No Expert,
+  passou de **50 para 507 ataques**, com 809 notas individuais.
+  As cores seguem formas harmônicas detectadas, com mapeamento estável;
+  acordes e sustentações continuam sendo adaptações para jogabilidade.
+- Bateria: substituída a classificação por três faixas de frequência por
+  uma decomposição espectral com referências de timbre desta gravação.
+  O corpo e a esteira de um golpe de caixa são tratados como um instrumento,
+  e o clique do bumbo não gera automaticamente uma nota de tom.
+  Resíduos agudos logo após a caixa não viram automaticamente um novo prato.
+- O baixo, o teclado, o mapa de tempo e os eventos anteriores foram mantidos.
+- As cinco pistas de áudio permanecem separadas e alinhadas. `song.ogg`
+  contém só o acompanhamento restante, sem duplicar a mixagem completa.
 
 | Instrumento | Fácil | Médio | Difícil | Expert |
 |---|---:|---:|---:|---:|
-| Guitarra | 45 | 47 | 51 | 53 |
+| Guitarra | 191 | 284 | 646 | 809 |
 | Baixo | 338 | 443 | 760 | 828 |
-| Bateria | 640 | 1486 | 2651 | 2956 |
+| Bateria | 825 | 985 | 1188 | 1195 |
 | Pro Keys 7K | 294 | 493 | 750 | 854 |
 
-Contagens de notas individuais: acordes contam várias notas.
+A tabela conta notas individuais; acordes contam várias notas.
+A bateria continua no formato **4 pads + pedal de bumbo**, sem modo 5 lanes.
+Não se preenchem os pads apenas para distribuir cores: foram reconhecidos
+poucos ataques de tom azul com confiança neste método (um no Expert).
 
-## Áudio e verificações
+## Verificações e limites
 
-- `guitar.ogg`, `bass.ogg`, `drums.ogg`, `keys.ogg`: instrumentos separados.
-- `song.ogg`: voz e acompanhamento restante, calculado pela subtração dos
-  quatro stems da mixagem original. **Não é a música completa duplicada**.
-- `notes.mid`: pistas e quatro dificuldades em formato compatível com o jogo.
-- `song.ini`: metadados e opções dos instrumentos.
-- `analysis.json`: origens, hashes, contagens e verificações.
+A proporção de ataques com três notas simultâneas no Expert caiu de **64,5% para
+0%**, sem uma regra global que proíba golpes simultâneos. Os ataques de caixa
+em 0,51 s, 2,11 s e 3,74 s e o bumbo em 0,90 s foram usados como referências
+acústicas e conferidos na revisão: cada um resulta em uma nota do instrumento
+correspondente, sem as notas adicionais do método anterior.
 
-Todos os arquivos de entrada têm **11782656 amostras
-estéreo a 44,1 kHz**, com diferença de alinhamento detectada de zero. Antes da
-compressão, os quatro stems mais o acompanhamento recompõem a mixagem
-original, com erro máximo de 1.2e-07.
+O MIDI foi relido e verificado quanto a tempos, pares de eventos e notas
+sobrepostas. O áudio dura cerca de **4min27s**. A versão anterior foi guardada
+em `notes.before-refinement.mid`, com seu relatório em
+`analysis.before-refinement.json`.
 
-Um ganho comum de **0.4674** foi aplicado às cinco pistas
-para evitar clipping nos stems; as proporções de volume foram preservadas.
-Isso pode deixar a reprodução mais baixa que o MP3 original.
-As pistas OGG foram decodificadas integralmente; suas durações diferem
-em no máximo uma amostra (menos de 0,023 ms).
-O MIDI foi relido e verificado, sem notas sobrepostas na mesma tecla ou
-notas sem término. Andamento estimado do WAV da bateria: **146.67 BPM**;
-converter o tempo do arquivo preserva os instantes das notas em segundos.
+Essas verificações não equivalem a uma avaliação musical completa. A bateria
+é uma classificação aproximada de timbres, calibrada para esta gravação, e
+pode omitir golpes ou classificar algum prato incorretamente. A guitarra
+não é uma transcrição manual das posições no braço. Ainda falta avaliar
+esta revisão tocando e ouvindo no Shredder. A versão anterior havia sido
+validada apenas como arquivo de jogo; isso não verificava sua qualidade musical.
 
-Ainda falta testar carregamento, sincronização percebida e jogabilidade
-na Unity ou no executável do Shredder.
+`analysis.json` registra a revisão. `drum-timbre-analysis.npz` contém os
+perfis e ativações de timbre usados para inspeção técnica.
+O ganho comum aplicado ao áudio é cerca de 0,4674; ajuste o volume no jogo
+se necessário. Os originais em `audios separados` permanecem intactos.
 
-Gerador: `scripts/create_stem_midi_chart.py` na raiz do projeto.
-Dependências: `numpy`, `scipy`, `mido`, `imageio-ffmpeg`.
+## Reproduzir
+
+Dependências Python: numpy, scipy, mido e imageio-ffmpeg.
+Use o gerador inicial numa pasta de saída nova e aplique a revisão:
 
 ```bash
 python3 scripts/create_stem_midi_chart.py \
   'musicas/audios separados/Pro Dia Nascer Feliz' \
-  'musicas/Pro Dia Nascer Feliz - outro teste' --artist Cazuza
+  'musicas/Pro Dia Nascer Feliz - outra revisao' --artist Cazuza
+OPENBLAS_NUM_THREADS=1 python3 scripts/refine_stem_charts.py \
+  'musicas/audios separados/Pro Dia Nascer Feliz' \
+  'musicas/Pro Dia Nascer Feliz - outra revisao'
 ```
 
-Escolha uma pasta de saída nova para preservar os charts já existentes.
+As referências de timbre do segundo script são específicas desta música.
+Para outra gravação, é necessário rever a decomposição e a calibração.

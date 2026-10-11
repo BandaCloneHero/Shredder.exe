@@ -1,0 +1,213 @@
+{
+  "source_hashes": {
+    "musicas/audios separados/Pro Dia Nascer Feliz/0075  Cazuza Pro Dia Nascer Feliz.mp3": "2c9a431431377f81e43b768f10d9dc2f5c02e764b742202202fc1405d9fc250c",
+    "musicas/audios separados/Pro Dia Nascer Feliz/guitar20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_guitar_[mvsep.com].wav": "330d07889c5acd0c7555fc3c04bfbc496632537b859d6e0c14201faeca324622",
+    "musicas/audios separados/Pro Dia Nascer Feliz/bass20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_bass_[mvsep.com].wav": "adedac815126976c875d851958d0f07125fa1348caa639d3d877f0ce8bfb2c30",
+    "musicas/audios separados/Pro Dia Nascer Feliz/keys20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_piano_[mvsep.com].wav": "03baff2462adbe32c0ae4b9c85f004e9c12cc186844705bbd0bb31eefde284f1",
+    "musicas/audios separados/Pro Dia Nascer Feliz/drum20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_drums_[mvsep.com].wav": "312938e7cb7bf725407689ad4ca9c5cfa783849355848205c1f0a1977503dca9",
+    "musicas/audios separados/Pro Dia Nascer Feliz/guitar_basic_pitch_transcription.mid": "3f7359b6235cf19e0bae5890a6bed8f733831a7837b7c69615fce405a54b4817",
+    "musicas/audios separados/Pro Dia Nascer Feliz/bass_basic_pitch_transcription.mid": "e43a14e0d87c143a824e06bea5e1351ff8beb71c38f86cec823853dc0dbf57b9",
+    "musicas/audios separados/Pro Dia Nascer Feliz/keys_basic_pitch_transcription.mid": "ec3389db47727838aed8977839af15a402fade7a76ccad375565e550c2a88ba6",
+    "musicas/audios separados/Pro Dia Nascer Feliz/drum_basic_pitch_transcription.mid": "739244e21187474fd450ef4eeb8c527fb60c2b85c5ae2ec5df6d514e0cb9d10d"
+  },
+  "isolated_stems": true,
+  "in_game_test": "Not run",
+  "keyboard_midi_pitches": [
+    48,
+    50,
+    52,
+    53,
+    55,
+    57,
+    59
+  ],
+  "note_sources": {
+    "guitar": "musicas/audios separados/Pro Dia Nascer Feliz/guitar_basic_pitch_transcription.mid",
+    "bass": "musicas/audios separados/Pro Dia Nascer Feliz/bass_basic_pitch_transcription.mid",
+    "keys": "musicas/audios separados/Pro Dia Nascer Feliz/keys_basic_pitch_transcription.mid"
+  },
+  "drum_note_source": "musicas/audios separados/Pro Dia Nascer Feliz/drum20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_drums_[mvsep.com].wav",
+  "drum_midi": {
+    "path": "musicas/audios separados/Pro Dia Nascer Feliz/drum_basic_pitch_transcription.mid",
+    "pitched_notes": 73,
+    "used_for_lane_assignment": false
+  },
+  "alignment": {
+    "samples_per_file": 11782656,
+    "sample_rate": 44100,
+    "waveform_lag_seconds": 0.0,
+    "normalized_correlation": 0.8110320568084717
+  },
+  "duration_seconds": 267.1804081632653,
+  "estimated_bpm": 146.67405764966742,
+  "midi_tempo": 409070,
+  "source_midi_notes": {
+    "guitar": 54,
+    "bass": 883,
+    "keys": 952
+  },
+  "instruments": {
+    "guitar": {
+      "Easy": 45,
+      "Medium": 47,
+      "Hard": 51,
+      "Expert": 53
+    },
+    "bass": {
+      "Easy": 338,
+      "Medium": 443,
+      "Hard": 760,
+      "Expert": 828
+    },
+    "keys": {
+      "Easy": 294,
+      "Medium": 493,
+      "Hard": 750,
+      "Expert": 854
+    },
+    "drums": {
+      "Easy": 640,
+      "Medium": 1486,
+      "Hard": 2651,
+      "Expert": 2956
+    }
+  },
+  "track_note_counts": {
+    "TEMPO": {},
+    "EVENTS": {},
+    "PART GUITAR": {
+      "60": 6,
+      "61": 12,
+      "62": 1,
+      "63": 11,
+      "64": 15,
+      "72": 6,
+      "73": 12,
+      "74": 1,
+      "75": 11,
+      "76": 17,
+      "84": 6,
+      "85": 12,
+      "86": 1,
+      "87": 13,
+      "88": 19,
+      "96": 6,
+      "97": 12,
+      "98": 1,
+      "99": 13,
+      "100": 21
+    },
+    "PART BASS": {
+      "60": 83,
+      "61": 150,
+      "62": 66,
+      "63": 11,
+      "64": 28,
+      "72": 109,
+      "73": 197,
+      "74": 83,
+      "75": 12,
+      "76": 42,
+      "84": 129,
+      "85": 383,
+      "86": 170,
+      "87": 18,
+      "88": 60,
+      "96": 137,
+      "97": 409,
+      "98": 181,
+      "99": 25,
+      "100": 76
+    },
+    "PART REAL_KEYS_E": {
+      "0": 1,
+      "48": 30,
+      "50": 36,
+      "52": 4,
+      "53": 76,
+      "55": 77,
+      "57": 58,
+      "59": 13
+    },
+    "PART REAL_KEYS_M": {
+      "0": 1,
+      "48": 86,
+      "50": 59,
+      "52": 7,
+      "53": 107,
+      "55": 117,
+      "57": 84,
+      "59": 33
+    },
+    "PART REAL_KEYS_H": {
+      "0": 1,
+      "48": 138,
+      "50": 107,
+      "52": 7,
+      "53": 151,
+      "55": 190,
+      "57": 117,
+      "59": 40
+    },
+    "PART REAL_KEYS_X": {
+      "0": 1,
+      "48": 157,
+      "50": 120,
+      "52": 16,
+      "53": 167,
+      "55": 204,
+      "57": 141,
+      "59": 49
+    },
+    "PART DRUMS": {
+      "60": 4,
+      "61": 319,
+      "62": 317,
+      "72": 372,
+      "73": 553,
+      "74": 561,
+      "84": 845,
+      "85": 836,
+      "86": 641,
+      "88": 329,
+      "96": 949,
+      "97": 860,
+      "98": 815,
+      "100": 332
+    }
+  },
+  "shared_audio_gain": 0.46740643888582956,
+  "residual_reconstruction_max_error": 1.1920928955078125e-07,
+  "audio_validation": {
+    "guitar": {
+      "full_decode": "passed",
+      "samples": 11782656
+    },
+    "bass": {
+      "full_decode": "passed",
+      "samples": 11782656
+    },
+    "keys": {
+      "full_decode": "passed",
+      "samples": 11782656
+    },
+    "drums": {
+      "full_decode": "passed",
+      "samples": 11782656
+    },
+    "song": {
+      "full_decode": "passed",
+      "samples": 11782657
+    }
+  },
+  "midi_roundtrip": "passed",
+  "method": "provided MIDI adaptation for pitched instruments; separated WAV drum attacks",
+  "final_validation": {
+    "source_files_unchanged": true,
+    "paired_nonoverlapping_midi_notes": true,
+    "all_instruments_all_difficulties": true,
+    "midi_duration_seconds": 267.1806615833333,
+    "residual_reconstruction": "passed",
+    "output_duration_difference_samples": 1
+  }
+}
