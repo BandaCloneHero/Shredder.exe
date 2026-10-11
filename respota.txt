@@ -1,77 +1,90 @@
-// Com o portal aberto e conectado, cole este trecho no Console (F12) e pressione Enter.
-// A tabela mostra nomes de chaves e se o valor contém 1012. Não mostra valores nem tokens.
-(() => {
-  const id = "1012";
-  const linhas = [];
+**É possível criar um comando para processar as 73 músicas localmente, sem MIDI musical intermediário. Mas o código atual precisa de algumas adaptações: a última revisão ainda usou MIDIs para baixo e teclado, e a bateria foi calibrada especificamente para essa gravação.** Não alterei nenhum arquivo.
 
-  for (const armazenamento of ["localStorage", "sessionStorage"]) {
-    const dados = window[armazenamento];
-    for (let i = 0; i < dados.length; i++) {
-      const chave = dados.key(i);
-      const valor = dados.getItem(chave) || "";
-      if (/user|player|jogador|conta|id/i.test(chave) || valor.includes(id)) {
-        linhas.push({ armazenamento, chave, contem_1012: valor.includes(id) });
-      }
-    }
-  }
+**1. Scripts e bibliotecas utilizados**
 
-  if (linhas.length) console.table(linhas);
-  else console.log("Nenhuma chave correspondente encontrada neste armazenamento.");
-})();
+| Script | Função |
+|---|---|
+| [create_mp3_test_chart.py](/workspaces/Shredder.exe/scripts/create_mp3_test_chart.py) | Fornece detecção de ataques, análise de alturas, escrita do chart e validação. Também contém o primeiro gerador para áudio mixado. |
+| [create_stem_midi_chart.py](/workspaces/Shredder.exe/scripts/create_stem_midi_chart.py) | Adaptou os MIDIs existentes, preparou os áudios separados, verificou alinhamento e gerou os arquivos do jogo. |
+| [refine_stem_charts.py](/workspaces/Shredder.exe/scripts/refine_stem_charts.py) | Refez guitarra e bateria diretamente dos WAVs, preservando baixo e teclado anteriores. |
 
+As dependências são **NumPy**, **SciPy**, **Mido** e **imageio-ffmpeg/FFmpeg**. O processamento foi feito por código local; os scripts não chamam APIs de IA. O Basic Pitch não foi executado por eles: seus MIDIs já estavam na pasta.
 
-============================================================
-RESUMO PARA O OUTRO CODEX — REFORMULAÇÃO DO BOSS GEPETO
-============================================================
+**2. Como foram detectados os tempos e as notas**
 
-Objetivo
---------
-Reformular o boss Gepeto para que o combate combine melhor com um jogo de ritmo e seja possível vencer jogando solo numa música normal. O usuário observou nos testes que um jogador não consegue causar muito dano; por isso, duas barras/fases completas ou ressurreições provavelmente deixariam a luta longa demais.
+O andamento foi estimado por **autocorrelação dos ataques da bateria**, buscando um BPM entre 95 e 170. O resultado foi aproximadamente **146,67 BPM**.
 
-O usuário ainda não pediu para implementar as mudanças. Este arquivo serve para levar o contexto e a proposta a outro Codex. As alterações podem ser feitas diretamente nos scripts C# e nos arquivos de texto da cena Unity, sem abrir a Unity, mas a validação visual e de execução exigirá testar depois dentro do editor/jogo.
+Esse BPM organiza o arquivo, mas as notas seguem seus instantes detectados em segundos, sem serem forçadas a uma grade. O método atual usa um andamento constante; não acompanha variações de tempo durante a música.
 
-Arquivos e contexto
--------------------
-- Assets/Script/BossHealthBar.cs: controla vida, dano por nota e dano por marcos de pontuação.
-- Assets/Script/BossPhaseManager.cs: controla as ressurreições do boss.
-- Assets/Script/BossUIController.cs: calcula fase visual pela porcentagem de vida e muda cor/notificação da barra.
-- Assets/Script/GepetoBossReaction.cs: observa acertos, aplica dano por notas e reage à pontuação crítica.
-- Assets/Script/GepetoVisualAnimator.cs: controla animações usando uma lista de sprites.
-- Assets/Script/Gameplay/Player/TrackPlayer.cs: contém BossNoteHit, BossNoteMissed e BossEventCount; verificar como esses eventos podem alimentar o boss.
-- Assets/Scenes/Gameplay.unity: contém as referências e os valores serializados dos componentes do boss.
+| Instrumento | Método usado na última revisão |
+|---|---|
+| **Guitarra** | Espectrograma por STFT; aumentos de energia espectral localizaram as palhetadas. A análise de harmônicos produziu perfis que foram agrupados por **K-means em cinco grupos**, associados aos cinco botões. Sustentações foram estimadas pela continuidade da energia. |
+| **Bateria** | **NMF**, uma decomposição do espectrograma em componentes de timbre. Combinações desses componentes foram associadas a bumbo, caixa, prato, tom e crash. Picos de ativação determinaram os ataques. |
+| **Baixo** | Notas, inícios e finais lidos do MIDI Basic Pitch existente, depois adaptados aos cinco botões. |
+| **Teclado** | Notas do MIDI existente, dobradas para uma oitava e adaptadas às sete teclas brancas. |
 
-Valores atuais serializados na Gameplay.unity
----------------------------------------------
-- Vida máxima: 100.
-- Dano por nota: 0,4.
-- Intervalo global entre danos de nota: 3 segundos — na prática, cerca de 0,13 de dano por segundo mesmo com muitos acertos.
-- Dano crítico a cada 75.000 pontos: 7.
-- O boss ressuscita duas vezes.
+As dificuldades foram produzidas reduzindo a densidade de ataques e o tamanho dos acordes.
 
-Problemas observados no código atual
-------------------------------------
-- Cada nota acertada tem dano fixo e o cooldown limita o dano total; em chart rápido, acertar mais notas não aumenta proporcionalmente o dano.
-- Marcos fixos de pontuação podem variar muito conforme música, instrumento, dificuldade e número de jogadores.
-- O BossPhaseManager restaura vida, mas não parece aplicar uma mudança funcional de dificuldade.
-- GepetoVisualAnimator.TriggerPhase2Transformation() existe, mas não parece ser chamado pelo gerenciador de fases.
-- GepetoBossReaction e GepetoVisualAnimator alteram a mesma Image do personagem, então podem disputar o sprite exibido.
-- Há eventos de nota perdida no TrackPlayer, mas o boss atual aparentemente não os usa.
-- A lógica de combate está espalhada em scripts diferentes; vida, fase, reação e animação podem ficar dessincronizadas.
+**A principal limitação está na bateria:** as combinações de componentes foram ajustadas para “Pro Dia Nascer Feliz”. Em outra gravação, os componentes da NMF podem representar outros sons. Copiar os mesmos números pode voltar a produzir pads incorretos. Os filtros que eliminam resíduos também podem suprimir golpes reais próximos entre si.
 
-Direção de design proposta
---------------------------
-1. Usar uma única barra de vida e remover ressurreições por padrão. O progresso da banda não deve ser apagado quando o boss chega a zero.
-2. Manter variedade visual: o Gepeto pode mudar de expressão/aparência em torno de 50% da vida, mas essa mudança não restaura vida nem dobra a duração da luta.
-3. Fazer acertos causarem dano relacionado à qualidade/precisão da execução, após investigar os dados de hit que o jogo já disponibiliza.
-4. Erros devem quebrar sequência e reduzir o dano da banda ou provocar uma reação visual. A preferência inicial é não curar o boss por erro, ou manter qualquer recuperação muito pequena e limitada, para evitar frustração.
-5. Calibrar vida/dano para que uma pessoa solo consiga vencer uma música comum com desempenho razoável. Não depender apenas de uma pontuação fixa como 75.000.
-6. Dar feedback visual claro para acertos, erros e mudança de estado. Centralizar os estados/regras para a barra, expressões e animações sempre refletirem o mesmo estado do boss.
-7. Verificar multiplayer, instrumentos com quantidades diferentes de notas, músicas curtas, pausas, busca em replay e fim da música.
+**3. O que pode ser reaproveitado**
 
-Trabalho recomendado antes de implementar
------------------------------------------
-Inspecionar como o jogo fornece precisão do hit, combo, faixa/instrumento, número de jogadores, seções musicais e fim de música. Depois definir e documentar números verificáveis, como o dano esperado por música e a quantidade de acertos necessária para vencer solo. Implementar o ciclo de combate coerentemente e só então validar visualmente na Unity.
+Podemos reutilizar diretamente:
 
-Decisão de design ainda aberta
-------------------------------
-Definir se os erros apenas reduzem o dano/rompem combo, ou se também dão alguma recuperação de vida ao boss. Recomendação inicial: erros reduzem o dano e geram feedback, sem cura significativa.
+- Decodificação dos WAVs, espectrogramas, detecção de ataques e análise de harmônicos.
+- Mapeamento para guitarra de cinco botões e Pro Keys 7K.
+- Redução de dificuldades, construção das pistas e validação dos eventos.
+- Verificação de alinhamento, exportação dos stems e geração de `song.ini`.
+- Relatórios, hashes e armazenamento das análises.
+
+Precisamos adaptar três partes:
+
+- **Baixo e teclado:** analisar seus próprios WAVs usando as funções existentes, substituindo a leitura dos MIDIs.
+- **Bateria:** generalizar a associação entre componentes e instrumentos, permitindo perfis de calibração quando necessário.
+- **Execução:** transformar os programas em funções reutilizáveis e acrescentar um controlador de lote.
+
+Também precisam sair das regras gerais os testes específicos dessa música, como ataques em segundos fixos e a exigência de pelo menos 200 ataques de guitarra.
+
+**4. Proposta de comando único**
+
+Proponho este fluxo:
+
+```text
+WAVs separados
+    → análise por instrumento
+    → eventos em memória: início, fim e botão
+    → quatro dificuldades
+    → notes.mid final + song.ini + áudios + relatório
+```
+
+O `notes.mid` seria **o chart final do jogo**, sem etapa de transcrição para outro MIDI musical.
+
+Um comando proposto — **ainda não implementado** — seria:
+
+```bash
+python3 scripts/generate_charts_batch.py \
+  "musicas/audios separados" \
+  --output "musicas/charts" \
+  --resume --jobs 1
+```
+
+Cada subpasta representaria uma música. O controlador identificaria os stems pelos nomes, processaria cada música uma vez e geraria as quatro dificuldades a partir da mesma análise. Uma falha seria registrada sem interromper as demais músicas.
+
+Para eficiência, ele teria cache por **hash dos arquivos + versão dos parâmetros**, retomada de tarefas interrompidas e um relatório consolidado com músicas concluídas, falhas e resultados suspeitos.
+
+**Podemos manter o método da última revisão, mas não garantir a mesma qualidade musical nas 73 músicas automaticamente.** A revisão anterior ainda não foi validada musicalmente no jogo. Eu começaria com três músicas diferentes, conferiria pequenos trechos e ajustaria principalmente a bateria antes de liberar o lote inteiro.
+
+**5. Como economizar tokens e créditos**
+
+A maior economia é usar o Codex para **implementar e corrigir o programa**, e executar o lote diretamente no terminal, sem uma conversa ou chamada de modelo por música. NumPy, SciPy e FFmpeg fazem o processamento local; nesse desenho, a execução não chama o Codex.
+
+Além disso:
+
+- Instalar as dependências uma vez e fixar suas versões.
+- Reutilizar análises em cache e recalcular somente instrumentos alterados.
+- Mostrar na conversa apenas o resumo e os erros relevantes, mantendo os detalhes em arquivos.
+- Pedir ao Codex correções específicas, acompanhadas de pequenos trechos dos relatórios.
+
+A documentação oficial confirma que contexto, resultados de ferramentas e extensão das tarefas influenciam o consumo; recomenda limitar o material enviado e o tamanho das respostas. [Orientações de uso e créditos da OpenAI](https://learn.chatgpt.com/docs/pricing#what-can-i-do-to-make-my-usage-limits-last-longer).
+
+Minha proposta é **reaproveitar as funções atuais, acrescentar análise direta de baixo/teclado e criar um controlador de lote**. A bateria é a parte que exige generalização e avaliação antes de escalar.

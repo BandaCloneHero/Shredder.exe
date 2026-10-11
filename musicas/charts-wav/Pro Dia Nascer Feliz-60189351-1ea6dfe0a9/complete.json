@@ -1,0 +1,20 @@
+{
+  "signature": "1ea6dfe0a9ff3766ee1aacf5cdabceb83c91a74fa987a7b8a4e990949fdf5c8c",
+  "created_utc": "2026-10-11T18:40:51.248946+00:00",
+  "files": {
+    "comparison.json": "e516e0d7c5f53ec48cf2715ee7d841c165776dd796ca674ddce0924938fb0791",
+    "bass.analysis.json": "059a8bd3e184507666ab9e63060deb4b2d57077a693ffc8605b68eeab1adeecc",
+    "keys.ogg": "0fb05517f9799f201b4bd10235c1da7a4f446ca61fd8e5be3ee185b0b8c4fb86",
+    "drums.analysis.json": "890540efc77bac94394c9be235db0372384080b944a6a3088ceec29f9e9b1534",
+    "bass.ogg": "ebb3c92affb2b2e077bcc845d3823058e2f2d5800cc900153ca34be18ad452d9",
+    "drums.ogg": "73c747d75fd2229f4a1b13e4782b8313bd6b4263927b6c5416bed0989c79f805",
+    "guitar.analysis.json": "bca313cf0191721dc743b32d69d1dbdf9dc20e8dca26222e6ccd7e6c84a2cfe7",
+    "LEIA-ME.txt": "ef80f7770c9e817e498a23d77bf43f117f01d18eaf34b433e145639d232db440",
+    "guitar.ogg": "f54d425fbe06ef6ec5911834f8be452ecb12febd6e43c0cc6ca0dccce4da9ac8",
+    "analysis.json": "c325f031f045d40d4650ff2fbe1d88777bec3a1a3d08761c7eb32792dbdf08b7",
+    "notes.mid": "f7b90e91f2a32ced2fb7d629eae4c53a153411d5e3a3bcac1ee223eec4c5a075",
+    "song.ogg": "fa17b4ca081c9a1b6a8c2b2b7a5baf97ec53421e49c1432039b401dc90225a0a",
+    "song.ini": "03b422b2c130a179831d352e1e0e8815b0d52d770d17372df07c41c177796c95",
+    "keys.analysis.json": "80f5e876e93f973a6b58baf1160d4cc0f0ccedc9efbf0302c093660494bb0a3e"
+  }
+}

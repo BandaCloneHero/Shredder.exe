@@ -1,0 +1,384 @@
+{
+  "previous_chart": "musicas/Cazuza - Pro Dia Nascer Feliz (Stems e MIDI)/notes.mid",
+  "old_sha256": "25499f7fc53e5c2b0d702993d68869a27081a7a8c77c4635af622db01d317c9c",
+  "comparison_only_not_note_source": true,
+  "instruments": {
+    "guitar": {
+      "Easy": {
+        "old_notes": 191,
+        "new_notes": 270,
+        "old_attacks": 191,
+        "new_attacks": 270,
+        "old_lane_counts": {
+          "4": 60,
+          "2": 28,
+          "0": 27,
+          "1": 57,
+          "3": 19
+        },
+        "new_lane_counts": {
+          "1": 115,
+          "2": 118,
+          "0": 37
+        },
+        "old_onset_coverage": 0.07684918347742556,
+        "new_onset_coverage": 0.08069164265129683
+      },
+      "Medium": {
+        "old_notes": 284,
+        "new_notes": 318,
+        "old_attacks": 284,
+        "new_attacks": 318,
+        "old_lane_counts": {
+          "4": 87,
+          "2": 44,
+          "1": 88,
+          "0": 41,
+          "3": 24
+        },
+        "new_lane_counts": {
+          "1": 76,
+          "3": 97,
+          "2": 109,
+          "0": 36
+        },
+        "old_onset_coverage": 0.1143131604226705,
+        "new_onset_coverage": 0.10182516810758886
+      },
+      "Hard": {
+        "old_notes": 646,
+        "new_notes": 708,
+        "old_attacks": 397,
+        "new_attacks": 566,
+        "old_lane_counts": {
+          "4": 132,
+          "2": 120,
+          "3": 157,
+          "1": 174,
+          "0": 63
+        },
+        "new_lane_counts": {
+          "1": 83,
+          "2": 210,
+          "4": 177,
+          "3": 176,
+          "0": 62
+        },
+        "old_onset_coverage": 0.16042267050912584,
+        "new_onset_coverage": 0.1930835734870317
+      },
+      "Expert": {
+        "old_notes": 809,
+        "new_notes": 1087,
+        "old_attacks": 507,
+        "new_attacks": 786,
+        "old_lane_counts": {
+          "4": 169,
+          "2": 153,
+          "3": 195,
+          "0": 77,
+          "1": 215
+        },
+        "new_lane_counts": {
+          "1": 104,
+          "2": 307,
+          "4": 291,
+          "3": 310,
+          "0": 75
+        },
+        "old_onset_coverage": 0.20076849183477424,
+        "new_onset_coverage": 0.23535062439961577,
+        "possible_regressions": []
+      }
+    },
+    "bass": {
+      "Easy": {
+        "old_notes": 338,
+        "new_notes": 415,
+        "old_attacks": 338,
+        "new_attacks": 415,
+        "old_lane_counts": {
+          "3": 11,
+          "1": 150,
+          "4": 28,
+          "0": 83,
+          "2": 66
+        },
+        "new_lane_counts": {
+          "1": 248,
+          "2": 18,
+          "0": 149
+        },
+        "old_onset_coverage": 0.18332413031474323,
+        "new_onset_coverage": 0.1871893981225842
+      },
+      "Medium": {
+        "old_notes": 443,
+        "new_notes": 466,
+        "old_attacks": 443,
+        "new_attacks": 466,
+        "old_lane_counts": {
+          "3": 12,
+          "1": 197,
+          "4": 42,
+          "0": 109,
+          "2": 83
+        },
+        "new_lane_counts": {
+          "1": 290,
+          "3": 23,
+          "0": 93,
+          "2": 60
+        },
+        "old_onset_coverage": 0.23743787962451685,
+        "new_onset_coverage": 0.21369409166206516
+      },
+      "Hard": {
+        "old_notes": 760,
+        "new_notes": 707,
+        "old_attacks": 760,
+        "new_attacks": 707,
+        "old_lane_counts": {
+          "3": 18,
+          "1": 383,
+          "4": 60,
+          "0": 129,
+          "2": 170
+        },
+        "new_lane_counts": {
+          "1": 434,
+          "4": 32,
+          "0": 102,
+          "3": 43,
+          "2": 96
+        },
+        "old_onset_coverage": 0.39977912755383765,
+        "new_onset_coverage": 0.33517393705135284
+      },
+      "Expert": {
+        "old_notes": 828,
+        "new_notes": 786,
+        "old_attacks": 828,
+        "new_attacks": 786,
+        "old_lane_counts": {
+          "3": 25,
+          "1": 409,
+          "4": 76,
+          "0": 137,
+          "2": 181
+        },
+        "new_lane_counts": {
+          "1": 479,
+          "4": 35,
+          "0": 121,
+          "3": 47,
+          "2": 104
+        },
+        "old_onset_coverage": 0.4367752622860298,
+        "new_onset_coverage": 0.3627829928216455,
+        "possible_regressions": []
+      }
+    },
+    "drums": {
+      "Easy": {
+        "old_notes": 825,
+        "new_notes": 1238,
+        "old_attacks": 793,
+        "new_attacks": 1105,
+        "old_lane_counts": {
+          "1": 295,
+          "0": 352,
+          "2": 152,
+          "4": 25,
+          "3": 1
+        },
+        "new_lane_counts": {
+          "1": 257,
+          "2": 289,
+          "0": 509,
+          "4": 104,
+          "3": 79
+        },
+        "old_onset_coverage": 0.3582089552238806,
+        "new_onset_coverage": 0.5202558635394456
+      },
+      "Medium": {
+        "old_notes": 985,
+        "new_notes": 1500,
+        "old_attacks": 943,
+        "new_attacks": 1257,
+        "old_lane_counts": {
+          "1": 300,
+          "0": 491,
+          "2": 167,
+          "4": 26,
+          "3": 1
+        },
+        "new_lane_counts": {
+          "1": 301,
+          "2": 311,
+          "0": 657,
+          "4": 120,
+          "3": 111
+        },
+        "old_onset_coverage": 0.4058280028429282,
+        "new_onset_coverage": 0.5920398009950248
+      },
+      "Hard": {
+        "old_notes": 1188,
+        "new_notes": 1546,
+        "old_attacks": 1139,
+        "new_attacks": 1298,
+        "old_lane_counts": {
+          "1": 314,
+          "0": 652,
+          "2": 195,
+          "4": 26,
+          "3": 1
+        },
+        "new_lane_counts": {
+          "1": 309,
+          "2": 319,
+          "0": 665,
+          "4": 130,
+          "3": 123
+        },
+        "old_onset_coverage": 0.5031982942430704,
+        "new_onset_coverage": 0.6069651741293532
+      },
+      "Expert": {
+        "old_notes": 1195,
+        "new_notes": 1555,
+        "old_attacks": 1146,
+        "new_attacks": 1302,
+        "old_lane_counts": {
+          "1": 314,
+          "0": 652,
+          "2": 202,
+          "4": 26,
+          "3": 1
+        },
+        "new_lane_counts": {
+          "1": 309,
+          "2": 325,
+          "0": 665,
+          "4": 131,
+          "3": 125
+        },
+        "old_onset_coverage": 0.5088841506751954,
+        "new_onset_coverage": 0.6083866382373845,
+        "possible_regressions": []
+      }
+    },
+    "keys": {
+      "Easy": {
+        "old_notes": 294,
+        "new_notes": 375,
+        "old_attacks": 294,
+        "new_attacks": 375,
+        "old_lane_counts": {
+          "57": 58,
+          "59": 13,
+          "53": 76,
+          "48": 30,
+          "52": 4,
+          "55": 77,
+          "50": 36
+        },
+        "new_lane_counts": {
+          "52": 16,
+          "57": 47,
+          "53": 117,
+          "59": 23,
+          "48": 46,
+          "55": 101,
+          "50": 25
+        },
+        "old_onset_coverage": 0.1380186282811177,
+        "new_onset_coverage": 0.19729043183742592
+      },
+      "Medium": {
+        "old_notes": 493,
+        "new_notes": 740,
+        "old_attacks": 385,
+        "new_attacks": 451,
+        "old_lane_counts": {
+          "57": 84,
+          "48": 86,
+          "59": 33,
+          "53": 107,
+          "52": 7,
+          "50": 59,
+          "55": 117
+        },
+        "new_lane_counts": {
+          "52": 58,
+          "57": 108,
+          "53": 171,
+          "59": 47,
+          "48": 133,
+          "50": 85,
+          "55": 138
+        },
+        "old_onset_coverage": 0.1896697713801863,
+        "new_onset_coverage": 0.23624047417442845
+      },
+      "Hard": {
+        "old_notes": 750,
+        "new_notes": 1623,
+        "old_attacks": 580,
+        "new_attacks": 790,
+        "old_lane_counts": {
+          "57": 117,
+          "48": 138,
+          "59": 40,
+          "53": 151,
+          "52": 7,
+          "50": 107,
+          "55": 190
+        },
+        "new_lane_counts": {
+          "52": 157,
+          "57": 275,
+          "48": 279,
+          "53": 337,
+          "59": 87,
+          "50": 258,
+          "55": 230
+        },
+        "old_onset_coverage": 0.279424216765453,
+        "new_onset_coverage": 0.3835732430143946
+      },
+      "Expert": {
+        "old_notes": 854,
+        "new_notes": 1995,
+        "old_attacks": 647,
+        "new_attacks": 940,
+        "old_lane_counts": {
+          "57": 141,
+          "48": 157,
+          "52": 16,
+          "55": 204,
+          "59": 49,
+          "53": 167,
+          "50": 120
+        },
+        "new_lane_counts": {
+          "52": 213,
+          "57": 345,
+          "48": 317,
+          "53": 408,
+          "59": 113,
+          "50": 317,
+          "55": 282
+        },
+        "old_onset_coverage": 0.3090601185436071,
+        "new_onset_coverage": 0.43183742591024554,
+        "possible_regressions": [
+          "large density increase; check false notes"
+        ]
+      }
+    }
+  },
+  "limitation": "The old chart is not ground truth. Counts and onset coverage are regression signals, not accuracy scores."
+}
