@@ -1,0 +1,116 @@
+{
+  "songs": [
+    {
+      "folder": "/workspaces/Shredder.exe/musicas/Bon Jovi - Livin on a Prayer (Teste MP3)",
+      "status": "generated",
+      "previous_backup": "/workspaces/Shredder.exe/chart-backups/difficulty-revisions/Bon Jovi - Livin on a Prayer (Teste MP3)-20261012T113743360693Z-eb01ad2e",
+      "validation": {
+        "guitar": {
+          "previous_notes": 1331,
+          "notes": 467,
+          "attacks": 467,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.3289815562499996
+        },
+        "bass": {
+          "previous_notes": 961,
+          "notes": 470,
+          "attacks": 470,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.2892593249999891
+        },
+        "drums": {
+          "previous_notes": 2581,
+          "notes": 900,
+          "attacks": 455,
+          "max_simultaneous_including_kick": 2,
+          "minimum_attack_gap_seconds": 0.35953711874999783
+        },
+        "keys": {
+          "previous_notes": 2219,
+          "notes": 466,
+          "attacks": 466,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.3289815562499996
+        }
+      }
+    },
+    {
+      "folder": "/workspaces/Shredder.exe/musicas/Van Halen - Jump (Teste MP3)",
+      "status": "generated",
+      "previous_backup": "/workspaces/Shredder.exe/chart-backups/difficulty-revisions/Van Halen - Jump (Teste MP3)-20261012T113748163424Z-d91aa208",
+      "validation": {
+        "guitar": {
+          "previous_notes": 552,
+          "notes": 168,
+          "attacks": 168,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.32891918333333336
+        },
+        "bass": {
+          "previous_notes": 360,
+          "notes": 162,
+          "attacks": 162,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.2801550020833332
+        },
+        "drums": {
+          "previous_notes": 925,
+          "notes": 318,
+          "attacks": 163,
+          "max_simultaneous_including_kick": 2,
+          "minimum_attack_gap_seconds": 0.3595163166666637
+        },
+        "keys": {
+          "previous_notes": 733,
+          "notes": 173,
+          "attacks": 173,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.32891918333333336
+        }
+      }
+    },
+    {
+      "folder": "/workspaces/Shredder.exe/musicas/Chaosbay - 2 Billion",
+      "status": "generated",
+      "previous_backup": "/workspaces/Shredder.exe/chart-backups/difficulty-revisions/Chaosbay - 2 Billion-20261012T113750250428Z-98656481",
+      "validation": {
+        "guitar": {
+          "previous_notes": 1303,
+          "notes": 418,
+          "attacks": 418,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.3333491666666646
+        },
+        "bass": {
+          "previous_notes": 927,
+          "notes": 537,
+          "attacks": 537,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.29845575000000224
+        },
+        "drums": {
+          "previous_notes": 1551,
+          "notes": 776,
+          "attacks": 444,
+          "max_simultaneous_including_kick": 2,
+          "minimum_attack_gap_seconds": 0.38384300000001303
+        },
+        "keys5": {
+          "previous_notes": 944,
+          "notes": 353,
+          "attacks": 353,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.38384300000001303
+        },
+        "keys": {
+          "previous_notes": 944,
+          "notes": 353,
+          "attacks": 353,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.38384300000001303
+        }
+      }
+    }
+  ]
+}

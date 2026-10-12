@@ -33,6 +33,7 @@ from wav_chart_analysis import (INSTRUMENTS, VERSION, analyze, beat_analysis,
                                 difficulty_charts, musical_checks)
 from chart_library import Library, artifacts_valid, audit_legacy, legacy_candidates, metadata, source_id
 from chart_playability import accompany_keys, original_audio_layout, refine_groove
+from chart_difficulty_profile import apply_easy_medium, verify_profile
 
 
 def digest(path):
@@ -66,7 +67,7 @@ def implementation_hash():
     tree = ast.parse(source)
     functions = {'decode_stereo', 'mono', 'alignment', 'write_midi', 'export_audio'}
     parts = [digest(Path(__file__).parent/name) for name in (
-        'wav_chart_analysis.py', 'create_mp3_test_chart.py', 'chart_playability.py')]
+        'wav_chart_analysis.py', 'create_mp3_test_chart.py', 'chart_playability.py', 'chart_difficulty_profile.py')]
     parts.extend(ast.get_source_segment(source, node) for node in tree.body
                  if isinstance(node, ast.FunctionDef) and node.name in functions)
     analysis_hash = hashlib.sha256('\n'.join(parts).encode()).hexdigest()
@@ -366,6 +367,9 @@ def process(folder, args, work, implementation):
     saved_options = read_json(prior/'analysis.json').get('chart_options', {}) if prior else {}
     selected_difficulty = getattr(args, 'difficulty', None) or saved_options.get('difficulty', 'all')
     drum_order = getattr(args, 'drum_order', None) or saved_options.get('drum_order', 'snare,hihat,tom,crash')
+    playability_profile = getattr(args, 'playability_profile', None) or saved_options.get('playability_profile', 'standard')
+    if playability_profile in ('easy', 'easy-medium'):
+        selected_difficulty = 'Easy' if playability_profile == 'easy' else 'Medium'
     def preference(key):
         explicit = getattr(args, key, None)
         return bool(saved_options.get(key, False) if explicit is None else explicit)
@@ -375,6 +379,8 @@ def process(folder, args, work, implementation):
     chart_options = {'difficulty': selected_difficulty, 'drum_order': drum_order,
                      'original_audio': original_audio, 'keys_accompaniment': keys_accompaniment,
                      'drum_groove': drum_groove}
+    if playability_profile != 'standard':
+        chart_options['playability_profile'] = playability_profile
     if selected_difficulty != 'all' or drum_order != 'snare,hihat,tom,crash' or any((original_audio, keys_accompaniment, drum_groove)):
         payload['chart_options'] = chart_options
     signature = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
@@ -489,6 +495,11 @@ def process(folder, args, work, implementation):
             event['pitches'] = [remap[p] for p in event['pitches']]
         charts['drums'] = {d: [[s, e, remap[lane]] for s, e, lane in notes]
                            for d, notes in charts['drums'].items()}
+    profile_report = None
+    if playability_profile in ('easy', 'easy-medium'):
+        snare_lane = drum_order.split(',').index('snare')+1
+        charts = apply_easy_medium(charts, beat['bpm'], snare_lane, difficulty=selected_difficulty)
+        profile_report = verify_profile(charts, difficulty=selected_difficulty)
     for instrument in INSTRUMENTS:
         if selected_difficulty != 'all':
             charts[instrument] = {d: notes if d == selected_difficulty else []
@@ -503,7 +514,7 @@ def process(folder, args, work, implementation):
     staging = work/'song-output'
     staging.mkdir()
     midi_report = write_midi(charts, duration, beat['bpm'], staging/'notes.mid')
-    if args.instrument and hashes == prior_report['source_hashes'] and original_audio == prior_report['audio_export'].get('original_recording_only', False):
+    if prior_report and hashes == prior_report['source_hashes'] and original_audio == prior_report['audio_export'].get('original_recording_only', False):
         for path in prior.glob('*.ogg'):
             shutil.copy2(path, staging/path.name)
         audio_report = prior_report['audio_export']
@@ -513,6 +524,7 @@ def process(folder, args, work, implementation):
               'source_folder': str(folder.resolve()), 'source_identity': source_id(folder),
               'name': name, 'artist': artist, 'analysis_engine_hash': engine_hash,
               'chart_options': chart_options, 'keyboard_accompaniment': accompaniment_report,
+              'playability_profile_validation': profile_report,
               'source_hashes': hashes, 'source_midi_used': False,
               'duration_seconds': duration, 'alignment': alignment_report,
               'beat_analysis': beat, 'charts': charts, 'musical_checks': checks,
@@ -530,7 +542,7 @@ def process(folder, args, work, implementation):
     dump(staging/'analysis.json', report)
     for i in INSTRUMENTS:
         dump(staging/(i+'.analysis.json'), analyses[i])
-    ranks = {i: (3 if any(charts[i].values()) else -1) for i in INSTRUMENTS}
+    ranks = {i: ((1 if playability_profile in ('easy', 'easy-medium') else 3) if any(charts[i].values()) else -1) for i in INSTRUMENTS}
     (staging/'song.ini').write_text(f'''[song]
 name = {name} (WAV direto)
 artist = {artist}
@@ -578,6 +590,7 @@ def main():
     parser.add_argument('--artist', default=None, help='fallback; song.json or the existing chart supplies it if omitted')
     parser.add_argument('--resume', action='store_true', help='skip verified complete songs; reuse hashed analyses')
     parser.add_argument('--difficulty', choices=['all', *DIFFICULTIES], help='render only the selected difficulty; inherit existing preference on resume')
+    parser.add_argument('--playability-profile', choices=['easy', 'easy-medium', 'standard'], default='easy', help='default: one approachable Easy chart; standard preserves the previous difficulty policy')
     parser.add_argument('--drum-order', choices=['snare,hihat,tom,crash', 'hihat,snare,tom,crash'], help='four pads from left to right; inherit existing preference on resume')
     parser.add_argument('--original-audio', action=argparse.BooleanOptionalAction, default=None, help='export only song.ogg from the full original recording, with verified common alignment')
     parser.add_argument('--keys-accompaniment', action=argparse.BooleanOptionalAction, default=None, help='add explicit gameplay accompaniment in long keyboard gaps')

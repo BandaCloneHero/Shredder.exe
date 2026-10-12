@@ -1,6 +1,7 @@
 # Charts YARG diretamente de WAVs
 
-O gerador cria charts experimentais dos quatro instrumentos e quatro dificuldades.
+O gerador cria charts experimentais dos quatro instrumentos. O padrão agora é
+uma dificuldade única **Easy (Fácil)**, com perfil de jogabilidade entre Easy e Medium.
 Cada origem tem uma única pasta principal em `OUTPUT/Artista - Música`.
 `--output` é a pasta jogável e usa `musicas` por padrão. Cadastre `musicas` no YARG.
 Cache, índice, relatórios e revisões ficam em `chart-backups/musicas-state`, fora
@@ -24,13 +25,13 @@ python3 -m venv .venv-charts
 
 Gerar somente a música de teste:
 
-Para “Exagerado”, gerar apenas Expert com os quatro pads na ordem
+Para “Exagerado”, gerar apenas Easy (Fácil) com o perfil entre Easy e Medium com os quatro pads na ordem
 chimbal, caixa, tom e crash (bumbo separado):
 
 ```bash
 .venv-charts/bin/python scripts/generate_charts_batch.py \
   "musicas/audios separados" --output "musicas" --song "Exagerado" \
-  --artist "Cazuza" --difficulty Expert --drum-order hihat,snare,tom,crash --resume
+  --artist "Cazuza" --playability-profile easy --drum-order hihat,snare,tom,crash --resume
 ```
 
 As preferências ficam em `analysis.json`. Ao retomar sem essas opções, o
@@ -42,7 +43,7 @@ Exemplo com a configuração de quatro dificuldades:
 ```bash
 .venv-charts/bin/python scripts/generate_charts_batch.py \
   "musicas/audios separados" --output "musicas" \
-  --song "Pro Dia Nascer Feliz" --artist "Cazuza" --resume \
+  --song "Pro Dia Nascer Feliz" --artist "Cazuza" --playability-profile standard --difficulty all --resume \
   --compare "chart-backups/Pro Dia Nascer Feliz/Cazuza - Pro Dia Nascer Feliz (Stems e MIDI)"
 ```
 
@@ -137,16 +138,46 @@ Rodar testes:
 .venv-charts/bin/python scripts/test_wav_charts.py
 .venv-charts/bin/python scripts/test_chart_library.py
 .venv-charts/bin/python scripts/test_chart_playability.py
+.venv-charts/bin/python scripts/test_chart_difficulty_profile.py
 ```
+
+## Perfil padrão entre Easy e Medium
+
+O perfil padrão `easy` coloca as notas em **Easy (Fácil)**. Os outros três níveis
+não recebem notas jogáveis. O perfil opcional `easy-medium` continua disponível
+para publicar a mesma política leve em Medium.
+
+- Bateria: no máximo duas batidas simultâneas **incluindo bumbo**; prioriza
+  bumbo/caixa, reduz ornamentos e viradas rápidas; ataques separados por
+  aproximadamente 280–380 ms, sem deslocar para uma grade nova.
+- Guitarra/baixo: uma nota por vez, quatro botões e sustentações menores.
+- Teclado: uma tecla por vez, sete teclas brancas e sem sustentações sobrepostas.
+- Áudio e sincronização da versão anterior preservados; anteriores em backups.
+
+O novo padrão de `generate_charts_batch.py` é `--playability-profile easy`.
+Para usar a política antiga, indique `--playability-profile standard` e escolha
+`--difficulty Expert`, `Medium`, `Easy`, `Hard` ou `all`.
+
+Charts existentes que não vieram do gerador WAV podem ser simplificados lendo
+somente o **MIDI final de jogo**, sem transcrição musical intermediária:
+
+```bash
+.venv-charts/bin/python scripts/revise_chart_difficulty.py \
+  --song "Van Halen - Jump (Teste MP3)"
+```
+
+O script preserva áudios, mapa de tempo, vocais e eventos de palco, arquiva a
+pasta anterior fora de `musicas` e reutiliza a revisão ao repetir o comando.
+Charts gerenciados por `complete.json` devem passar pelo gerador WAV.
 
 ## Gravação original, acompanhamento e groove
 
-Para as duas músicas do Cazuza, a revisão de áudio/jogabilidade usa:
+Para as duas músicas do Cazuza, gerar o perfil atual com áudio original e acompanhamento:
 
 ```bash
 .venv-charts/bin/python scripts/generate_charts_batch.py \
   "musicas/audios separados" --output "musicas" --song "Exagerado" \
-  --difficulty Expert --drum-order hihat,snare,tom,crash \
+  --playability-profile easy --drum-order hihat,snare,tom,crash \
   --original-audio --keys-accompaniment --drum-groove --resume
 ```
 

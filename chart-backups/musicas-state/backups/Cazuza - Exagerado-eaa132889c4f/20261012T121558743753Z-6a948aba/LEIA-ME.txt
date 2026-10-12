@@ -1,0 +1,6 @@
+Chart gerado diretamente dos quatro WAVs. Nenhum MIDI fonte foi utilizado.
+Bateria: quatro pads (hihat,snare,tom,crash) + bumbo; teclado: sete teclas brancas.
+Dificuldade: Medium.
+Abra analysis.json e os *.analysis.json para revisar notas, trechos ausentes e incertezas.
+Validacao estrutural e evidencias espectrais nao provam fidelidade musical.
+Nao testado em jogo ou validado por escuta.

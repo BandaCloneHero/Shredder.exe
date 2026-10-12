@@ -1,0 +1,186 @@
+{
+  "songs": [
+    {
+      "song": "Bon Jovi - Livin on a Prayer (Teste MP3)",
+      "midi_difficulty": "Easy",
+      "actual_midi_validation": {
+        "PART GUITAR": {
+          "notes": 467,
+          "attacks": 467,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.3289815562499996
+        },
+        "PART BASS": {
+          "notes": 470,
+          "attacks": 470,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.2892593249999891
+        },
+        "PART DRUMS": {
+          "notes": 900,
+          "attacks": 455,
+          "max_simultaneous_including_kick": 2,
+          "minimum_attack_gap_seconds": 0.35953711874999783
+        },
+        "PART REAL_KEYS_E": {
+          "notes": 466,
+          "attacks": 466,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.3289815562499996
+        }
+      },
+      "audio_unchanged": true,
+      "timing_lanes_and_holds_match_previous_medium_chart": true,
+      "backup": "/workspaces/Shredder.exe/chart-backups/difficulty-revisions/Bon Jovi - Livin on a Prayer (Teste MP3)-20261012T121525902604Z-94d96527",
+      "notes_sha256": "d3cc11e598e744dc14d7d04794e4172cc38120bd39977a2c3a848c9a0f0ffbbd"
+    },
+    {
+      "song": "Cazuza - Exagerado",
+      "midi_difficulty": "Easy",
+      "actual_midi_validation": {
+        "PART GUITAR": {
+          "notes": 398,
+          "attacks": 398,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.32925149999999803
+        },
+        "PART BASS": {
+          "notes": 399,
+          "attacks": 399,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.289009649999997
+        },
+        "PART DRUMS": {
+          "notes": 750,
+          "attacks": 474,
+          "max_simultaneous_including_kick": 2,
+          "minimum_attack_gap_seconds": 0.3091305749999833
+        },
+        "PART REAL_KEYS_E": {
+          "notes": 463,
+          "attacks": 463,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.32467856249999727
+        }
+      },
+      "audio_unchanged": true,
+      "timing_lanes_and_holds_match_previous_medium_chart": true,
+      "backup": "/workspaces/Shredder.exe/chart-backups/musicas-state/backups/Cazuza - Exagerado-eaa132889c4f/20261012T121558743753Z-6a948aba",
+      "notes_sha256": "9d3286cc6c94fe5479e6dd4f7365abbda39d29ab137918181b18085f417f4fab"
+    },
+    {
+      "song": "Cazuza - Pro Dia Nascer Feliz",
+      "midi_difficulty": "Easy",
+      "actual_midi_validation": {
+        "PART GUITAR": {
+          "notes": 288,
+          "attacks": 288,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.32925172499997757
+        },
+        "PART BASS": {
+          "notes": 462,
+          "attacks": 462,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.28435376249998967
+        },
+        "PART DRUMS": {
+          "notes": 824,
+          "attacks": 604,
+          "max_simultaneous_including_kick": 2,
+          "minimum_attack_gap_seconds": 0.28518520624999155
+        },
+        "PART REAL_KEYS_E": {
+          "notes": 476,
+          "attacks": 476,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.3201058437499853
+        }
+      },
+      "audio_unchanged": true,
+      "timing_lanes_and_holds_match_previous_medium_chart": true,
+      "backup": "/workspaces/Shredder.exe/chart-backups/musicas-state/backups/Cazuza - Pro Dia Nascer Feliz-6018935199be/20261012T121645283200Z-0273b038",
+      "notes_sha256": "a14869998edb0430e4fb0577d4b205a5785e504b5ed2e51f3cf60929cc98106c"
+    },
+    {
+      "song": "Chaosbay - 2 Billion",
+      "midi_difficulty": "Easy",
+      "actual_midi_validation": {
+        "PART DRUMS": {
+          "notes": 776,
+          "attacks": 444,
+          "max_simultaneous_including_kick": 2,
+          "minimum_attack_gap_seconds": 0.38384300000001303
+        },
+        "PART BASS": {
+          "notes": 537,
+          "attacks": 537,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.29845575000000224
+        },
+        "PART GUITAR": {
+          "notes": 418,
+          "attacks": 418,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.3333491666666646
+        },
+        "PART KEYS": {
+          "notes": 353,
+          "attacks": 353,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.38384300000001303
+        },
+        "PART REAL_KEYS_E": {
+          "notes": 353,
+          "attacks": 353,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.38384300000001303
+        }
+      },
+      "audio_unchanged": true,
+      "timing_lanes_and_holds_match_previous_medium_chart": true,
+      "backup": "/workspaces/Shredder.exe/chart-backups/difficulty-revisions/Chaosbay - 2 Billion-20261012T121527197826Z-e68c25e6",
+      "notes_sha256": "477d322923d5c5248343d38e1e6fde0edf47b013587fd0cfdab32e8e73c2e4aa"
+    },
+    {
+      "song": "Van Halen - Jump (Teste MP3)",
+      "midi_difficulty": "Easy",
+      "actual_midi_validation": {
+        "PART GUITAR": {
+          "notes": 168,
+          "attacks": 168,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.32891918333333336
+        },
+        "PART BASS": {
+          "notes": 162,
+          "attacks": 162,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.2801550020833332
+        },
+        "PART DRUMS": {
+          "notes": 318,
+          "attacks": 163,
+          "max_simultaneous_including_kick": 2,
+          "minimum_attack_gap_seconds": 0.3595163166666637
+        },
+        "PART REAL_KEYS_E": {
+          "notes": 173,
+          "attacks": 173,
+          "max_simultaneous_including_kick": 1,
+          "minimum_attack_gap_seconds": 0.32891918333333336
+        }
+      },
+      "audio_unchanged": true,
+      "timing_lanes_and_holds_match_previous_medium_chart": true,
+      "backup": "/workspaces/Shredder.exe/chart-backups/difficulty-revisions/Van Halen - Jump (Teste MP3)-20261012T121526915703Z-04f4c37f",
+      "notes_sha256": "4a83d3d233c42b74e5eb5a2b1a7138c52d1b04ac28654e384ff7f6af143f3fbe"
+    }
+  ],
+  "tests_passed": 39,
+  "in_game_test": "not run",
+  "listening_validation": "not run",
+  "musical_correctness_certified": false,
+  "full_73_song_batch_run": false,
+  "repeat_execution": "all five skipped_complete; no additional song folder"
+}

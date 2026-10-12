@@ -1,0 +1,42 @@
+{
+  "songs": [
+    {
+      "folder": "Bon Jovi - Livin on a Prayer (Teste MP3)",
+      "playable_note_counts": {
+        "Medium": 2303
+      },
+      "notes_sha256": "2cc273d1cebf2b08f0b63814dc5725c2296bdff947d72040795d0b51ac237dc2"
+    },
+    {
+      "folder": "Cazuza - Exagerado",
+      "playable_note_counts": {
+        "Medium": 2010
+      },
+      "notes_sha256": "93d99931e7d2f5eb312b2002e366f25c3c510379ad95f84c2ecf33245559f5d6"
+    },
+    {
+      "folder": "Cazuza - Pro Dia Nascer Feliz",
+      "playable_note_counts": {
+        "Medium": 2050
+      },
+      "notes_sha256": "d5c1930090cd3f9ba5ed726f7310254f9d8cc6298aeed44bb2004d9a2a4a0c01"
+    },
+    {
+      "folder": "Chaosbay - 2 Billion",
+      "playable_note_counts": {
+        "Medium": 2437
+      },
+      "notes_sha256": "4a99c958e87466aaa79a40c26d5cb2a2e2e0637740138184ef6d7222c8ec6d4d"
+    },
+    {
+      "folder": "Van Halen - Jump (Teste MP3)",
+      "playable_note_counts": {
+        "Medium": 821
+      },
+      "notes_sha256": "b58bc9474cd03e2b36a1ca871ab23026479ce370305144142773e428bd92bd86"
+    }
+  ],
+  "runtime_unity_test": "not run",
+  "runtime_cause": "unconfirmed; compare loaded source paths and file hashes in Unity",
+  "audio_files_included": false
+}

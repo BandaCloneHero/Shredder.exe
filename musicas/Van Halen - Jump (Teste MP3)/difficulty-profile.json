@@ -1,0 +1,40 @@
+{
+  "profile": "easy-medium",
+  "midi_difficulty": "Easy",
+  "max_drum_hits_including_kick": 2,
+  "notes_sha256": "4a83d3d233c42b74e5eb5a2b1a7138c52d1b04ac28654e384ff7f6af143f3fbe",
+  "validation": {
+    "guitar": {
+      "previous_notes": 168,
+      "notes": 168,
+      "attacks": 168,
+      "max_simultaneous_including_kick": 1,
+      "minimum_attack_gap_seconds": 0.32891918333333336
+    },
+    "bass": {
+      "previous_notes": 162,
+      "notes": 162,
+      "attacks": 162,
+      "max_simultaneous_including_kick": 1,
+      "minimum_attack_gap_seconds": 0.2801550020833332
+    },
+    "drums": {
+      "previous_notes": 318,
+      "notes": 318,
+      "attacks": 163,
+      "max_simultaneous_including_kick": 2,
+      "minimum_attack_gap_seconds": 0.3595163166666637
+    },
+    "keys": {
+      "previous_notes": 173,
+      "notes": 173,
+      "attacks": 173,
+      "max_simultaneous_including_kick": 1,
+      "minimum_attack_gap_seconds": 0.32891918333333336
+    }
+  },
+  "audio_unchanged": true,
+  "in_game_test": "not run",
+  "created_utc": "20261012T121526915703Z",
+  "previous_playability_preserved": true
+}

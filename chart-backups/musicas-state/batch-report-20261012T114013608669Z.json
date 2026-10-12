@@ -1,0 +1,10 @@
+{
+  "version": "wav-direct-1",
+  "songs": [
+    {
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Exagerado",
+      "status": "skipped_complete",
+      "output": "/workspaces/Shredder.exe/musicas/Cazuza - Exagerado"
+    }
+  ]
+}
