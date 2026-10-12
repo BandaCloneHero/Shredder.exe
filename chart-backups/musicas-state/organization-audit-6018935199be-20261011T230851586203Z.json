@@ -1,0 +1,219 @@
+{
+  "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+  "latest_valid": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-db3a5dd045",
+  "folders": [
+    {
+      "folder": "Pro Dia Nascer Feliz-60189351-5c3a89c345",
+      "created_utc": "2026-10-11T18:29:41.535246+00:00",
+      "hashes_valid": true,
+      "latest_valid": false,
+      "classification": "older_test_revision",
+      "duplicate_of": null,
+      "reprocessed_instrument": null,
+      "notes_sha256": "034159028f8c3b0c1b30a8844225da11bdb60210164cb100adf1b25e6b0a1ccd",
+      "expert_notes": {
+        "guitar": 788,
+        "bass": 1377,
+        "drums": 2072,
+        "keys": 31
+      }
+    },
+    {
+      "folder": "Pro Dia Nascer Feliz-60189351-110d430927",
+      "created_utc": "2026-10-11T18:33:29.835836+00:00",
+      "hashes_valid": true,
+      "latest_valid": false,
+      "classification": "older_test_revision",
+      "duplicate_of": null,
+      "reprocessed_instrument": null,
+      "notes_sha256": "e68922e579626f1768f7bfa6b89a5cf3b729e850217111795682c247631eb2e7",
+      "expert_notes": {
+        "guitar": 788,
+        "bass": 866,
+        "drums": 2072,
+        "keys": 1681
+      }
+    },
+    {
+      "folder": "Pro Dia Nascer Feliz-60189351-6fcd6703f4",
+      "created_utc": "2026-10-11T18:37:10.170101+00:00",
+      "hashes_valid": true,
+      "latest_valid": false,
+      "classification": "older_test_revision",
+      "duplicate_of": null,
+      "reprocessed_instrument": null,
+      "notes_sha256": "8bcb0bbf984ae2e8b1d9059b070b76193114800ab96ca85c9c217b1b5603d908",
+      "expert_notes": {
+        "guitar": 1087,
+        "bass": 786,
+        "drums": 1874,
+        "keys": 1995
+      }
+    },
+    {
+      "folder": "Pro Dia Nascer Feliz-60189351-1ea6dfe0a9",
+      "created_utc": "2026-10-11T18:40:51.248946+00:00",
+      "hashes_valid": true,
+      "latest_valid": false,
+      "classification": "older_test_revision",
+      "duplicate_of": null,
+      "reprocessed_instrument": null,
+      "notes_sha256": "f7b90e91f2a32ced2fb7d629eae4c53a153411d5e3a3bcac1ee223eec4c5a075",
+      "expert_notes": {
+        "guitar": 1087,
+        "bass": 786,
+        "drums": 1555,
+        "keys": 1995
+      }
+    },
+    {
+      "folder": "Pro Dia Nascer Feliz-60189351-f965746f8a",
+      "created_utc": "2026-10-11T18:43:58.736041+00:00",
+      "hashes_valid": true,
+      "latest_valid": false,
+      "classification": "older_test_revision",
+      "duplicate_of": null,
+      "reprocessed_instrument": null,
+      "notes_sha256": "5d1fd3303a228df24941d9933375e47edcb290f73c86e5112945c90326a4f58b",
+      "expert_notes": {
+        "guitar": 1087,
+        "bass": 786,
+        "drums": 1555,
+        "keys": 1995
+      }
+    },
+    {
+      "folder": "Pro Dia Nascer Feliz-60189351-f965746f8a-r2",
+      "created_utc": "2026-10-11T18:44:30.022147+00:00",
+      "hashes_valid": true,
+      "latest_valid": false,
+      "classification": "duplicate_playable_files",
+      "duplicate_of": "Pro Dia Nascer Feliz-60189351-f965746f8a",
+      "reprocessed_instrument": "drums",
+      "notes_sha256": "5d1fd3303a228df24941d9933375e47edcb290f73c86e5112945c90326a4f58b",
+      "expert_notes": {
+        "guitar": 1087,
+        "bass": 786,
+        "drums": 1555,
+        "keys": 1995
+      }
+    },
+    {
+      "folder": "Pro Dia Nascer Feliz-60189351-db3a5dd045",
+      "created_utc": "2026-10-11T18:46:58.829440+00:00",
+      "hashes_valid": true,
+      "latest_valid": true,
+      "classification": "latest_valid",
+      "duplicate_of": null,
+      "reprocessed_instrument": null,
+      "notes_sha256": "e5079c0f2e9e8d0eeca6479da16912448270aa1ad9b7f70c265966aff206ce62",
+      "expert_notes": {
+        "guitar": 1087,
+        "bass": 786,
+        "drums": 1555,
+        "keys": 1995
+      }
+    }
+  ],
+  "batch_reports": [
+    {
+      "report": "batch-report-20261011T182941733509Z.json",
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+      "status": "generated",
+      "output": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-5c3a89c345",
+      "elapsed_seconds": 109.72790785400002,
+      "expert_notes": {
+        "guitar": 788,
+        "bass": 1377,
+        "drums": 2072,
+        "keys": 31
+      }
+    },
+    {
+      "report": "batch-report-20261011T183330012558Z.json",
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+      "status": "generated",
+      "output": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-110d430927",
+      "elapsed_seconds": 97.70946653299961,
+      "expert_notes": {
+        "guitar": 788,
+        "bass": 866,
+        "drums": 2072,
+        "keys": 1681
+      }
+    },
+    {
+      "report": "batch-report-20261011T183710384828Z.json",
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+      "status": "generated",
+      "output": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-6fcd6703f4",
+      "elapsed_seconds": 95.29075030799959,
+      "expert_notes": {
+        "guitar": 1087,
+        "bass": 786,
+        "drums": 1874,
+        "keys": 1995
+      }
+    },
+    {
+      "report": "batch-report-20261011T184051427757Z.json",
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+      "status": "generated",
+      "output": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-1ea6dfe0a9",
+      "elapsed_seconds": 97.20113108499982,
+      "expert_notes": {
+        "guitar": 1087,
+        "bass": 786,
+        "drums": 1555,
+        "keys": 1995
+      }
+    },
+    {
+      "report": "batch-report-20261011T184358934441Z.json",
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+      "status": "generated",
+      "output": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-f965746f8a",
+      "elapsed_seconds": 107.450407499,
+      "expert_notes": {
+        "guitar": 1087,
+        "bass": 786,
+        "drums": 1555,
+        "keys": 1995
+      }
+    },
+    {
+      "report": "batch-report-20261011T184430225369Z.json",
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+      "status": "generated",
+      "output": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-f965746f8a-r2",
+      "elapsed_seconds": 17.989062798000305,
+      "expert_notes": {
+        "guitar": 1087,
+        "bass": 786,
+        "drums": 1555,
+        "keys": 1995
+      }
+    },
+    {
+      "report": "batch-report-20261011T184658997765Z.json",
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+      "status": "generated",
+      "output": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-db3a5dd045",
+      "elapsed_seconds": 114.75377008899977,
+      "expert_notes": {
+        "guitar": 1087,
+        "bass": 786,
+        "drums": 1555,
+        "keys": 1995
+      }
+    },
+    {
+      "report": "batch-report-20261011T184713008359Z.json",
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+      "status": "skipped_complete",
+      "output": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-db3a5dd045"
+    }
+  ],
+  "validity_scope": "File integrity; MIDI/audio validation is recorded separately. Musical correctness is unconfirmed.",
+  "main_output": "/workspaces/Shredder.exe/musicas/charts-wav/library/Cazuza - Pro Dia Nascer Feliz"
+}

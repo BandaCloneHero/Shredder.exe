@@ -1,0 +1,11 @@
+{
+  "version": "wav-direct-1",
+  "songs": [
+    {
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+      "status": "organized_existing",
+      "output": "/workspaces/Shredder.exe/musicas/charts-wav/library/Cazuza - Pro Dia Nascer Feliz",
+      "audio_processed": false
+    }
+  ]
+}

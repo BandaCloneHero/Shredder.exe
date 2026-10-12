@@ -1,0 +1,51 @@
+{
+  "latest_retained": "/workspaces/Shredder.exe/musicas/charts-wav/batch-report-20261011T230934080216Z.json",
+  "reports": [
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/batch-report-20261011T182941733509Z.json",
+      "archived": "/workspaces/Shredder.exe/chart-backups/batch-reports/batch-report-20261011T182941733509Z.json",
+      "sha256": "6b45f15709a642691408774e5b53958f6e2e00483adcea87ea778d1c8a5972da"
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/batch-report-20261011T183330012558Z.json",
+      "archived": "/workspaces/Shredder.exe/chart-backups/batch-reports/batch-report-20261011T183330012558Z.json",
+      "sha256": "973768a3e55be9462c4bfb00ee9704d35edad62fdad87fa547c227520f09e5ca"
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/batch-report-20261011T183710384828Z.json",
+      "archived": "/workspaces/Shredder.exe/chart-backups/batch-reports/batch-report-20261011T183710384828Z.json",
+      "sha256": "b7555a008006debdd325ef82962bd2cd8251b58871ade33ec939ec862e8790b2"
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/batch-report-20261011T184051427757Z.json",
+      "archived": "/workspaces/Shredder.exe/chart-backups/batch-reports/batch-report-20261011T184051427757Z.json",
+      "sha256": "1a8b91dcfee3d0976964fd50dd0bb27fd5f9ccd941718eb67be062de1e52c2a8"
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/batch-report-20261011T184358934441Z.json",
+      "archived": "/workspaces/Shredder.exe/chart-backups/batch-reports/batch-report-20261011T184358934441Z.json",
+      "sha256": "196a9a2ed43b9910dda1eec7d546b8b64a6e0b8dc846f7c474bda9738e3f145f"
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/batch-report-20261011T184430225369Z.json",
+      "archived": "/workspaces/Shredder.exe/chart-backups/batch-reports/batch-report-20261011T184430225369Z.json",
+      "sha256": "3a4dfd29472b366375b1d0c05757f9778f1066e2ce020b81434ede9a7959d67b"
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/batch-report-20261011T184658997765Z.json",
+      "archived": "/workspaces/Shredder.exe/chart-backups/batch-reports/batch-report-20261011T184658997765Z.json",
+      "sha256": "1b7e98fd2927bac3ae094113ebe554485652b7a1a7a739c5d426815fee1e694e"
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/batch-report-20261011T184713008359Z.json",
+      "archived": "/workspaces/Shredder.exe/chart-backups/batch-reports/batch-report-20261011T184713008359Z.json",
+      "sha256": "7db19fb68ea1d0b2a7794f4dc56ad9b55bfe9cb3ee0459fea560c41f3f887748"
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/batch-report-20261011T230851619537Z.json",
+      "archived": "/workspaces/Shredder.exe/chart-backups/batch-reports/batch-report-20261011T230851619537Z.json",
+      "sha256": "dc7fc2be18414be4c9ec3f776283d260aaa9108af6710a348c33c56acb878a52"
+    }
+  ],
+  "hashes_verified": true
+}

@@ -1,0 +1,17 @@
+{
+  "version": "wav-direct-1",
+  "songs": [
+    {
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+      "status": "generated",
+      "output": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-5c3a89c345",
+      "elapsed_seconds": 109.72790785400002,
+      "expert_notes": {
+        "guitar": 788,
+        "bass": 1377,
+        "drums": 2072,
+        "keys": 31
+      }
+    }
+  ]
+}

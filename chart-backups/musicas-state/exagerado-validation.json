@@ -1,0 +1,65 @@
+{
+  "song": "/workspaces/Shredder.exe/musicas/Cazuza - Exagerado",
+  "difficulty": "Expert",
+  "drum_order_left_to_right": [
+    "hihat",
+    "snare",
+    "tom",
+    "crash"
+  ],
+  "kick_separate": true,
+  "artifact_hashes_valid": true,
+  "playable_midi_note_counts": {
+    "TEMPO": 0,
+    "EVENTS": 0,
+    "PART GUITAR": 1298,
+    "PART BASS": 790,
+    "PART DRUMS": 857,
+    "PART REAL_KEYS_E": 0,
+    "PART REAL_KEYS_M": 0,
+    "PART REAL_KEYS_H": 0,
+    "PART REAL_KEYS_X": 674
+  },
+  "detected_drum_classes": {
+    "snare": 211,
+    "kick": 263,
+    "tom": 215,
+    "crash": 94,
+    "hihat": 74
+  },
+  "expert_drum_lane_counts": {
+    "2": 211,
+    "0": 263,
+    "3": 215,
+    "4": 94,
+    "1": 74
+  },
+  "alignment": {
+    "sample_rate": 44100,
+    "samples": 9944064,
+    "equal_sample_counts": true,
+    "automatic_shifts": false,
+    "sample_origin": "all decoded files start at sample zero",
+    "status": "unverified_common_origin",
+    "warning": "Equal lengths do not prove inter-stem synchronization. No mix provided."
+  },
+  "warnings": {
+    "guitar": [
+      "909 attacks have uncertain pitch; spectral fit does not certify chord accuracy.",
+      "Some attacks/holds have weak audio support; inspect listed times."
+    ],
+    "bass": [
+      "More than 25% of independent onsets have no Expert attack; inspect listed times."
+    ],
+    "drums": [
+      "Ambiguous drum body/rattle or cymbal decay packets were found; review their timestamps."
+    ],
+    "keys": [
+      "798 keyboard events have weak spectral explanation; review separation bleed and false notes.",
+      "Some attacks/holds have weak audio support; inspect listed times."
+    ]
+  },
+  "in_game_test": "not run",
+  "listening_validation": "not run",
+  "musical_correctness_certified": false
+}

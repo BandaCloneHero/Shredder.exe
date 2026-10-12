@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate immutable YARG song folders from four separated WAV stems.
+"""Generate one main YARG song folder per source, with separate revision backups.
 
 Local processing only. All source MIDIs are ignored. See WAV_CHARTS.md.
 """
@@ -10,6 +10,7 @@ os.environ.setdefault('OPENBLAS_NUM_THREADS', '1')
 os.environ.setdefault('OMP_NUM_THREADS', '1')
 
 import argparse
+import ast
 import collections
 import datetime
 import hashlib
@@ -30,6 +31,7 @@ from scipy import signal
 from create_mp3_test_chart import DIFFICULTIES, PPQ, make_track, validate
 from wav_chart_analysis import (INSTRUMENTS, VERSION, analyze, beat_analysis,
                                 difficulty_charts, musical_checks)
+from chart_library import Library, artifacts_valid, audit_legacy, legacy_candidates, metadata, source_id
 
 
 def digest(path):
@@ -57,9 +59,22 @@ def command(args):
 
 
 def implementation_hash():
-    # Invalidate caches when either analysis, policy, or reused export changes.
-    return hashlib.sha256(''.join(digest(Path(__file__).parent/name) for name in (
-        'generate_charts_batch.py', 'wav_chart_analysis.py', 'create_mp3_test_chart.py')).encode()).hexdigest()
+    # Organization, logging and CLI changes do not invalidate musical analysis.
+    # Include the DSP modules and the audio/MIDI functions in this file.
+    source = Path(__file__).read_text(encoding='utf-8')
+    tree = ast.parse(source)
+    functions = {'decode_stereo', 'mono', 'alignment', 'write_midi', 'export_audio'}
+    parts = [digest(Path(__file__).parent/name) for name in (
+        'wav_chart_analysis.py', 'create_mp3_test_chart.py')]
+    parts.extend(ast.get_source_segment(source, node) for node in tree.body
+                 if isinstance(node, ast.FunctionDef) and node.name in functions)
+    analysis_hash = hashlib.sha256('\n'.join(parts).encode()).hexdigest()
+    # Compatibility with the existing final charts/cache: this exact DSP
+    # snapshot used a hash of the WHOLE former batch script. No chart is blessed
+    # merely because its title matches. Any DSP/export change breaks this bridge.
+    if analysis_hash == 'dda10086411f4b28093f29a6c602a49fa04566f491b166d4efdfdab5b85ec88f':
+        return '8674c72fe21d9a800d182b3435d356dfdf52728c2d20b6e6223bb8fca546163a'
+    return analysis_hash
 
 
 def identify_folder(folder):
@@ -312,15 +327,6 @@ def compare_charts(old_path, new_path, analyses):
     return comparison
 
 
-def artifacts_valid(folder):
-    try:
-        marker = read_json(folder/'complete.json')
-        return bool(marker['files']) and all((folder/p).is_file() and digest(folder/p) == sha
-                                             for p, sha in marker['files'].items())
-    except (OSError, ValueError, KeyError):
-        return False
-
-
 def process(folder, args, work, implementation):
     started = time.monotonic()
     stems, mix, settings = identify_folder(folder)
@@ -328,23 +334,49 @@ def process(folder, args, work, implementation):
     hashes = {i: digest(p) for i, p in stems.items()}
     if mix:
         sources['mix'], hashes['mix'] = str(mix), digest(mix)
-    name, artist = settings.get('name', folder.name), settings.get('artist', args.artist)
+    library = Library(args.output, songs=getattr(args, 'library_dir', None))
+    active, entry = library.active(folder)
+    legacy = [p for p in legacy_candidates(args.output, folder) if artifacts_valid(p)] if active is None else []
+    prior = active if active and artifacts_valid(active) else (legacy[0] if legacy else None)
+    inherited_artist = metadata(active or prior)[1] if (active or prior) else 'Unknown'
+    name = settings.get('name', folder.name)
+    artist = settings.get('artist', args.artist if args.artist is not None else inherited_artist)
     for value in (name, artist):
-        if any(c in value for c in '\n\r\x00'):
+        if not isinstance(value, str) or any(c in value for c in '\n\r\x00'):
             raise ValueError('Metadata must be single-line text.')
-    key = hashlib.sha256(str(folder.resolve()).encode()).hexdigest()[:8]
     payload = {'version': VERSION, 'implementation': implementation, 'hashes': hashes,
                'settings': settings, 'artist': artist, 'name': name}
+    saved_options = read_json(prior/'analysis.json').get('chart_options', {}) if prior else {}
+    selected_difficulty = getattr(args, 'difficulty', None) or saved_options.get('difficulty', 'all')
+    drum_order = getattr(args, 'drum_order', None) or saved_options.get('drum_order', 'snare,hihat,tom,crash')
+    if selected_difficulty != 'all' or drum_order != 'snare,hihat,tom,crash':
+        payload['chart_options'] = {'difficulty': selected_difficulty, 'drum_order': drum_order}
     signature = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
-    base = slug(name)+'-'+key
-    previous = sorted(args.output.glob(base+'-*'), key=lambda p: p.stat().st_mtime_ns, reverse=True)
-    valid_previous = [p for p in previous if p.is_dir() and artifacts_valid(p)]
-    if args.resume and not args.instrument:
-        for p in valid_previous:
-            complete = read_json(p/'complete.json')
-            if complete.get('signature') == signature:
-                return {'source': str(folder), 'status': 'skipped_complete', 'output': str(p)}
-    prior = valid_previous[0] if valid_previous else None
+    organize_only = getattr(args, 'organize_existing', False)
+    if organize_only or (args.resume and not args.instrument and active is None and prior is not None):
+        if prior is None:
+            raise ValueError('No valid previous chart to organize; no audio will be processed in this mode.')
+        old_report = read_json(prior/'analysis.json')
+        if old_report['source_hashes'] != hashes:
+            raise ValueError('Previous chart uses different audio; organize mode will not relabel stale charts.')
+        if metadata(prior) != (name, artist):
+            raise ValueError('Metadata differs; organize mode preserves the original chart. Generate a revision instead.')
+        # Preserve the original completion signature and all copied file bytes.
+        old_signature = read_json(prior/'complete.json')['signature']
+        output, copied = library.adopt(prior, folder, name, artist, old_signature, work)
+        if copied:
+            audit = audit_legacy(args.output, folder)
+            audit['main_output'] = str(output)
+            timestamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+            dump(args.output/f'organization-audit-{source_id(folder)[:12]}-{timestamp}.json', audit)
+        active, entry = library.active(folder)
+        prior = active
+        if organize_only:
+            return {'source': str(folder), 'status': 'organized_existing' if copied else 'already_organized',
+                    'output': str(output), 'audio_processed': False}
+    if args.resume and not args.instrument and active is not None and artifacts_valid(active):
+        if read_json(active/'complete.json').get('signature') == signature:
+            return {'source': str(folder), 'status': 'skipped_complete', 'output': str(active)}
     if args.instrument and prior is None:
         raise ValueError('--instrument requires an earlier complete chart generated by this system.')
     prior_report = read_json(prior/'analysis.json') if prior else None
@@ -354,11 +386,6 @@ def process(folder, args, work, implementation):
                 raise ValueError(f'Unselected source {i} changed; generate a full revision.')
         if prior_report['implementation_hash'] != implementation:
             raise ValueError('Analysis/policy code changed; generate a full revision before partial reprocessing.')
-    output = args.output/(base+'-'+signature[:10])
-    suffix = 2
-    while output.exists():
-        output = args.output/(base+'-'+signature[:10]+f'-r{suffix}')
-        suffix += 1
     raw = {i: decode_stereo(p, work/(i+'.f32')) for i, p in stems.items()}
     if mix:
         raw['mix'] = decode_stereo(mix, work/'mix.f32')
@@ -381,6 +408,12 @@ def process(folder, args, work, implementation):
         if args.instrument and instrument != args.instrument:
             analyses[instrument] = read_json(prior/(instrument+'.analysis.json'))
             charts[instrument] = prior_report['charts'][instrument]
+            if instrument == 'drums' and saved_options.get('drum_order', 'snare,hihat,tom,crash') != 'snare,hihat,tom,crash':
+                canonical = {'snare': 1, 'hihat': 2, 'tom': 3, 'crash': 4}
+                restore = {0: 0, **{lane: canonical[kind] for lane, kind in enumerate(saved_options['drum_order'].split(','), 1)}}
+                for event in analyses[instrument]['events']:
+                    event['pitches'] = [restore[p] for p in event['pitches']]
+                charts[instrument] = {d: [[s, e, restore[l]] for s, e, l in notes] for d, notes in charts[instrument].items()}
             checks[instrument] = prior_report['musical_checks'][instrument]
             continue
         # Cache is an optimization, not authority: verify its signature/checksum.
@@ -406,6 +439,23 @@ def process(folder, args, work, implementation):
         if checks[instrument]['structural_errors']:
             raise ValueError(f'{instrument}: chart policy violations: {checks[instrument]["structural_errors"][:8]}')
         del audio
+    # Apply output preferences to charts and event lanes together so validation
+    # still compares the rendered lanes to their detected percussion events.
+    if drum_order != 'snare,hihat,tom,crash':
+        canonical = {'snare': 1, 'hihat': 2, 'tom': 3, 'crash': 4}
+        remap = {0: 0, **{canonical[kind]: lane for lane, kind in enumerate(drum_order.split(','), 1)}}
+        analyses['drums'] = json.loads(json.dumps(analyses['drums']))
+        for event in analyses['drums']['events']:
+            event['pitches'] = [remap[p] for p in event['pitches']]
+        charts['drums'] = {d: [[s, e, remap[lane]] for s, e, lane in notes]
+                           for d, notes in charts['drums'].items()}
+    for instrument in INSTRUMENTS:
+        if selected_difficulty != 'all':
+            charts[instrument] = {d: notes if d == selected_difficulty else []
+                                  for d, notes in charts[instrument].items()}
+        checks[instrument] = musical_checks(analyses[instrument], charts[instrument], mono(raw[instrument]))
+        if checks[instrument]['structural_errors']:
+            raise ValueError(f'{instrument}: chart policy violations after output mapping')
     # Stage the entire song first. Incomplete exports are never library entries.
     staging = work/'song-output'
     staging.mkdir()
@@ -417,6 +467,9 @@ def process(folder, args, work, implementation):
     else:
         audio_report = export_audio(raw, work, staging)
     report = {'version': VERSION, 'implementation_hash': implementation, 'sources': sources,
+              'source_folder': str(folder.resolve()), 'source_identity': source_id(folder),
+              'name': name, 'artist': artist,
+              'chart_options': {'difficulty': selected_difficulty, 'drum_order': drum_order},
               'source_hashes': hashes, 'source_midi_used': False,
               'duration_seconds': duration, 'alignment': alignment_report,
               'beat_analysis': beat, 'charts': charts, 'musical_checks': checks,
@@ -434,7 +487,7 @@ def process(folder, args, work, implementation):
     dump(staging/'analysis.json', report)
     for i in INSTRUMENTS:
         dump(staging/(i+'.analysis.json'), analyses[i])
-    ranks = {i: (3 if charts[i]['Expert'] else -1) for i in INSTRUMENTS}
+    ranks = {i: (3 if any(charts[i].values()) else -1) for i in INSTRUMENTS}
     (staging/'song.ini').write_text(f'''[song]
 name = {name} (WAV direto)
 artist = {artist}
@@ -452,7 +505,8 @@ loading_phrase = Chart automatico experimental. Pro Keys 7K. Requer revisao musi
 ''', encoding='utf-8')
     (staging/'LEIA-ME.txt').write_text(
         'Chart gerado diretamente dos quatro WAVs. Nenhum MIDI fonte foi utilizado.\n'
-        'Bateria: quatro pads + bumbo; teclado: sete teclas brancas.\n'
+        f'Bateria: quatro pads ({drum_order}) + bumbo; teclado: sete teclas brancas.\n'
+        f'Dificuldade: {selected_difficulty}.\n'
         'Abra analysis.json e os *.analysis.json para revisar notas, trechos ausentes e incertezas.\n'
         'Validacao estrutural e evidencias espectrais nao provam fidelidade musical.\n'
         'Nao testado em jogo ou validado por escuta.\n', encoding='utf-8')
@@ -463,11 +517,11 @@ loading_phrase = Chart automatico experimental. Pro Keys 7K. Requer revisao musi
     marker = {'signature': signature, 'created_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
               'files': {p.name: digest(p) for p in staging.iterdir() if p.is_file()}}
     dump(staging/'complete.json', marker)
-    # Work directory lives on the same output filesystem, so publication is atomic.
-    if output.exists():
-        raise ValueError(f'Output already exists: {output}')
-    staging.rename(output)
+    # Never overwrite a chart: rename its whole folder into backups BEFORE
+    # activating the new staged result at the stable main path.
+    output, backup = library.publish(staging, folder, name, artist, signature)
     return {'source': str(folder), 'status': 'generated', 'output': str(output),
+            'previous_backup': str(backup) if backup else None,
             'elapsed_seconds': report['elapsed_seconds'],
             'expert_notes': {i: len(charts[i]['Expert']) for i in INSTRUMENTS}}
 
@@ -475,22 +529,33 @@ loading_phrase = Chart automatico experimental. Pro Keys 7K. Requer revisao musi
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('source', type=Path, help='song folder or parent containing song subfolders')
-    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--output', type=Path, default=Path('musicas'), help='playable songs directory (default: musicas)')
+    parser.add_argument('--state-dir', type=Path, help='cache, reports and backups directory outside the songs library')
     parser.add_argument('--song', help='exact folder name or path; run only one song')
-    parser.add_argument('--artist', default='Unknown', help='fallback; song.json can override')
+    parser.add_argument('--artist', default=None, help='fallback; song.json or the existing chart supplies it if omitted')
     parser.add_argument('--resume', action='store_true', help='skip verified complete songs; reuse hashed analyses')
-    parser.add_argument('--instrument', choices=INSTRUMENTS, help='re-analyze one instrument into a NEW revision')
+    parser.add_argument('--difficulty', choices=['all', *DIFFICULTIES], help='render only the selected difficulty; inherit existing preference on resume')
+    parser.add_argument('--drum-order', choices=['snare,hihat,tom,crash', 'hihat,snare,tom,crash'], help='four pads from left to right; inherit existing preference on resume')
+    parser.add_argument('--instrument', choices=INSTRUMENTS, help='re-analyze one instrument; archive previous revision outside library')
+    parser.add_argument('--organize-existing', action='store_true', help='copy latest valid legacy chart into library; never analyze audio')
     parser.add_argument('--compare', type=Path, help='old song folder/notes.mid; comparison only, requires --song')
     parser.add_argument('--list', action='store_true', help='show detected song folders without processing')
     args = parser.parse_args()
-    if (args.instrument or args.compare) and not args.song:
-        parser.error('--instrument/--compare requires --song.')
-    args.output = args.output.resolve()
+    if (args.instrument or args.compare or args.organize_existing) and not args.song:
+        parser.error('--instrument/--compare/--organize-existing requires --song.')
+    if args.organize_existing and args.instrument:
+        parser.error('--organize-existing cannot reprocess an instrument.')
+    args.library_dir = args.output.resolve()
+    args.output = (args.state_dir or args.library_dir.parent/'chart-backups'/(args.library_dir.name+'-state')).resolve()
     try:
         folders = discover(args.source, args.song)
         source = args.source.resolve()
-        if args.output == source or source in args.output.parents:
+        if args.library_dir == source or source in args.library_dir.parents:
             raise ValueError('Output must be outside the input tree so exports are never rediscovered as sources.')
+        if args.output == args.library_dir or args.library_dir in args.output.parents:
+            raise ValueError('State directory must be outside the songs library.')
+        if args.output == source or source in args.output.parents:
+            raise ValueError('State directory must be outside the input tree.')
     except ValueError as error:
         parser.error(str(error))
     if args.list:

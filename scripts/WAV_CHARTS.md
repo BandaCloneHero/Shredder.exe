@@ -1,6 +1,11 @@
 # Charts YARG diretamente de WAVs
 
 O gerador cria charts experimentais dos quatro instrumentos e quatro dificuldades.
+Cada origem tem uma única pasta principal em `OUTPUT/Artista - Música`.
+`--output` é a pasta jogável e usa `musicas` por padrão. Cadastre `musicas` no YARG.
+Cache, índice, relatórios e revisões ficam em `chart-backups/musicas-state`, fora
+da biblioteca. Para outro OUTPUT, o estado fica em `OUTPUT.parent/chart-backups/OUTPUT.name-state`.
+`--state-dir` permite escolher outro diretório externo para esse estado.
 Nenhum MIDI musical é lido para obter notas. `notes.mid` é apenas a saída para o
 jogo; `--compare` pode ler um chart anterior **depois** da geração para comparar
 estatísticas, nunca para alimentar a transcrição.
@@ -19,33 +24,48 @@ python3 -m venv .venv-charts
 
 Gerar somente a música de teste:
 
+Para “Exagerado”, gerar apenas Expert com os quatro pads na ordem
+chimbal, caixa, tom e crash (bumbo separado):
+
 ```bash
 .venv-charts/bin/python scripts/generate_charts_batch.py \
-  "musicas/audios separados" --output "musicas/charts-wav" \
+  "musicas/audios separados" --output "musicas" --song "Exagerado" \
+  --artist "Cazuza" --difficulty Expert --drum-order hihat,snare,tom,crash --resume
+```
+
+As preferências ficam em `analysis.json`. Ao retomar sem essas opções, o
+gerador mantém a dificuldade e a ordem de pads existentes. Os WAVs e o cache
+permanecem como fontes de análise; o MIDI musical intermediário não é utilizado.
+
+Exemplo com a configuração de quatro dificuldades:
+
+```bash
+.venv-charts/bin/python scripts/generate_charts_batch.py \
+  "musicas/audios separados" --output "musicas" \
   --song "Pro Dia Nascer Feliz" --artist "Cazuza" --resume \
-  --compare "musicas/Cazuza - Pro Dia Nascer Feliz (Stems e MIDI)"
+  --compare "chart-backups/Pro Dia Nascer Feliz/Cazuza - Pro Dia Nascer Feliz (Stems e MIDI)"
 ```
 
 Listar pastas sem processar áudio:
 
 ```bash
 .venv-charts/bin/python scripts/generate_charts_batch.py \
-  "musicas/audios separados" --output "musicas/charts-wav" --list
+  "musicas/audios separados" --output "musicas" --list
 ```
 
 Processar todas as músicas **somente quando o lote for autorizado**:
 
 ```bash
 .venv-charts/bin/python scripts/generate_charts_batch.py \
-  "musicas/audios separados" --output "musicas/charts-wav" --resume
+  "musicas/audios separados" --output "musicas" --resume
 ```
 
 Reanalisar apenas a bateria, preservando os charts dos outros instrumentos e
-criando outra pasta de revisão:
+arquivando a revisão anterior fora da biblioteca principal:
 
 ```bash
 .venv-charts/bin/python scripts/generate_charts_batch.py \
-  "musicas/audios separados" --output "musicas/charts-wav" \
+  "musicas/audios separados" --output "musicas" \
   --song "Pro Dia Nascer Feliz" --artist "Cazuza" --instrument drums
 ```
 
@@ -56,10 +76,66 @@ o acompanhamento residual são compartilhados; a transcrição dos demais
 instrumentos continua preservada. `--resume` ignora músicas concluídas somente
 quando fontes, código, parâmetros e hashes dos arquivos de saída conferem.
 
+Organizar um chart já gerado pelo sistema antigo, sem transcrever ou converter áudio:
+
+```bash
+.venv-charts/bin/python scripts/generate_charts_batch.py \
+  "musicas/audios separados" --output "musicas" \
+  --song "Pro Dia Nascer Feliz" --organize-existing --resume
+```
+
+Esse modo copia a versão válida mais recente para a pasta de músicas e mantém todas as
+pastas antigas intactas. Repeti-lo retorna `already_organized`. Uma retomada
+normal também pode adotar o resultado antigo quando ainda não existe pasta
+principal. As fontes precisam coincidir com o chart; o modo de organização não
+reprocessa áudios alterados. O artista omitido é herdado do chart existente,
+evitando uma revisão causada apenas pelo antigo fallback `Unknown`.
+
+## Organização, identidade e revisões
+
+```text
+musicas/                         ← biblioteca jogável
+  Cazuza - Pro Dia Nascer Feliz/
+  Bon Jovi - Livin on a Prayer (Teste MP3)/
+  Van Halen - Jump (Teste MP3)/
+  Chaosbay - 2 Billion/
+  audios separados/              ← fontes WAV, não mover entre execuções
+chart-backups/                   ← fora da biblioteca
+  musicas-state/
+    .analysis-cache/
+    library-index.json
+    batch-report-*.json
+    backups/                     ← revisões futuras
+  source-mp3/                    ← MP3s de entrada arquivados
+  Pro Dia Nascer Feliz/          ← versões antigas preservadas
+  batch-reports/                 ← relatórios antigos preservados
+```
+
+A identidade interna usa o caminho absoluto da pasta de origem completo,
+independentemente de título, artista, WAV, código ou data. Origens diferentes
+com nomes iguais recebem pastas diferentes; um sufixo curto é usado apenas em
+colisão de nomes, com verificação da identidade completa no índice. Use o
+caminho em `--song` para selecionar entre subpastas homônimas. Mover/copiar uma
+pasta de origem cria outra identidade; não mova as entradas entre execuções
+esperando que sejam automaticamente reconhecidas como a mesma origem.
+
+O nome da pasta principal permanece estável para aquela origem. Uma revisão é
+preparada e validada fora da pasta de músicas. Depois, a pasta principal anterior é
+renomeada para `backups/<música-identidade>/<data-identificador>` antes de ativar
+a nova no mesmo caminho principal. Nenhum arquivo do chart anterior é
+sobrescrito. Falha ao ativar a nova pasta restaura a anterior. A trava de lote
+impede publicação concorrente. O relatório da execução registra `previous_backup`.
+
+Mudanças só na organização/CLI/logs não invalidam o cache musical. Mudanças nos
+algoritmos, política de charts, decodificação ou exportação continuam exigindo
+revisão. A compatibilidade com o último chart legado é verificada por uma
+assinatura exata da análise, sem aceitar charts apenas pelo nome da música.
+
 Rodar testes:
 
 ```bash
 .venv-charts/bin/python scripts/test_wav_charts.py
+.venv-charts/bin/python scripts/test_chart_library.py
 ```
 
 ## Organização dos áudios
@@ -177,7 +253,7 @@ Os resultados sempre marcam `musical_correctness_certified: false`,
 
 O processo publica a pasta somente depois das verificações estruturais. Avisos
 musicais ficam no relatório e não são convertidos em aprovação automática.
-Revisões existentes nunca são sobrescritas. A cache guarda análises por hash;
+Revisões existentes são arquivadas, nunca sobrescritas. A cache guarda análises por hash;
 relatórios `batch-report-*.json` guardam sucesso/erros por música e permitem que
 uma falha não interrompa as próximas. Uma trava impede dois lotes concorrentes
 na mesma saída. Se um processo morrer abruptamente, verifique seu PID antes de

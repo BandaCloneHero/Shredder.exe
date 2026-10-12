@@ -246,7 +246,8 @@ class BatchLifecycleTests(unittest.TestCase):
                         audio[first:first+len(sound)] += sound
                 wavfile.write(source/(kind+'.wav'), SR, audio)
                 (source/(kind+'.mid')).write_bytes(b'INVALID MIDI')
-            args = argparse.Namespace(output=output, artist='Test', resume=True, instrument=None, compare=None)
+            args = argparse.Namespace(output=output, artist='Test', resume=True, instrument=None, compare=None,
+                                      difficulty='Expert', drum_order='hihat,snare,tom,crash')
             impl = batch.implementation_hash()
             def run():
                 with tempfile.TemporaryDirectory(dir=output) as work:
@@ -255,22 +256,44 @@ class BatchLifecycleTests(unittest.TestCase):
             folder = Path(first['output'])
             self.assertTrue(batch.artifacts_valid(folder))
             original_hashes = {p.name: batch.digest(p) for p in folder.iterdir()}
+            first_report = batch.read_json(folder/'analysis.json')
+            for instrument in INSTRUMENTS:
+                for difficulty in ('Easy', 'Medium', 'Hard'):
+                    self.assertEqual(first_report['charts'][instrument][difficulty], [])
+            drums_analysis = batch.read_json(folder/'drums.analysis.json')
+            lanes = {'kick': 0, 'hihat': 1, 'snare': 2, 'tom': 3, 'crash': 4}
+            for event in drums_analysis['events']:
+                self.assertEqual(event['pitches'], [lanes[event['kind']]])
+            for track in batch.mido.MidiFile(folder/'notes.mid').tracks:
+                name = next((m.name for m in track if m.type == 'track_name'), '')
+                notes = [m.note for m in track if m.type == 'note_on' and m.velocity]
+                if name in ('PART DRUMS', 'PART GUITAR', 'PART BASS'):
+                    self.assertTrue(all(96 <= n <= 100 for n in notes))
+                elif name in ('PART REAL_KEYS_E', 'PART REAL_KEYS_M', 'PART REAL_KEYS_H'):
+                    # MIDI note 0 is the display-range marker, not a playable key.
+                    self.assertEqual([n for n in notes if 48 <= n <= 72], [])
+            args.difficulty = args.drum_order = None
             self.assertEqual(run()['status'], 'skipped_complete')
             args.instrument = 'bass'
             real_analyze = batch.analyze
             with mock.patch.object(batch, 'analyze', wraps=real_analyze) as spy:
                 second = run()
-            self.assertNotEqual(first['output'], second['output'])
+            self.assertEqual(first['output'], second['output'])
+            self.assertTrue(Path(second['previous_backup']).is_dir())
             self.assertEqual([call.args[1] for call in spy.call_args_list], ['bass'])
             second_report = batch.read_json(Path(second['output'])/'analysis.json')
-            first_report = batch.read_json(folder/'analysis.json')
             for kind in ('guitar', 'keys', 'drums'):
                 self.assertEqual(first_report['charts'][kind], second_report['charts'][kind])
-            self.assertEqual(original_hashes, {p.name: batch.digest(p) for p in folder.iterdir()})
+            saved = Path(second['previous_backup'])
+            self.assertEqual(original_hashes, {p.name: batch.digest(p) for p in saved.iterdir()})
+            self.assertNotIn(folder.parent, saved.parents)
             # Editing the selected stem must also refresh its OGG and shared mix.
             wavfile.write(source/'bass.wav', SR, sequence([(.4, [45], .5)], 2.))
+            old_bass_hash = batch.digest(Path(second['output'])/'bass.ogg')
             third = run()
-            self.assertNotEqual(batch.digest(Path(second['output'])/'bass.ogg'), batch.digest(Path(third['output'])/'bass.ogg'))
+            self.assertEqual(first['output'], third['output'])
+            self.assertNotEqual(old_bass_hash, batch.digest(Path(third['output'])/'bass.ogg'))
+            self.assertEqual(len(list((output/'library').iterdir())), 1)
             wavfile.write(source/'keys.wav', SR, np.zeros(SR*2, dtype=np.float32))
             with self.assertRaisesRegex(ValueError, 'Unselected source'):
                 run()
@@ -306,9 +329,10 @@ class BatchLifecycleTests(unittest.TestCase):
             with mock.patch('sys.argv', ['generate_charts_batch.py', str(root/'input'), '--output', str(output)]), \
                  mock.patch.object(batch, 'process', side_effect=fake_process):
                 self.assertEqual(batch.main(), 1)
-            report = batch.read_json(next(output.glob('batch-report-*.json')))
+            state = root/'chart-backups'/'output-state'
+            report = batch.read_json(next(state.glob('batch-report-*.json')))
             self.assertEqual([r['status'] for r in report['songs']], ['error', 'generated'])
-            self.assertFalse((output/'.batch.lock').exists())
+            self.assertFalse((state/'.batch.lock').exists())
 
 
 if __name__ == '__main__':

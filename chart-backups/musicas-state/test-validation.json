@@ -1,0 +1,38 @@
+{
+  "real_songs_tested": [
+    "Pro Dia Nascer Feliz"
+  ],
+  "full_73_song_batch_run": false,
+  "final_output": "musicas/charts-wav/Pro Dia Nascer Feliz-60189351-db3a5dd045",
+  "current_code_matches_chart": true,
+  "output_hashes_valid": true,
+  "original_sources_unchanged": true,
+  "original_notes_mid_unchanged": true,
+  "synthetic_and_lifecycle_tests": {
+    "executed": 18,
+    "passed": 18,
+    "failures": 0,
+    "last_run_seconds": 3.732
+  },
+  "real_partial_reprocessing": {
+    "baseline": "musicas/charts-wav/Pro Dia Nascer Feliz-60189351-f965746f8a",
+    "revision": "musicas/charts-wav/Pro Dia Nascer Feliz-60189351-f965746f8a-r2",
+    "selected_instrument": "drums",
+    "other_charts_identical": true,
+    "audio_identical": true,
+    "notes_mid_reproducible": true,
+    "elapsed_seconds": 17.989062798000305,
+    "note": "Executed before the final Easy/Medium drum density policy revision."
+  },
+  "final_resume_skip_observed": true,
+  "environment": {
+    "python": "3.14.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "mido": "1.3.3",
+    "imageio-ffmpeg": "0.6.0"
+  },
+  "musical_correctness_certified": false,
+  "listening_validation": "not run",
+  "in_game_test": "not run"
+}

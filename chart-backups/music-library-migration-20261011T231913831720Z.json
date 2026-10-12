@@ -1,0 +1,94 @@
+{
+  "moves": [
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/library/Cazuza - Pro Dia Nascer Feliz",
+      "current": "/workspaces/Shredder.exe/musicas/Cazuza - Pro Dia Nascer Feliz",
+      "sha256": {
+        "comparison.json": "79a79ce7d1b7dd262edc433db3906329fe88f30bc5b0df4917d3d82b111889d3",
+        "bass.analysis.json": "059a8bd3e184507666ab9e63060deb4b2d57077a693ffc8605b68eeab1adeecc",
+        "keys.ogg": "00a4dc4cc171720830a520152634b1a11a1cf2b35d3539a8bfcf8145a79c5a77",
+        "drums.analysis.json": "890540efc77bac94394c9be235db0372384080b944a6a3088ceec29f9e9b1534",
+        "bass.ogg": "87edc62007196d992048e3e097ad267752060ebd8316ec7c024984eec2f43954",
+        "drums.ogg": "0d5359ead213a1e846bbed04b04e11c599492416d927efe6a0b4f89232b3c095",
+        "guitar.analysis.json": "bca313cf0191721dc743b32d69d1dbdf9dc20e8dca26222e6ccd7e6c84a2cfe7",
+        "complete.json": "0b94c91aba81efdfa99310e94daec9c1a17cde14339c8b8bdf7f045dbfd528cd",
+        "LEIA-ME.txt": "ef80f7770c9e817e498a23d77bf43f117f01d18eaf34b433e145639d232db440",
+        "guitar.ogg": "5f92cd3d7246db4160a824bf2f88c78962b5c90dfb087194e5a33cbe2aa7fe7c",
+        "analysis.json": "448cd86537e6576074adfaf114d9af4cd221fbc256776fd4be4a3742c032c359",
+        "notes.mid": "e5079c0f2e9e8d0eeca6479da16912448270aa1ad9b7f70c265966aff206ce62",
+        "song.ogg": "ca832422e914ae1d46add531cbd49a8e0f436d42a903952e7c6c2efbae7284c2",
+        "song.ini": "03b422b2c130a179831d352e1e0e8815b0d52d770d17372df07c41c177796c95",
+        "keys.analysis.json": "80f5e876e93f973a6b58baf1160d4cc0f0ccedc9efbf0302c093660494bb0a3e"
+      }
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav",
+      "current": "/workspaces/Shredder.exe/chart-backups/musicas-state",
+      "sha256": {
+        "organization-validation.json": "e59c466f31d8b68aecb20787735dd70c7e2a6d7df391f7a2b534ef90a1e5d9ba",
+        "library-index.json": "37d3224f1f58d909ded0abc7daa98a10edcdb8f87fa462443b3ab24844b6c986",
+        "archive-relocations.json": "f976b7e3085058fd768bd1c2da090e018560272bdc97c35ece9977468a427da3",
+        "batch-report-20261011T230934080216Z.json": "3cac3086b9a4316ed7eef4953eada7623cb11cbd778247e3b657ceec8f3b3faf",
+        "organization-audit-6018935199be-20261011T230851586203Z.json": "5ba55508044d0112910ecbd96fd4ef9f3f1b44364eed09ee1cf5a4672cb82dd2",
+        "test-validation.json": "3cbfff3d0e2519639d75dc1685e6938c84768e0c5b596d18ad03911dbef9714d",
+        ".analysis-cache/57b7ce6ed7d5d6860aee9cb3bb5a7fc45050ec55777e7feedb57c3400982d1a6.json": "94a5adfd1fb06bdfad6d35e4fec7b0a1f5e85947ddf5ae029219ae2901f00e68",
+        ".analysis-cache/e998079154bf85dc4b8c09b73ae53d97e7b4bc4fb3b37f2a58646e13509b0450.json": "0b905e3a56f85150cbf42310356c5776960e3d9caa7642bb20cafc0e16a2aba1",
+        ".analysis-cache/9130a375505b060dbd58f63bf1ba6b70786802c0b798609f410f3c9b07e48def.json": "3efa612d4474e6818dea14fae08f2df4c293816815ca2089404e5a8f5c39759e",
+        ".analysis-cache/6bcb13f01c488ca4a9ee5ae647bccac3814bb59a5ede87946c104297b8db065c.json": "cf72e58cb918a56e94d7bc13226376b96cafce7876de89c026abc6b36cb99e13",
+        ".analysis-cache/44d0b4d7a9f8bb64eda68e5d683ccf46ac33d9ea6fd84226cff9a0e6ca396f37.json": "d00dba9dd809fb212e19b3f76547b9258dcbf4b9c70a039e2bd512cecead1500",
+        ".analysis-cache/ed20a459cd7de63bc224ba1a7d1b8b1435b23bb84d94e90c3a50968c2ffe6d17.json": "51647236df3445e90eacd98e4c8faef5990b5ea27854d6a1c97aa8747b733983",
+        ".analysis-cache/2bb887ed3b224ceda3de7ee4496b94d680e25ba34812ee2d2740d12e8f0f7832.json": "3f7d8af429050ab87eb6dade65bb8d1141a820bab8736e7e364bf8483380b3a6",
+        ".analysis-cache/46dce8655ae3ecad4a0136ef8a46eb61ae89c797a0f7d234b3bc34cc000808d9.json": "d5df14613a805c89bae74243f4051c6e20637ab89b26d78b63777a86cd3e2bea",
+        ".analysis-cache/cceb1b0ee1bcf1b8111c60aded3e4df6c276ca239d44d23588e4dabf2c7e2470.json": "861f9f9fe23a957ff7655cd27207b4ae28f1a07744019770468b72dc8e05441d",
+        ".analysis-cache/2223d69bab5bf24d26fdec3b14e53eee3b2530ebf52d62f8350d30c38bd0b9bf.json": "527214199a0faf928f4c9810575f1f671f240c35c1e142c7c57e4921d68cc9e7",
+        ".analysis-cache/2d82e783156d9615d95ce36a7127ce280789c9f3a16b6e195f5751a012000618.json": "49223cb6b78d7f41e07f6ec0e4cfcc790fa9b1aa14d4f3865ed04cabbee9ccc2",
+        ".analysis-cache/0b32b09591a02b2a56ab4a83a85a50a09373478773949c42f13600852efa5c4b.json": "b66764998cfdcd7c5589e6d9b460dbae73a9f3587bbcb70f1299604d3310fc31",
+        ".analysis-cache/0b3c0c45dc2decd233871668f947519a8399db081b9594a461d53bb971de9bbf.json": "567bbc4295efa07acb3dff9b46e99f5a567ae9e0ef9accc40787ed6d302bf7d0",
+        ".analysis-cache/60888b8b3e9e7ec76e08a14cefd4d7359de34a75f703a3b75f453e3f108cc0f1.json": "c8364909854b70ad7435611dd7a31d87dd22cb4f0f7194181d5fdbbe3d71e51e",
+        ".analysis-cache/90a6e4cebb0bdef52dd121c7332f260089446e04bf4a134d48d26055fd11a049.json": "4b2b088747975134b777ada8c017bd25b11d83fc5b55ef4eac0f27fa72708cb3",
+        ".analysis-cache/25abf54cc014f29af88b9bfe50adb473e808469d7f3be7f00e24fb8993360a03.json": "f27844a120642ae56e2bf2fb94f7fe83accb9e881690446b4cbf9e83fddbe1f4",
+        ".analysis-cache/ca1443474f5eb1b653817685b4bb4fbdec5ee6be6ef7ca3b7f77a851b1a5b4ed.json": "2208c16279ff5eb2925525767f46687c2c1bb6695b4a1bdba3c7158f37a9ab2f",
+        ".analysis-cache/0517300eaa4ac853d57ae8ba2bc663a3b01e496ad0bc40c2511f370c9bf6d6c5.json": "4ca2019982a9af17c271a42fcfb1458b3d2fffffaa4dc6f61bd062289958f9c9",
+        ".analysis-cache/a936db0f48cfebf9f0957db551e34f63942ac6976e5feabfbd3c758edc898c6d.json": "e1d0c37cb89c5b09e63658cbd1d22d576fb322d093e17709428946d620d04103",
+        ".analysis-cache/62d99fc827aa14f8b57c1375e1cd69be9983d59ccd9f13d2c07e20a16dfd5b8b.json": "1ba273d3bf526b2247fea8ded4c3a831949be172f3c72c06fb896e47acb2a6a2",
+        ".analysis-cache/48f7bc642598c3fdf8c6d8d3ce1a34d28131e90b471b5c0ef9e5940be261244f.json": "c8254de002382e5ede0c1be3ff1073a81d5355beab3829626d3c7c57015eab1a",
+        ".analysis-cache/98234b434564121dfb21b35d2a9045bb5ce97f7336e5bd76b79b65478e92c948.json": "1be71322bc3db94db115f3c46d54d1134c4d0898b87c91906dde72c1ac554a2e",
+        ".analysis-cache/a912ae1c00e89b766bedd6f98c3801e2c63b59db3d99bd86fef04d303e7e6ec6.json": "1178233848ced02a0fc2811e92d9d03e9081ff25e9b4b8db04d3cc680bd2ea42",
+        ".analysis-cache/292bf6f59b97e81e4e83f63f41bfcf0382903e19150dd2fbe571faf94bd735b3.json": "8c80ba30980fa1bba8517a07df0833267a6abb410373714a57198a632a63cae0"
+      }
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/Cazuza - Pro Dia Nascer Feliz (Stems e MIDI)",
+      "current": "/workspaces/Shredder.exe/chart-backups/Pro Dia Nascer Feliz/Cazuza - Pro Dia Nascer Feliz (Stems e MIDI)",
+      "sha256": {
+        "keys.ogg": "a36d7147e865208218a09fb1d63de4a98093618e29c79ac52106900773134d8b",
+        "analysis.before-refinement.json": "5d0b99a0a1db8715ce765a22a6b68847dce9e542bc2da380065dbffc9613916c",
+        "bass.ogg": "a665ee9b15a7875af37aa00e9d5f34edabe502ffbec5a468173588997b045d2a",
+        "LEIA-ME.md": "26f206960d6e731bce0aeaa883690e981bc7c0832cb148506c73f465aeae1633",
+        "drums.ogg": "b04d15b303c8da4a93460d2e6977b7da4ad0a85dd657deecb70b8a7af2c30e7a",
+        "guitar.ogg": "0bba78a7e7edd7fe1fe0ed2b819e878b341f6348fefb119c8cf54948a67dccbb",
+        "analysis.json": "0330e430091c1d754198658d15a6c96e4ed5507c11e1dd66facb2d6d3f504cd6",
+        "notes.mid": "25499f7fc53e5c2b0d702993d68869a27081a7a8c77c4635af622db01d317c9c",
+        "song.ogg": "b17d2a7c74ffa67082a1e234628e582ca15bdb589c73df1d0f694b6df190af39",
+        "song.ini": "60e8576d95c75ad481e65fb568c099b40a58ae603efbff6b324588e608b0d70a",
+        "notes.before-refinement.mid": "3d9aee78a74c17efe1cd1f676db4215ff4bcd21b869e2bd01e5ce8ba70fd74f4",
+        "drum-timbre-analysis.npz": "356d1bd80f7b785a5053657b7749657aead74445d7072c183847db5560c91cf5"
+      }
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/- - Bon Jovi - Living on a Prayer.mp3.mp3",
+      "current": "/workspaces/Shredder.exe/chart-backups/source-mp3/- - Bon Jovi - Living on a Prayer.mp3.mp3",
+      "sha256": {
+        "- - Bon Jovi - Living on a Prayer.mp3.mp3": "771ca7d21261c3e97f3e32db5e6af4bb1bca59836929abb26b7bfd6c6eb70cc4"
+      }
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/Van Halen - Jump (Official Music Video)_SwYN7mTi6HM.mp3",
+      "current": "/workspaces/Shredder.exe/chart-backups/source-mp3/Van Halen - Jump (Official Music Video)_SwYN7mTi6HM.mp3",
+      "sha256": {
+        "Van Halen - Jump (Official Music Video)_SwYN7mTi6HM.mp3": "1ed5f6e9822490b4f8e51d60feff0ffeb7246a631d6ecf9bbbbcc63c3382dbb3"
+      }
+    }
+  ],
+  "hashes_verified": true
+}

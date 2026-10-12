@@ -1,0 +1,161 @@
+{
+  "created_utc": "2026-10-11T23:15:22.955630+00:00",
+  "operation": "archive_legacy_charts_without_deletion",
+  "active_chart": "/workspaces/Shredder.exe/musicas/charts-wav/library/Cazuza - Pro Dia Nascer Feliz",
+  "archive": "/workspaces/Shredder.exe/chart-backups/Pro Dia Nascer Feliz",
+  "folders": [
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-110d430927",
+      "archived": "/workspaces/Shredder.exe/chart-backups/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz-60189351-110d430927",
+      "sha256": {
+        "LEIA-ME.txt": "ef80f7770c9e817e498a23d77bf43f117f01d18eaf34b433e145639d232db440",
+        "analysis.json": "ec753d27f6f4cc9f0aa2540532648f8b7ddc87b1613158df1e31078d7dea563a",
+        "bass.analysis.json": "fa9bdfa3975748b4ab781a7bfbdcb298259281b0f08c5e9807a469fec2007844",
+        "bass.ogg": "c8b42cb5ad7f1fd93113e9db27f2a6434a9c0727a0d4f3298a8706cb32d98080",
+        "comparison.json": "7c1679aea030dcdc1bf25cebd293605c6037275a2dae4d46cf85307ded878ea8",
+        "complete.json": "141ba746247f011ef6b0838c62d3e01feb71a5098a892a485278c8e35d3be9e4",
+        "drums.analysis.json": "b4cea083d8f52058054cab33d28c29ac71301af5d2eacb37e0d1023a5a842b2e",
+        "drums.ogg": "60ef44a4c3a5a667f6a66c9b695358e4a1055028c373d25cbc8574456d40fdd6",
+        "guitar.analysis.json": "d676aaecac30abc6dec679c34aeb5113e85d3851d4ea906a377d1568dfbc44de",
+        "guitar.ogg": "e9b1f36598a131c2feb21905e87b1f1f2c4829098aeb067a974342694ddb9ec1",
+        "keys.analysis.json": "ced6e4a72377b0dc8ff0859d1860baff02480729d75bd77ecb963379f13ad717",
+        "keys.ogg": "c3532cb6f4196626c96c4cfc1dc52f22944b41f058597dfe34a45b9082efe2b2",
+        "notes.mid": "e68922e579626f1768f7bfa6b89a5cf3b729e850217111795682c247631eb2e7",
+        "song.ini": "03b422b2c130a179831d352e1e0e8815b0d52d770d17372df07c41c177796c95",
+        "song.ogg": "2cf68969e4b7d7fc848439450364d37066961f25ce8fef4f016a0b06ee40cc41"
+      }
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-1ea6dfe0a9",
+      "archived": "/workspaces/Shredder.exe/chart-backups/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz-60189351-1ea6dfe0a9",
+      "sha256": {
+        "LEIA-ME.txt": "ef80f7770c9e817e498a23d77bf43f117f01d18eaf34b433e145639d232db440",
+        "analysis.json": "c325f031f045d40d4650ff2fbe1d88777bec3a1a3d08761c7eb32792dbdf08b7",
+        "bass.analysis.json": "059a8bd3e184507666ab9e63060deb4b2d57077a693ffc8605b68eeab1adeecc",
+        "bass.ogg": "ebb3c92affb2b2e077bcc845d3823058e2f2d5800cc900153ca34be18ad452d9",
+        "comparison.json": "e516e0d7c5f53ec48cf2715ee7d841c165776dd796ca674ddce0924938fb0791",
+        "complete.json": "102936f3f83a0b79dd0f40b7af3b75e5cf1165be575b8fa23981156df0559f0e",
+        "drums.analysis.json": "890540efc77bac94394c9be235db0372384080b944a6a3088ceec29f9e9b1534",
+        "drums.ogg": "73c747d75fd2229f4a1b13e4782b8313bd6b4263927b6c5416bed0989c79f805",
+        "guitar.analysis.json": "bca313cf0191721dc743b32d69d1dbdf9dc20e8dca26222e6ccd7e6c84a2cfe7",
+        "guitar.ogg": "f54d425fbe06ef6ec5911834f8be452ecb12febd6e43c0cc6ca0dccce4da9ac8",
+        "keys.analysis.json": "80f5e876e93f973a6b58baf1160d4cc0f0ccedc9efbf0302c093660494bb0a3e",
+        "keys.ogg": "0fb05517f9799f201b4bd10235c1da7a4f446ca61fd8e5be3ee185b0b8c4fb86",
+        "notes.mid": "f7b90e91f2a32ced2fb7d629eae4c53a153411d5e3a3bcac1ee223eec4c5a075",
+        "song.ini": "03b422b2c130a179831d352e1e0e8815b0d52d770d17372df07c41c177796c95",
+        "song.ogg": "fa17b4ca081c9a1b6a8c2b2b7a5baf97ec53421e49c1432039b401dc90225a0a"
+      }
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-5c3a89c345",
+      "archived": "/workspaces/Shredder.exe/chart-backups/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz-60189351-5c3a89c345",
+      "sha256": {
+        "LEIA-ME.txt": "ef80f7770c9e817e498a23d77bf43f117f01d18eaf34b433e145639d232db440",
+        "analysis.json": "a929fe3ac929ea1b9cee8bdec937a1a947a600f931b8e9c07700d3f47d9569ac",
+        "bass.analysis.json": "61cd267798aa62b63922b59956f15c03afad2a5d8f73538ba6755b407ab82f98",
+        "bass.ogg": "cd86798507e4e36ea4be34f72e0c8d013bca94b2a08e549beffde36ad2dd4ef5",
+        "comparison.json": "99daf558f38a1e63ad4e3a0c05d0feb96bdd100b603328d3f94773b4f86630c9",
+        "complete.json": "ede4cf5d804b16fc042b454336f5501dc524c3bfa4ca710b74212795e1be0d0c",
+        "drums.analysis.json": "b4cea083d8f52058054cab33d28c29ac71301af5d2eacb37e0d1023a5a842b2e",
+        "drums.ogg": "3f3fba70e470d087dd6ea8d24cfb4a932b304acfbdb283e41f95e129380086d9",
+        "guitar.analysis.json": "53018fc6480dda187d9924d91224c7b4aed443347c308ebb9c9cce97ef1aebb5",
+        "guitar.ogg": "96b176a3a123217cb960b84b934dec8f51e4396adad8c33f44cef8f9de654ab1",
+        "keys.analysis.json": "3b23c7e09bd136eb637212920fc4439ccdfde9c6b84db09ffbba99e56f75d8f2",
+        "keys.ogg": "a2d4c23bc4895589a19b0e38cdbdc12cd46c0a51f81ff52dfaaa6820c69f0194",
+        "notes.mid": "034159028f8c3b0c1b30a8844225da11bdb60210164cb100adf1b25e6b0a1ccd",
+        "song.ini": "03b422b2c130a179831d352e1e0e8815b0d52d770d17372df07c41c177796c95",
+        "song.ogg": "69844d777bcba4de9d115a83e2f8067e30dfac8ccb1f9fcae237bcd224bb0bc3"
+      }
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-6fcd6703f4",
+      "archived": "/workspaces/Shredder.exe/chart-backups/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz-60189351-6fcd6703f4",
+      "sha256": {
+        "LEIA-ME.txt": "ef80f7770c9e817e498a23d77bf43f117f01d18eaf34b433e145639d232db440",
+        "analysis.json": "e7715ce0920dbfb2f10c5c86703c1f0fe5acb7a9f31ab66fd2ea493047c4ad8c",
+        "bass.analysis.json": "059a8bd3e184507666ab9e63060deb4b2d57077a693ffc8605b68eeab1adeecc",
+        "bass.ogg": "58af6eede025b2299bef606669fedbd6308bfebfca43c017accf3acd20bd5ee2",
+        "comparison.json": "7e84b4b53753b0913314441e0ecc2708070ae4e1d55e014586bfe0ac7a50af68",
+        "complete.json": "9a9ddcf985a2916c02b74ed8715ecabc3377915d65fd95803e2b16deee37457e",
+        "drums.analysis.json": "365a8b41a7b3571b5df3b7a80e86021f3e320066de12aea0c9e71d0e602a6e93",
+        "drums.ogg": "64b2a1367b7f103ee9ac351270d33026c35d92ee64c6eb7586ef5ef457570d20",
+        "guitar.analysis.json": "bca313cf0191721dc743b32d69d1dbdf9dc20e8dca26222e6ccd7e6c84a2cfe7",
+        "guitar.ogg": "cb46c8d9416bfa84eaa2ddd3c1bf03a1956d767fa23452dc6d19f3ab04674cb7",
+        "keys.analysis.json": "80f5e876e93f973a6b58baf1160d4cc0f0ccedc9efbf0302c093660494bb0a3e",
+        "keys.ogg": "8ae4bff18a2b8dc3f74cb690af05ab580cd6c4a0f4e99f8b8a8bf1be74bafc4e",
+        "notes.mid": "8bcb0bbf984ae2e8b1d9059b070b76193114800ab96ca85c9c217b1b5603d908",
+        "song.ini": "03b422b2c130a179831d352e1e0e8815b0d52d770d17372df07c41c177796c95",
+        "song.ogg": "f5c6804a490368913c87011ff57754c2eb1820478a45bfcf38205a3eea458c3b"
+      }
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-db3a5dd045",
+      "archived": "/workspaces/Shredder.exe/chart-backups/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz-60189351-db3a5dd045",
+      "sha256": {
+        "LEIA-ME.txt": "ef80f7770c9e817e498a23d77bf43f117f01d18eaf34b433e145639d232db440",
+        "analysis.json": "448cd86537e6576074adfaf114d9af4cd221fbc256776fd4be4a3742c032c359",
+        "bass.analysis.json": "059a8bd3e184507666ab9e63060deb4b2d57077a693ffc8605b68eeab1adeecc",
+        "bass.ogg": "87edc62007196d992048e3e097ad267752060ebd8316ec7c024984eec2f43954",
+        "comparison.json": "79a79ce7d1b7dd262edc433db3906329fe88f30bc5b0df4917d3d82b111889d3",
+        "complete.json": "0b94c91aba81efdfa99310e94daec9c1a17cde14339c8b8bdf7f045dbfd528cd",
+        "drums.analysis.json": "890540efc77bac94394c9be235db0372384080b944a6a3088ceec29f9e9b1534",
+        "drums.ogg": "0d5359ead213a1e846bbed04b04e11c599492416d927efe6a0b4f89232b3c095",
+        "guitar.analysis.json": "bca313cf0191721dc743b32d69d1dbdf9dc20e8dca26222e6ccd7e6c84a2cfe7",
+        "guitar.ogg": "5f92cd3d7246db4160a824bf2f88c78962b5c90dfb087194e5a33cbe2aa7fe7c",
+        "keys.analysis.json": "80f5e876e93f973a6b58baf1160d4cc0f0ccedc9efbf0302c093660494bb0a3e",
+        "keys.ogg": "00a4dc4cc171720830a520152634b1a11a1cf2b35d3539a8bfcf8145a79c5a77",
+        "notes.mid": "e5079c0f2e9e8d0eeca6479da16912448270aa1ad9b7f70c265966aff206ce62",
+        "song.ini": "03b422b2c130a179831d352e1e0e8815b0d52d770d17372df07c41c177796c95",
+        "song.ogg": "ca832422e914ae1d46add531cbd49a8e0f436d42a903952e7c6c2efbae7284c2"
+      }
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-f965746f8a",
+      "archived": "/workspaces/Shredder.exe/chart-backups/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz-60189351-f965746f8a",
+      "sha256": {
+        "LEIA-ME.txt": "ef80f7770c9e817e498a23d77bf43f117f01d18eaf34b433e145639d232db440",
+        "analysis.json": "08d07f5694e2be31334bb5af2f4af71135006ce89d149c717c3ceeb1b7374e17",
+        "bass.analysis.json": "059a8bd3e184507666ab9e63060deb4b2d57077a693ffc8605b68eeab1adeecc",
+        "bass.ogg": "8f204af27a37dd5262388ea701c40c9504a2972985d4bd1f207505c956bed9f5",
+        "comparison.json": "e516e0d7c5f53ec48cf2715ee7d841c165776dd796ca674ddce0924938fb0791",
+        "complete.json": "df7fe7d9ada1cfcffa2065e7506bcc4611883f63ca455658e022b8eecba1aef5",
+        "drums.analysis.json": "890540efc77bac94394c9be235db0372384080b944a6a3088ceec29f9e9b1534",
+        "drums.ogg": "a93200eec12249bd6b0d23de4e7e4484c5f7a457f9ec87afdb6de4c40e9b7be0",
+        "guitar.analysis.json": "bca313cf0191721dc743b32d69d1dbdf9dc20e8dca26222e6ccd7e6c84a2cfe7",
+        "guitar.ogg": "717fbec065ceff0a45fc56044780f2fa34501aa790be58d3965185eccdcef8aa",
+        "keys.analysis.json": "80f5e876e93f973a6b58baf1160d4cc0f0ccedc9efbf0302c093660494bb0a3e",
+        "keys.ogg": "5e8fedb54fa42788461e35984b695114d77cc65330e655de825ada5795be88c3",
+        "notes.mid": "5d1fd3303a228df24941d9933375e47edcb290f73c86e5112945c90326a4f58b",
+        "song.ini": "03b422b2c130a179831d352e1e0e8815b0d52d770d17372df07c41c177796c95",
+        "song.ogg": "f6869b9d2857e51dfab00cb7f34c2ef059d04d02129c7eb6ff432ef73a489ef2"
+      }
+    },
+    {
+      "original": "/workspaces/Shredder.exe/musicas/charts-wav/Pro Dia Nascer Feliz-60189351-f965746f8a-r2",
+      "archived": "/workspaces/Shredder.exe/chart-backups/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz-60189351-f965746f8a-r2",
+      "sha256": {
+        "LEIA-ME.txt": "ef80f7770c9e817e498a23d77bf43f117f01d18eaf34b433e145639d232db440",
+        "analysis.json": "49c42908179a078d9fbdd47cb4cf5195f7ae06ae389d26b869907e29788dfb6b",
+        "bass.analysis.json": "059a8bd3e184507666ab9e63060deb4b2d57077a693ffc8605b68eeab1adeecc",
+        "bass.ogg": "8f204af27a37dd5262388ea701c40c9504a2972985d4bd1f207505c956bed9f5",
+        "comparison.json": "e516e0d7c5f53ec48cf2715ee7d841c165776dd796ca674ddce0924938fb0791",
+        "complete.json": "534b41254adc5a7aa5512da6a731ca3a227a04369549e72605170cb6228ff584",
+        "drums.analysis.json": "890540efc77bac94394c9be235db0372384080b944a6a3088ceec29f9e9b1534",
+        "drums.ogg": "a93200eec12249bd6b0d23de4e7e4484c5f7a457f9ec87afdb6de4c40e9b7be0",
+        "guitar.analysis.json": "bca313cf0191721dc743b32d69d1dbdf9dc20e8dca26222e6ccd7e6c84a2cfe7",
+        "guitar.ogg": "717fbec065ceff0a45fc56044780f2fa34501aa790be58d3965185eccdcef8aa",
+        "keys.analysis.json": "80f5e876e93f973a6b58baf1160d4cc0f0ccedc9efbf0302c093660494bb0a3e",
+        "keys.ogg": "5e8fedb54fa42788461e35984b695114d77cc65330e655de825ada5795be88c3",
+        "notes.mid": "5d1fd3303a228df24941d9933375e47edcb290f73c86e5112945c90326a4f58b",
+        "song.ini": "03b422b2c130a179831d352e1e0e8815b0d52d770d17372df07c41c177796c95",
+        "song.ogg": "f6869b9d2857e51dfab00cb7f34c2ef059d04d02129c7eb6ff432ef73a489ef2"
+      }
+    }
+  ],
+  "validation": {
+    "archived_folders": 7,
+    "protected_files_unchanged": 53,
+    "all_archived_hashes_verified": true,
+    "active_chart_valid": true
+  }
+}

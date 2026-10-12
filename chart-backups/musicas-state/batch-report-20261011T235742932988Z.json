@@ -1,0 +1,18 @@
+{
+  "version": "wav-direct-1",
+  "songs": [
+    {
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Exagerado",
+      "status": "generated",
+      "output": "/workspaces/Shredder.exe/musicas/Cazuza - Exagerado",
+      "previous_backup": "/workspaces/Shredder.exe/chart-backups/musicas-state/backups/Cazuza - Exagerado-eaa132889c4f/20261011T235742840645Z-bca15dbc",
+      "elapsed_seconds": 37.4984600050002,
+      "expert_notes": {
+        "guitar": 1298,
+        "bass": 790,
+        "drums": 857,
+        "keys": 674
+      }
+    }
+  ]
+}
