@@ -1,0 +1,18 @@
+{
+  "version": "wav-direct-1",
+  "songs": [
+    {
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Pro Dia Nascer Feliz",
+      "status": "generated",
+      "output": "/workspaces/Shredder.exe/musicas/Cazuza - Pro Dia Nascer Feliz",
+      "previous_backup": "/workspaces/Shredder.exe/chart-backups/musicas-state/backups/Cazuza - Pro Dia Nascer Feliz-6018935199be/20261012T005709301430Z-8ea375ac",
+      "elapsed_seconds": 99.16408919700007,
+      "expert_notes": {
+        "guitar": 1087,
+        "bass": 786,
+        "drums": 1603,
+        "keys": 2090
+      }
+    }
+  ]
+}

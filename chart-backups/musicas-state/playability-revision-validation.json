@@ -1,0 +1,521 @@
+{
+  "songs": [
+    {
+      "folder": "/workspaces/Shredder.exe/musicas/Cazuza - Exagerado",
+      "artifact_hashes_valid": true,
+      "original_audio_correlation": 0.9982856060860628,
+      "ogg_files": [
+        "song.ogg"
+      ],
+      "midi_playable_note_counts": {
+        "TEMPO": 0,
+        "EVENTS": 0,
+        "PART GUITAR": 1280,
+        "PART BASS": 774,
+        "PART DRUMS": 1075,
+        "PART REAL_KEYS_E": 0,
+        "PART REAL_KEYS_M": 0,
+        "PART REAL_KEYS_H": 0,
+        "PART REAL_KEYS_X": 1009
+      },
+      "alignment": {
+        "status": "original_mix_timeline_aligned",
+        "sample_rate": 44100,
+        "samples": 9940608,
+        "original_stem_samples": 9944064,
+        "mix_probes": [
+          {
+            "offset_seconds": 0.0,
+            "lag_seconds": -0.05124716553287982,
+            "correlation": 0.8958809579676074
+          },
+          {
+            "offset_seconds": 102.70530612244897,
+            "lag_seconds": -0.05124716553287982,
+            "correlation": 0.7790297644995057
+          },
+          {
+            "offset_seconds": 205.41061224489795,
+            "lag_seconds": -0.05124716553287982,
+            "correlation": 0.8123010884766249
+          }
+        ],
+        "common_stem_shift_ms": -51.24716553287982,
+        "length_adjustment_ms": -78.36734693877551,
+        "automatic_shifts": true,
+        "equal_sample_counts": true,
+        "limitation": "Common alignment verified; individual stem delays remain unproven."
+      },
+      "keyboard_added_gameplay_notes": 339,
+      "keyboard_longest_rest_seconds": 5.969342403628104,
+      "previous_chart": "chart-backups/musicas-state/backups/Cazuza - Exagerado-eaa132889c4f/20261012T005037666745Z-fe5df7e6",
+      "previous_keyboard_longest_rest_seconds": 63.36098639455782,
+      "drum_refinement": {
+        "method": "audio-supported high-band attacks and learned snare phase",
+        "added_cymbal_attacks": [
+          {
+            "time": 20.727879818594104,
+            "kind": "hihat"
+          },
+          {
+            "time": 22.723344671201815,
+            "kind": "hihat"
+          },
+          {
+            "time": 42.05939909297052,
+            "kind": "hihat"
+          },
+          {
+            "time": 105.1260657596372,
+            "kind": "hihat"
+          },
+          {
+            "time": 106.00407029478458,
+            "kind": "hihat"
+          },
+          {
+            "time": 106.87209750566895,
+            "kind": "hihat"
+          },
+          {
+            "time": 124.46212018140591,
+            "kind": "hihat"
+          },
+          {
+            "time": 126.21812925170069,
+            "kind": "hihat"
+          },
+          {
+            "time": 132.36416099773243,
+            "kind": "hihat"
+          },
+          {
+            "time": 136.99363945578233,
+            "kind": "hihat"
+          },
+          {
+            "time": 142.04216553287984,
+            "kind": "hihat"
+          },
+          {
+            "time": 144.03763038548755,
+            "kind": "hihat"
+          }
+        ],
+        "tom_to_snare_times": [],
+        "snare_phase_concentration": 0.30385326164780996,
+        "standard_groove_hat_pulses": [
+          1.477014008355611,
+          1.9103360172900288,
+          2.7839484820855978,
+          3.216959222708711,
+          3.655961490282407,
+          4.078400303490147,
+          5.386096782615644,
+          5.823823562830783,
+          7.13446030275411,
+          8.019360352983226,
+          8.46413567189031,
+          8.903137939464006,
+          9.345251829057931,
+          9.77922210191005,
+          10.649186940805839,
+          11.521438564880151,
+          11.965952453806482,
+          12.39918101309176,
+          12.846504474789961,
+          13.282760534609093,
+          13.724509009937353,
+          14.167138950116241,
+          14.609548959146144,
+          15.047582893948206,
+          15.488950909185055,
+          19.007058715786137,
+          19.89022843042211,
+          20.326407379924998,
+          21.205342569940395,
+          21.66044467106687,
+          23.84007817103411,
+          25.602846417768614,
+          26.055403276953765,
+          29.53074888826123,
+          37.018543538613095,
+          37.45698205173088,
+          37.89598431930458,
+          38.771551703005144,
+          40.10219145396731,
+          40.525382304487856,
+          40.99397635092325,
+          43.61644131171566,
+          45.79580682908222,
+          46.2364195433661,
+          46.6801396176713,
+          47.12744924354205,
+          47.565145254511975,
+          48.0217236566667,
+          48.454328617324016,
+          53.751641938887246,
+          54.196379580662025,
+          54.626180997607726,
+          60.320036803987605,
+          62.08496023751703,
+          62.51649205399327,
+          63.40527545181984,
+          64.72052661572286,
+          66.9046326597774,
+          69.55604413679423,
+          70.00017546780742,
+          71.31930386795105,
+          71.76438955921714,
+          73.07577874759318,
+          73.51700322947062,
+          73.95342780570743,
+          74.38914287552068,
+          74.82611046831981,
+          75.28188503506254,
+          75.70389789360657,
+          76.14085238072559,
+          81.41881702445944,
+          82.29739738379905,
+          82.72659685278117,
+          83.18150820668455,
+          83.61599955590768,
+          84.05537767175751,
+          84.93124220366963,
+          85.37024447124332,
+          85.81342410809359,
+          86.24531229657251,
+          91.11647434493612,
+          91.55318374585418,
+          91.99621309620396,
+          92.86622913207219,
+          93.30563696478973,
+          93.74463923236343,
+          94.62912078176461,
+          102.94099754641847,
+          103.3908879548482,
+          103.82589746111336,
+          104.26113904340058,
+          106.45424268499492,
+          108.21878230819466,
+          109.54948745517544,
+          109.98969785215311,
+          110.87146754105716,
+          111.31108378381869,
+          111.7502208623882,
+          113.5191594760924,
+          114.40783987539123,
+          115.2835738297636,
+          115.721427215253,
+          117.01903116382924,
+          117.46292669942665,
+          117.89815834193718,
+          118.32839604014984,
+          119.21092713826252,
+          119.64596595764768,
+          120.0863053824021,
+          120.52397049279507,
+          120.9649694717125,
+          121.39947073780135,
+          121.8397780983134,
+          122.27740428266513,
+          122.7177826334608,
+          124.04100660467428,
+          124.92175863697096,
+          125.81053166585177,
+          126.68824504598716,
+          127.12899890809496,
+          131.06887988601102,
+          131.51001854626625,
+          132.82548247089045,
+          133.69822337337158,
+          134.16015239443658,
+          135.03544255159213,
+          135.92572757887393,
+          136.3577178035004,
+          136.7945953261917,
+          137.66934855537667,
+          138.9786008689056,
+          139.425052246157,
+          140.31544748258736,
+          140.7501560253351,
+          141.63029248947583,
+          142.5078302761979,
+          142.9511046510336,
+          143.3901069186073,
+          144.70982410953312,
+          146.02933016647088,
+          160.5573446805299,
+          160.9879343516019,
+          161.85595156173792,
+          162.29390951207,
+          162.72642979926854,
+          163.16835785374244,
+          166.6860086994614,
+          167.12098388734742,
+          169.31354308297367,
+          169.75254535054736,
+          170.19154761812106,
+          171.07636045177907,
+          171.96482229926357,
+          172.40382456683727,
+          172.84391098552084,
+          173.27750326282444,
+          173.71650553039814,
+          175.03006870882905,
+          176.3464252998394,
+          179.87053097293742,
+          180.74918998024,
+          182.06424060509104,
+          182.50219098816737,
+          182.9397187748812,
+          186.43793524471283,
+          187.7757385926233,
+          189.9805912543261,
+          190.42391490868457,
+          190.86113154229656,
+          191.31015411577474,
+          191.75140609480968,
+          192.63821583843358,
+          193.53248202052754,
+          193.96655191302608,
+          194.40323325778434,
+          194.842235525358,
+          196.5851625574307,
+          197.0223716897714,
+          197.89652322758755,
+          198.7721405638216,
+          199.67220208250305,
+          200.11912708111984,
+          204.04237283867377,
+          204.92146571687425,
+          208.86117823217043
+        ],
+        "groove_pulses_are_gameplay_adaptation": true,
+        "class_counts": {
+          "crash": 81,
+          "hihat": 271,
+          "tom": 207,
+          "snare": 258,
+          "kick": 265
+        },
+        "forced_pattern_hits": 185,
+        "limitation": "Cymbal/snare separation remains heuristic; listen to the listed timestamps."
+      },
+      "warnings": {
+        "guitar": [
+          "907 attacks have uncertain pitch; spectral fit does not certify chord accuracy.",
+          "Some attacks/holds have weak audio support; inspect listed times."
+        ],
+        "bass": [
+          "More than 25% of independent onsets have no Expert attack; inspect listed times."
+        ],
+        "drums": [
+          "Ambiguous drum body/rattle or cymbal decay packets were found; review their timestamps."
+        ],
+        "keys": [
+          "809 keyboard events have weak spectral explanation; review separation bleed and false notes.",
+          "Audible regions lack attacks; could be holds or missed notes."
+        ]
+      },
+      "in_game_test": "not run",
+      "listening_validation": "not run",
+      "musical_correctness_certified": false
+    },
+    {
+      "folder": "/workspaces/Shredder.exe/musicas/Cazuza - Pro Dia Nascer Feliz",
+      "artifact_hashes_valid": true,
+      "original_audio_correlation": 0.9970664547225504,
+      "ogg_files": [
+        "song.ogg"
+      ],
+      "midi_playable_note_counts": {
+        "TEMPO": 0,
+        "EVENTS": 0,
+        "PART GUITAR": 1087,
+        "PART BASS": 786,
+        "PART DRUMS": 1603,
+        "PART REAL_KEYS_E": 0,
+        "PART REAL_KEYS_M": 0,
+        "PART REAL_KEYS_H": 0,
+        "PART REAL_KEYS_X": 2090
+      },
+      "alignment": {
+        "status": "original_mix_timeline_aligned",
+        "sample_rate": 44100,
+        "samples": 11782656,
+        "original_stem_samples": 11782656,
+        "mix_probes": [
+          {
+            "offset_seconds": 0.0,
+            "lag_seconds": 0.0,
+            "correlation": 0.8188593144311098
+          },
+          {
+            "offset_seconds": 123.59020408163265,
+            "lag_seconds": 0.0,
+            "correlation": 0.8442781378056412
+          },
+          {
+            "offset_seconds": 247.1804081632653,
+            "lag_seconds": 0.0,
+            "correlation": 0.8468324262452371
+          }
+        ],
+        "common_stem_shift_ms": 0.0,
+        "length_adjustment_ms": 0.0,
+        "automatic_shifts": false,
+        "equal_sample_counts": true,
+        "limitation": "Common alignment verified; individual stem delays remain unproven."
+      },
+      "keyboard_added_gameplay_notes": 95,
+      "keyboard_longest_rest_seconds": 5.389183673469404,
+      "previous_chart": "chart-backups/musicas-state/backups/Cazuza - Pro Dia Nascer Feliz-6018935199be/20261012T005239647366Z-eb2b3c62",
+      "previous_keyboard_longest_rest_seconds": 20.45115646258506,
+      "drum_refinement": {
+        "method": "audio-supported high-band attacks and learned snare phase",
+        "added_cymbal_attacks": [
+          {
+            "time": 6.550102040816326,
+            "kind": "hihat"
+          },
+          {
+            "time": 32.97005668934241,
+            "kind": "crash"
+          },
+          {
+            "time": 62.17368480725624,
+            "kind": "hihat"
+          },
+          {
+            "time": 84.64261904761905,
+            "kind": "hihat"
+          },
+          {
+            "time": 96.22629251700681,
+            "kind": "crash"
+          },
+          {
+            "time": 108.55826530612245,
+            "kind": "hihat"
+          },
+          {
+            "time": 123.16506802721089,
+            "kind": "crash"
+          },
+          {
+            "time": 171.21586167800453,
+            "kind": "hihat"
+          },
+          {
+            "time": 183.39817460317462,
+            "kind": "hihat"
+          },
+          {
+            "time": 195.18139455782313,
+            "kind": "crash"
+          },
+          {
+            "time": 204.48026077097506,
+            "kind": "crash"
+          },
+          {
+            "time": 233.39454648526078,
+            "kind": "hihat"
+          },
+          {
+            "time": 236.4276530612245,
+            "kind": "hihat"
+          },
+          {
+            "time": 243.7011224489796,
+            "kind": "hihat"
+          },
+          {
+            "time": 248.71971655328798,
+            "kind": "hihat"
+          }
+        ],
+        "tom_to_snare_times": [],
+        "snare_phase_concentration": 0.07956765521818247,
+        "standard_groove_hat_pulses": [
+          9.433376896324502,
+          9.833750253658852,
+          10.237040044842503,
+          10.633720530421181,
+          40.03874001066676,
+          48.15484758415241,
+          48.564953017842434,
+          49.376644378991045,
+          50.58198656778739,
+          61.56424224452207,
+          64.79042818523432,
+          71.67451038311368,
+          72.07461986535229,
+          98.02931525066428,
+          99.24063337614312,
+          99.64989555194428,
+          100.04898852246583,
+          120.33489468797515,
+          121.15437586665415,
+          122.3548076597087,
+          124.38306218511124,
+          170.62763401045177,
+          173.46678147029627,
+          181.15906034975177,
+          209.6709320065353,
+          210.08811581941043,
+          210.91071242414364,
+          217.74822968342662,
+          223.4132103463579,
+          240.49329671701122,
+          245.31449438357592,
+          249.94859337054692,
+          257.57958049886616
+        ],
+        "groove_pulses_are_gameplay_adaptation": true,
+        "class_counts": {
+          "crash": 136,
+          "hihat": 371,
+          "kick": 665,
+          "tom": 126,
+          "snare": 312
+        },
+        "forced_pattern_hits": 33,
+        "limitation": "Cymbal/snare separation remains heuristic; listen to the listed timestamps."
+      },
+      "warnings": {
+        "guitar": [
+          "640 attacks have uncertain pitch; spectral fit does not certify chord accuracy.",
+          "Audible regions lack attacks; could be holds or missed notes."
+        ],
+        "bass": [
+          "Audible regions lack attacks; could be holds or missed notes.",
+          "More than 25% of independent onsets have no Expert attack; inspect listed times."
+        ],
+        "drums": [
+          "Ambiguous drum body/rattle or cymbal decay packets were found; review their timestamps."
+        ],
+        "keys": [
+          "2853 keyboard events have weak spectral explanation; review separation bleed and false notes.",
+          "Audible regions lack attacks; could be holds or missed notes."
+        ]
+      },
+      "in_game_test": "not run",
+      "listening_validation": "not run",
+      "musical_correctness_certified": false
+    }
+  ],
+  "unit_tests_passed": 33,
+  "test_suites": [
+    "test_wav_charts.py:18",
+    "test_chart_library.py:7",
+    "test_chart_playability.py:8"
+  ],
+  "scope": "Two songs only; no full batch processing",
+  "resume_verified": {
+    "Exagerado": "skipped_complete",
+    "Pro Dia Nascer Feliz": "skipped_complete"
+  },
+  "one_main_folder_per_song": true
+}

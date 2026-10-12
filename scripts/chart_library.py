@@ -45,8 +45,9 @@ def artifacts_valid(folder):
     try:
         marker = read_json(folder/'complete.json')
         files = marker['files']
-        required = {'notes.mid', 'song.ini', 'analysis.json', 'guitar.ogg', 'bass.ogg', 'keys.ogg', 'drums.ogg'}
-        return required <= files.keys() and all(Path(name).name == name and name not in ('.', '..')
+        required = {'notes.mid', 'song.ini', 'analysis.json'}
+        audio_valid = 'song.ogg' in files or {'guitar.ogg', 'bass.ogg', 'keys.ogg', 'drums.ogg'} <= files.keys()
+        return audio_valid and required <= files.keys() and all(Path(name).name == name and name not in ('.', '..')
             and (folder/name).is_file() and digest(folder/name) == sha for name, sha in files.items())
     except (OSError, ValueError, KeyError, TypeError):
         return False

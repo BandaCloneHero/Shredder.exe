@@ -32,6 +32,7 @@ from create_mp3_test_chart import DIFFICULTIES, PPQ, make_track, validate
 from wav_chart_analysis import (INSTRUMENTS, VERSION, analyze, beat_analysis,
                                 difficulty_charts, musical_checks)
 from chart_library import Library, artifacts_valid, audit_legacy, legacy_candidates, metadata, source_id
+from chart_playability import accompany_keys, original_audio_layout, refine_groove
 
 
 def digest(path):
@@ -65,7 +66,7 @@ def implementation_hash():
     tree = ast.parse(source)
     functions = {'decode_stereo', 'mono', 'alignment', 'write_midi', 'export_audio'}
     parts = [digest(Path(__file__).parent/name) for name in (
-        'wav_chart_analysis.py', 'create_mp3_test_chart.py')]
+        'wav_chart_analysis.py', 'create_mp3_test_chart.py', 'chart_playability.py')]
     parts.extend(ast.get_source_segment(source, node) for node in tree.body
                  if isinstance(node, ast.FunctionDef) and node.name in functions)
     analysis_hash = hashlib.sha256('\n'.join(parts).encode()).hexdigest()
@@ -109,6 +110,16 @@ def identify_folder(folder):
             raise ValueError('Multiple possible full mixes; choose one using song.json.')
         mix = mixes[0].resolve() if mixes else None
     return stems, mix, settings
+
+
+def analysis_fingerprint():
+    """Raw detections survive changes to gameplay adaptation and audio export."""
+    source = Path(__file__).read_text(encoding='utf-8')
+    tree = ast.parse(source)
+    pieces = [digest(Path(__file__).parent/name) for name in ('wav_chart_analysis.py', 'create_mp3_test_chart.py')]
+    pieces.extend(ast.get_source_segment(source, node) for node in tree.body
+                  if isinstance(node, ast.FunctionDef) and node.name in ('decode_stereo', 'mono'))
+    return hashlib.sha256('\n'.join(pieces).encode()).hexdigest()
 
 
 def discover(root, selection=None):
@@ -212,7 +223,7 @@ def write_midi(charts, duration, bpm, output):
             'source_midi_used': False}
 
 
-def export_audio(raw, work, output):
+def export_audio(raw, work, output, original=False):
     frames = len(raw['guitar'])
     maximum = 0.
     reconstruction = 0.
@@ -225,15 +236,20 @@ def export_audio(raw, work, output):
         for i in INSTRUMENTS:
             maximum = max(maximum, float(np.max(abs(raw[i][start:stop]))))
         if residual is not None:
-            residual[start:stop] = raw['mix'][start:stop]-total
-            reconstruction = max(reconstruction, float(np.max(abs(total+residual[start:stop]-raw['mix'][start:stop]))))
+            residual[start:stop] = raw['mix'][start:stop] if original else raw['mix'][start:stop]-total
+            if not original:
+                reconstruction = max(reconstruction, float(np.max(abs(total+residual[start:stop]-raw['mix'][start:stop]))))
             maximum = max(maximum, float(np.max(abs(residual[start:stop]))), float(np.max(abs(raw['mix'][start:stop]))))
         else:
             maximum = max(maximum, float(np.max(abs(total))))
     if residual is not None:
         residual.flush()
+    if original:
+        if residual is None:
+            raise ValueError('Original audio mode requires the full recording.')
+        maximum = float(np.max(abs(raw['mix'])))
     gain = min(1., .90/max(maximum, 1e-9))
-    files = list(INSTRUMENTS)+(['song'] if residual is not None else [])
+    files = ['song'] if original else list(INSTRUMENTS)+(['song'] if residual is not None else [])
     ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
     checks = {}
     for i in files:
@@ -256,7 +272,8 @@ def export_audio(raw, work, output):
         del decoded
         check.unlink()
     return {'gain': gain, 'files': checks, 'residual_reconstruction_max_error': reconstruction if residual is not None else None,
-            'background': 'mix minus four stems' if residual is not None else 'No mix: only the four supplied instruments',
+            'background': 'original full recording; no instrument stems exported' if original else ('mix minus four stems' if residual is not None else 'No mix: only the four supplied instruments'),
+            'original_recording_only': original,
             'clipping_warning': any(c['decoded_peak'] > 1 for c in checks.values())}
 
 
@@ -349,8 +366,17 @@ def process(folder, args, work, implementation):
     saved_options = read_json(prior/'analysis.json').get('chart_options', {}) if prior else {}
     selected_difficulty = getattr(args, 'difficulty', None) or saved_options.get('difficulty', 'all')
     drum_order = getattr(args, 'drum_order', None) or saved_options.get('drum_order', 'snare,hihat,tom,crash')
-    if selected_difficulty != 'all' or drum_order != 'snare,hihat,tom,crash':
-        payload['chart_options'] = {'difficulty': selected_difficulty, 'drum_order': drum_order}
+    def preference(key):
+        explicit = getattr(args, key, None)
+        return bool(saved_options.get(key, False) if explicit is None else explicit)
+    original_audio = preference('original_audio')
+    keys_accompaniment = preference('keys_accompaniment')
+    drum_groove = preference('drum_groove')
+    chart_options = {'difficulty': selected_difficulty, 'drum_order': drum_order,
+                     'original_audio': original_audio, 'keys_accompaniment': keys_accompaniment,
+                     'drum_groove': drum_groove}
+    if selected_difficulty != 'all' or drum_order != 'snare,hihat,tom,crash' or any((original_audio, keys_accompaniment, drum_groove)):
+        payload['chart_options'] = chart_options
     signature = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
     organize_only = getattr(args, 'organize_existing', False)
     if organize_only or (args.resume and not args.instrument and active is None and prior is not None):
@@ -389,7 +415,14 @@ def process(folder, args, work, implementation):
     raw = {i: decode_stereo(p, work/(i+'.f32')) for i, p in stems.items()}
     if mix:
         raw['mix'] = decode_stereo(mix, work/'mix.f32')
-    alignment_report = alignment(raw)
+    if original_audio:
+        if not mix:
+            raise ValueError('--original-audio requires the original MP3/mix in the source folder.')
+        raw, alignment_report = original_audio_layout(raw, work)
+    else:
+        alignment_report = alignment(raw)
+    if keys_accompaniment and not mix:
+        raise ValueError('--keys-accompaniment requires a full mix to avoid notes during silence.')
     duration = len(raw['guitar'])/44100
     if duration < .5:
         raise ValueError('Song is shorter than 0.5 seconds.')
@@ -400,10 +433,12 @@ def process(folder, args, work, implementation):
         beat = beat_analysis(mono(raw['drums']))
     cache_directory = args.output/'.analysis-cache'
     cache_directory.mkdir(exist_ok=True)
+    engine_hash = analysis_fingerprint()
     for instrument in INSTRUMENTS:
         print(f'[{folder.name}] {instrument}: '+('reusing prior analysis' if args.instrument and instrument != args.instrument else 'analyzing WAV'), flush=True)
         audio = None
-        cache_key = hashlib.sha256((hashes[instrument]+implementation+instrument).encode()).hexdigest()
+        timeline = json.dumps({'shift': alignment_report.get('common_stem_shift_ms', 0), 'samples': len(raw[instrument])})
+        cache_key = hashlib.sha256((hashes[instrument]+engine_hash+instrument+timeline).encode()).hexdigest()
         cache_path = cache_directory/(cache_key+'.json')
         if args.instrument and instrument != args.instrument:
             analyses[instrument] = read_json(prior/(instrument+'.analysis.json'))
@@ -434,11 +469,16 @@ def process(folder, args, work, implementation):
             dump(pending, {'key': cache_key, 'analysis': value,
                            'sha256': hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()})
             pending.replace(cache_path)
+        if instrument == 'drums' and drum_groove:
+            analyses[instrument] = refine_groove(analyses[instrument], audio, beat)
         charts[instrument] = difficulty_charts(analyses[instrument], beat)
         checks[instrument] = musical_checks(analyses[instrument], charts[instrument], audio)
         if checks[instrument]['structural_errors']:
             raise ValueError(f'{instrument}: chart policy violations: {checks[instrument]["structural_errors"][:8]}')
         del audio
+    accompaniment_report = None
+    if keys_accompaniment:
+        charts['keys'], accompaniment_report = accompany_keys(charts['keys'], analyses, beat, mono(raw['mix']))
     # Apply output preferences to charts and event lanes together so validation
     # still compares the rendered lanes to their detected percussion events.
     if drum_order != 'snare,hihat,tom,crash':
@@ -453,23 +493,26 @@ def process(folder, args, work, implementation):
         if selected_difficulty != 'all':
             charts[instrument] = {d: notes if d == selected_difficulty else []
                                   for d, notes in charts[instrument].items()}
-        checks[instrument] = musical_checks(analyses[instrument], charts[instrument], mono(raw[instrument]))
+        check_audio = raw['mix'] if instrument == 'keys' and keys_accompaniment else raw[instrument]
+        checks[instrument] = musical_checks(analyses[instrument], charts[instrument], mono(check_audio))
+        if instrument == 'keys' and keys_accompaniment:
+            checks[instrument]['validation_audio'] = 'original mix; accompaniment notes are gameplay adaptation'
         if checks[instrument]['structural_errors']:
             raise ValueError(f'{instrument}: chart policy violations after output mapping')
     # Stage the entire song first. Incomplete exports are never library entries.
     staging = work/'song-output'
     staging.mkdir()
     midi_report = write_midi(charts, duration, beat['bpm'], staging/'notes.mid')
-    if args.instrument and hashes == prior_report['source_hashes']:
+    if args.instrument and hashes == prior_report['source_hashes'] and original_audio == prior_report['audio_export'].get('original_recording_only', False):
         for path in prior.glob('*.ogg'):
             shutil.copy2(path, staging/path.name)
         audio_report = prior_report['audio_export']
     else:
-        audio_report = export_audio(raw, work, staging)
+        audio_report = export_audio(raw, work, staging, original=original_audio)
     report = {'version': VERSION, 'implementation_hash': implementation, 'sources': sources,
               'source_folder': str(folder.resolve()), 'source_identity': source_id(folder),
-              'name': name, 'artist': artist,
-              'chart_options': {'difficulty': selected_difficulty, 'drum_order': drum_order},
+              'name': name, 'artist': artist, 'analysis_engine_hash': engine_hash,
+              'chart_options': chart_options, 'keyboard_accompaniment': accompaniment_report,
               'source_hashes': hashes, 'source_midi_used': False,
               'duration_seconds': duration, 'alignment': alignment_report,
               'beat_analysis': beat, 'charts': charts, 'musical_checks': checks,
@@ -536,6 +579,9 @@ def main():
     parser.add_argument('--resume', action='store_true', help='skip verified complete songs; reuse hashed analyses')
     parser.add_argument('--difficulty', choices=['all', *DIFFICULTIES], help='render only the selected difficulty; inherit existing preference on resume')
     parser.add_argument('--drum-order', choices=['snare,hihat,tom,crash', 'hihat,snare,tom,crash'], help='four pads from left to right; inherit existing preference on resume')
+    parser.add_argument('--original-audio', action=argparse.BooleanOptionalAction, default=None, help='export only song.ogg from the full original recording, with verified common alignment')
+    parser.add_argument('--keys-accompaniment', action=argparse.BooleanOptionalAction, default=None, help='add explicit gameplay accompaniment in long keyboard gaps')
+    parser.add_argument('--drum-groove', action=argparse.BooleanOptionalAction, default=None, help='recover audio-supported cymbal pulses and refine snare classification')
     parser.add_argument('--instrument', choices=INSTRUMENTS, help='re-analyze one instrument; archive previous revision outside library')
     parser.add_argument('--organize-existing', action='store_true', help='copy latest valid legacy chart into library; never analyze audio')
     parser.add_argument('--compare', type=Path, help='old song folder/notes.mid; comparison only, requires --song')

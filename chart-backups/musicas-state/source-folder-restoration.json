@@ -1,0 +1,27 @@
+[
+  {
+    "original": "musicas/audios separados/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz/0075  Cazuza Pro Dia Nascer Feliz.mp3",
+    "current": "musicas/audios separados/Pro Dia Nascer Feliz/0075  Cazuza Pro Dia Nascer Feliz.mp3",
+    "sha256": "2c9a431431377f81e43b768f10d9dc2f5c02e764b742202202fc1405d9fc250c"
+  },
+  {
+    "original": "musicas/audios separados/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz/bass20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_bass_[mvsep.com].wav",
+    "current": "musicas/audios separados/Pro Dia Nascer Feliz/bass20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_bass_[mvsep.com].wav",
+    "sha256": "adedac815126976c875d851958d0f07125fa1348caa639d3d877f0ce8bfb2c30"
+  },
+  {
+    "original": "musicas/audios separados/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz/drum20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_drums_[mvsep.com].wav",
+    "current": "musicas/audios separados/Pro Dia Nascer Feliz/drum20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_drums_[mvsep.com].wav",
+    "sha256": "312938e7cb7bf725407689ad4ca9c5cfa783849355848205c1f0a1977503dca9"
+  },
+  {
+    "original": "musicas/audios separados/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz/guitar20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_guitar_[mvsep.com].wav",
+    "current": "musicas/audios separados/Pro Dia Nascer Feliz/guitar20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_guitar_[mvsep.com].wav",
+    "sha256": "330d07889c5acd0c7555fc3c04bfbc496632537b859d6e0c14201faeca324622"
+  },
+  {
+    "original": "musicas/audios separados/Pro Dia Nascer Feliz/Pro Dia Nascer Feliz/keys20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_piano_[mvsep.com].wav",
+    "current": "musicas/audios separados/Pro Dia Nascer Feliz/keys20261011002245-1bd37dd7ac-0075-cazuza-pro-dia-nascer-feliz_bs6stem_mt_0_piano_[mvsep.com].wav",
+    "sha256": "03baff2462adbe32c0ae4b9c85f004e9c12cc186844705bbd0bb31eefde284f1"
+  }
+]

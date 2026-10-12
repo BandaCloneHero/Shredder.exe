@@ -1,0 +1,11 @@
+{
+  "version": "wav-direct-1",
+  "songs": [
+    {
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Exagerado",
+      "status": "error",
+      "error": "Event.__init__() got an unexpected keyword argument 'provenance'",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspaces/Shredder.exe/scripts/generate_charts_batch.py\", line 613, in main\n    row = process(folder, args, Path(temporary), implementation)\n  File \"/workspaces/Shredder.exe/scripts/generate_charts_batch.py\", line 463, in process\n    charts[instrument] = difficulty_charts(analyses[instrument], beat)\n                         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/Shredder.exe/scripts/wav_chart_analysis.py\", line 617, in difficulty_charts\n    events = [Event(**e) for e in analysis['events']]\n              ~~~~~^^^^^\nTypeError: Event.__init__() got an unexpected keyword argument 'provenance'\n"
+    }
+  ]
+}

@@ -136,7 +136,47 @@ Rodar testes:
 ```bash
 .venv-charts/bin/python scripts/test_wav_charts.py
 .venv-charts/bin/python scripts/test_chart_library.py
+.venv-charts/bin/python scripts/test_chart_playability.py
 ```
+
+## Gravação original, acompanhamento e groove
+
+Para as duas músicas do Cazuza, a revisão de áudio/jogabilidade usa:
+
+```bash
+.venv-charts/bin/python scripts/generate_charts_batch.py \
+  "musicas/audios separados" --output "musicas" --song "Exagerado" \
+  --difficulty Expert --drum-order hihat,snare,tom,crash \
+  --original-audio --keys-accompaniment --drum-groove --resume
+```
+
+Troque `Exagerado` por `Pro Dia Nascer Feliz` para a outra música. Esses comandos
+selecionam uma música; não disparam o lote completo. Retomadas herdam as opções.
+`--no-original-audio`, `--no-keys-accompaniment` e `--no-drum-groove` desativam
+as adaptações explicitamente numa revisão.
+
+O MP3 original deve ficar na mesma pasta dos quatro WAVs. `song.json` pode
+escolher `mix` quando houver vários candidatos. O jogo usa somente `song.ogg`,
+convertido da gravação completa. Os stems não são exportados nesse modo e não
+há reprodução duplicada. A correlação entre a soma dos stems e a gravação
+original verifica um deslocamento comum em três regiões; diferenças pequenas
+de duração/atraso do MP3 são compensadas. Gravações diferentes e deriva de
+sincronização são recusadas. O sistema não comprova atrasos individuais de stems.
+
+O teclado recebe acompanhamento em pausas de pelo menos quatro segundos,
+baseado no pulso, nos ataques e nas alturas de guitarra/baixo. Essas notas são
+uma adaptação de jogabilidade autorizada, não transcrição de piano audível.
+Notas/sustentações detectadas são mantidas e o silêncio da gravação completa
+não recebe notas extras. `keyboard_accompaniment` lista cada adição.
+
+A bateria recupera transientes de alta frequência e usa a fase da caixa
+aprendida na gravação para resolver alguns tons com ruído de caixa. Também acrescenta pulsos regulares de chimbal em trechos com bumbo/caixa
+periódicos e energia de pratos, evitando silêncio e viradas densas de tons.
+Esses pulsos são adaptações de jogabilidade, separados dos ataques detectados
+em `standard_groove_hat_pulses`. O restante das batidas e viradas é preservado.
+`groove_refinement` registra cada adição/reclassificação. O cache de detecções
+brutas tem assinatura própria e é reaproveitado quando só essas adaptações mudam. Timbres ambíguos ainda
+precisam de revisão por escuta e no jogo.
 
 ## Organização dos áudios
 

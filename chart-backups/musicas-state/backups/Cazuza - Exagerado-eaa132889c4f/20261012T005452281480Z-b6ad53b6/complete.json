@@ -1,0 +1,15 @@
+{
+  "signature": "b03c9fdda94dca78336b9aba4e7aef734c05510b3e380c28e12ea6f79499c5a3",
+  "created_utc": "2026-10-12T00:50:37.582295+00:00",
+  "files": {
+    "bass.analysis.json": "dd15188b1c5dca85e98cd2f8ce05e59c7690d20925a285e153f9b7f07a5150b5",
+    "drums.analysis.json": "840898e48d9973021df4efe91d9f1b3a0438dd1445ebb83af118cd3500450748",
+    "guitar.analysis.json": "12a6f51fc7b9ad5e827f221e85a911ba8fcf9fc5b1d50092c219827f7037845e",
+    "LEIA-ME.txt": "01499080293d98ee8289f814e36f637130449a14fbec419e701fa27bf3358db0",
+    "analysis.json": "c2376cef721897ec19e64113c73d77be2f760be1b3ff2abdfadc804c4a7ef134",
+    "notes.mid": "fa423317b5f0a86d72629f2a457698d9707fdf428c12b8b643e982d66f7163a5",
+    "song.ogg": "76e5de219c7e6311ae5f6776b6a5ec7c76cf0ad92f09c6101b24feb05d4b1fb7",
+    "song.ini": "e72edea98a3ed969b7c5a88c01b1fe5f355fdfbdffcf3b0d6a8937f36299e729",
+    "keys.analysis.json": "7f3ce2a16f9c871717f48c94b5a08e8d490cd455a815dcaadd305b527cdada1a"
+  }
+}
