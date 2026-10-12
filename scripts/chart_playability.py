@@ -59,7 +59,7 @@ def original_audio_layout(raw, work):
                     'limitation': 'Common alignment verified; individual stem delays remain unproven.'}
 
 
-def refine_groove(analysis, audio, beat):
+def refine_groove(analysis, audio, beat, standard_pulses=True):
     """Recover bright attacks and resolve noisy tom/snare ambiguity per recording."""
     result = copy.deepcopy(analysis)
     events = result['events']
@@ -144,7 +144,7 @@ def refine_groove(analysis, audio, beat):
     bodies = [e['start'] for e in unique if e['kind'] in ('kick', 'snare')]
     body_times = np.asarray(bodies)
     cymbal_reference = float(np.quantile(high, .90))
-    if beat.get('confidence', 0.) >= .20 and cymbal_reference > 1e-7:
+    if standard_pulses and beat.get('confidence', 0.) >= .20 and cymbal_reference > 1e-7:
         for grid in beat.get('beats', []):
             if sum(abs(t-grid) < 2. for t in bodies) < 4:
                 continue

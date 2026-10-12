@@ -81,3 +81,31 @@ def verify_profile(charts, difficulty='Medium'):
         stats[instrument] = {'notes': len(notes), 'attacks': len(starts), 'max_simultaneous_including_kick': maximum,
                              'minimum_attack_gap_seconds': min((b-a for a, b in zip(starts, starts[1:])), default=None)}
     return stats
+
+
+def apply_realistic(charts, difficulty='Medium', snare_lane=2):
+    """Keep the full detected chart pool; limit drums to two total hits.
+
+    The output difficulty is a storage slot, not a density reduction policy.
+    """
+    result, report = {}, {}
+    for instrument, levels in charts.items():
+        original = sorted(levels['Expert'])
+        notes = original
+        if instrument == 'drums':
+            groups = []
+            for note in original:
+                if groups and note[0]-groups[-1][0][0] <= .035:
+                    groups[-1].append(note)
+                else:
+                    groups.append([note])
+            notes = []
+            for group in groups:
+                chosen = sorted(group, key=lambda n: (n[2] != 0, n[2] != snare_lane, n[0], n[2]))[:2]
+                notes.extend(chosen)
+            notes.sort()
+        result[instrument] = {level: notes if level == difficulty else [] for level in levels}
+        report[instrument] = {'detected_chart_notes': len(original), 'retained_notes': len(notes),
+                              'removed_for_drum_playability': len(original)-len(notes),
+                              'density_thinning': False, 'synthesized_accompaniment': False}
+    return result, report

@@ -719,7 +719,7 @@ def difficulty_charts(analysis, beat):
     return result
 
 
-def musical_checks(analysis, charts, audio):
+def musical_checks(analysis, charts, audio, fidelity_difficulty='Expert'):
     """Independent evidence checks. Warnings do not certify musical correctness."""
     instrument = analysis['instrument']
     duration = len(audio)/SAMPLE_RATE
@@ -736,6 +736,8 @@ def musical_checks(analysis, charts, audio):
         report['warnings'].append('Ambiguous drum body/rattle or cymbal decay packets were found; review their timestamps.')
     for level, difficulty in enumerate(DIFFICULTIES):
         chart = charts[difficulty]
+        if difficulty == fidelity_difficulty:
+            level = 3  # fidelity policy is independent of the MIDI storage slot
         starts = np.unique([n[0] for n in chart])
         active = collections.defaultdict(list)
         by_time = collections.defaultdict(list)
@@ -787,7 +789,7 @@ def musical_checks(analysis, charts, audio):
             'onset_distance_p95_ms': float(np.quantile(distances, .95)*1000) if distances else None,
             'uncovered_onset_times': missing,
             'onset_coverage': float(1-len(missing)/len(onsets)) if len(onsets) else None}
-        if difficulty == 'Expert':
+        if difficulty == fidelity_difficulty:
             # Audible regions with no chart notes can reveal missed instrument
             # entrances even when the same detector misses their attacks.
             gaps = []
@@ -805,7 +807,7 @@ def musical_checks(analysis, charts, audio):
     # Pitch direction compared with actual mapped root movement is useful even
     # when every MIDI message is perfectly valid. Keys are intentionally folded.
     if instrument in ('guitar', 'bass'):
-        expert = charts['Expert']
+        expert = charts[fidelity_difficulty]
         source = {round(e['start'], 3): min(e['pitches']) for e in analysis['events'] if e['pitches']}
         mapped_roots = {}
         for start, end, lane in expert:

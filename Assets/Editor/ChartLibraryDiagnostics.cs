@@ -56,8 +56,8 @@ namespace Editor
                 }
                 Debug.Log(text.ToString());
             }
-            Debug.Log("[Charts] Para os cinco charts revisados, instrumentos jogaveis devem mostrar " +
-                      "Facil=True, Medio=False e Especialista=False. Origens fora de musicas podem ser copias antigas.");
+            Debug.Log("[Charts] Compare os niveis carregados com analysis.json ou difficulty-profile.json da musica. " +
+                      "Origens fora de musicas podem ser copias antigas.");
         }
     }
 }

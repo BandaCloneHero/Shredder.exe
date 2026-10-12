@@ -1,7 +1,34 @@
+## Perfil realista de dificuldade única
+
+O padrão agora é `--playability-profile realistic`: conserva o conjunto mais
+completo de ataques detectados nos WAVs, sem o espaçamento ou a simplificação
+para iniciantes. Publica apenas Medium, usado como opção de seleção no YARG.
+Guitarra mantém cinco botões e até três notas por acorde; baixo é monofônico;
+Pro Keys mantém sete teclas brancas e até quatro teclas simultâneas.
+Bateria mantém quatro pads e bumbo, com no máximo duas batidas simultâneas
+contando o bumbo. Combinações excedentes priorizam bumbo e caixa e são relatadas.
+
+O perfil desativa preenchimento artificial de teclado e pulsos de groove
+padronizados. A recuperação de transientes de pratos e a classificação adaptativa
+da caixa continuam apoiadas no WAV. Não há garantia de transcrever todas as
+notas audíveis: os limites e incertezas do detector constam em `analysis.json`.
+As validações musicais usam limites deste perfil, independentemente do nome do
+nível MIDI. Áudio original e versões anteriores continuam preservados.
+
+Exemplo para uma das duas músicas disponíveis com stems:
+
+```bash
+.venv-charts/bin/python scripts/generate_charts_batch.py \
+  "musicas/audios separados" --song Exagerado --playability-profile realistic --resume
+```
+
+Os perfis `easy` e `easy-medium` permanecem opcionais. As músicas disponíveis
+apenas em MP3 não são regeneradas como se houvesse WAVs individuais.
+
 # Charts YARG diretamente de WAVs
 
 O gerador cria charts experimentais dos quatro instrumentos. O padrão agora é
-uma dificuldade única **Easy (Fácil)**, com perfil de jogabilidade entre Easy e Medium.
+uma dificuldade única **Medium (Médio)** no perfil realista, sem redução para iniciantes.
 Cada origem tem uma única pasta principal em `OUTPUT/Artista - Música`.
 `--output` é a pasta jogável e usa `musicas` por padrão. Cadastre `musicas` no YARG.
 Cache, índice, relatórios e revisões ficam em `chart-backups/musicas-state`, fora
@@ -141,9 +168,9 @@ Rodar testes:
 .venv-charts/bin/python scripts/test_chart_difficulty_profile.py
 ```
 
-## Perfil padrão entre Easy e Medium
+## Perfil leve opcional entre Easy e Medium
 
-O perfil padrão `easy` coloca as notas em **Easy (Fácil)**. Os outros três níveis
+O perfil opcional `easy` coloca as notas em **Easy (Fácil)**. Os outros três níveis
 não recebem notas jogáveis. O perfil opcional `easy-medium` continua disponível
 para publicar a mesma política leve em Medium.
 
@@ -154,7 +181,7 @@ para publicar a mesma política leve em Medium.
 - Teclado: uma tecla por vez, sete teclas brancas e sem sustentações sobrepostas.
 - Áudio e sincronização da versão anterior preservados; anteriores em backups.
 
-O novo padrão de `generate_charts_batch.py` é `--playability-profile easy`.
+O perfil leve pode ser escolhido com `--playability-profile easy`.
 Para usar a política antiga, indique `--playability-profile standard` e escolha
 `--difficulty Expert`, `Medium`, `Easy`, `Hard` ou `all`.
 

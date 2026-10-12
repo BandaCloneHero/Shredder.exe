@@ -5,7 +5,7 @@ import unittest
 
 import mido
 
-from chart_difficulty_profile import apply_easy_medium, easy_medium_notes, verify_profile
+from chart_difficulty_profile import apply_easy_medium, easy_medium_notes, verify_profile, apply_realistic
 from chart_library import digest
 from create_mp3_test_chart import make_track
 from revise_chart_difficulty import absolute, extract, revise_midi, revise_song, tempo_map
@@ -26,6 +26,19 @@ class DifficultyTests(unittest.TestCase):
         self.assertTrue(all(n[2] < 4 for n in guitar))
         keys = easy_medium_notes('keys', [[t, end, 48+lane] for t, end, lane in notes])
         verify_profile({'guitar': {'Medium': guitar}, 'keys': {'Medium': keys}})
+
+    def test_realistic_preserves_dense_attacks_chords_holds_and_five_frets(self):
+        source = {'guitar': {'Expert': [[0., .06, 0], [.08, .14, 4], [.16, 1., 1], [.16, 1., 3]]},
+                  'keys': {'Expert': [[0., 2., 48], [0., 2., 52], [0., 2., 55]]},
+                  'drums': {'Expert': [[0., .035, 0], [0., .035, 1], [0., .035, 2], [.08, .115, 1]]}}
+        for levels in source.values():
+            levels.update(Easy=[], Medium=[], Hard=[])
+        mapped, report = apply_realistic(source, snare_lane=2)
+        self.assertEqual(mapped['guitar']['Medium'], source['guitar']['Expert'])
+        self.assertEqual(mapped['keys']['Medium'], source['keys']['Expert'])
+        self.assertEqual(mapped['drums']['Medium'], [[0.,.035,0],[0.,.035,2],[.08,.115,1]])
+        self.assertEqual(report['drums']['removed_for_drum_playability'], 1)
+        self.assertTrue(all(not levels[d] for levels in mapped.values() for d in ('Easy','Hard','Expert')))
 
     def fixture(self, path):
         midi = mido.MidiFile(ticks_per_beat=480)

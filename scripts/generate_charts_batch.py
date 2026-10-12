@@ -33,7 +33,7 @@ from wav_chart_analysis import (INSTRUMENTS, VERSION, analyze, beat_analysis,
                                 difficulty_charts, musical_checks)
 from chart_library import Library, artifacts_valid, audit_legacy, legacy_candidates, metadata, source_id
 from chart_playability import accompany_keys, original_audio_layout, refine_groove
-from chart_difficulty_profile import apply_easy_medium, verify_profile
+from chart_difficulty_profile import apply_easy_medium, verify_profile, apply_realistic
 
 
 def digest(path):
@@ -370,12 +370,17 @@ def process(folder, args, work, implementation):
     playability_profile = getattr(args, 'playability_profile', None) or saved_options.get('playability_profile', 'standard')
     if playability_profile in ('easy', 'easy-medium'):
         selected_difficulty = 'Easy' if playability_profile == 'easy' else 'Medium'
+    if playability_profile == 'realistic':
+        selected_difficulty = 'Medium'
     def preference(key):
         explicit = getattr(args, key, None)
         return bool(saved_options.get(key, False) if explicit is None else explicit)
     original_audio = preference('original_audio')
     keys_accompaniment = preference('keys_accompaniment')
     drum_groove = preference('drum_groove')
+    if playability_profile == 'realistic':
+        keys_accompaniment = False
+        drum_groove = True
     chart_options = {'difficulty': selected_difficulty, 'drum_order': drum_order,
                      'original_audio': original_audio, 'keys_accompaniment': keys_accompaniment,
                      'drum_groove': drum_groove}
@@ -476,7 +481,7 @@ def process(folder, args, work, implementation):
                            'sha256': hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()})
             pending.replace(cache_path)
         if instrument == 'drums' and drum_groove:
-            analyses[instrument] = refine_groove(analyses[instrument], audio, beat)
+            analyses[instrument] = refine_groove(analyses[instrument], audio, beat, standard_pulses=playability_profile != 'realistic')
         charts[instrument] = difficulty_charts(analyses[instrument], beat)
         checks[instrument] = musical_checks(analyses[instrument], charts[instrument], audio)
         if checks[instrument]['structural_errors']:
@@ -500,12 +505,16 @@ def process(folder, args, work, implementation):
         snare_lane = drum_order.split(',').index('snare')+1
         charts = apply_easy_medium(charts, beat['bpm'], snare_lane, difficulty=selected_difficulty)
         profile_report = verify_profile(charts, difficulty=selected_difficulty)
+    if playability_profile == 'realistic':
+        snare_lane = drum_order.split(',').index('snare')+1
+        charts, profile_report = apply_realistic(charts, selected_difficulty, snare_lane)
     for instrument in INSTRUMENTS:
         if selected_difficulty != 'all':
             charts[instrument] = {d: notes if d == selected_difficulty else []
                                   for d, notes in charts[instrument].items()}
         check_audio = raw['mix'] if instrument == 'keys' and keys_accompaniment else raw[instrument]
-        checks[instrument] = musical_checks(analyses[instrument], charts[instrument], mono(check_audio))
+        checks[instrument] = musical_checks(analyses[instrument], charts[instrument], mono(check_audio),
+                                             fidelity_difficulty=selected_difficulty if playability_profile == 'realistic' else 'Expert')
         if instrument == 'keys' and keys_accompaniment:
             checks[instrument]['validation_audio'] = 'original mix; accompaniment notes are gameplay adaptation'
         if checks[instrument]['structural_errors']:
@@ -590,7 +599,7 @@ def main():
     parser.add_argument('--artist', default=None, help='fallback; song.json or the existing chart supplies it if omitted')
     parser.add_argument('--resume', action='store_true', help='skip verified complete songs; reuse hashed analyses')
     parser.add_argument('--difficulty', choices=['all', *DIFFICULTIES], help='render only the selected difficulty; inherit existing preference on resume')
-    parser.add_argument('--playability-profile', choices=['easy', 'easy-medium', 'standard'], default='easy', help='default: one approachable Easy chart; standard preserves the previous difficulty policy')
+    parser.add_argument('--playability-profile', choices=['realistic', 'easy', 'easy-medium', 'standard'], default='realistic', help='default: one faithful chart in Medium, without beginner thinning; standard preserves the previous difficulty policy')
     parser.add_argument('--drum-order', choices=['snare,hihat,tom,crash', 'hihat,snare,tom,crash'], help='four pads from left to right; inherit existing preference on resume')
     parser.add_argument('--original-audio', action=argparse.BooleanOptionalAction, default=None, help='export only song.ogg from the full original recording, with verified common alignment')
     parser.add_argument('--keys-accompaniment', action=argparse.BooleanOptionalAction, default=None, help='add explicit gameplay accompaniment in long keyboard gaps')

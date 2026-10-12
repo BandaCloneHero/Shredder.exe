@@ -120,6 +120,9 @@ class PlayabilityTests(unittest.TestCase):
         self.assertTrue(info['groove_pulses_are_gameplay_adaptation'])
         self.assertGreater(len(info['standard_groove_hat_pulses']), 0)
         self.assertTrue(all(t < 4 for t in info['standard_groove_hat_pulses']))
+        faithful = refine_groove(analysis, audio, {'bpm': 120., 'confidence': .8,
+                                 'beats': list(np.arange(.5, duration, .5))}, standard_pulses=False)
+        self.assertEqual(faithful['diagnostics']['groove_refinement']['standard_groove_hat_pulses'], [])
 
 
 if __name__ == '__main__':

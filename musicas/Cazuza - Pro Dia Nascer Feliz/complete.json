@@ -1,15 +1,15 @@
 {
-  "signature": "9160d115c895a2b7a465fe0526d7b2d00beda8b568b4630606ce8ac55a75b4f3",
-  "created_utc": "2026-10-12T12:16:45.246461+00:00",
+  "signature": "2f8e94ada2025869b2f1bf6be8f039f4097fb8476ce593483def4284babec18e",
+  "created_utc": "2026-10-12T13:19:53.574212+00:00",
   "files": {
     "bass.analysis.json": "059a8bd3e184507666ab9e63060deb4b2d57077a693ffc8605b68eeab1adeecc",
-    "drums.analysis.json": "7ec3e46e7819f5b463ce0924f9ad96b428a2926906688382eddbd10be2d12e19",
+    "drums.analysis.json": "0f93bfa65d12a27725daa0e65bfe0358cf7d62d6c17a38427448ff66ba087f0a",
     "guitar.analysis.json": "bca313cf0191721dc743b32d69d1dbdf9dc20e8dca26222e6ccd7e6c84a2cfe7",
-    "LEIA-ME.txt": "baa6a93144f2c1856bbf155761d575418616b48b7254f244bd40fcff0f460f90",
-    "analysis.json": "9d0ffc5a38aa3888bec250839916d09f93dae40d4cc5931b05eb8468c32bb4c0",
-    "notes.mid": "a14869998edb0430e4fb0577d4b205a5785e504b5ed2e51f3cf60929cc98106c",
+    "LEIA-ME.txt": "6b3c23c028512ff8507744957fbf9eefcd5237113710007da83e08fc1dafeb31",
+    "analysis.json": "094bb0bd10c2a41bd488a9342aa6fc8db313690b0c8507cacbea53cfbb47027c",
+    "notes.mid": "7e7366c0d333c0150e315e0d6b461c1ce82d5c23a1f0d7d42854c65fe1972c82",
     "song.ogg": "fc7e7e9a1958b351eebde67a221bd200507bac502eeaca70f2639565e0cc27de",
-    "song.ini": "8e9703880ec968159b2509b97d2ea8334f7caf0c4a22f6f5debf04a8610d8fe7",
+    "song.ini": "03b422b2c130a179831d352e1e0e8815b0d52d770d17372df07c41c177796c95",
     "keys.analysis.json": "80f5e876e93f973a6b58baf1160d4cc0f0ccedc9efbf0302c093660494bb0a3e"
   }
 }
