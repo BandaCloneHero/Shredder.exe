@@ -1,0 +1,4384 @@
+{
+  "profile": "balanced-chords-accompaniment-v2",
+  "detected_source_notes": 670,
+  "retained_detected_notes": 307,
+  "synthetic_accompaniment_notes": 503,
+  "synthetic_accompaniment_attacks": 418,
+  "final_notes": 810,
+  "final_attacks": 614,
+  "maximum_simultaneous_keys": 2,
+  "maximum_chord_span_white_keys": 3,
+  "maximum_root_step_white_keys": 3,
+  "chord_size_counts": {
+    "1": 418,
+    "2": 196
+  },
+  "remapped_for_playability": 46,
+  "minimum_attack_gap_seconds": 0.18458049886621097,
+  "maximum_internal_attack_gap_seconds": 3.591836734693885,
+  "first_attack_seconds": 1.4516893424036281,
+  "accompaniment": [
+    {
+      "time": 1.4516893424036281,
+      "end": 1.5416893424036282,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 1.940578231292517,
+      "end": 2.030578231292517,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 2.379580498866213,
+      "end": 2.469580498866213,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 2.8185827664399095,
+      "end": 2.9085827664399093,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 3.0231179138321997,
+      "end": 3.1081179138321997,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 3.22765306122449,
+      "end": 3.31765306122449,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 3.6566780045351477,
+      "end": 3.7466780045351475,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 4.115634920634921,
+      "end": 4.205634920634921,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 4.544659863945578,
+      "end": 4.634659863945578,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 4.754183673469388,
+      "end": 4.839183673469388,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 4.963707482993198,
+      "end": 5.053707482993198,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 5.392732426303855,
+      "end": 5.482732426303855,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 5.831734693877552,
+      "end": 5.921734693877552,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 6.270736961451248,
+      "end": 6.360736961451248,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 6.490238095238096,
+      "end": 6.575238095238096,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 6.709739229024944,
+      "end": 6.799739229024944,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 7.14874149659864,
+      "end": 7.23874149659864,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 7.587743764172336,
+      "end": 7.677743764172336,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 8.116541950113378,
+      "end": 8.206541950113378,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 8.455770975056689,
+      "end": 8.545770975056689,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 8.904750566893423,
+      "end": 8.994750566893423,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 9.373684807256234,
+      "end": 9.463684807256234,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 9.782755102040815,
+      "end": 9.872755102040815,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 10.012233560090703,
+      "end": 10.097233560090704,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 10.24171201814059,
+      "end": 10.331712018140589,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 10.750555555555554,
+      "end": 10.840555555555554,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 11.109739229024942,
+      "end": 11.199739229024942,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 11.548741496598637,
+      "end": 11.638741496598637,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 11.758265306122446,
+      "end": 11.843265306122447,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 11.967789115646257,
+      "end": 12.057789115646257,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 12.416768707482992,
+      "end": 12.506768707482992,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 12.925612244897957,
+      "end": 13.015612244897957,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 13.294773242630384,
+      "end": 13.384773242630384,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 13.529240362811791,
+      "end": 13.614240362811792,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 13.763707482993196,
+      "end": 13.853707482993196,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 14.262573696145123,
+      "end": 14.352573696145123,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 14.651689342403627,
+      "end": 14.741689342403626,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 15.04080498866213,
+      "end": 15.13080498866213,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 15.305204081632652,
+      "end": 15.390204081632653,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 15.569603174603174,
+      "end": 15.659603174603173,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 15.988650793650791,
+      "end": 16.07865079365079,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 16.44263038548753,
+      "end": 16.53263038548753,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 16.92651927437642,
+      "end": 17.01651927437642,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 17.245793650793654,
+      "end": 17.335793650793654,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 17.73468253968254,
+      "end": 17.82468253968254,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 18.113820861678008,
+      "end": 18.203820861678008,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 18.632641723356013,
+      "end": 18.722641723356013,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 18.832188208616785,
+      "end": 18.917188208616786,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 19.031734693877553,
+      "end": 19.121734693877553,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 19.510646258503403,
+      "end": 19.600646258503403,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 19.86982993197279,
+      "end": 19.95982993197279,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 20.36869614512472,
+      "end": 20.45869614512472,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 20.598174603174606,
+      "end": 20.683174603174606,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 20.827653061224492,
+      "end": 20.91765306122449,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 21.236723356009072,
+      "end": 21.326723356009072,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 21.685702947845808,
+      "end": 21.775702947845808,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 22.134682539682544,
+      "end": 22.224682539682544,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 22.334229024943312,
+      "end": 22.419229024943313,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 22.533775510204084,
+      "end": 22.623775510204084,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 22.9528231292517,
+      "end": 23.0428231292517,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 23.471643990929707,
+      "end": 23.561643990929706,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 23.910646258503405,
+      "end": 24.000646258503405,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 24.100215419501136,
+      "end": 24.185215419501137,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 24.289784580498868,
+      "end": 24.379784580498868,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 24.75871882086168,
+      "end": 24.84871882086168,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 25.16778911564626,
+      "end": 25.25778911564626,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 25.63672335600907,
+      "end": 25.72672335600907,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 25.836269841269843,
+      "end": 25.921269841269844,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 26.035816326530615,
+      "end": 26.125816326530614,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 26.534682539682542,
+      "end": 26.624682539682542,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 26.973684807256237,
+      "end": 27.063684807256237,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 27.422664399092973,
+      "end": 27.512664399092973,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 27.607244897959184,
+      "end": 27.692244897959185,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 27.7918253968254,
+      "end": 27.8818253968254,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 28.300668934240367,
+      "end": 28.390668934240367,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 28.669829931972792,
+      "end": 28.759829931972792,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 29.138764172335602,
+      "end": 29.2287641723356,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 29.398174603174603,
+      "end": 29.483174603174604,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 29.657585034013607,
+      "end": 29.747585034013607,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 30.05667800453515,
+      "end": 30.14667800453515,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 30.445793650793654,
+      "end": 30.535793650793654,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 30.874818594104312,
+      "end": 30.96481859410431,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 31.104297052154198,
+      "end": 31.1892970521542,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 31.333775510204084,
+      "end": 31.423775510204084,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 31.807709750566893,
+      "end": 31.897709750566893,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 32.201802721088434,
+      "end": 32.29180272108844,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 32.63082766439909,
+      "end": 32.720827664399096,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 32.8652947845805,
+      "end": 32.9502947845805,
+      "lane": 52,
+      "pitches": [
+        52
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 33.099761904761905,
+      "end": 33.18976190476191,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 33.54874149659864,
+      "end": 33.63874149659864,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 34.02765306122449,
+      "end": 34.117653061224495,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 34.406791383219954,
+      "end": 34.49679138321996,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 34.64624716553288,
+      "end": 34.73124716553288,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 34.8857029478458,
+      "end": 34.975702947845804,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 35.26484126984127,
+      "end": 35.35484126984127,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 35.72379818594104,
+      "end": 35.813798185941046,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 36.14284580498866,
+      "end": 36.23284580498866,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 36.37232426303855,
+      "end": 36.45732426303855,
+      "lane": 52,
+      "pitches": [
+        52
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 36.60180272108843,
+      "end": 36.691802721088436,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48,
+        52
+      ]
+    },
+    {
+      "time": 37.070736961451246,
+      "end": 37.16073696145125,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 37.45985260770975,
+      "end": 37.54985260770975,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 37.91880952380952,
+      "end": 38.008809523809525,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 38.12833333333333,
+      "end": 38.21333333333333,
+      "lane": 57,
+      "pitches": [
+        57
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 38.33785714285714,
+      "end": 38.42785714285714,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 38.81676870748299,
+      "end": 38.906768707482996,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 39.215861678004536,
+      "end": 39.30586167800454,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 39.67481859410431,
+      "end": 39.76481859410431,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 39.88434240362812,
+      "end": 39.96934240362812,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 40.09386621315193,
+      "end": 40.18386621315193,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50,
+        53
+      ]
+    },
+    {
+      "time": 40.582755102040814,
+      "end": 40.67275510204082,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48
+      ]
+    },
+    {
+      "time": 40.98184807256236,
+      "end": 41.07184807256236,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 41.44080498866213,
+      "end": 41.53080498866213,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 41.64534013605442,
+      "end": 41.73034013605442,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 41.849875283446714,
+      "end": 41.93987528344672,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48,
+        52
+      ]
+    },
+    {
+      "time": 42.298854875283446,
+      "end": 42.38885487528345,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 42.797721088435374,
+      "end": 42.88772108843538,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 43.166882086167796,
+      "end": 43.2568820861678,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 43.396360544217686,
+      "end": 43.48136054421769,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 43.625839002267575,
+      "end": 43.71583900226758,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 44.07481859410431,
+      "end": 44.16481859410431,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 44.493866213151925,
+      "end": 44.58386621315193,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 44.942845804988664,
+      "end": 45.03284580498867,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 45.16733560090703,
+      "end": 45.25233560090703,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 45.391825396825396,
+      "end": 45.4818253968254,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 45.85578231292517,
+      "end": 45.945782312925175,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 46.23989795918367,
+      "end": 46.329897959183675,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 46.688877551020404,
+      "end": 46.77887755102041,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 46.943299319727885,
+      "end": 47.028299319727886,
+      "lane": 52,
+      "pitches": [
+        52
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 47.19772108843537,
+      "end": 47.287721088435376,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 47.576859410430835,
+      "end": 47.66685941043084,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 48.05577097505669,
+      "end": 48.14577097505669,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 48.464841269841266,
+      "end": 48.55484126984127,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 48.68933106575963,
+      "end": 48.77433106575963,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 48.913820861678005,
+      "end": 49.00382086167801,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 49.352823129251696,
+      "end": 49.4428231292517,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 49.791825396825395,
+      "end": 49.8818253968254,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 50.24080498866213,
+      "end": 50.33080498866213,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 50.460306122448976,
+      "end": 50.54530612244898,
+      "lane": 52,
+      "pitches": [
+        52
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 50.679807256235826,
+      "end": 50.76980725623583,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48,
+        52
+      ]
+    },
+    {
+      "time": 51.108832199546484,
+      "end": 51.19883219954649,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 51.53785714285714,
+      "end": 51.627857142857145,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 51.986836734693874,
+      "end": 52.07683673469388,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 52.21132653061224,
+      "end": 52.29632653061224,
+      "lane": 57,
+      "pitches": [
+        57
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 52.43581632653061,
+      "end": 52.52581632653062,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 52.85486394557823,
+      "end": 52.944863945578234,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 53.29386621315193,
+      "end": 53.38386621315193,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 53.762800453514735,
+      "end": 53.85280045351474,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 53.972324263038544,
+      "end": 54.057324263038545,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 54.18184807256236,
+      "end": 54.27184807256236,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50,
+        53
+      ]
+    },
+    {
+      "time": 54.63082766439909,
+      "end": 54.720827664399096,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 55.06982993197279,
+      "end": 55.159829931972794,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 55.50883219954648,
+      "end": 55.598832199546486,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 55.71835600907029,
+      "end": 55.80335600907029,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 55.9278798185941,
+      "end": 56.0178798185941,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 56.3668820861678,
+      "end": 56.4568820861678,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 56.82583900226757,
+      "end": 56.915839002267575,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 57.25486394557823,
+      "end": 57.34486394557823,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 57.479353741496595,
+      "end": 57.564353741496596,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 57.70384353741496,
+      "end": 57.793843537414965,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 58.13286848072562,
+      "end": 58.22286848072562,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 58.551916099773244,
+      "end": 58.64191609977325,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 59.000895691609976,
+      "end": 59.09089569160998,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 59.220396825396826,
+      "end": 59.305396825396826,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 59.439897959183675,
+      "end": 59.52989795918368,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48,
+        52
+      ]
+    },
+    {
+      "time": 59.88887755102041,
+      "end": 59.97887755102041,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 60.307925170068025,
+      "end": 60.39792517006803,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 60.77685941043084,
+      "end": 60.86685941043084,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 60.98638321995465,
+      "end": 61.07138321995465,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 61.195907029478455,
+      "end": 61.28590702947846,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50,
+        53
+      ]
+    },
+    {
+      "time": 61.634909297052154,
+      "end": 61.72490929705216,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 62.05395691609977,
+      "end": 62.143956916099775,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 62.502936507936504,
+      "end": 62.59293650793651,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 62.72243764172335,
+      "end": 62.807437641723354,
+      "lane": 55,
+      "pitches": [
+        55
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 62.9419387755102,
+      "end": 63.031938775510206,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50,
+        53
+      ]
+    },
+    {
+      "time": 69.10792517006803,
+      "end": 69.19792517006803,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 69.54692743764173,
+      "end": 69.63692743764173,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 69.98592970521543,
+      "end": 70.07592970521543,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 70.20543083900228,
+      "end": 70.29043083900227,
+      "lane": 52,
+      "pitches": [
+        52
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 70.42493197278912,
+      "end": 70.51493197278913,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 70.86393424036282,
+      "end": 70.95393424036283,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 71.30293650793651,
+      "end": 71.39293650793651,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 71.75191609977325,
+      "end": 71.84191609977326,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 71.96642857142858,
+      "end": 72.05142857142857,
+      "lane": 55,
+      "pitches": [
+        55
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 72.1809410430839,
+      "end": 72.27094104308391,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 72.6199433106576,
+      "end": 72.70994331065761,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 73.0589455782313,
+      "end": 73.1489455782313,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 73.497947845805,
+      "end": 73.587947845805,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 73.71744897959184,
+      "end": 73.80244897959183,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 73.93695011337869,
+      "end": 74.02695011337869,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 74.37595238095238,
+      "end": 74.46595238095239,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 74.81495464852608,
+      "end": 74.90495464852609,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 75.25395691609978,
+      "end": 75.34395691609978,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 75.48343537414966,
+      "end": 75.56843537414966,
+      "lane": 57,
+      "pitches": [
+        57
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 75.71291383219955,
+      "end": 75.80291383219955,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 76.14193877551021,
+      "end": 76.23193877551022,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 76.58094104308391,
+      "end": 76.67094104308391,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 77.0199433106576,
+      "end": 77.1099433106576,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 77.23944444444444,
+      "end": 77.32444444444444,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 77.4589455782313,
+      "end": 77.5489455782313,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 77.89794784580499,
+      "end": 77.987947845805,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 78.33695011337869,
+      "end": 78.4269501133787,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 78.76597505668934,
+      "end": 78.85597505668935,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 78.98547619047619,
+      "end": 79.07047619047619,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 79.20497732426304,
+      "end": 79.29497732426304,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 79.6340022675737,
+      "end": 79.72400226757371,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 80.09295918367347,
+      "end": 80.18295918367347,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 80.53196145124717,
+      "end": 80.62196145124717,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 80.75146258503402,
+      "end": 80.83646258503401,
+      "lane": 55,
+      "pitches": [
+        55
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 80.97096371882087,
+      "end": 81.06096371882087,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50,
+        53
+      ]
+    },
+    {
+      "time": 81.40996598639457,
+      "end": 81.49996598639457,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 81.83899092970522,
+      "end": 81.92899092970522,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 82.27799319727892,
+      "end": 82.36799319727892,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 82.50248299319728,
+      "end": 82.58748299319727,
+      "lane": 55,
+      "pitches": [
+        55
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 82.72697278911565,
+      "end": 82.81697278911565,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50,
+        53
+      ]
+    },
+    {
+      "time": 83.16597505668935,
+      "end": 83.25597505668935,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 83.595,
+      "end": 83.685,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 84.04397959183675,
+      "end": 84.13397959183675,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 84.2634807256236,
+      "end": 84.34848072562359,
+      "lane": 52,
+      "pitches": [
+        52
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 84.48298185941043,
+      "end": 84.57298185941043,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48,
+        52
+      ]
+    },
+    {
+      "time": 84.92198412698413,
+      "end": 85.01198412698413,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48
+      ]
+    },
+    {
+      "time": 85.3510090702948,
+      "end": 85.4410090702948,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 85.79998866213153,
+      "end": 85.88998866213153,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 86.01948979591837,
+      "end": 86.10448979591837,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 86.23899092970522,
+      "end": 86.32899092970523,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 86.67799319727892,
+      "end": 86.76799319727893,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 87.13695011337869,
+      "end": 87.22695011337869,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 87.57595238095239,
+      "end": 87.66595238095239,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 87.79046485260771,
+      "end": 87.8754648526077,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 88.00497732426304,
+      "end": 88.09497732426304,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 88.44397959183674,
+      "end": 88.53397959183674,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 88.88298185941044,
+      "end": 88.97298185941044,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 89.3120068027211,
+      "end": 89.4020068027211,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 89.52651927437643,
+      "end": 89.61151927437642,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 89.74103174603175,
+      "end": 89.83103174603175,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 90.19001133786848,
+      "end": 90.28001133786849,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 90.62762811791382,
+      "end": 90.71762811791382,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 91.07799319727891,
+      "end": 91.16799319727892,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 91.29749433106576,
+      "end": 91.38249433106576,
+      "lane": 57,
+      "pitches": [
+        57
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 91.51699546485261,
+      "end": 91.60699546485262,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 91.94602040816328,
+      "end": 92.03602040816328,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 92.39500000000001,
+      "end": 92.48500000000001,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 92.83400226757371,
+      "end": 92.92400226757371,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 93.04851473922903,
+      "end": 93.13351473922903,
+      "lane": 57,
+      "pitches": [
+        57
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 93.26302721088436,
+      "end": 93.35302721088436,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 93.71200680272109,
+      "end": 93.8020068027211,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 94.16098639455782,
+      "end": 94.25098639455783,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 94.59998866213152,
+      "end": 94.68998866213153,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 94.81948979591837,
+      "end": 94.90448979591837,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 95.03899092970522,
+      "end": 95.12899092970522,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 95.46801587301587,
+      "end": 95.55801587301588,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 95.90701814058957,
+      "end": 95.99701814058957,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 96.34602040816327,
+      "end": 96.43602040816327,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 96.5605328798186,
+      "end": 96.64553287981859,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 96.77504535147393,
+      "end": 96.86504535147394,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 97.21404761904762,
+      "end": 97.30404761904762,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 97.66302721088437,
+      "end": 97.75302721088437,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 98.1120068027211,
+      "end": 98.2020068027211,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 98.32651927437642,
+      "end": 98.41151927437642,
+      "lane": 57,
+      "pitches": [
+        57
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 98.54103174603175,
+      "end": 98.63103174603175,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 98.97005668934241,
+      "end": 99.06005668934242,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 99.43899092970523,
+      "end": 99.52899092970523,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 99.86801587301588,
+      "end": 99.95801587301588,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 100.09250566893425,
+      "end": 100.17750566893424,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 100.31699546485261,
+      "end": 100.40699546485261,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 100.74602040816328,
+      "end": 100.83602040816328,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 101.17504535147393,
+      "end": 101.26504535147393,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 101.61404761904762,
+      "end": 101.70404761904763,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 101.82856009070295,
+      "end": 101.91356009070294,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 102.04307256235828,
+      "end": 102.13307256235828,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 102.50202947845806,
+      "end": 102.59202947845806,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48
+      ]
+    },
+    {
+      "time": 102.9310544217687,
+      "end": 103.02105442176871,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 103.38003401360545,
+      "end": 103.47003401360546,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 103.58955782312927,
+      "end": 103.67455782312926,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 103.79908163265307,
+      "end": 103.88908163265307,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50,
+        53
+      ]
+    },
+    {
+      "time": 104.23808390022677,
+      "end": 104.32808390022677,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 104.6870634920635,
+      "end": 104.7770634920635,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 105.1260657596372,
+      "end": 105.2160657596372,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 105.35055555555556,
+      "end": 105.43555555555555,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 105.57504535147393,
+      "end": 105.66504535147394,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 106.00407029478458,
+      "end": 106.09407029478459,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 106.44307256235828,
+      "end": 106.53307256235829,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 106.87209750566895,
+      "end": 106.96209750566895,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 107.09159863945578,
+      "end": 107.17659863945578,
+      "lane": 55,
+      "pitches": [
+        55
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 107.31109977324263,
+      "end": 107.40109977324263,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50,
+        53
+      ]
+    },
+    {
+      "time": 107.77005668934241,
+      "end": 107.86005668934241,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 108.179126984127,
+      "end": 108.269126984127,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 108.64806122448981,
+      "end": 108.73806122448981,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 108.85758503401362,
+      "end": 108.94258503401362,
+      "lane": 52,
+      "pitches": [
+        52
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 109.06710884353743,
+      "end": 109.15710884353743,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 109.50611111111111,
+      "end": 109.59611111111111,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 109.97504535147392,
+      "end": 110.06504535147393,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 110.41404761904762,
+      "end": 110.50404761904763,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 110.61858276643991,
+      "end": 110.70358276643991,
+      "lane": 57,
+      "pitches": [
+        57
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 110.8231179138322,
+      "end": 110.91311791383221,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 111.25214285714286,
+      "end": 111.34214285714286,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 111.7011224489796,
+      "end": 111.7911224489796,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 112.18003401360545,
+      "end": 112.27003401360545,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 112.38955782312925,
+      "end": 112.47455782312925,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 112.59908163265307,
+      "end": 112.68908163265307,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48,
+        52
+      ]
+    },
+    {
+      "time": 112.97821995464854,
+      "end": 113.06821995464854,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48
+      ]
+    },
+    {
+      "time": 113.47708616780046,
+      "end": 113.56708616780047,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 113.94602040816328,
+      "end": 114.03602040816328,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 114.15055555555557,
+      "end": 114.23555555555556,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 114.35509070294785,
+      "end": 114.44509070294785,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 114.79409297052155,
+      "end": 114.88409297052155,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 115.25304988662133,
+      "end": 115.34304988662133,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 115.70202947845806,
+      "end": 115.79202947845806,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 115.8915986394558,
+      "end": 115.97659863945579,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 116.08116780045351,
+      "end": 116.17116780045352,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 116.57005668934241,
+      "end": 116.66005668934241,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 117.0090589569161,
+      "end": 117.09905895691611,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 117.45803854875284,
+      "end": 117.54803854875284,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 117.66756235827665,
+      "end": 117.75256235827665,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 117.87708616780046,
+      "end": 117.96708616780046,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 118.32606575963719,
+      "end": 118.41606575963719,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 118.75509070294785,
+      "end": 118.84509070294786,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 119.19409297052155,
+      "end": 119.28409297052156,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 119.40860544217688,
+      "end": 119.49360544217687,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 119.6231179138322,
+      "end": 119.7131179138322,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 120.07209750566894,
+      "end": 120.16209750566894,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 120.51109977324263,
+      "end": 120.60109977324264,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 120.95010204081633,
+      "end": 121.04010204081634,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 121.16461451247166,
+      "end": 121.24961451247165,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 121.37912698412698,
+      "end": 121.46912698412699,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 121.82810657596373,
+      "end": 121.91810657596373,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 122.26710884353741,
+      "end": 122.35710884353742,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 122.70611111111111,
+      "end": 122.79611111111112,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 122.92062358276644,
+      "end": 123.00562358276643,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 123.13513605442178,
+      "end": 123.22513605442178,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 123.58411564625851,
+      "end": 123.67411564625851,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 124.02311791383221,
+      "end": 124.11311791383221,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 124.46212018140591,
+      "end": 124.55212018140591,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 124.69159863945579,
+      "end": 124.77659863945578,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 124.92107709750567,
+      "end": 125.01107709750568,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 125.36007936507937,
+      "end": 125.45007936507938,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 125.78910430839002,
+      "end": 125.87910430839003,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 126.21812925170069,
+      "end": 126.30812925170069,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 126.43763038548754,
+      "end": 126.52263038548753,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 126.65713151927439,
+      "end": 126.74713151927439,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 127.11608843537415,
+      "end": 127.20608843537416,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 127.55509070294785,
+      "end": 127.64509070294785,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 127.99409297052155,
+      "end": 128.08409297052154,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 128.20860544217686,
+      "end": 128.29360544217687,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 128.4231179138322,
+      "end": 128.5131179138322,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 128.87209750566893,
+      "end": 128.96209750566894,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 129.30112244897958,
+      "end": 129.3911224489796,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 129.74012471655328,
+      "end": 129.83012471655329,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 129.93967120181406,
+      "end": 130.02467120181407,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 130.13921768707482,
+      "end": 130.22921768707482,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 135.00815192743764,
+      "end": 135.09815192743764,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 135.42719954648524,
+      "end": 135.51719954648524,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 135.876179138322,
+      "end": 135.966179138322,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 136.09568027210884,
+      "end": 136.18068027210884,
+      "lane": 55,
+      "pitches": [
+        55
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 136.3151814058957,
+      "end": 136.4051814058957,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50,
+        53
+      ]
+    },
+    {
+      "time": 136.75418367346938,
+      "end": 136.8441836734694,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 137.18320861678004,
+      "end": 137.27320861678004,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 137.6421655328798,
+      "end": 137.7321655328798,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 137.86665532879817,
+      "end": 137.95165532879818,
+      "lane": 55,
+      "pitches": [
+        55
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 138.09114512471655,
+      "end": 138.18114512471655,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 138.45032879818592,
+      "end": 138.54032879818593,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 138.92924036281178,
+      "end": 139.0192403628118,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 139.37821995464853,
+      "end": 139.46821995464853,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 139.58774376417233,
+      "end": 139.67274376417234,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 139.79726757369613,
+      "end": 139.88726757369614,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 140.1764058956916,
+      "end": 140.2664058956916,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 140.64534013605441,
+      "end": 140.73534013605442,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 141.11427437641723,
+      "end": 141.20427437641723,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 141.35871882086167,
+      "end": 141.44371882086168,
+      "lane": 52,
+      "pitches": [
+        52
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 141.6031632653061,
+      "end": 141.6931632653061,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48,
+        52
+      ]
+    },
+    {
+      "time": 142.00225623582764,
+      "end": 142.09225623582765,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48
+      ]
+    },
+    {
+      "time": 142.47119047619046,
+      "end": 142.56119047619046,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 142.86030612244897,
+      "end": 142.95030612244898,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52
+      ]
+    },
+    {
+      "time": 143.06982993197278,
+      "end": 143.15482993197278,
+      "lane": 53,
+      "pitches": [
+        53
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 143.27935374149658,
+      "end": 143.36935374149658,
+      "lane": 48,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        48,
+        52
+      ]
+    },
+    {
+      "time": 143.70837868480726,
+      "end": 143.79837868480726,
+      "lane": 50,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        50
+      ]
+    },
+    {
+      "time": 144.1374036281179,
+      "end": 144.2274036281179,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 144.676179138322,
+      "end": 144.766179138322,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 144.9106462585034,
+      "end": 144.9956462585034,
+      "lane": 55,
+      "pitches": [
+        55
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 145.1451133786848,
+      "end": 145.23511337868482,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 145.56416099773242,
+      "end": 145.65416099773242,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 146.0031632653061,
+      "end": 146.09316326530612,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 146.43218820861676,
+      "end": 146.52218820861677,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 146.66166666666666,
+      "end": 146.74666666666667,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 146.89114512471656,
+      "end": 146.98114512471656,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 147.33014739229023,
+      "end": 147.42014739229023,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 147.76914965986393,
+      "end": 147.85914965986393,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 148.20815192743763,
+      "end": 148.29815192743763,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 148.432641723356,
+      "end": 148.517641723356,
+      "lane": 57,
+      "pitches": [
+        57
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 148.65713151927437,
+      "end": 148.74713151927438,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 149.09613378684807,
+      "end": 149.18613378684807,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 149.41043083900226,
+      "end": 149.50043083900226,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 149.94420634920635,
+      "end": 150.03420634920636,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 150.13807142857144,
+      "end": 150.22307142857144,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 150.3319365079365,
+      "end": 150.4219365079365,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 150.85214285714284,
+      "end": 150.94214285714284,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 151.28116780045352,
+      "end": 151.37116780045352,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 151.5904648526077,
+      "end": 151.6804648526077,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 151.8392052154195,
+      "end": 151.9242052154195,
+      "lane": 55,
+      "pitches": [
+        55
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 152.08794557823128,
+      "end": 152.1779455782313,
+      "lane": 52,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        52,
+        55
+      ]
+    },
+    {
+      "time": 152.61812925170068,
+      "end": 152.70812925170068,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 153.04715419501133,
+      "end": 153.13715419501133,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 153.48615646258503,
+      "end": 153.57615646258503,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 153.84395464852608,
+      "end": 153.93395464852608,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 154.37413832199545,
+      "end": 154.46413832199545,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 154.80316326530613,
+      "end": 154.89316326530613,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 155.23218820861678,
+      "end": 155.32218820861678,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 155.59996371882085,
+      "end": 155.68996371882085,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 156.03896598639454,
+      "end": 156.12896598639455,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53
+      ]
+    },
+    {
+      "time": 156.5591723356009,
+      "end": 156.6491723356009,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 156.9981746031746,
+      "end": 157.0881746031746,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 157.35597278911564,
+      "end": 157.44597278911564,
+      "lane": 53,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        53,
+        57
+      ]
+    },
+    {
+      "time": 157.79497505668934,
+      "end": 157.88497505668934,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55
+      ]
+    },
+    {
+      "time": 158.17549886621313,
+      "end": 158.26549886621314,
+      "lane": 57,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        57
+      ]
+    },
+    {
+      "time": 158.64443310657595,
+      "end": 158.73443310657595,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 158.87820748299316,
+      "end": 158.96320748299317,
+      "lane": 59,
+      "pitches": [
+        59
+      ],
+      "basis": "short offbeat passing note",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 159.1119818594104,
+      "end": 159.2019818594104,
+      "lane": 55,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        55,
+        59
+      ]
+    },
+    {
+      "time": 159.6122335600907,
+      "end": 159.7022335600907,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    },
+    {
+      "time": 159.99137188208616,
+      "end": 160.08137188208616,
+      "lane": 59,
+      "basis": "rhythmic phrase adapted from accompaniment pitch",
+      "keyboard_audibility_required": false,
+      "pitches": [
+        59
+      ]
+    }
+  ],
+  "synthetic_gameplay_adaptation": true,
+  "limitation": "Added keyboard notes are rhythmic gameplay accompaniment, not WAV transcription.",
+  "previous_chart_notes": 297,
+  "notes_sha256": "05f6f41812cfbef9630ff83052dd753bbaae9e3d0a16c9e4c0607d1b7596d4aa",
+  "previous_backup": "/workspaces/Shredder.exe/chart-backups/keyboard-revisions/01.E Cazuza - Exagerado-20261013T133636241797Z",
+  "audio_unchanged": true,
+  "non_keyboard_midi_chunks_byte_identical": true,
+  "validation": {
+    "notes": 810,
+    "attacks": 614,
+    "maximum_timestamp_rounding_error_seconds": 0.0011912171110566305,
+    "maximum_simultaneous_keys": 2,
+    "dyad_attacks": 196,
+    "maximum_internal_attack_gap_seconds": 3.596166770833321,
+    "first_attack_seconds": 4.905872854166667
+  },
+  "in_game_test": "not run",
+  "listening_validation": "not run",
+  "alignment": {
+    "method": "five-band audio envelopes; affine fit and local holdouts",
+    "scale": 1.0010306123611525,
+    "offset_seconds": 3.4527047706330007,
+    "feature_correlation": 0.9971873816326451,
+    "max_probe_residual_ms": 5.549611122590115,
+    "probes": [
+      {
+        "source_time": 22.5,
+        "lag_seconds": 3.472108843537415,
+        "correlation": 0.9610742926597595
+      },
+      {
+        "source_time": 47.55865889212828,
+        "lag_seconds": 3.5020408163265304,
+        "correlation": 0.961085319519043
+      },
+      {
+        "source_time": 72.61731778425656,
+        "lag_seconds": 3.5219954648526075,
+        "correlation": 0.9556574821472168
+      },
+      {
+        "source_time": 97.67597667638483,
+        "lag_seconds": 3.5519274376417234,
+        "correlation": 0.9725663065910339
+      },
+      {
+        "source_time": 122.73463556851311,
+        "lag_seconds": 3.5818594104308388,
+        "correlation": 0.952251136302948
+      },
+      {
+        "source_time": 147.7932944606414,
+        "lag_seconds": 3.601814058956916,
+        "correlation": 0.9690685272216797
+      },
+      {
+        "source_time": 172.85195335276967,
+        "lag_seconds": 3.6317460317460317,
+        "correlation": 0.9524857997894287
+      },
+      {
+        "source_time": 197.91061224489795,
+        "lag_seconds": 3.651700680272109,
+        "correlation": 0.9451790452003479
+      }
+    ],
+    "holdouts": [
+      {
+        "source_time": 30.0,
+        "residual_ms": 0.17372020230435062,
+        "correlation": 0.998407342575408
+      },
+      {
+        "source_time": 71.35265306122449,
+        "residual_ms": 0.1582170778467053,
+        "correlation": 0.9981109192140097
+      },
+      {
+        "source_time": 112.70530612244897,
+        "residual_ms": -0.363145232673266,
+        "correlation": 0.9979059201259384
+      },
+      {
+        "source_time": 154.05795918367346,
+        "residual_ms": 0.07638058999303418,
+        "correlation": 0.9984857321235825
+      },
+      {
+        "source_time": 195.41061224489795,
+        "residual_ms": -0.06180020269223833,
+        "correlation": 0.9965459613848011
+      }
+    ],
+    "pack_duration": 228.55555555555554,
+    "source_duration": 225.41061224489795,
+    "limitation": "Envelope alignment supports this recording; it is not a listening validation."
+  }
+}
