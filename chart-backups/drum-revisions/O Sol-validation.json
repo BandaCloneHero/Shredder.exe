@@ -1,0 +1,123 @@
+{
+  "song": "Jota Quest - O Sol",
+  "before": {
+    "notes": 642,
+    "midi_difficulty_base": 72,
+    "midi_lane_counts": {
+      "1": 30,
+      "2": 449,
+      "3": 11,
+      "0": 136,
+      "4": 16
+    },
+    "longest_consecutive_same_pad": 45
+  },
+  "after": {
+    "notes": 582,
+    "midi_difficulty_base": 72,
+    "midi_lane_counts": {
+      "3": 94,
+      "0": 278,
+      "2": 154,
+      "1": 50,
+      "4": 6
+    },
+    "longest_consecutive_same_pad": 6
+  },
+  "reference_charts_inspected": [
+    {
+      "song": "Cazuza - Pro Dia Nascer Feliz",
+      "path": "musicas/Cazuza - Pro Dia Nascer Feliz",
+      "stats": {
+        "notes": 1512,
+        "midi_difficulty_base": 72,
+        "midi_lane_counts": {
+          "2": 309,
+          "1": 331,
+          "0": 665,
+          "4": 131,
+          "3": 76
+        },
+        "longest_consecutive_same_pad": 7
+      }
+    },
+    {
+      "song": "Chaosbay - 2 Billion",
+      "path": "musicas/Chaosbay - 2 Billion",
+      "stats": {
+        "notes": 776,
+        "midi_difficulty_base": 60,
+        "midi_lane_counts": {
+          "0": 330,
+          "1": 145,
+          "4": 70,
+          "2": 103,
+          "3": 128
+        },
+        "longest_consecutive_same_pad": 11
+      }
+    },
+    {
+      "song": "Jamiroquai - Virtual Insanity",
+      "path": "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Jamiroquai - Virtual Insanity",
+      "stats": {
+        "notes": 537,
+        "midi_difficulty_base": 72,
+        "midi_lane_counts": {
+          "2": 273,
+          "1": 141,
+          "4": 8,
+          "0": 114,
+          "3": 1
+        },
+        "longest_consecutive_same_pad": 18
+      }
+    },
+    {
+      "song": "01.E Cazuza - Exagerado",
+      "path": "musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.E Cazuza - Exagerado",
+      "stats": {
+        "notes": 642,
+        "midi_difficulty_base": 72,
+        "midi_lane_counts": {
+          "0": 247,
+          "2": 227,
+          "3": 100,
+          "1": 46,
+          "4": 22
+        },
+        "longest_consecutive_same_pad": 12
+      }
+    }
+  ],
+  "reference_scope": "Existing percussion charts compared for lane variety and repetitions; no reference notes used as source. MIDI lane semantics vary across packs.",
+  "tests": {
+    "unit_tests_passed": 57,
+    "non_drum_midi_chunks_byte_identical": true,
+    "audio_and_metadata_byte_identical": true,
+    "midi_export": {
+      "guitar_gems_holds_types_all_difficulties_preserved": true,
+      "added_notes_roundtrip": "passed",
+      "timestamp_error_limit_seconds": 0.003,
+      "maximum_observed_timestamp_error_seconds": 0.0019529478458082394,
+      "parts": {
+        "drums": {
+          "notes": 582,
+          "lane_counts": {
+            "3": 94,
+            "0": 278,
+            "2": 154,
+            "1": 50,
+            "4": 6
+          }
+        }
+      },
+      "in_game_test": "not run",
+      "listening_validation": "not run"
+    }
+  },
+  "listening_validation": "not run",
+  "unity_test": "not run",
+  "musical_correctness_certified": false,
+  "limitation": "Residual spectral timbre estimates can still confuse ringing snare bodies with toms; user playback review remains necessary."
+}

@@ -21,6 +21,7 @@ from generate_charts_batch import analysis_fingerprint, decode_stereo, mono
 from revise_chart_difficulty import tempo_map
 from revise_pack_keyboard import balanced_keyboard, verify_keyboard, PROFILE as KEY_PROFILE
 from wav_chart_analysis import analyze, beat_analysis, difficulty_charts, musical_checks, SAMPLE_RATE
+from drum_transient_refinement import refine_packets, moderate_drums
 
 PROFILE='exagerado-approved-v1'
 STATE=Path('chart-backups/pack-stems').resolve()
@@ -84,7 +85,7 @@ def cached_analysis(audio,instrument,source_hash,cache):
 
 def policy_signature():
     names=('enrich_pack_stems.py','enrich_pack_chart.py','revise_pack_keyboard.py',
-           'chart_playability.py','chart_difficulty_profile.py','wav_chart_analysis.py')
+           'chart_playability.py','chart_difficulty_profile.py','wav_chart_analysis.py','drum_transient_refinement.py')
     return hashlib.sha256(''.join(digest(Path(__file__).parent/n) for n in names).encode()).hexdigest()
 
 
@@ -121,10 +122,12 @@ def enrich(pack,source):
         analyses['drums']=refine_groove(analyses['drums'],audio['drums'],beat,standard_pulses=False)
         for event in analyses['drums']['events']:
             event['pitches']=[{0:0,1:2,2:1,3:3,4:4}[p] for p in event['pitches']]
+        analyses['drums'],packet_report=refine_packets(analyses['drums'],audio['drums'])
         pools={i:difficulty_charts(a,beat) for i,a in analyses.items()}
         charts,_=apply_realistic(pools)
         added={i:charts[i]['Medium'] for i in charts}
-        added['drums'],drum_report=easier_drums(added['drums'],analyses['drums']['events'],bpm)
+        added['drums'],drum_report=moderate_drums(analyses['drums']['events'],raw_beat['bpm'])
+        drum_report['packet_refinement']=packet_report
         # Pack guitar frets supply rhythm only; bass WAV supplies actual harmony.
         analyses['guitar']={'events':[{'start':seconds(t),'end':seconds(t+max(1,length)),
             'pitches':[],'confidence':1.,'strength':1.} for t,length,lane in guitar['Expert']['gems']]}

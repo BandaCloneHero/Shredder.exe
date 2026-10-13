@@ -30,6 +30,28 @@ usado. O comando verifica a origem temporal dos stems em várias regiões do
 áudio; recusa gravações com atraso, duração diferente ou evidência insuficiente.
 As validações automáticas não substituem ouvir a música e testar no Unity.
 
+### Revisão da bateria de O Sol
+
+A bateria agora analisa a energia nova de cada ataque, descontando a ressonância
+do som anterior. Picos tonais distribuídos entre vários bins são avaliados como
+corpos de tons, e ruído novo de caixa e pratos é avaliado separadamente.
+A simplificação prioriza a força do ataque no WAV; a caixa não recebe mais uma
+preferência fixa sobre os demais pads. O espaçamento usa a periodicidade do WAV
+da bateria, que pode ser o dobro do BPM escrito na guitarra. Não muda o tempo
+da guitarra nem quantiza os ataques. Essa melhoria se aplica aos próximos
+enriquecimentos; a versão aprovada de Exagerado permanece intacta.
+
+Para revisar somente a bateria, preservando os outros instrumentos e o áudio:
+
+```bash
+.venv-charts/bin/python scripts/revise_pack_drums.py \
+  --song "musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.6 Jota Quest - O Sol"
+```
+
+A revisão exige WAV alinhado diretamente ao áudio do pack. Faz backup em
+`chart-backups/drum-revisions`, verifica os demais chunks MIDI byte a byte e
+registra classificação, ataques, estatísticas e limites no relatório.
+
 ## Gerador genérico anterior: perfil realista de dificuldade única
 
 O padrão agora é `--playability-profile realistic`: conserva o conjunto mais
