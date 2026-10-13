@@ -1,90 +1,427 @@
-**É possível criar um comando para processar as 73 músicas localmente, sem MIDI musical intermediário. Mas o código atual precisa de algumas adaptações: a última revisão ainda usou MIDIs para baixo e teclado, e a bateria foi calibrada especificamente para essa gravação.** Não alterei nenhum arquivo.
+LISTA DE MÚSICAS POR INSTRUMENTOS
+Data: 13/10/2026
 
-**1. Scripts e bibliotecas utilizados**
+Pastas analisadas: musicas/Lisarb2_2c e musicas/drive-download-20261010T200231Z-1-001.
+Critério: instrumentos com notas jogáveis em pelo menos uma dificuldade de notes.mid ou notes.chart.
+A contagem principal considera Guitarra, Baixo, Bateria e Teclado (normal ou Pro Keys).
+Vocal/harmonias, guitarra adicional e versões Pro são informados como extras, sem duplicar os quatro instrumentos.
+Não usei apenas diff_* do song.ini: uma dificuldade declarada não prova que existam notas.
+Contagem por pasta de música; versões com o mesmo título em pastas diferentes permanecem separadas.
+Este inventário identifica partes jogáveis; não certifica precisão musical ou funcionamento no jogo.
 
-| Script | Função |
-|---|---|
-| [create_mp3_test_chart.py](/workspaces/Shredder.exe/scripts/create_mp3_test_chart.py) | Fornece detecção de ataques, análise de alturas, escrita do chart e validação. Também contém o primeiro gerador para áudio mixado. |
-| [create_stem_midi_chart.py](/workspaces/Shredder.exe/scripts/create_stem_midi_chart.py) | Adaptou os MIDIs existentes, preparou os áudios separados, verificou alinhamento e gerou os arquivos do jogo. |
-| [refine_stem_charts.py](/workspaces/Shredder.exe/scripts/refine_stem_charts.py) | Refez guitarra e bateria diretamente dos WAVs, preservando baixo e teclado anteriores. |
+RESUMO
+Total: 95 músicas.
+1 instrumento(s): 58 música(s).
+2 instrumento(s): 0 música(s).
+3 instrumento(s): 15 música(s).
+4 instrumento(s): 22 música(s).
 
-As dependências são **NumPy**, **SciPy**, **Mido** e **imageio-ffmpeg/FFmpeg**. O processamento foi feito por código local; os scripts não chamam APIs de IA. O Basic Pitch não foi executado por eles: seus MIDIs já estavam na pasta.
+Por pack:
+- Lisarb: 57 músicas; 1 instrumento: 57; 2: 0; 3: 0; 4: 0.
+- drive-download: 38 músicas; 1 instrumento: 1; 2: 0; 3: 15; 4: 22.
 
-**2. Como foram detectados os tempos e as notas**
+Se você também contar vocal/harmonias como um instrumento: 1 instrumento(s): 57, 2 instrumento(s): 1, 3 instrumento(s): 1, 4 instrumento(s): 15, 5 instrumento(s): 21.
+Vocal aparece em 36 músicas. Harmonias não são contadas como vários instrumentos.
 
-O andamento foi estimado por **autocorrelação dos ataques da bateria**, buscando um BPM entre 95 e 170. O resultado foi aproximadamente **146,67 BPM**.
+============================================================================
+1 INSTRUMENTO(S) — 58 MÚSICA(S)
+============================================================================
 
-Esse BPM organiza o arquivo, mas as notas seguem seus instantes detectados em segundos, sem serem forçadas a uma grade. O método atual usa um andamento constante; não acompanha variações de tempo durante a música.
+- Artista desconhecido — 01.1 Natiruts - Natiruts Reggae Power (Live)
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.1 Natiruts - Natiruts Reggae Power (Live)
 
-| Instrumento | Método usado na última revisão |
-|---|---|
-| **Guitarra** | Espectrograma por STFT; aumentos de energia espectral localizaram as palhetadas. A análise de harmônicos produziu perfis que foram agrupados por **K-means em cinco grupos**, associados aos cinco botões. Sustentações foram estimadas pela continuidade da energia. |
-| **Bateria** | **NMF**, uma decomposição do espectrograma em componentes de timbre. Combinações desses componentes foram associadas a bumbo, caixa, prato, tom e crash. Picos de ativação determinaram os ataques. |
-| **Baixo** | Notas, inícios e finais lidos do MIDI Basic Pitch existente, depois adaptados aos cinco botões. |
-| **Teclado** | Notas do MIDI existente, dobradas para uma oitava e adaptadas às sete teclas brancas. |
+- Artista desconhecido — 01.2 Sambo - Maneiras
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.2 Sambo - Maneiras
 
-As dificuldades foram produzidas reduzindo a densidade de ataques e o tamanho dos acordes.
+- Artista desconhecido — 01.3 Mamonas Assassinas - Chopis Centis
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.3 Mamonas Assassinas - Chopis Centis
 
-**A principal limitação está na bateria:** as combinações de componentes foram ajustadas para “Pro Dia Nascer Feliz”. Em outra gravação, os componentes da NMF podem representar outros sons. Copiar os mesmos números pode voltar a produzir pads incorretos. Os filtros que eliminam resíduos também podem suprimir golpes reais próximos entre si.
+- Artista desconhecido — 01.4 Pitty - Noite Inteira
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.4 Pitty - Noite Inteira
 
-**3. O que pode ser reaproveitado**
+- Artista desconhecido — 01.7 Ednaldo Pereira - What Is The Brother 2
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.7 Ednaldo Pereira - What Is The Brother 2
 
-Podemos reutilizar diretamente:
+- Artista desconhecido — 01.E Cazuza - Exagerado
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.E Cazuza - Exagerado
 
-- Decodificação dos WAVs, espectrogramas, detecção de ataques e análise de harmônicos.
-- Mapeamento para guitarra de cinco botões e Pro Keys 7K.
-- Redução de dificuldades, construção das pistas e validação dos eventos.
-- Verificação de alinhamento, exportação dos stems e geração de `song.ini`.
-- Relatórios, hashes e armazenamento das análises.
+- Artista desconhecido — 02.3 Fresno - Infinito
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.3 Fresno - Infinito
 
-Precisamos adaptar três partes:
+- Artista desconhecido — 02.4 O Terno - O Cinza
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.4 O Terno - O Cinza
 
-- **Baixo e teclado:** analisar seus próprios WAVs usando as funções existentes, substituindo a leitura dos MIDIs.
-- **Bateria:** generalizar a associação entre componentes e instrumentos, permitindo perfis de calibração quando necessário.
-- **Execução:** transformar os programas em funções reutilizáveis e acrescentar um controlador de lote.
+- Artista desconhecido — 02.5 Ana Frango Elétrico - Torturadores
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.5 Ana Frango Elétrico - Torturadores
 
-Também precisam sair das regras gerais os testes específicos dessa música, como ataques em segundos fixos e a exigência de pelo menos 200 ataques de guitarra.
+- Artista desconhecido — 02.8 Aldo Sena - Lambada Complicada
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.8 Aldo Sena - Lambada Complicada
 
-**4. Proposta de comando único**
+- Artista desconhecido — 02.E Mamonas Assassinas - Pelados Em Santos
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.E Mamonas Assassinas - Pelados Em Santos
 
-Proponho este fluxo:
+- Artista desconhecido — 03.1 Raul Seixas - Metamorfose Ambulante
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.1 Raul Seixas - Metamorfose Ambulante
 
-```text
-WAVs separados
-    → análise por instrumento
-    → eventos em memória: início, fim e botão
-    → quatro dificuldades
-    → notes.mid final + song.ini + áudios + relatório
-```
+- Artista desconhecido — 03.3 Skank - Dois Rios
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.3 Skank - Dois Rios
 
-O `notes.mid` seria **o chart final do jogo**, sem etapa de transcrição para outro MIDI musical.
+- Artista desconhecido — 03.5 Pitty - Mascara
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.5 Pitty - Mascara
 
-Um comando proposto — **ainda não implementado** — seria:
+- Artista desconhecido — 03.6 Nenhum De Nos - O Astronauta de Marmore
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.6 Nenhum De Nos - O Astronauta de Marmore
 
-```bash
-python3 scripts/generate_charts_batch.py \
-  "musicas/audios separados" \
-  --output "musicas/charts" \
-  --resume --jobs 1
-```
+- Artista desconhecido — 03.7 Palavra Cantada - Rato
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.7 Palavra Cantada - Rato
 
-Cada subpasta representaria uma música. O controlador identificaria os stems pelos nomes, processaria cada música uma vez e geraria as quatro dificuldades a partir da mesma análise. Uma falha seria registrada sem interromper as demais músicas.
+- Artista desconhecido — 03.8 Kuase Nada - De Borest
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.8 Kuase Nada - De Borest
 
-Para eficiência, ele teria cache por **hash dos arquivos + versão dos parâmetros**, retomada de tarefas interrompidas e um relatório consolidado com músicas concluídas, falhas e resultados suspeitos.
+- Artista desconhecido — 04.3 Eutenia - They Wanna Watch Me Fall
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.3 Eutenia - They Wanna Watch Me Fall
 
-**Podemos manter o método da última revisão, mas não garantir a mesma qualidade musical nas 73 músicas automaticamente.** A revisão anterior ainda não foi validada musicalmente no jogo. Eu começaria com três músicas diferentes, conferiria pequenos trechos e ajustaria principalmente a bateria antes de liberar o lote inteiro.
+- Artista desconhecido — 04.5 Ednaldo Pereira - Chance (Matheus Richard)
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.5 Ednaldo Pereira - Chance (Matheus Richard)
 
-**5. Como economizar tokens e créditos**
+- Artista desconhecido — 07.1 Selvagens a Procura de Lei - Tarde Livre
+  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/07. ROQUEN ROUL SEXTA FEIRAAAA/07.1 Selvagens a Procura de Lei - Tarde Livre
 
-A maior economia é usar o Codex para **implementar e corrigir o programa**, e executar o lote diretamente no terminal, sem uma conversa ou chamada de modelo por música. NumPy, SciPy e FFmpeg fazem o processamento local; nesse desenho, a execução não chama o Codex.
+- Artista desconhecido — 07.2 Angra - Caveman
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/07. ROQUEN ROUL SEXTA FEIRAAAA/07.2 Angra - Caveman
 
-Além disso:
+- Artista desconhecido — 08.1 Detonautas - Quando o Sol se for
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/08. O Fim De Uma Era/08.1 Detonautas - Quando o Sol se for
 
-- Instalar as dependências uma vez e fixar suas versões.
-- Reutilizar análises em cache e recalcular somente instrumentos alterados.
-- Mostrar na conversa apenas o resumo e os erros relevantes, mantendo os detalhes em arquivos.
-- Pedir ao Codex correções específicas, acompanhadas de pequenos trechos dos relatórios.
+- Artista desconhecido — 08.2 Matanza - Ela Roubou Meu Caminhao
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/08. O Fim De Uma Era/08.2 Matanza - Ela Roubou Meu Caminhao
 
-A documentação oficial confirma que contexto, resultados de ferramentas e extensão das tarefas influenciam o consumo; recomenda limitar o material enviado e o tamanho das respostas. [Orientações de uso e créditos da OpenAI](https://learn.chatgpt.com/docs/pricing#what-can-i-do-to-make-my-usage-limits-last-longer).
+- Artista desconhecido — 09.1 Ednaldo Pereira - God Is Good Metal (Matheus Richard)
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/09. Perdido/09.1 Ednaldo Pereira - God Is Good Metal (Matheus Richard)
 
-Minha proposta é **reaproveitar as funções atuais, acrescentar análise direta de baixo/teclado e criar um controlador de lote**. A bateria é a parte que exige generalização e avaliação antes de escalar.
+- Artista desconhecido — 09.2 Hardneja Sertacore - Evidencias
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/09. Perdido/09.2 Hardneja Sertacore - Evidencias
+
+- Artista desconhecido — 10.2 Almah - King
+  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/10. Abram os oleos/10.2 Almah - King
+
+- Artista desconhecido — 11.2 Ecliptyka - Times Are Changed
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/11. Flash Extinto Em 2020/11.2 Ecliptyka - Times Are Changed
+
+- Artista desconhecido — 12.1 Ze Ramalho - Sr Ozzy (Part. Robertinho de Recife)
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/12. Sem iPhone,Fica de iHope/12.1 Ze Ramalho - Sr Ozzy (Part. Robertinho de Recife)
+
+- Artista desconhecido — 12.2 Manowel - Heavydencias
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/12. Sem iPhone,Fica de iHope/12.2 Manowel - Heavydencias
+
+- Artista desconhecido — 13.2 Andragonia - The Choice
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/13. E a Vida Segue/13.2 Andragonia - The Choice
+
+- Artista desconhecido — 14.1 Angra -  Light of Transcendence
+  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/14. Um momento pra ouvir Trap/14.1 Angra -  Light of Transcendence
+
+- Artista desconhecido — 14.2 Command6 - Armageddon
+  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/14. Um momento pra ouvir Trap/14.2 Command6 - Armageddon
+
+- Artista desconhecido — 15.1 Raimundos - Mulher de Fases
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/15. Eu Sou A Velocidade/15.1 Raimundos - Mulher de Fases
+
+- Artista desconhecido — 15.2 Massacration - Metal Is The Law
+  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/15. Eu Sou A Velocidade/15.2 Massacration - Metal Is The Law
+
+- Artista desconhecido — 16.2 Almah - Believer
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/16. As Lendas Nunca Morrem/16.2 Almah - Believer
+
+- Batrakia — Alvo Marcado
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.7 Batrakia - Alvo Marcado
+
+- Bruno Sutter — Galopeira
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.6 Bruno Sutter - Galopeira
+
+- Cazuza — Brasil
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.4 Cazuza - Brasil
+
+- Charlie Brown Jr — Hoje Eu Acordei Feliz (Live)
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/16. As Lendas Nunca Morrem/16.1 Charlie Brown Jr - Hoje Eu Acordei Feliz (Ao Vivo)
+
+- Charlie Brown Jr — Senhor do Tempo
+  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.5 Charlie Brown Jr - Senhor Do Tempo
+
+- Cine — Garota Radical
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.4 Cine - Garota Radical
+
+- Codinome Winchester — O Paulista
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/05. Entre Bem e o Mal/05.2 Codinome Winchester - O Paulista
+
+- El Bando — A História do Mamute
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/05. Entre Bem e o Mal/05.1 El Bando - A Historia Do Mamute
+
+- Gabriel o Pensador — Palavras Repetidas
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.8 Gabriel O Pensador - Palavras Repetidas
+
+- Hori — Quem eu Sou
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/06. Um Oferecimento Rede Globo/06.2 Hori - Quem Eu Sou
+
+- Jota Quest — O Sol
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.6 Jota Quest - O Sol
+
+- Kasino — Can't Get Over
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.E Kasino - Can't Get Over
+
+- Kiko Loureiro — No Gravity
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/10. Abram os oleos/10.1 Kiko Loureiro - No Gravity
+
+- Luiz Gonzaga — Asa Branca
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.2 Luiz Gonzaga - Asa Branca
+
+- Mr. Gyn — Minha Juventude
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.1 Mr. Gyn - Minha Juventude
+
+- Orquestra Da Terra — Rei do Gado
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.6 Orquestra da Terra - Rei Do Gado
+
+- Plain White T's — Hey There Delilah
+  Instrumentos: Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Plain White T's - Hey There Delilah
+
+- Project46 — Rédeas
+  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/11. Flash Extinto Em 2020/11.1 Project46 - Redeas
+
+- Sandy & Junior — A Lenda
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.2 Sandy & Junior - A Lenda
+
+- Selvagens à Procura de Lei — Brasileiro
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.2 Selvagens a Procura de Lei - Brasileiro
+
+- Shaman — Brand New Me
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/13. E a Vida Segue/13.1 Shaman - Brand New Me
+
+- Shaman — Fairy Tale
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/06. Um Oferecimento Rede Globo/06.1 Shaman - Fairy Tale
+
+- Tim Maia — Ela Partiu
+  Instrumentos: Guitarra. Pack: Lisarb.
+  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.1 Tim Maia - Ela Partiu
+
+============================================================================
+2 INSTRUMENTO(S) — 0 MÚSICA(S)
+============================================================================
+
+Nenhuma música encontrada nesta categoria.
+
+============================================================================
+3 INSTRUMENTO(S) — 15 MÚSICA(S)
+============================================================================
+
+- A Perfect Circle — The Hollow
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/A Perfect Circle - The Hollow
+
+- All That Remains — The Air That I Breathe
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/All That Remains - The Air That I Breathe
+
+- Amon Amarth — Asator
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Amon Amarth - Asator
+
+- Attila — About That Life
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Attila - About That Life
+
+- Grateful Dead — Friend Of The Devil
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Friend Of The Devil
+
+- Grateful Dead — Help on the Way-Slipknot
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Help on the Way-Slipknot
+
+- Grateful Dead — St. Stephen
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - St. Stephen
+
+- Grateful Dead — Till the Morning Comes
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Till the Morning Comes
+
+- Grateful Dead — Unbroken Chain
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Unbroken Chain
+
+- New Order — Ceremony
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Ceremony
+
+- Phish — The Landlady
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Phish - The Landlady
+
+- The Velvet Underground — Femme Fatale
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Femme Fatale
+
+- The Velvet Underground — I'll Be Your Mirror
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - I'll Be Your Mirror
+
+- The Velvet Underground — Rock & Roll
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Rock & Roll
+
+- Yellowcard — Lights and Sounds
+  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Yellowcard - Lights and Sounds
+
+============================================================================
+4 INSTRUMENTO(S) — 22 MÚSICA(S)
+============================================================================
+
+- Alestorm — You Are a Pirate
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Alestorm - You Are a Pirate
+
+- All That Remains — Six
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/All That Remains - Six
+
+- Angra — Angels Cry
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Angels Cry
+
+- Angra — Spread Your Fire
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Spread Your Fire
+
+- Angra — Waiting Silence
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Waiting Silence
+
+- Angra — Wuthering Heights
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Wuthering Heights
+
+- Between the Buried and Me — Sun of Nothing
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Between the Buried and Me - Sun of Nothing
+
+- Between the Buried and Me — Telos
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Between the Buried and Me - Telos
+
+- Faith No More — Easy
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Faith No More - Easy
+
+- Grateful Dead — Born Cross-Eyed
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Born Cross-Eyed
+
+- Grateful Dead — Shakedown Street
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Shakedown Street
+
+- Jamiroquai — Cosmic Girl
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Jamiroquai - Cosmic Girl
+
+- Jamiroquai — Virtual Insanity
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Jamiroquai - Virtual Insanity
+
+- New Order — Age Of Consent
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Age Of Consent
+
+- New Order — Regret
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Regret
+
+- New Order — The Perfect Kiss
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - The Perfect Kiss
+
+- Phish — Eliza
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Pro Bass, Pro Guitar.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Phish - Eliza
+
+- The Grateful Dead — Bertha
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Bertha
+
+- The Velvet Underground — Sunday Morning
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Sunday Morning
+
+- The Velvet Underground — Sweet Jane
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Sweet Jane
+
+- The Velvet Underground — Venus in Furs
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Venus in Furs
+
+- Yellowcard — Breathing
+  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
+  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Yellowcard - Breathing
+
+VERIFICAÇÃO
+95 pastas de música classificadas; 57 charts .chart e 38 charts MIDI lidos; nenhum chart ficou sem classificação.
+Leitura de MIDI conferida contra os dois charts WAV existentes e contra um arquivo de teste com running status.
+Há linhas malformadas em alguns song.ini do pack Alternative; seus charts foram lidos mesmo assim. Os arquivos não foram alterados.

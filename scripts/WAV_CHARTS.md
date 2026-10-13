@@ -371,3 +371,31 @@ Referências técnicas: [problema de mínimos quadrados não negativos no SciPy]
 e [documentação de métodos de pitch do aubio](https://aubio.org/doc/latest/pitch_8h_source.html).
 O código implementa o ajuste esparso e o YIN diretamente com NumPy/SciPy;
 não depende do aubio e não chama `scipy.optimize.nnls` por frame.
+
+## Acrescentar partes a Exagerado do Lisarb
+
+`scripts/enrich_pack_chart.py` reutiliza a análise WAV realista existente de
+baixo, bateria e teclado. A guitarra vem exclusivamente do `notes.chart` do
+pack: notas, sustentações, taps, HOPOs/strums e mapa variável de tempo são
+conferidos na conversão para MIDI. As quatro dificuldades da guitarra são
+preservadas; as novas partes ficam em Medium. Frases de star power com diferença
+de um tick são unificadas apenas quando as mesmas notas continuam dentro delas.
+
+A bateria mantém ataques do WAV, reduz viradas rápidas e permite um pad mais
+bumbo. Não há preenchimento com grooves padronizados. O áudio do pack é mantido,
+e a diferença de início/velocidade entre gravações é verificada por envelopes
+espectrais e janelas de validação. O original inteiro vai para
+`chart-backups/pack-enrichment`; nenhuma outra música é modificada.
+
+```bash
+.venv-charts/bin/python scripts/enrich_pack_chart.py \
+  --pack-song "musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.E Cazuza - Exagerado" \
+  --wav-chart "musicas/Cazuza - Exagerado"
+```
+
+Executar novamente reutiliza o resultado se MIDI e áudio não foram alterados.
+O relatório da revisão está em `enrichment-report.json` na música e em
+`chart-backups/pack-enrichment/Exagerado-validation.json`. A detecção de timbres e
+alturas permanece heurística; o teste na Unity e a revisão musical não foram
+executados. A ampliação futura para músicas com apenas três WAVs deverá produzir
+ou validar as análises dessas partes sem exigir uma transcrição de guitarra.

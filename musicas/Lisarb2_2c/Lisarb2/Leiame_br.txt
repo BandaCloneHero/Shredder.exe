@@ -1,0 +1,130 @@
+
+
+	--- LISARB 2 - MAIS DO QUE FUTEBOL E SAMBA---
+
+
+Setlist e charts por Naonemeu
+Créditos a Alexx Santos pela chart "Oficina G3 - Depois da Guerra (Ao Vivo)"
+
+ Início do Projeto: 2019-03-31
+ Termino (Versão 1a): 2020-07-24
+ 
+ 	--- Diferença entre as versões
+	
+	
+....Lisarb2.zip (1170 MB) - OGG / Stereo / 256Kbps CBR (Max)
+Versão com os áudios "originais" do Lisarb 2, na maior parte em 
+OGG 256kbps CBR (não me pergunte pq usei isso ao invés de VBR)
+
+Para quem for usar alguma chart em alguma ISO/projeto o que seja,
+RECOMENDO que use essa versão, pois tem os áudios com a melhor qualidade.
+	
+	
+....Lisarb2_android (346 MB) - OGG / Mono / 64Kbps VBR
+Versão que eu fiz para testar o quanto da para reduzir o tamanho
+dos OGG sem que a qualidade do áudio fique uma caca completa.
+Chamei isso de "versão android" porque acho que seria útil pra quem joga
+no celular, pois o 22.5 não suporta áudio opus.
+
+Quebras de linhas foram removidas nessa versão, pois descobri  
+que versão 22.5 não suporta usar <br>
+
+
+....Lisarb2_opus (351 MB) - OPUS / Stereo / 64Kbps VBR
+JÁ AVISO, FUNCIONA SOMENTE NA VERSÃO DE "PUBLIC TEST BUILD" DO CLONE HERO,
+OU FUTURAMENTE A VERSÃO "V1". - Vá no Discord do CH para baixar essa versão: 
+https://discord.gg/Hsn4Cgu
+
+Esse codec é uma maravilha. Mesmo com esse bitrate e tamanho baixo, a qualidade
+do áudio continua boa (Não quer dizer que não há "perdas" nesse codec, mas que é
+bem eficiente,é). É bom também pra quem tem muita música e setlist ai, 
+vai diminuir bastante o tamanho da pasta de músicas do CH.
+	
+
+	--- Versão 2c - 2021-09-15
+	
+A atualização "2c" contem mudanças para que se aproveite melhor das otimizações
+da versão de Public Test Build (futuramente "v1") do Clone Hero.
+
+Não há mudanças de charts desde a versão 2a	(e as charts vão ficar em modo
+"estático" - para não ter problemas com o online)
+
+Veja no Youtube ou na lista de charts se há atualizações dessa setlist! 
+Posso ter deixado passar algum problema com as charts,é sempre bom olhar.
+
+Versões anteriores: 2a ; 1b ; 1a
+
+	--- Importante:
+	
+Use o arquivo "streamerfriendly.zip" para censurar umas capas que podem ser consideradas
+como "inapropriadas" (Isso é mais util para streamers)
+	
+As charts tem TODAS as dificuldades,porem foram feitas de forma AUTOMÁTICA usando o 
+Onyx/CAT (https://github.com/mtolly/onyxite-customs), por isso,só posso garantir 
+qualidade no Expert.
+
+
+	--- Como instalar
+
+
+Extraia a pasta "Lisarb2" para onde coloca suas músicas do Clone Hero.
+exemplo: "C:\Users\usuario\Documents\CH\CloneHero\Songs"
+
+(Não é mais relevante)
+Caso queira tirar o "CH" redondo dos albums,coloque o arquivo 'lisarb2.png' na pasta de icones 
+exemplo: "C:\Users\usuario\Documents\CH\CloneHero\Custom\Image Backgrounds"
+Após extrair,use a opção de escanear as pastas. 
+
+
+	--- Lista de charts,Atualizações do Lisarb 1/2
+
+
+Lista: bit.ly/naonemeuch
+
+
+	--- Contato
+
+
+FoF-FF (Não uso mais)
+Discord: naonemeu#2724
+Youtube: youtube.com/zeninguem8
+
+
+	--- Sobre
+	
+
+Ei,obrigado por baixar Lisarb 2!
+Nessa setlist há músicas dos mais variados artistas (bem,eu tentei variar),e esta dividido em listas,
+sendo parcialmente baseado na sua dificuldade. Há varios gêneros presente nessa lista,rock,pop,metal,samba
+,funk(lol),sertanejo e algumas zueiras. Também há algumas menos conhecidas ai.
+Spoiler: Metal é o gênero com maior quantidade de músicas.
+ 
+Caso faça videos ou streams com essas músicas,seria bom se divulgasse a setlist. Considero isso como um agradecimento.
+
+Note que para todas as charts,eu fiz SOMENTE a dificuldade expert,todas as outras foram feitas usando o Onyx Tools,
+que tem um script gera as outras dificuldades (CAT).
+
+Essa setlist foi inspirada em outras como o antigo "GH Brazucas" do Orkut e o "Brasil Hero" do FoF Brasil.
+
+No mais,divirta-se!
+
+
+	--- Inspirações (Pessoas que tive inspiração para fazer charts)
+
+
+FoF: Orbiteli, le_rock, lion_leandro, Zumbi12, MrkVinny3004, JC_ProHero, Angevil.
+SH:  ph4nToM, aam369, jmady.
+Outros:  GH Creators,Tfoxx29.
+
+
+	--- Agradecimentos (Comentários,Feedback,Jogou charts...)
+
+
+Malukkoblz, abreugus, Klazar, AndromedaYT, Victorhest, Victor Severo de Oliveira, Wagner Andrade, 
+Alexx Santos, Alex Ferreira, Kenji Hess Campos Nakazoni, Emerson Sales, Natan Marcello Duarte de Carvalho,
+gabo, F4ISK4, Moreno (React Brasil) , KAX AIRSHIP , Matheus Costa, Tacito Sampaio, EdsonMiguel.
+
+
+	--- Dedicado a Rodrigo Donato (1980-2020)
+	
+	

@@ -1,0 +1,90 @@
+**É possível criar um comando para processar as 73 músicas localmente, sem MIDI musical intermediário. Mas o código atual precisa de algumas adaptações: a última revisão ainda usou MIDIs para baixo e teclado, e a bateria foi calibrada especificamente para essa gravação.** Não alterei nenhum arquivo.
+
+**1. Scripts e bibliotecas utilizados**
+
+| Script | Função |
+|---|---|
+| [create_mp3_test_chart.py](/workspaces/Shredder.exe/scripts/create_mp3_test_chart.py) | Fornece detecção de ataques, análise de alturas, escrita do chart e validação. Também contém o primeiro gerador para áudio mixado. |
+| [create_stem_midi_chart.py](/workspaces/Shredder.exe/scripts/create_stem_midi_chart.py) | Adaptou os MIDIs existentes, preparou os áudios separados, verificou alinhamento e gerou os arquivos do jogo. |
+| [refine_stem_charts.py](/workspaces/Shredder.exe/scripts/refine_stem_charts.py) | Refez guitarra e bateria diretamente dos WAVs, preservando baixo e teclado anteriores. |
+
+As dependências são **NumPy**, **SciPy**, **Mido** e **imageio-ffmpeg/FFmpeg**. O processamento foi feito por código local; os scripts não chamam APIs de IA. O Basic Pitch não foi executado por eles: seus MIDIs já estavam na pasta.
+
+**2. Como foram detectados os tempos e as notas**
+
+O andamento foi estimado por **autocorrelação dos ataques da bateria**, buscando um BPM entre 95 e 170. O resultado foi aproximadamente **146,67 BPM**.
+
+Esse BPM organiza o arquivo, mas as notas seguem seus instantes detectados em segundos, sem serem forçadas a uma grade. O método atual usa um andamento constante; não acompanha variações de tempo durante a música.
+
+| Instrumento | Método usado na última revisão |
+|---|---|
+| **Guitarra** | Espectrograma por STFT; aumentos de energia espectral localizaram as palhetadas. A análise de harmônicos produziu perfis que foram agrupados por **K-means em cinco grupos**, associados aos cinco botões. Sustentações foram estimadas pela continuidade da energia. |
+| **Bateria** | **NMF**, uma decomposição do espectrograma em componentes de timbre. Combinações desses componentes foram associadas a bumbo, caixa, prato, tom e crash. Picos de ativação determinaram os ataques. |
+| **Baixo** | Notas, inícios e finais lidos do MIDI Basic Pitch existente, depois adaptados aos cinco botões. |
+| **Teclado** | Notas do MIDI existente, dobradas para uma oitava e adaptadas às sete teclas brancas. |
+
+As dificuldades foram produzidas reduzindo a densidade de ataques e o tamanho dos acordes.
+
+**A principal limitação está na bateria:** as combinações de componentes foram ajustadas para “Pro Dia Nascer Feliz”. Em outra gravação, os componentes da NMF podem representar outros sons. Copiar os mesmos números pode voltar a produzir pads incorretos. Os filtros que eliminam resíduos também podem suprimir golpes reais próximos entre si.
+
+**3. O que pode ser reaproveitado**
+
+Podemos reutilizar diretamente:
+
+- Decodificação dos WAVs, espectrogramas, detecção de ataques e análise de harmônicos.
+- Mapeamento para guitarra de cinco botões e Pro Keys 7K.
+- Redução de dificuldades, construção das pistas e validação dos eventos.
+- Verificação de alinhamento, exportação dos stems e geração de `song.ini`.
+- Relatórios, hashes e armazenamento das análises.
+
+Precisamos adaptar três partes:
+
+- **Baixo e teclado:** analisar seus próprios WAVs usando as funções existentes, substituindo a leitura dos MIDIs.
+- **Bateria:** generalizar a associação entre componentes e instrumentos, permitindo perfis de calibração quando necessário.
+- **Execução:** transformar os programas em funções reutilizáveis e acrescentar um controlador de lote.
+
+Também precisam sair das regras gerais os testes específicos dessa música, como ataques em segundos fixos e a exigência de pelo menos 200 ataques de guitarra.
+
+**4. Proposta de comando único**
+
+Proponho este fluxo:
+
+```text
+WAVs separados
+    → análise por instrumento
+    → eventos em memória: início, fim e botão
+    → quatro dificuldades
+    → notes.mid final + song.ini + áudios + relatório
+```
+
+O `notes.mid` seria **o chart final do jogo**, sem etapa de transcrição para outro MIDI musical.
+
+Um comando proposto — **ainda não implementado** — seria:
+
+```bash
+python3 scripts/generate_charts_batch.py \
+  "musicas/audios separados" \
+  --output "musicas/charts" \
+  --resume --jobs 1
+```
+
+Cada subpasta representaria uma música. O controlador identificaria os stems pelos nomes, processaria cada música uma vez e geraria as quatro dificuldades a partir da mesma análise. Uma falha seria registrada sem interromper as demais músicas.
+
+Para eficiência, ele teria cache por **hash dos arquivos + versão dos parâmetros**, retomada de tarefas interrompidas e um relatório consolidado com músicas concluídas, falhas e resultados suspeitos.
+
+**Podemos manter o método da última revisão, mas não garantir a mesma qualidade musical nas 73 músicas automaticamente.** A revisão anterior ainda não foi validada musicalmente no jogo. Eu começaria com três músicas diferentes, conferiria pequenos trechos e ajustaria principalmente a bateria antes de liberar o lote inteiro.
+
+**5. Como economizar tokens e créditos**
+
+A maior economia é usar o Codex para **implementar e corrigir o programa**, e executar o lote diretamente no terminal, sem uma conversa ou chamada de modelo por música. NumPy, SciPy e FFmpeg fazem o processamento local; nesse desenho, a execução não chama o Codex.
+
+Além disso:
+
+- Instalar as dependências uma vez e fixar suas versões.
+- Reutilizar análises em cache e recalcular somente instrumentos alterados.
+- Mostrar na conversa apenas o resumo e os erros relevantes, mantendo os detalhes em arquivos.
+- Pedir ao Codex correções específicas, acompanhadas de pequenos trechos dos relatórios.
+
+A documentação oficial confirma que contexto, resultados de ferramentas e extensão das tarefas influenciam o consumo; recomenda limitar o material enviado e o tamanho das respostas. [Orientações de uso e créditos da OpenAI](https://learn.chatgpt.com/docs/pricing#what-can-i-do-to-make-my-usage-limits-last-longer).
+
+Minha proposta é **reaproveitar as funções atuais, acrescentar análise direta de baixo/teclado e criar um controlador de lote**. A bateria é a parte que exige generalização e avaliação antes de escalar.
