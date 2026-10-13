@@ -1,0 +1,16 @@
+{
+  "removed_library_folder": "/workspaces/Shredder.exe/musicas/Cazuza - Exagerado",
+  "archived_folder": "/workspaces/Shredder.exe/chart-backups/removed-from-library/Cazuza - Exagerado-20261013T135635029583Z",
+  "retained_song": "/workspaces/Shredder.exe/musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.E Cazuza - Exagerado",
+  "retained_chart_and_audio_unchanged": true,
+  "archived_files_verified": 10,
+  "removed_registry_entries": {
+    "eaa132889c4ff4d400a0c3499ead71ec068b18c9a7e631294b221334132e8576": {
+      "source": "/workspaces/Shredder.exe/musicas/audios separados/Exagerado",
+      "folder": "Cazuza - Exagerado",
+      "generation_signature": "493c5a41a62e9fc54d1c1911105d6330d8d390100f85f58b9fefc20a9b34effc",
+      "updated_utc": "2026-10-12T13:17:36.771422+00:00"
+    }
+  },
+  "source_wavs_and_mp3_untouched": true
+}

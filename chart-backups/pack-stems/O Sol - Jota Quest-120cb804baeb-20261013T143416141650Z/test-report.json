@@ -1,0 +1,84 @@
+{
+  "song": "Jota Quest - O Sol",
+  "tests": {
+    "unit_tests_passed": 53,
+    "audio_byte_identical": true,
+    "original_guitar_backup_verified": true,
+    "detection_pool_structural_errors": 0,
+    "midi_roundtrip": {
+      "guitar_gems_holds_types_all_difficulties_preserved": true,
+      "added_notes_roundtrip": "passed",
+      "timestamp_error_limit_seconds": 0.003,
+      "maximum_observed_timestamp_error_seconds": 0.0019529478458082394,
+      "parts": {
+        "bass": {
+          "notes": 729,
+          "lane_counts": {
+            "1": 336,
+            "0": 32,
+            "2": 229,
+            "3": 76,
+            "4": 56
+          }
+        },
+        "drums": {
+          "notes": 642,
+          "lane_counts": {
+            "1": 30,
+            "2": 449,
+            "3": 11,
+            "0": 136,
+            "4": 16
+          }
+        },
+        "keys": {
+          "notes": 695,
+          "lane_counts": {
+            "55": 143,
+            "59": 60,
+            "57": 97,
+            "53": 95,
+            "52": 172,
+            "50": 83,
+            "48": 45
+          }
+        }
+      },
+      "in_game_test": "not run",
+      "listening_validation": "not run"
+    },
+    "keyboard_limits": {
+      "notes": 695,
+      "attacks": 449,
+      "maximum_timestamp_rounding_error_seconds": 0.0019522392290269863,
+      "maximum_simultaneous_keys": 2,
+      "dyad_attacks": 246,
+      "maximum_internal_attack_gap_seconds": 2.63671875,
+      "first_attack_seconds": 5.25
+    }
+  },
+  "reference_comparison": {
+    "reference": "approved Exagerado Lisarb",
+    "same_drum_policy": true,
+    "same_keyboard_profile": true,
+    "reference_keyboard_notes": 810,
+    "new_keyboard_notes": 695,
+    "reference_drum_notes": 642,
+    "new_drum_notes": 642
+  },
+  "limitations": {
+    "bass": [
+      "More than 25% of independent onsets have no Expert attack; inspect listed times.",
+      "Some attacks/holds have weak audio support; inspect listed times."
+    ],
+    "drums": [
+      "Ambiguous drum body/rattle or cymbal decay packets were found; review their timestamps."
+    ],
+    "keys": [
+      "660 keyboard events have weak spectral explanation; review separation bleed and false notes."
+    ]
+  },
+  "listening_validation": "not run",
+  "unity_test": "not run",
+  "musical_correctness_certified": false
+}

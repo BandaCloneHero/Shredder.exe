@@ -1,4 +1,36 @@
-## Perfil realista de dificuldade única
+## Padrão aprovado: Exagerado (Lisarb)
+
+Para os próximos charts, use **Exagerado aprovado pelo usuário** como referência
+de jogabilidade. Preserve a guitarra existente do pack e o áudio `song.ogg`.
+Analise apenas os WAVs novos de baixo, bateria e teclado. A bateria usa quatro
+pads na ordem **chimbal, caixa, tom, crash**, com bumbo separado, no máximo um
+pad e bumbo juntos, sem batidas inventadas e com redução de viradas rápidas.
+O teclado usa o perfil `balanced-chords-accompaniment-v2`: notas individuais,
+acordes de duas teclas, pequenas sequências e acompanhamento nos intervalos
+longos. Esse acompanhamento foi solicitado pelo usuário e é registrado como
+adaptação para jogar, não como transcrição de teclado audível. O baixo conserva
+os ataques e alturas detectados diretamente do WAV.
+
+O comando de enriquecimento publica os três instrumentos somente em Medium;
+preserva as quatro dificuldades originais da guitarra. Não copia notas de
+Exagerado para outras músicas: reutiliza as regras de seleção e jogabilidade.
+Usa o mapa de tempo da guitarra para evitar desvio do acompanhamento.
+
+```bash
+.venv-charts/bin/python scripts/enrich_pack_stems.py \
+  --pack-song "musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.6 Jota Quest - O Sol" \
+  --stems "musicas/audios separados/O Sol - Jota Quest"
+```
+
+Repetir o comando reutiliza o chart validado, desde que fontes, código e arquivos
+continuem iguais. Fontes diferentes exigem uma revisão explícita; o comando
+recusa sobrescrever. O original completo, relatórios e cache ficam fora da
+biblioteca em `chart-backups/pack-stems`. Nenhum MIDI musical intermediário é
+usado. O comando verifica a origem temporal dos stems em várias regiões do
+áudio; recusa gravações com atraso, duração diferente ou evidência insuficiente.
+As validações automáticas não substituem ouvir a música e testar no Unity.
+
+## Gerador genérico anterior: perfil realista de dificuldade única
 
 O padrão agora é `--playability-profile realistic`: conserva o conjunto mais
 completo de ataques detectados nos WAVs, sem o espaçamento ou a simplificação

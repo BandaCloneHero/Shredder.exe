@@ -94,6 +94,18 @@ def convert_guitar(path):
     for phrases in phrase_sets:
         for start,kind,length in phrases:
             canonical[start,kind] = max(canonical.get((start,kind),0),length)
+    # MIDI phrases are shared across difficulties. Choose a common endpoint
+    # that preserves the awarded gems in every level, even if lengths differ.
+    for start,kind in canonical:
+        lower=start+1;upper=float('inf')
+        for difficulty,phrases in zip(LEVELS,phrase_sets):
+            matches=[length for t,k,length in phrases if (t,k)==(start,kind)]
+            if len(matches)!=1:raise ValueError('Different per-difficulty phrase positions cannot be silently merged')
+            end=start+matches[0];ticks={t for t,_,_ in report[difficulty]['gems']}
+            lower=max(lower,max((t+1 for t in ticks if start<=t<end),default=start+1))
+            upper=min(upper,min((t for t in ticks if t>=end),default=float('inf')))
+        if lower>upper:raise ValueError('No shared MIDI phrase can preserve star power membership')
+        canonical[start,kind]=int(max(lower,min(start+canonical[start,kind],upper))-start)
     for difficulty,phrases in zip(LEVELS,phrase_sets):
         if {(start,kind) for start,kind,_ in phrases} != set(canonical):
             raise ValueError('Different per-difficulty phrase positions cannot be silently merged')

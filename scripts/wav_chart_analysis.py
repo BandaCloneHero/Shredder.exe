@@ -276,8 +276,12 @@ def yin_pitch(audio, low=28, high=72):
             certainty = float(1-curve[selected])
             if certainty < .70:
                 continue
-            a, b, c = curve[selected-1:selected+2]
-            offset = float(np.clip(.5*(a-c)/max(a-2*b+c, 1e-9), -.5, .5))
+            # At the lowest supported pitch the chosen lag can be the last
+            # sample; there is no right neighbour for parabolic interpolation.
+            offset = 0.
+            if selected+1 < len(curve):
+                a, b, c = curve[selected-1:selected+2]
+                offset = float(np.clip(.5*(a-c)/max(a-2*b+c, 1e-9), -.5, .5))
             hz = SAMPLE_RATE/(selected+offset)
             note = 69+12*math.log2(hz/440)
             if low-.5 <= note <= high+.5:
