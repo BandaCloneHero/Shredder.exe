@@ -1,0 +1,1292 @@
+{
+  "profile": "linear-accompaniment-v1",
+  "previous_notes": 670,
+  "simplified_detected_notes": 128,
+  "synthetic_accompaniment_notes": 169,
+  "final_notes": 297,
+  "maximum_simultaneous_keys": 1,
+  "maximum_white_key_step": 1,
+  "remapped_for_linear_motion": 131,
+  "minimum_attack_gap_seconds": 0.32391941985034123,
+  "maximum_internal_attack_gap_seconds": 3.5924643326850685,
+  "first_attack_seconds": 1.940578231292517,
+  "accompaniment": [
+    {
+      "time": 1.940578231292517,
+      "end": 2.030578231292517,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 2.8185827664399095,
+      "end": 2.9085827664399093,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 3.6566780045351477,
+      "end": 3.7466780045351475,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 4.544659863945578,
+      "end": 4.634659863945578,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 5.392732426303855,
+      "end": 5.482732426303855,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 6.270736961451248,
+      "end": 6.360736961451248,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 7.14874149659864,
+      "end": 7.23874149659864,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 8.116541950113378,
+      "end": 8.206541950113378,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 8.904750566893423,
+      "end": 8.994750566893423,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 9.782755102040815,
+      "end": 9.872755102040815,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 10.750555555555554,
+      "end": 10.840555555555554,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 11.548741496598637,
+      "end": 11.638741496598637,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 12.416768707482992,
+      "end": 12.506768707482992,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 13.294773242630384,
+      "end": 13.384773242630384,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 14.262573696145123,
+      "end": 14.352573696145123,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 15.04080498866213,
+      "end": 15.13080498866213,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 15.988650793650791,
+      "end": 16.07865079365079,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 16.92651927437642,
+      "end": 17.01651927437642,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 17.73468253968254,
+      "end": 17.82468253968254,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 18.632641723356013,
+      "end": 18.722641723356013,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 19.510646258503403,
+      "end": 19.600646258503403,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 20.36869614512472,
+      "end": 20.45869614512472,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 21.236723356009072,
+      "end": 21.326723356009072,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 22.134682539682544,
+      "end": 22.224682539682544,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 22.9528231292517,
+      "end": 23.0428231292517,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 23.910646258503405,
+      "end": 24.000646258503405,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 24.75871882086168,
+      "end": 24.84871882086168,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 25.63672335600907,
+      "end": 25.72672335600907,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 26.534682539682542,
+      "end": 26.624682539682542,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 27.422664399092973,
+      "end": 27.512664399092973,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 28.300668934240367,
+      "end": 28.390668934240367,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 29.138764172335602,
+      "end": 29.2287641723356,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 30.05667800453515,
+      "end": 30.14667800453515,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 30.874818594104312,
+      "end": 30.96481859410431,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 31.807709750566893,
+      "end": 31.897709750566893,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 32.63082766439909,
+      "end": 32.720827664399096,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 33.54874149659864,
+      "end": 33.63874149659864,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 34.406791383219954,
+      "end": 34.49679138321996,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 35.26484126984127,
+      "end": 35.35484126984127,
+      "lane": 57,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 36.14284580498866,
+      "end": 36.23284580498866,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 37.070736961451246,
+      "end": 37.16073696145125,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 37.91880952380952,
+      "end": 38.008809523809525,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 38.81676870748299,
+      "end": 38.906768707482996,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 39.67481859410431,
+      "end": 39.76481859410431,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 40.582755102040814,
+      "end": 40.67275510204082,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 41.44080498866213,
+      "end": 41.53080498866213,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 42.298854875283446,
+      "end": 42.38885487528345,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 43.166882086167796,
+      "end": 43.2568820861678,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 44.07481859410431,
+      "end": 44.16481859410431,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 44.942845804988664,
+      "end": 45.03284580498867,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 45.85578231292517,
+      "end": 45.945782312925175,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 46.688877551020404,
+      "end": 46.77887755102041,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 47.576859410430835,
+      "end": 47.66685941043084,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 48.464841269841266,
+      "end": 48.55484126984127,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 49.352823129251696,
+      "end": 49.4428231292517,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 50.24080498866213,
+      "end": 50.33080498866213,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 51.108832199546484,
+      "end": 51.19883219954649,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 51.986836734693874,
+      "end": 52.07683673469388,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 52.85486394557823,
+      "end": 52.944863945578234,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 53.762800453514735,
+      "end": 53.85280045351474,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 54.63082766439909,
+      "end": 54.720827664399096,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 55.50883219954648,
+      "end": 55.598832199546486,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 56.3668820861678,
+      "end": 56.4568820861678,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 57.25486394557823,
+      "end": 57.34486394557823,
+      "lane": 57,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 58.13286848072562,
+      "end": 58.22286848072562,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 59.000895691609976,
+      "end": 59.09089569160998,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 59.88887755102041,
+      "end": 59.97887755102041,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 60.77685941043084,
+      "end": 60.86685941043084,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 61.634909297052154,
+      "end": 61.72490929705216,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 62.502936507936504,
+      "end": 62.59293650793651,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 69.54692743764173,
+      "end": 69.63692743764173,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 70.42493197278912,
+      "end": 70.51493197278913,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 71.30293650793651,
+      "end": 71.39293650793651,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 72.1809410430839,
+      "end": 72.27094104308391,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 73.0589455782313,
+      "end": 73.1489455782313,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 73.93695011337869,
+      "end": 74.02695011337869,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 74.81495464852608,
+      "end": 74.90495464852609,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 75.71291383219955,
+      "end": 75.80291383219955,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 76.58094104308391,
+      "end": 76.67094104308391,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 77.4589455782313,
+      "end": 77.5489455782313,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 78.33695011337869,
+      "end": 78.4269501133787,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 79.20497732426304,
+      "end": 79.29497732426304,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 80.09295918367347,
+      "end": 80.18295918367347,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 80.97096371882087,
+      "end": 81.06096371882087,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 81.83899092970522,
+      "end": 81.92899092970522,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 82.72697278911565,
+      "end": 82.81697278911565,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 83.595,
+      "end": 83.685,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 84.48298185941043,
+      "end": 84.57298185941043,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 85.3510090702948,
+      "end": 85.4410090702948,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 86.23899092970522,
+      "end": 86.32899092970523,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 87.13695011337869,
+      "end": 87.22695011337869,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 88.00497732426304,
+      "end": 88.09497732426304,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 88.88298185941044,
+      "end": 88.97298185941044,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 89.74103174603175,
+      "end": 89.83103174603175,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 90.62762811791382,
+      "end": 90.71762811791382,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 91.51699546485261,
+      "end": 91.60699546485262,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 92.39500000000001,
+      "end": 92.48500000000001,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 93.26302721088436,
+      "end": 93.35302721088436,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 94.16098639455782,
+      "end": 94.25098639455783,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 95.03899092970522,
+      "end": 95.12899092970522,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 95.90701814058957,
+      "end": 95.99701814058957,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 96.77504535147393,
+      "end": 96.86504535147394,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 97.66302721088437,
+      "end": 97.75302721088437,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 98.54103174603175,
+      "end": 98.63103174603175,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 99.43899092970523,
+      "end": 99.52899092970523,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 100.31699546485261,
+      "end": 100.40699546485261,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 101.17504535147393,
+      "end": 101.26504535147393,
+      "lane": 57,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 102.04307256235828,
+      "end": 102.13307256235828,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 102.9310544217687,
+      "end": 103.02105442176871,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 103.79908163265307,
+      "end": 103.88908163265307,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 104.6870634920635,
+      "end": 104.7770634920635,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 105.57504535147393,
+      "end": 105.66504535147394,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 106.44307256235828,
+      "end": 106.53307256235829,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 107.31109977324263,
+      "end": 107.40109977324263,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 108.179126984127,
+      "end": 108.269126984127,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 109.06710884353743,
+      "end": 109.15710884353743,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 109.97504535147392,
+      "end": 110.06504535147393,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 110.8231179138322,
+      "end": 110.91311791383221,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 111.7011224489796,
+      "end": 111.7911224489796,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 112.59908163265307,
+      "end": 112.68908163265307,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 113.47708616780046,
+      "end": 113.56708616780047,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 114.35509070294785,
+      "end": 114.44509070294785,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 115.25304988662133,
+      "end": 115.34304988662133,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 116.08116780045351,
+      "end": 116.17116780045352,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 117.0090589569161,
+      "end": 117.09905895691611,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 117.87708616780046,
+      "end": 117.96708616780046,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 118.75509070294785,
+      "end": 118.84509070294786,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 119.6231179138322,
+      "end": 119.7131179138322,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 120.51109977324263,
+      "end": 120.60109977324264,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 121.37912698412698,
+      "end": 121.46912698412699,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 122.26710884353741,
+      "end": 122.35710884353742,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 123.13513605442178,
+      "end": 123.22513605442178,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 124.02311791383221,
+      "end": 124.11311791383221,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 124.92107709750567,
+      "end": 125.01107709750568,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 125.78910430839002,
+      "end": 125.87910430839003,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 126.65713151927439,
+      "end": 126.74713151927439,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 127.55509070294785,
+      "end": 127.64509070294785,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 128.4231179138322,
+      "end": 128.5131179138322,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 129.30112244897958,
+      "end": 129.3911224489796,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 130.13921768707482,
+      "end": 130.22921768707482,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 135.42719954648524,
+      "end": 135.51719954648524,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 136.3151814058957,
+      "end": 136.4051814058957,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 137.18320861678004,
+      "end": 137.27320861678004,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 138.09114512471655,
+      "end": 138.18114512471655,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 138.92924036281178,
+      "end": 139.0192403628118,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 139.79726757369613,
+      "end": 139.88726757369614,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 140.64534013605441,
+      "end": 140.73534013605442,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 141.6031632653061,
+      "end": 141.6931632653061,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 142.47119047619046,
+      "end": 142.56119047619046,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 143.27935374149658,
+      "end": 143.36935374149658,
+      "lane": 48,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 144.1374036281179,
+      "end": 144.2274036281179,
+      "lane": 50,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 145.1451133786848,
+      "end": 145.23511337868482,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 146.0031632653061,
+      "end": 146.09316326530612,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 146.89114512471656,
+      "end": 146.98114512471656,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 147.76914965986393,
+      "end": 147.85914965986393,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 148.65713151927437,
+      "end": 148.74713151927438,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 149.41043083900226,
+      "end": 149.50043083900226,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 150.3319365079365,
+      "end": 150.4219365079365,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 151.28116780045352,
+      "end": 151.37116780045352,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 152.08794557823128,
+      "end": 152.1779455782313,
+      "lane": 52,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 153.04715419501133,
+      "end": 153.13715419501133,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 153.84395464852608,
+      "end": 153.93395464852608,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 154.80316326530613,
+      "end": 154.89316326530613,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 155.59996371882085,
+      "end": 155.68996371882085,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 156.5591723356009,
+      "end": 156.6491723356009,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 157.35597278911564,
+      "end": 157.44597278911564,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 158.17549886621313,
+      "end": 158.26549886621314,
+      "lane": 53,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 159.1119818594104,
+      "end": 159.2019818594104,
+      "lane": 55,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    },
+    {
+      "time": 159.99137188208616,
+      "end": 160.08137188208616,
+      "lane": 57,
+      "basis": "bass/guitar pitch adapted to white key",
+      "keyboard_audibility_required": false
+    }
+  ],
+  "synthetic_gameplay_adaptation": true,
+  "limitation": "Added keyboard notes are rhythmic gameplay accompaniment, not WAV transcription.",
+  "notes_sha256": "1ce7924d4e94f2b674a5df0206cda50af869c81a612c002658158689dcb155fc",
+  "previous_backup": "/workspaces/Shredder.exe/chart-backups/keyboard-revisions/01.E Cazuza - Exagerado-20261013T130855050489Z",
+  "audio_unchanged": true,
+  "non_keyboard_midi_chunks_byte_identical": true,
+  "validation": {
+    "notes": 297,
+    "maximum_timestamp_rounding_error_seconds": 0.0011462106046016274,
+    "maximum_simultaneous_keys": 1,
+    "maximum_internal_attack_gap_seconds": 3.596166770833321,
+    "first_attack_seconds": 5.3962476875
+  },
+  "in_game_test": "not run",
+  "listening_validation": "not run",
+  "alignment": {
+    "method": "five-band audio envelopes; affine fit and local holdouts",
+    "scale": 1.0010306123611525,
+    "offset_seconds": 3.4527047706330007,
+    "feature_correlation": 0.9971873816326451,
+    "max_probe_residual_ms": 5.549611122590115,
+    "probes": [
+      {
+        "source_time": 22.5,
+        "lag_seconds": 3.472108843537415,
+        "correlation": 0.9610742926597595
+      },
+      {
+        "source_time": 47.55865889212828,
+        "lag_seconds": 3.5020408163265304,
+        "correlation": 0.961085319519043
+      },
+      {
+        "source_time": 72.61731778425656,
+        "lag_seconds": 3.5219954648526075,
+        "correlation": 0.9556574821472168
+      },
+      {
+        "source_time": 97.67597667638483,
+        "lag_seconds": 3.5519274376417234,
+        "correlation": 0.9725663065910339
+      },
+      {
+        "source_time": 122.73463556851311,
+        "lag_seconds": 3.5818594104308388,
+        "correlation": 0.952251136302948
+      },
+      {
+        "source_time": 147.7932944606414,
+        "lag_seconds": 3.601814058956916,
+        "correlation": 0.9690685272216797
+      },
+      {
+        "source_time": 172.85195335276967,
+        "lag_seconds": 3.6317460317460317,
+        "correlation": 0.9524857997894287
+      },
+      {
+        "source_time": 197.91061224489795,
+        "lag_seconds": 3.651700680272109,
+        "correlation": 0.9451790452003479
+      }
+    ],
+    "holdouts": [
+      {
+        "source_time": 30.0,
+        "residual_ms": 0.17372020230435062,
+        "correlation": 0.998407342575408
+      },
+      {
+        "source_time": 71.35265306122449,
+        "residual_ms": 0.1582170778467053,
+        "correlation": 0.9981109192140097
+      },
+      {
+        "source_time": 112.70530612244897,
+        "residual_ms": -0.363145232673266,
+        "correlation": 0.9979059201259384
+      },
+      {
+        "source_time": 154.05795918367346,
+        "residual_ms": 0.07638058999303418,
+        "correlation": 0.9984857321235825
+      },
+      {
+        "source_time": 195.41061224489795,
+        "residual_ms": -0.06180020269223833,
+        "correlation": 0.9965459613848011
+      }
+    ],
+    "pack_duration": 228.55555555555554,
+    "source_duration": 225.41061224489795,
+    "limitation": "Envelope alignment supports this recording; it is not a listening validation."
+  }
+}
