@@ -1,0 +1,81 @@
+{
+  "song": "03.1 Raul Seixas - Metamorfose Ambulante",
+  "unit_tests_passed": 64,
+  "audio_byte_identical": true,
+  "guitar_all_levels_and_runtime_sustains_verified": true,
+  "guitar_cutoff_ticks": 2,
+  "no_new_folder_on_resume": true,
+  "instruments": [
+    "bass",
+    "drums",
+    "keys"
+  ],
+  "validation": {
+    "guitar_gems_holds_types_all_difficulties_preserved": true,
+    "added_notes_roundtrip": "passed",
+    "timestamp_error_limit_seconds": 0.003,
+    "maximum_observed_timestamp_error_seconds": 0.00280897838709393,
+    "parts": {
+      "bass": {
+        "notes": 578,
+        "lane_counts": {
+          "3": 155,
+          "4": 143,
+          "2": 180,
+          "0": 37,
+          "1": 63
+        }
+      },
+      "drums": {
+        "notes": 593,
+        "lane_counts": {
+          "1": 254,
+          "3": 33,
+          "0": 213,
+          "2": 91,
+          "4": 2
+        }
+      },
+      "keys": {
+        "notes": 513,
+        "lane_counts": {
+          "48": 29,
+          "52": 65,
+          "50": 54,
+          "55": 112,
+          "59": 78,
+          "53": 87,
+          "57": 88
+        }
+      }
+    },
+    "in_game_test": "not run",
+    "listening_validation": "not run",
+    "keyboard": {
+      "notes": 513,
+      "attacks": 367,
+      "maximum_timestamp_rounding_error_seconds": 0.002326175311793577,
+      "maximum_simultaneous_keys": 2,
+      "dyad_attacks": 146,
+      "maximum_internal_attack_gap_seconds": 1.7454800000001285,
+      "first_attack_seconds": 0.8823529999999999
+    }
+  },
+  "source_warnings": {
+    "bass": [
+      "Audible regions lack attacks; could be holds or missed notes.",
+      "More than 25% of independent onsets have no Expert attack; inspect listed times.",
+      "Some attacks/holds have weak audio support; inspect listed times."
+    ],
+    "drums": [
+      "Ambiguous drum body/rattle or cymbal decay packets were found; review their timestamps.",
+      "More than 25% of independent onsets have no Expert attack; inspect listed times."
+    ],
+    "keys": [
+      "811 keyboard events have weak spectral explanation; review separation bleed and false notes."
+    ]
+  },
+  "unity_test": "not run",
+  "listening_validation": "not run",
+  "musical_correctness_certified": false
+}

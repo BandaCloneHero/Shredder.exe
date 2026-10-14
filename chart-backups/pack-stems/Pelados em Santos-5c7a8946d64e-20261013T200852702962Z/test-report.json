@@ -1,0 +1,54 @@
+{
+  "song": "Mamonas Assassinas - Pelados em Santos",
+  "unit_tests_passed": 65,
+  "validation": {
+    "guitar_gems_holds_types_all_difficulties_preserved": true,
+    "added_notes_roundtrip": "passed",
+    "timestamp_error_limit_seconds": 0.003,
+    "maximum_observed_timestamp_error_seconds": 0.0026380312847322784,
+    "parts": {
+      "bass": {
+        "notes": 651,
+        "lane_counts": {
+          "2": 113,
+          "1": 300,
+          "4": 61,
+          "0": 120,
+          "3": 57
+        }
+      },
+      "drums": {
+        "notes": 717,
+        "lane_counts": {
+          "1": 209,
+          "0": 275,
+          "2": 144,
+          "3": 37,
+          "4": 52
+        }
+      }
+    },
+    "in_game_test": "not run",
+    "listening_validation": "not run"
+  },
+  "audio_album_and_lyrics_byte_identical": true,
+  "guitar_all_levels_and_runtime_sustains_preserved": true,
+  "bass_midi_track_unchanged_during_drum_revision": true,
+  "keyboard_absent": true,
+  "resume": {
+    "status": "skipped_complete",
+    "folder": "/workspaces/Shredder.exe/musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.E Mamonas Assassinas - Pelados Em Santos"
+  },
+  "source_musical_warnings": {
+    "bass": [
+      "Audible regions lack attacks; could be holds or missed notes.",
+      "More than 25% of independent onsets have no Expert attack; inspect listed times."
+    ],
+    "drums": [
+      "Ambiguous drum body/rattle or cymbal decay packets were found; review their timestamps."
+    ]
+  },
+  "unity_test": "not run",
+  "listening_validation": "not run",
+  "musical_correctness_certified": false
+}

@@ -16,25 +16,44 @@ preserva as quatro dificuldades originais da guitarra. Não copia notas de
 Exagerado para outras músicas: reutiliza as regras de seleção e jogabilidade.
 Usa o mapa de tempo da guitarra para evitar desvio do acompanhamento.
 
+Se a música ficar sem teclado por decisão do usuário, acrescente `--no-keys`.
+Nesse modo só os WAVs de baixo e bateria são exigidos; nenhum teclado ou
+acompanhamento artificial é criado. A música fica com três instrumentos.
+
 ```bash
 .venv-charts/bin/python scripts/enrich_pack_stems.py \
   --pack-song "musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.6 Jota Quest - O Sol" \
   --stems "musicas/audios separados/O Sol - Jota Quest"
 ```
 
-Repetir o comando reutiliza o chart validado, desde que fontes, código e arquivos
-continuem iguais. Fontes diferentes exigem uma revisão explícita; o comando
+Repetir o comando reutiliza o chart validado, desde que fontes e arquivos
+continuem iguais. Atualizações do código não regeneram automaticamente músicas
+concluídas; a revisão deve ser explícita. Fontes diferentes exigem revisão; o comando
 recusa sobrescrever. O original completo, relatórios e cache ficam fora da
 biblioteca em `chart-backups/pack-stems`. Nenhum MIDI musical intermediário é
 usado. O comando verifica a origem temporal dos stems em várias regiões do
 áudio; recusa gravações com atraso, duração diferente ou evidência insuficiente.
 As validações automáticas não substituem ouvir a música e testar no Unity.
+Teclados baixos no mix podem ser verificados por correlação de bandas em 15
+janelas distribuídas: exige cinco amostras confiáveis cobrindo pelo menos metade
+da música, sem atraso acima de 3 ms. O limiar de correlação não é reduzido.
 
 ### Revisão da bateria de O Sol
 
 A bateria agora analisa a energia nova de cada ataque, descontando a ressonância
 do som anterior. Picos tonais distribuídos entre vários bins são avaliados como
 corpos de tons, e ruído novo de caixa e pratos é avaliado separadamente.
+Quando um corpo forte mascara um prato mais baixo, a recuperação exige um
+ataque de prato já detectado e uma subida nova na banda aguda do WAV. Crash
+exige também cauda longa e ataque destacado; ressonância não vira nova batida.
+Corpos ambíguos de caixa podem ser recuperados quando coincidem com a frequência
+de caixa aprendida nesta gravação e há ruído novo.
+Caixas graves que se parecem com tons só são reclassificadas com ruído novo e
+predominância forte de exemplos de caixa na mesma família de frequência. Uma
+família igualmente representada por tons continua ambígua e mantém a identidade.
+O bumbo usa espaçamento próprio
+de 260 a 340 ms; sequências excessivamente rápidas são reduzidas sem mudar os
+tempos das batidas restantes.
 A simplificação prioriza a força do ataque no WAV; a caixa não recebe mais uma
 preferência fixa sobre os demais pads. O espaçamento usa a periodicidade do WAV
 da bateria, que pode ser o dobro do BPM escrito na guitarra. Não muda o tempo

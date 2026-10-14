@@ -12,7 +12,8 @@ from chart_library import atomic_json,digest
 from create_mp3_test_chart import make_track
 from drum_transient_refinement import refine_packets,moderate_drums,PROFILE
 from enrich_pack_chart import absolute_events,validate_export
-from enrich_pack_stems import policy_signature,verify_alignment
+from enrich_pack_stems import policy_signature,verify_alignment,cached_analysis,STATE
+from chart_playability import refine_groove
 from generate_charts_batch import decode_stereo,mono
 from revise_chart_difficulty import extract,tempo_map
 from revise_pack_keyboard import track_chunks
@@ -39,6 +40,11 @@ def revise(song):
         work=Path(tmp);audio=mono(decode_stereo(wav,work/'drums.f32'))
         mix=mono(decode_stereo(song/'song.ogg',work/'mix.f32'))
         alignment=verify_alignment(mix,{'drums':audio})
+        # Recover the full raw detector pool, never thin an earlier revision again.
+        raw,_=cached_analysis(audio,'drums',report['source_hashes']['drums'],STATE/'.analysis-cache')
+        raw=refine_groove(raw,audio,analysis['beat_analysis'],standard_pulses=False)
+        for event in raw['events']:
+            event['pitches']=[{0:0,1:2,2:1,3:3,4:4}[p] for p in event['pitches']]
         refined,packet_report=refine_packets(raw,audio)
         beat=analysis['beat_analysis'];bpm=beat.get('wav_periodicity',beat)['bpm']
         notes,drum_report=moderate_drums(refined['events'],bpm)

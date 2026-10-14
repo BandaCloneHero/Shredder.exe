@@ -1,0 +1,304 @@
+{
+  "scope": "three pending uploaded songs only",
+  "status": "completed",
+  "initial_attempts": [
+    {
+      "source": "Charlie Brown Jr - Senhor Do Tempo",
+      "status": "generated",
+      "folder": "/workspaces/Shredder.exe/musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.5 Charlie Brown Jr - Senhor Do Tempo",
+      "backup": "/workspaces/Shredder.exe/chart-backups/pack-stems/01.5 Charlie Brown Jr - Senhor Do Tempo-original-20261013T214502837774Z",
+      "validation": {
+        "guitar_gems_holds_types_all_difficulties_preserved": true,
+        "added_notes_roundtrip": "passed",
+        "timestamp_error_limit_seconds": 0.003,
+        "maximum_observed_timestamp_error_seconds": 0.0016396048044153844,
+        "parts": {
+          "bass": {
+            "notes": 621,
+            "lane_counts": {
+              "1": 150,
+              "4": 176,
+              "0": 100,
+              "2": 193,
+              "3": 2
+            }
+          },
+          "drums": {
+            "notes": 377,
+            "lane_counts": {
+              "1": 117,
+              "0": 149,
+              "2": 109,
+              "4": 2
+            }
+          },
+          "keys": {
+            "notes": 371,
+            "lane_counts": {
+              "48": 46,
+              "52": 28,
+              "50": 56,
+              "55": 65,
+              "57": 37,
+              "53": 117,
+              "59": 22
+            }
+          }
+        },
+        "in_game_test": "not run",
+        "listening_validation": "not run",
+        "keyboard": {
+          "notes": 371,
+          "attacks": 313,
+          "maximum_timestamp_rounding_error_seconds": 0.0016396048044295952,
+          "maximum_simultaneous_keys": 2,
+          "dyad_attacks": 58,
+          "maximum_internal_attack_gap_seconds": 4.105909218750185,
+          "first_attack_seconds": 4.948456
+        }
+      },
+      "drums": {
+        "before_notes": 563,
+        "after_notes": 377,
+        "minimum_group_gap_seconds": 0.22,
+        "max_hand_strokes": 1,
+        "max_hits_including_kick": 2,
+        "artificial_hits": 0,
+        "minimum_kick_gap_seconds": 0.34,
+        "rapid_kicks_removed": 127,
+        "lane_counts": {
+          "1": 117,
+          "2": 109,
+          "4": 2,
+          "0": 149
+        },
+        "selection": "fresh transient strength; no snare priority"
+      },
+      "keyboard": {
+        "profile": "balanced-chords-accompaniment-v2",
+        "detected_source_notes": 397,
+        "retained_detected_notes": 281,
+        "synthetic_accompaniment_notes": 90,
+        "synthetic_accompaniment_attacks": 74,
+        "final_notes": 371,
+        "final_attacks": 313,
+        "maximum_simultaneous_keys": 2,
+        "maximum_chord_span_white_keys": 3,
+        "maximum_root_step_white_keys": 3,
+        "chord_size_counts": {
+          "1": 255,
+          "2": 58
+        },
+        "remapped_for_playability": 54,
+        "minimum_attack_gap_seconds": 0.23447845804989242,
+        "maximum_internal_attack_gap_seconds": 4.105657596371884,
+        "first_attack_seconds": 4.948456,
+        "synthetic_gameplay_adaptation": true,
+        "limitation": "Added keyboard notes are rhythmic gameplay accompaniment, not WAV transcription."
+      }
+    },
+    {
+      "source": "Gabriel O Pensador - Palavras Repetidas",
+      "status": "generated",
+      "folder": "/workspaces/Shredder.exe/musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.8 Gabriel O Pensador - Palavras Repetidas",
+      "backup": "/workspaces/Shredder.exe/chart-backups/pack-stems/01.8 Gabriel O Pensador - Palavras Repetidas-original-20261013T214540361310Z",
+      "validation": {
+        "guitar_gems_holds_types_all_difficulties_preserved": true,
+        "added_notes_roundtrip": "passed",
+        "timestamp_error_limit_seconds": 0.003,
+        "maximum_observed_timestamp_error_seconds": 0.0015655342969580488,
+        "parts": {
+          "bass": {
+            "notes": 479,
+            "lane_counts": {
+              "0": 101,
+              "1": 88,
+              "2": 111,
+              "3": 106,
+              "4": 73
+            }
+          },
+          "drums": {
+            "notes": 548,
+            "lane_counts": {
+              "0": 264,
+              "2": 43,
+              "1": 99,
+              "3": 140,
+              "4": 2
+            }
+          }
+        },
+        "in_game_test": "not run",
+        "listening_validation": "not run",
+        "keyboard_absent": true
+      },
+      "drums": {
+        "before_notes": 862,
+        "after_notes": 548,
+        "minimum_group_gap_seconds": 0.22,
+        "max_hand_strokes": 1,
+        "max_hits_including_kick": 2,
+        "artificial_hits": 0,
+        "minimum_kick_gap_seconds": 0.34,
+        "rapid_kicks_removed": 67,
+        "lane_counts": {
+          "2": 43,
+          "1": 99,
+          "3": 140,
+          "4": 2,
+          "0": 264
+        },
+        "selection": "fresh transient strength; no snare priority"
+      },
+      "keyboard": {
+        "status": "omitted_by_request",
+        "final_notes": 0
+      }
+    },
+    {
+      "source": "Tim Maia - Ela Partiu",
+      "status": "error",
+      "error": "keys: insufficient consistent alignment evidence: [{'start_seconds': 20.0, 'lag_seconds': 0.0, 'correlation': 0.11209003519593733, 'credible': False}, {'start_seconds': 67.3575963718821, 'lag_seconds': 4.5351473922902495e-05, 'correlation': 0.08793596565072949, 'credible': False}, {'start_seconds': 114.71519274376418, 'lag_seconds': 0.0, 'correlation': 0.09353718660749347, 'credible': False}, {'start_seconds': 162.07278911564626, 'lag_seconds': 0.0, 'correlation': 0.11260662560323184, 'credible': False}, {'start_seconds': 209.43038548752835, 'lag_seconds': -4.5351473922902495e-05, 'correlation': 0.09190975618836483, 'credible': False}]"
+    }
+  ],
+  "results": [
+    {
+      "song": "Tim Maia - Ela Partiu",
+      "status": "completed",
+      "folder": "musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.1 Tim Maia - Ela Partiu",
+      "instruments": [
+        "guitar",
+        "bass",
+        "drums",
+        "keys"
+      ],
+      "note_counts": {
+        "bass": 530,
+        "drums": 514,
+        "keys": 595
+      },
+      "test_report": "/workspaces/Shredder.exe/chart-backups/pack-stems/Tim Maia - Ela Partiu-e0b7eb94a232-20261013T214948461046Z/test-report.json",
+      "maximum_midi_timestamp_error_ms": 2.0152633934742425,
+      "musical_correctness_certified": false
+    },
+    {
+      "song": "Gabriel O Pensador - Palavras Repetidas",
+      "status": "completed",
+      "folder": "musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.8 Gabriel O Pensador - Palavras Repetidas",
+      "instruments": [
+        "guitar",
+        "bass",
+        "drums"
+      ],
+      "note_counts": {
+        "bass": 479,
+        "drums": 548
+      },
+      "test_report": "/workspaces/Shredder.exe/chart-backups/pack-stems/Gabriel O Pensador - Palavras Repetidas-1b14f773e5f1-20261013T214540361310Z/test-report.json",
+      "maximum_midi_timestamp_error_ms": 1.5655342969580488,
+      "musical_correctness_certified": false
+    },
+    {
+      "song": "Charlie Brown Jr - Senhor Do Tempo",
+      "status": "completed",
+      "folder": "musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.5 Charlie Brown Jr - Senhor Do Tempo",
+      "instruments": [
+        "guitar",
+        "bass",
+        "drums",
+        "keys"
+      ],
+      "note_counts": {
+        "bass": 621,
+        "drums": 377,
+        "keys": 371
+      },
+      "test_report": "/workspaces/Shredder.exe/chart-backups/pack-stems/Charlie Brown Jr - Senhor Do Tempo-8774d1f3bc2a-20261013T214502837774Z/test-report.json",
+      "maximum_midi_timestamp_error_ms": 1.6396048044153844,
+      "musical_correctness_certified": false
+    }
+  ],
+  "unit_tests_passed": 66,
+  "existing_files_check": {
+    "unchanged": 24,
+    "changed": [],
+    "missing": [
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Help on the Way-Slipknot/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Help on the Way-Slipknot/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Till the Morning Comes/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Till the Morning Comes/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Phish - The Landlady/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Phish - The Landlady/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Unbroken Chain/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Unbroken Chain/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - St. Stephen/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - St. Stephen/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Friend Of The Devil/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Friend Of The Devil/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Bertha/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Bertha/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Shakedown Street/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Shakedown Street/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Phish - Eliza/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Phish - Eliza/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Born Cross-Eyed/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Born Cross-Eyed/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/All That Remains - Six/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/All That Remains - Six/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Wuthering Heights/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Wuthering Heights/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Attila - About That Life/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Attila - About That Life/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Alestorm - You Are a Pirate/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Alestorm - You Are a Pirate/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Amon Amarth - Asator/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Amon Amarth - Asator/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Angels Cry/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Angels Cry/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Spread Your Fire/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Spread Your Fire/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Between the Buried and Me - Telos/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Between the Buried and Me - Telos/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/All That Remains - The Air That I Breathe/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/All That Remains - The Air That I Breathe/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Waiting Silence/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Waiting Silence/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Between the Buried and Me - Sun of Nothing/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Between the Buried and Me - Sun of Nothing/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/A Perfect Circle - The Hollow/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/A Perfect Circle - The Hollow/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Age Of Consent/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Age Of Consent/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Plain White T's - Hey There Delilah/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Plain White T's - Hey There Delilah/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Yellowcard - Lights and Sounds/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Yellowcard - Lights and Sounds/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - I'll Be Your Mirror/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - I'll Be Your Mirror/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Ceremony/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Ceremony/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - The Perfect Kiss/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - The Perfect Kiss/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Sweet Jane/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Sweet Jane/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Jamiroquai - Virtual Insanity/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Jamiroquai - Virtual Insanity/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Regret/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Regret/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Sunday Morning/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Sunday Morning/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Rock & Roll/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Rock & Roll/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Yellowcard - Breathing/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Yellowcard - Breathing/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Venus in Furs/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Venus in Furs/song.ini",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Femme Fatale/notes.mid",
+      "musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Femme Fatale/song.ini"
+    ],
+    "missing_pack_confirmation": "requested from user; cause not established"
+  },
+  "in_game_test": "not run",
+  "listening_validation": "not run"
+}

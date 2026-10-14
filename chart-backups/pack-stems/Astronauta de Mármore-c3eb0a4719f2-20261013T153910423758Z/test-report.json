@@ -1,0 +1,49 @@
+{
+  "song": "Nenhum de Nós - O Astronauta de Mármore",
+  "unit_tests_passed": 60,
+  "keyboard_absent": true,
+  "audio_byte_identical": true,
+  "original_guitar_verified": true,
+  "validation": {
+    "guitar_gems_holds_types_all_difficulties_preserved": true,
+    "added_notes_roundtrip": "passed",
+    "timestamp_error_limit_seconds": 0.003,
+    "maximum_observed_timestamp_error_seconds": 0.0014928628473001027,
+    "parts": {
+      "bass": {
+        "notes": 407,
+        "lane_counts": {
+          "1": 122,
+          "4": 25,
+          "0": 84,
+          "2": 144,
+          "3": 32
+        }
+      },
+      "drums": {
+        "notes": 519,
+        "lane_counts": {
+          "1": 174,
+          "0": 213,
+          "3": 1,
+          "2": 128,
+          "4": 3
+        }
+      }
+    },
+    "in_game_test": "not run",
+    "listening_validation": "not run"
+  },
+  "warnings": {
+    "bass": [
+      "Audible regions lack attacks; could be holds or missed notes.",
+      "More than 25% of independent onsets have no Expert attack; inspect listed times."
+    ],
+    "drums": [
+      "Ambiguous drum body/rattle or cymbal decay packets were found; review their timestamps.",
+      "More than 25% of independent onsets have no Expert attack; inspect listed times."
+    ]
+  },
+  "in_game_test": "not run",
+  "listening_validation": "not run"
+}

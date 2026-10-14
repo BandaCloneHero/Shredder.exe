@@ -1,0 +1,55 @@
+{
+  "song": "08.1 Detonautas - Quando o Sol se for",
+  "unit_tests_passed": 64,
+  "audio_byte_identical": true,
+  "guitar_all_levels_and_runtime_sustains_verified": true,
+  "guitar_cutoff_ticks": 64,
+  "no_new_folder_on_resume": true,
+  "instruments": [
+    "bass",
+    "drums"
+  ],
+  "validation": {
+    "guitar_gems_holds_types_all_difficulties_preserved": true,
+    "added_notes_roundtrip": "passed",
+    "timestamp_error_limit_seconds": 0.003,
+    "maximum_observed_timestamp_error_seconds": 0.0009649873512955764,
+    "parts": {
+      "bass": {
+        "notes": 477,
+        "lane_counts": {
+          "1": 265,
+          "2": 7,
+          "4": 23,
+          "0": 160,
+          "3": 22
+        }
+      },
+      "drums": {
+        "notes": 682,
+        "lane_counts": {
+          "2": 192,
+          "0": 315,
+          "3": 64,
+          "1": 109,
+          "4": 2
+        }
+      }
+    },
+    "in_game_test": "not run",
+    "listening_validation": "not run"
+  },
+  "source_warnings": {
+    "bass": [
+      "Audible regions lack attacks; could be holds or missed notes.",
+      "More than 25% of independent onsets have no Expert attack; inspect listed times."
+    ],
+    "drums": [
+      "Ambiguous drum body/rattle or cymbal decay packets were found; review their timestamps.",
+      "More than 25% of independent onsets have no Expert attack; inspect listed times."
+    ]
+  },
+  "unity_test": "not run",
+  "listening_validation": "not run",
+  "musical_correctness_certified": false
+}

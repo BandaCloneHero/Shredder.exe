@@ -1,4 +1,4 @@
-"""Add three WAV instruments to a Lisarb guitar pack using approved Exagerado rules."""
+"""Add WAV instruments to a guitar pack using approved Exagerado rules."""
 import argparse
 import configparser
 import datetime
@@ -27,15 +27,48 @@ PROFILE='exagerado-approved-v1'
 STATE=Path('chart-backups/pack-stems').resolve()
 
 
-def identify_stems(folder):
+def identify_stems(folder,include_keys=True):
     aliases={'bass':('bass','baixo'), 'drums':('drums','drum','bateria'),
              'keys':('keys','piano','keyboard','teclado')}
     files=list(folder.glob('*.wav'));result={}
     for instrument,names in aliases.items():
+        if instrument=='keys' and not include_keys:continue
         candidates=[p for p in files if p.stem.lower().split('_')[0] in names or p.stem.lower() in names]
         if len(candidates)!=1:raise ValueError(f'{instrument}: expected one WAV, found {len(candidates)}')
         result[instrument]=candidates[0].resolve()
     return result
+
+
+def band_alignment(mix,stem,duration):
+    """Quiet keys: independent waveform lag checks in isolated spectral bands.
+
+    Keep the same correlation threshold. More distributed windows compensate
+    for intermittent keys; reject every candidate band with a credible delay.
+    """
+    attempted=[]
+    starts=np.linspace(3,max(3,duration-11),15)
+    for lo,hi in ((120,350),(350,1000),(1000,2500)):
+        sos=signal.butter(4,(lo,hi),btype='bandpass',fs=SAMPLE_RATE,output='sos')
+        target=signal.sosfiltfilt(sos,mix);source=signal.sosfiltfilt(sos,stem)
+        probes=[]
+        for start in starts:
+            a=target[round(start*SAMPLE_RATE):round((start+8)*SAMPLE_RATE)]
+            b=source[round(start*SAMPLE_RATE):round((start+8)*SAMPLE_RATE)]
+            norm=np.linalg.norm(a)*np.linalg.norm(b)
+            if norm<1e-10:continue
+            corr=signal.correlate(a,b,method='fft');lags=signal.correlation_lags(len(a),len(b))
+            allowed=np.flatnonzero(abs(lags)<SAMPLE_RATE);index=int(allowed[np.argmax(corr[allowed])])
+            score=float(corr[index]/norm)
+            probes.append({'start_seconds':float(start),'lag_seconds':float(lags[index])/SAMPLE_RATE,
+                           'correlation':score,'credible':score>=.12})
+        credible=[p for p in probes if p['credible']]
+        span=max((p['start_seconds'] for p in credible),default=0)-min((p['start_seconds'] for p in credible),default=0)
+        accepted=len(credible)>=5 and span>=duration*.50 and all(abs(p['lag_seconds'])<=.003 for p in credible)
+        attempted.append({'band_hz':[lo,hi],'probes':probes,'accepted':accepted})
+        if accepted:return {'method':'quiet stem: band-limited waveform correlations',
+                            'band_hz':[lo,hi],'probes':probes,'credible_probes':len(credible),
+                            'independent_probe_span_seconds':span,'attempted_bands':attempted}
+    raise ValueError('Quiet keyboard lacks consistent, distributed frequency-band alignment evidence')
 
 
 def verify_alignment(mix,stems):
@@ -63,8 +96,14 @@ def verify_alignment(mix,stems):
             probes.append({'start_seconds':float(start),'lag_seconds':lag/SAMPLE_RATE,'correlation':score,
                            'credible':score>=.12})
         credible=[p for p in probes if p['credible']]
-        if len(credible)<3 or any(abs(p['lag_seconds'])>.003 for p in credible):
+        if any(abs(p['lag_seconds'])>.003 for p in credible):
             raise ValueError(f'{instrument}: insufficient consistent alignment evidence: {probes}')
+        if len(credible)<3:
+            if instrument!='keys':raise ValueError(f'{instrument}: insufficient consistent alignment evidence: {probes}')
+            evidence=band_alignment(mix,y,duration)
+            reports[instrument]={**evidence,'duration_seconds':len(y)/SAMPLE_RATE,
+                                 'full_mix_probes':probes,'low_evidence_probes':len(evidence['probes'])-evidence['credible_probes']}
+            continue
         reports[instrument]={'probes':probes,'duration_seconds':len(y)/SAMPLE_RATE,
                              'credible_probes':len(credible),'low_evidence_probes':len(probes)-len(credible)}
     return {'scale':1.,'offset_seconds':0.,'pack_duration':duration,'method':'independent stem waveform lag probes',
@@ -89,14 +128,25 @@ def policy_signature():
     return hashlib.sha256(''.join(digest(Path(__file__).parent/n) for n in names).encode()).hexdigest()
 
 
-def enrich(pack,source):
-    stems=identify_stems(source);hashes={i:digest(p) for i,p in stems.items()}
+def preserve_guitar_sustains(ini,section,guitar,ppq):
+    """MIDI's default PPQ/3 cutoff must not erase short authored chart holds."""
+    holds=[length for level in ('Easy','Medium','Hard','Expert')
+           for tick,length,lane in guitar[level]['gems'] if length>0]
+    if holds and min(holds)<ppq//3 and ini.getint(section,'sustain_cutoff_threshold',fallback=-1)<0:
+        if min(holds)<2:raise ValueError('One-tick authored holds require explicit MIDI conversion handling')
+        # Converted zero-length gems use one tick; these must remain taps.
+        ini.set(section,'sustain_cutoff_threshold','2')
+
+
+def enrich(pack,source,include_keys=True):
+    stems=identify_stems(source,include_keys);hashes={i:digest(p) for i,p in stems.items()}
     marker=pack/'enrichment-report.json';signature=policy_signature()
     if marker.exists():
         old=json.loads(marker.read_text())
-        if (old.get('profile')==PROFILE and old.get('policy_signature')==signature and old['source_hashes']==hashes
+        if (old.get('profile')==PROFILE and old['source_hashes']==hashes
             and old['notes_sha256']==digest(pack/'notes.mid') and old['pack_audio_sha256']==digest(pack/'song.ogg')):
-            return {'status':'skipped_complete','folder':str(pack)}
+            return {'status':'skipped_complete','folder':str(pack),
+                    'implementation_changed':old.get('policy_signature')!=signature}
         raise ValueError('Existing enrichment differs; keep it and prepare an explicit backed-up revision')
     if (pack/'notes.mid').exists():raise ValueError('Existing MIDI must be reviewed before enrichment')
     midi,guitar=convert_guitar(pack/'notes.chart');seconds,ticks,_=tempo_map(midi)
@@ -116,7 +166,7 @@ def enrich(pack,source):
         beat_ticks=np.arange(0,ticks(timing['pack_duration']),midi.ticks_per_beat)
         beat={**raw_beat,'bpm':bpm,'beats':[seconds(int(t)) for t in beat_ticks],
               'grid_source':'original pack tempo map','wav_periodicity':raw_beat}
-        for instrument in ('bass','drums','keys'):
+        for instrument in stems:
             print('Analyzing '+instrument,flush=True)
             analyses[instrument],cache_hits[instrument]=cached_analysis(audio[instrument],instrument,hashes[instrument],cache)
         analyses['drums']=refine_groove(analyses['drums'],audio['drums'],beat,standard_pulses=False)
@@ -131,11 +181,14 @@ def enrich(pack,source):
         # Pack guitar frets supply rhythm only; bass WAV supplies actual harmony.
         analyses['guitar']={'events':[{'start':seconds(t),'end':seconds(t+max(1,length)),
             'pitches':[],'confidence':1.,'strength':1.} for t,length,lane in guitar['Expert']['gems']]}
-        added['keys'],keyboard=balanced_keyboard(added['keys'],analyses,beat,mix)
+        keyboard={'status':'omitted_by_request','final_notes':0}
+        if include_keys:added['keys'],keyboard=balanced_keyboard(added['keys'],analyses,beat,mix)
         checks={i:musical_checks(analyses[i],charts[i],audio[i],fidelity_difficulty='Medium')
-                for i in ('bass','drums','keys')}
+                for i in stems}
+        if any(check['structural_errors'] for check in checks.values()):
+            raise ValueError('Detection pool contains structural errors; inspect before publishing')
         # These diagnostics describe the detection pool, not just MIDI validity.
-        for i in ('bass','drums','keys'):atomic_json(analysis_dir/(i+'.analysis.json'),analyses[i])
+        for i in stems:atomic_json(analysis_dir/(i+'.analysis.json'),analyses[i])
         atomic_json(analysis_dir/'analysis.json',{'sources':{i:str(p) for i,p in stems.items()},'source_hashes':hashes,
             'source_midi_used':False,'profile':PROFILE,'beat_analysis':beat,'alignment':timing,
             'charts':charts,'final_charts':added,'musical_checks_detection_pool':checks,'cache_hits':cache_hits})
@@ -153,11 +206,18 @@ def enrich(pack,source):
         staging=work/'song';shutil.copytree(pack,staging);midi.save(staging/'notes.mid')
         validation=validate_export(staging/'notes.mid',guitar,added,timing)
         rendered=mido.MidiFile(staging/'notes.mid')
-        validation['keyboard']=verify_keyboard(next(t for t in rendered.tracks if t.name=='PART REAL_KEYS_M'),seconds,added['keys'])
+        if include_keys:
+            validation['keyboard']=verify_keyboard(next(t for t in rendered.tracks if t.name=='PART REAL_KEYS_M'),seconds,added['keys'])
+        else:
+            assert not any('KEYS' in t.name for t in rendered.tracks),'Unexpected keyboard part'
+            validation['keyboard_absent']=True
         ini=configparser.ConfigParser(interpolation=None,strict=False);ini.read(pack/'song.ini',encoding='utf-8-sig')
         section=next(s for s in ini.sections() if s.lower()=='song')
-        for k,v in {'diff_bass':'3','diff_drums':'1','diff_keys_real':'3','five_lane_drums':'False','pro_drums':'False'}.items():ini.set(section,k,v)
-        ini.set(section,'charter',ini.get(section,'charter',fallback='')+' + Shredder (baixo, bateria e teclado)')
+        preserve_guitar_sustains(ini,section,guitar,midi.ticks_per_beat)
+        for k,v in {'diff_bass':'3','diff_drums':'1','diff_keys_real':'3' if include_keys else '-1','five_lane_drums':'False','pro_drums':'False'}.items():ini.set(section,k,v)
+        if not include_keys:ini.set(section,'diff_keys','-1')
+        instruments_label='baixo, bateria e teclado' if include_keys else 'baixo e bateria'
+        ini.set(section,'charter',ini.get(section,'charter',fallback='')+' + Shredder ('+instruments_label+')')
         with (staging/'song.ini').open('w',encoding='utf-8') as f:ini.write(f)
         for p in pack.iterdir():
             if p.is_file() and p.name not in ('song.ini','notes.chart'):assert digest(p)==digest(staging/p.name)
@@ -166,6 +226,7 @@ def enrich(pack,source):
         report={'profile':PROFILE,'reference_song':'Cazuza - Exagerado (Lisarb; approved balanced keyboard v2)',
             'policy_signature':signature,'source_hashes':hashes,'wav_analysis':str(analysis_dir),
             'source_midi_used_for_added_notes':False,'pack_audio_sha256':digest(pack/'song.ogg'),
+            'instruments_added':list(stems),'keyboard_requested':include_keys,
             'notes_sha256':digest(staging/'notes.mid'),'original_chart_sha256':digest(pack/'notes.chart'),
             'audio_unchanged':True,'guitar':guitar,'alignment':timing,'drum_easing':drum_report,
             'keyboard_revision':keyboard,'validation':validation,'previous_backup':str(archive),
@@ -184,5 +245,6 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--pack-song',required=True,type=Path)
     parser.add_argument('--stems',required=True,type=Path)
+    parser.add_argument('--no-keys',action='store_true',help='Generate bass and drums only; do not add keyboard accompaniment')
     args=parser.parse_args()
-    print(json.dumps(enrich(args.pack_song.resolve(),args.stems.resolve()),ensure_ascii=False))
+    print(json.dumps(enrich(args.pack_song.resolve(),args.stems.resolve(),include_keys=not args.no_keys),ensure_ascii=False))
