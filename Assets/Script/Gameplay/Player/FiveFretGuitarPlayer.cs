@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -510,6 +510,16 @@ namespace YARG.Gameplay.Player
             _fretArray.SetBreMode(false);
         }
 
+        public override int JudgmentLaneCount => LANE_COUNT + 1;
+        protected override bool ExpandJudgmentChord => true;
+        protected override int GetJudgmentLane(GuitarNote note) =>
+            note.Fret >= (int)FiveFretGuitarFret.Green && note.Fret <= (int)FiveFretGuitarFret.Orange
+                ? GetLanePosition((FiveFretGuitarFret)note.Fret) : LANE_COUNT;
+        public override float GetJudgmentLaneX(int lane) =>
+            lane == LANE_COUNT ? 0.5f : (lane + 0.5f) / LANE_COUNT;
+        public override float GetJudgmentLaneWidth(int lane) =>
+            lane == LANE_COUNT ? 1 : 1f / LANE_COUNT;
+
         protected override int GetLedColorIndex(GuitarNote note)
         {
             return Math.Clamp(note.Fret - 1, 0, 4);
@@ -589,6 +599,7 @@ namespace YARG.Gameplay.Player
                 }
 
                 anyHeld = true;
+                ShowInvalidJudgment(GetLanePosition(GetFretIndex(action)));
 
                 if (currentNote == null || (currentNote.NoteMask & (1 << (int) action)) == 0)
                 {
@@ -599,6 +610,7 @@ namespace YARG.Gameplay.Player
             // Play open-strum miss if no frets are held
             if (!anyHeld)
             {
+                ShowInvalidJudgment(LANE_COUNT);
                 _fretArray.PlayOpenMissAnimation();
             }
         }

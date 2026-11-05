@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace YARG.Gameplay.Judgments
 {
-    /// <summary>One fixed pool per highway. No coroutines, event subscriptions or per-hit GameObjects.</summary>
+    /// <summary>Independent preallocated slots per lane. No coroutines, event subscriptions or per-hit GameObjects.</summary>
     public sealed class RhythmJudgmentDisplay : MonoBehaviour
     {
         [Header("Tipografia e cores")]
@@ -19,11 +19,14 @@ namespace YARG.Gameplay.Judgments
         [SerializeField, Range(0, 1)] private float _outlineWidth = 0.22f;
 
         [Header("Posição na highway")]
-        [SerializeField, Range(0, 1)] private float _highwayDepth = 0.12f;
+        [SerializeField, Range(0, 1)] private float _highwayDepth = 0;
         [SerializeField] private Vector2 _positionOffset = new(0, 28);
         [SerializeField, Min(0.1f)] private float _scale = 1;
         [SerializeField] private Vector2 _overlapDistance = new(0, 58);
-        [SerializeField, Range(1, 8)] private int _maximumFeedbacks = 3;
+        [Tooltip("Máximo de feedbacks por pista. Uma pista nunca reutiliza o feedback de outra.")]
+        [SerializeField, Range(1, 8)] private int _maximumFeedbacks = 1;
+        [SerializeField] private bool _fitToLane = true;
+        [SerializeField, Range(0.2f, 1)] private float _laneWidthFraction = 0.95f;
 
         [Header("Animação (segundos)")]
         [SerializeField, Min(0)] private float _growth = 0.08f;
@@ -39,6 +42,9 @@ namespace YARG.Gameplay.Judgments
         [SerializeField] private bool _enableImpact = true;
         [SerializeField, Range(0, 1)] private float _impactIntensity = 0.3f;
 
+        [Header("Diagnóstico no Editor")]
+        [SerializeField, Min(0)] private int _previewLane;
+
         public float HighwayDepth => _highwayDepth;
         public bool IsInitialized => _entries != null;
 
@@ -49,12 +55,11 @@ namespace YARG.Gameplay.Judgments
             public TextMeshProUGUI Main, Timing, Glow;
             public JudgmentImpactGraphic Impact;
             public Material GlowMaterial;
-            public object Note;
+            public int Slot;
             public RhythmJudgment Judgment;
             public double? Milliseconds;
             public float Age;
-            public long Order;
-            public bool Active;
+
         }
 
         private Entry[] _entries;
@@ -62,9 +67,16 @@ namespace YARG.Gameplay.Judgments
         private GameManager _game;
         private Canvas _canvas;
         private RectTransform _hudParent;
-        private long _order;
+        private JudgmentLanePool _slots;
+        private Vector2[] _lanePositions;
+        private float[] _laneWidths;
+        private bool[] _laneVisible;
+        private float _contentWidth = 260;
 
-        public void Initialize(Transform hudParent, GameManager game)
+        public int LaneCount => _slots?.LaneCount ?? 0;
+        public bool HasActiveLane(int lane) => _slots != null && _slots.HasActiveLane(lane);
+
+        public void Initialize(Transform hudParent, GameManager game, int laneCount)
         {
             _game = game;
             if (_root != null) return;
@@ -82,12 +94,15 @@ namespace YARG.Gameplay.Judgments
                 return;
             }
             _root = CreateRect("Julgamentos", hudParent, new Vector2(460, 100));
-            _root.localScale = Vector3.one * _scale;
-            _entries = new Entry[Mathf.Clamp(_maximumFeedbacks, 1, 8)];
+            _slots = new JudgmentLanePool(Mathf.Max(1, laneCount), Mathf.Clamp(_maximumFeedbacks, 1, 8));
+            _lanePositions = new Vector2[_slots.LaneCount];
+            _laneWidths = new float[_slots.LaneCount];
+            _laneVisible = new bool[_slots.LaneCount];
+            _entries = new Entry[_slots.Count];
             if (_font == null) _font = TMP_Settings.defaultFontAsset;
             for (int i = 0; i < _entries.Length; i++)
             {
-                var entry = new Entry();
+                var entry = new Entry { Slot = i };
                 entry.Rect = CreateRect("Feedback " + i, _root, new Vector2(460, 100));
                 entry.Group = entry.Rect.gameObject.AddComponent<CanvasGroup>();
                 entry.Group.blocksRaycasts = entry.Group.interactable = false;
@@ -115,6 +130,8 @@ namespace YARG.Gameplay.Judgments
                 entry.Glow.SetText("PERFEITO! ÓTIMO!");
                 entry.Glow.ForceMeshUpdate();
                 entry.Main.ForceMeshUpdate();
+                if (i == 0)
+                    _contentWidth = Mathf.Max(1, entry.Main.GetPreferredValues("PERFEITO!").x);
                 entry.Timing.ForceMeshUpdate();
                 entry.Rect.gameObject.SetActive(false);
                 _entries[i] = entry;
@@ -150,50 +167,36 @@ namespace YARG.Gameplay.Judgments
             return text;
         }
 
-        public void SetScreenPosition(Vector3 screenPosition)
+        public void SetLaneScreenPosition(int lane, Vector2? screenPosition, Vector2? screenRightEdge)
         {
-            if (_root == null) return;
-            // Convert screen pixels into the HUD's local coordinates, including CanvasScaler.
+            if (_slots == null || (uint)lane >= (uint)LaneCount) return;
             var camera = _canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _canvas.worldCamera;
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_hudParent, screenPosition,
-                camera, out var localPosition)) return;
-            _root.anchoredPosition = localPosition + _positionOffset;
-            _root.localScale = Vector3.one * _scale;
+            _laneVisible[lane] = screenPosition.HasValue &&
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(_hudParent, screenPosition.Value,
+                    camera, out _lanePositions[lane]);
+            if (_laneVisible[lane] && screenRightEdge.HasValue &&
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(_hudParent, screenRightEdge.Value,
+                    camera, out var edge))
+                _laneWidths[lane] = Mathf.Abs(edge.x - _lanePositions[lane].x) * 2;
+            PositionEntries();
         }
 
-        public void Show(object logicalNote, RhythmJudgment judgment, double? milliseconds)
+        public void Show(object logicalNote, int lane, RhythmJudgment judgment, double? milliseconds)
         {
-            if (_entries == null || !isActiveAndEnabled || (_game != null && _game.Paused)) return;
-            Entry selected = null;
-            // Chord parts update a single visual, immediately, using the worst actual result.
-            if (logicalNote != null)
+            if (_slots == null || !isActiveAndEnabled || (_game != null && _game.Paused) ||
+                (uint)lane >= (uint)LaneCount) return;
+            int slot = _slots.Acquire(lane, logicalNote, out bool existing);
+            var selected = _entries[slot];
+            // Only duplicate callbacks for this exact note in this exact lane are combined.
+            if (existing)
             {
-                foreach (var entry in _entries)
-                {
-                    if (!entry.Active || !ReferenceEquals(entry.Note, logicalNote)) continue;
-                    selected = entry;
-                    if ((int)judgment < (int)entry.Judgment ||
-                        (judgment == entry.Judgment && Math.Abs(milliseconds ?? 0) <= Math.Abs(entry.Milliseconds ?? 0))) return;
-                    break;
-                }
+                if ((int)judgment < (int)selected.Judgment ||
+                    (judgment == selected.Judgment && Math.Abs(milliseconds ?? 0) <= Math.Abs(selected.Milliseconds ?? 0))) return;
+                _slots.Refresh(slot);
             }
-            if (selected == null)
-            {
-                foreach (var entry in _entries)
-                    if (!entry.Active) { selected = entry; break; }
-            }
-            if (selected == null)
-            {
-                selected = _entries[0];
-                foreach (var entry in _entries)
-                    if (entry.Order < selected.Order) selected = entry;
-            }
-            selected.Note = logicalNote;
             selected.Judgment = judgment;
             selected.Milliseconds = milliseconds;
             selected.Age = 0;
-            selected.Order = ++_order;
-            selected.Active = true;
             var color = judgment switch
             {
                 RhythmJudgment.Perfect => _perfect,
@@ -234,12 +237,11 @@ namespace YARG.Gameplay.Judgments
             if (_entries == null || (_game != null && _game.Paused)) return;
             foreach (var entry in _entries)
             {
-                if (!entry.Active) continue;
+                if (!_slots.IsActive(entry.Slot)) continue;
                 entry.Age += Time.unscaledDeltaTime;
                 if (entry.Age >= _growth + _settle + _hold + _fade)
                 {
-                    entry.Active = false;
-                    entry.Note = null;
+                    _slots.Release(entry.Slot);
                     entry.Rect.gameObject.SetActive(false);
                 }
                 else Animate(entry);
@@ -257,7 +259,7 @@ namespace YARG.Gameplay.Judgments
             if (age < _growth) scale = Mathf.Lerp(_initialScale, peak, Ease(age / Mathf.Max(0.001f, _growth)));
             else if (age < _growth + _settle) scale = Mathf.Lerp(peak, 1, Ease((age - _growth) / Mathf.Max(0.001f, _settle)));
             else scale = 1;
-            entry.Rect.localScale = Vector3.one * scale;
+            entry.Rect.localScale = Vector3.one * scale * LaneScale(entry.Slot);
             entry.Group.alpha = 1 - Mathf.SmoothStep(0, 1, Mathf.Clamp01((age - _growth - _settle - _hold) / Mathf.Max(0.001f, _fade)));
             float flash = Mathf.Clamp01(age / Mathf.Max(0.001f, _growth + _settle));
             entry.Impact.rectTransform.localScale = Vector3.one * Mathf.Lerp(0.6f, 1.3f, Ease(flash));
@@ -266,15 +268,24 @@ namespace YARG.Gameplay.Judgments
             entry.Impact.color = color;
         }
 
+        private float LaneScale(int slot)
+        {
+            int lane = _slots.LaneOf(slot);
+            if (!_fitToLane || _laneWidths[lane] <= 0) return _scale;
+            return Mathf.Min(_scale, _laneWidths[lane] * _laneWidthFraction /
+                (_contentWidth * Mathf.Max(1, _peakScale)));
+        }
+
         private void PositionEntries()
         {
+            if (_entries == null) return;
             foreach (var entry in _entries)
             {
-                if (!entry.Active) continue;
-                int rank = 0;
-                foreach (var other in _entries)
-                    if (other.Active && other.Order > entry.Order) rank++;
-                entry.Rect.anchoredPosition = _overlapDistance * rank;
+                if (!_slots.IsActive(entry.Slot)) continue;
+                int lane = _slots.LaneOf(entry.Slot);
+                entry.Rect.anchoredPosition = _lanePositions[lane] + _positionOffset +
+                    _overlapDistance * (_slots.Rank(entry.Slot) * LaneScale(entry.Slot));
+                if (!_laneVisible[lane]) entry.Group.alpha = 0;
             }
         }
 
@@ -285,11 +296,9 @@ namespace YARG.Gameplay.Judgments
             if (_entries == null) return;
             foreach (var entry in _entries)
             {
-                entry.Active = false;
-                entry.Note = null;
                 entry.Rect.gameObject.SetActive(false);
             }
-            _order = 0;
+            _slots.Clear();
         }
 
 
@@ -317,7 +326,9 @@ namespace YARG.Gameplay.Judgments
                 Debug.LogWarning("[Julgamento] Retome a música para testar a animação.", this);
                 return;
             }
-            Show(null, judgment, milliseconds);
+            // Use the same selected lane slot as gameplay; never a separate central preview.
+            int lane = Mathf.Clamp(_previewLane, 0, LaneCount - 1);
+            Show(null, lane, judgment, milliseconds);
         }
 
         private void OnDisable() => Clear();

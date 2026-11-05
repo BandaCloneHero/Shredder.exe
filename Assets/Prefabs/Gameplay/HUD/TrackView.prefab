@@ -3533,11 +3533,13 @@ MonoBehaviour:
   _good: {r: 0.25, g: 0.85, b: 1, a: 1}
   _miss: {r: 1, g: 0.18, b: 0.22, a: 1}
   _outlineWidth: 0.22
-  _highwayDepth: 0.12
+  _highwayDepth: 0
   _positionOffset: {x: 0, y: 28}
   _scale: 1
   _overlapDistance: {x: 0, y: 58}
-  _maximumFeedbacks: 3
+  _maximumFeedbacks: 1
+  _fitToLane: 1
+  _laneWidthFraction: 0.95
   _growth: 0.08
   _settle: 0.1
   _hold: 0.2

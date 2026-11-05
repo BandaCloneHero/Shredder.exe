@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -297,6 +297,11 @@ namespace YARG.Gameplay.Player
             }
         }
 
+        public override int JudgmentLaneCount => TOTAL_KEY_COUNT;
+        protected override int GetJudgmentLane(ProKeysNote note) => note.Key;
+        public override float GetJudgmentLaneX(int lane) => GetNoteX(lane) / TRACK_WIDTH + 0.5f;
+        public override float GetJudgmentLaneWidth(int lane) => 1f / WHITE_KEY_VISIBLE_COUNT;
+
         protected override int GetLedColorIndex(ProKeysNote note)
         {
             return Math.Clamp(note.Key, 0, 4);
@@ -326,6 +331,7 @@ namespace YARG.Gameplay.Player
         private void OnOverhit(int key)
         {
             base.OnOverhit();
+            ShowInvalidJudgment(key);
 
             _keysArray.PlayMissAnimation(key);
         }

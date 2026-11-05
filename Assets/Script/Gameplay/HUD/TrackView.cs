@@ -3,6 +3,7 @@ using UnityEngine;
 using YARG.Core.Engine;
 using YARG.Gameplay.Visuals;
 using YARG.Gameplay.Judgments;
+using YARG.Gameplay.Player;
 using YARG.Helpers.Extensions;
 using YARG.Player;
 
@@ -35,11 +36,15 @@ namespace YARG.Gameplay.HUD
 
         [SerializeField] private RhythmJudgmentDisplay _judgments;
 
-        public void InitializeJudgments(GameManager game)
+        private TrackPlayer _judgmentPlayer;
+        private bool _judgmentPositionsReady;
+
+        public void InitializeJudgments(GameManager game, TrackPlayer player)
         {
             if (_judgments == null)
                 _judgments = GetComponent<RhythmJudgmentDisplay>() ?? gameObject.AddComponent<RhythmJudgmentDisplay>();
-            _judgments.Initialize(_scaleContainer, game);
+            _judgmentPlayer = player;
+            _judgments.Initialize(_scaleContainer, game, player.JudgmentLaneCount);
         }
 
         public bool JudgmentHudReady => _judgments != null && _judgments.IsInitialized;
@@ -47,14 +52,15 @@ namespace YARG.Gameplay.HUD
         private bool _reportedHitJudgment;
         private bool _reportedMissJudgment;
 
-        public void ShowJudgment(object logicalNote, RhythmJudgment judgment, double? milliseconds)
+        public void ShowJudgment(object logicalNote, int lane, RhythmJudgment judgment, double? milliseconds)
         {
-            ReportFirstJudgment(judgment, milliseconds);
-            _judgments?.Show(logicalNote, judgment, milliseconds);
+            ReportFirstJudgment(lane, judgment, milliseconds);
+            UpdateJudgmentLanePosition(lane);
+            _judgments?.Show(logicalNote, lane, judgment, milliseconds);
         }
 
         [System.Diagnostics.Conditional("UNITY_EDITOR")]
-        private void ReportFirstJudgment(RhythmJudgment judgment, double? milliseconds)
+        private void ReportFirstJudgment(int lane, RhythmJudgment judgment, double? milliseconds)
         {
             if (judgment == RhythmJudgment.Miss)
             {
@@ -66,7 +72,7 @@ namespace YARG.Gameplay.HUD
                 if (_reportedHitJudgment) return;
                 _reportedHitJudgment = true;
             }
-            Debug.Log($"[Julgamento] Evento real recebido: {judgment}; desvio={milliseconds} ms; " +
+            Debug.Log($"[Julgamento] Evento real recebido: {judgment}; pista={lane}; desvio={milliseconds} ms; " +
                 $"HUD inicializado={JudgmentHudReady}; ativo={_judgments != null && _judgments.isActiveAndEnabled}.", this);
         }
 
@@ -174,9 +180,24 @@ namespace YARG.Gameplay.HUD
                 _highwayRenderer.GetTrackPositionScreenSpace(highwayIndex, 0.5f, CENTER_ELEMENT_DEPTH);
             var centerPosition = trackPositionScreenSpace ?? _hiddenPosition;
             _centerElementContainer.transform.position = centerPosition;
-            if (_judgments != null)
-                _judgments.SetScreenPosition(_highwayRenderer.GetTrackPositionScreenSpace(
-                    highwayIndex, 0.5f, _judgments.HighwayDepth) ?? _hiddenPosition);
+            if (_judgments != null && _judgmentPlayer != null)
+            {
+                for (int lane = 0; lane < _judgments.LaneCount; lane++)
+                    if (!_judgmentPositionsReady || _judgments.HasActiveLane(lane))
+                        UpdateJudgmentLanePosition(lane);
+                _judgmentPositionsReady = true;
+            }
+        }
+
+        private void UpdateJudgmentLanePosition(int lane)
+        {
+            if (_judgments == null || _judgmentPlayer == null || !JudgmentHudReady) return;
+            float x = _judgmentPlayer.GetJudgmentLaneX(lane);
+            float halfWidth = _judgmentPlayer.GetJudgmentLaneWidth(lane) * 0.5f;
+            int index = _judgmentPlayer.HighwayIndex;
+            _judgments.SetLaneScreenPosition(lane,
+                _highwayRenderer.GetTrackPositionScreenSpace(index, x, _judgments.HighwayDepth),
+                _highwayRenderer.GetTrackPositionScreenSpace(index, x + halfWidth, _judgments.HighwayDepth));
         }
 
         // Keep the edit box sized to the track bounds and vertically centered to the track.

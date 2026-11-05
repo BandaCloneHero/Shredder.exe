@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -455,6 +455,19 @@ namespace YARG.Gameplay.Player
             LaneElement.DefineLaneScale(Player.Profile.CurrentInstrument, LaneCount, true);
         }
 
+        public override int JudgmentLaneCount => LaneCount + 1; // Includes the full-width kick/wildcard area.
+        private int JudgmentLaneForPad(int pad)
+        {
+            int position = GetHighwayOrderingInfo(pad).Position;
+            return position >= 0 && position < LaneCount ? position : LaneCount;
+        }
+        protected override int GetJudgmentLane(DrumNote note) => JudgmentLaneForPad(
+            note.IsDoubleKick && NumberOfDedicatedKickLanes == 2 ? DOUBLE_KICK_FRET_INDEX : note.Pad);
+        public override float GetJudgmentLaneX(int lane) =>
+            lane == LaneCount ? 0.5f : (lane + 0.5f) / Mathf.Max(1, LaneCount);
+        public override float GetJudgmentLaneWidth(int lane) =>
+            lane == LaneCount ? 1 : 1f / Mathf.Max(1, LaneCount);
+
         protected override int GetLedColorIndex(DrumNote note)
         {
             if (_fiveLaneMode)
@@ -573,6 +586,8 @@ namespace YARG.Gameplay.Player
                 playerReaction?.QueueDrumStrike(action, Engine.CurrentTime);
             }
             var fret = DrumsActionToPad(action);
+            if (wasOverhitInLane && !wasNoteHit)
+                ShowInvalidJudgment(JudgmentLaneForPad(fret));
 
             // This is done here for drums rather than in-engine because engine doesn't know about pad ordering
             if (Engine.IsCodaActive)

@@ -35,7 +35,42 @@ settings.GoodMs = -1;
 settings.Validate();
 Check(settings.GreatMs == 80 && settings.GoodMs == 80, "Ordered Inspector thresholds");
 
+// Exercise the actual production pool: a new column must never steal another's text.
+var columns = new JudgmentLanePool(5, 1);
+var chord = new object();
+var indices = new int[5];
+for (int lane = 0; lane < 5; lane++)
+{
+    indices[lane] = columns.Acquire(lane, chord, out bool existing);
+    Check(!existing && columns.LaneOf(indices[lane]) == lane, "Chord must have one slot per column");
+}
+Check(indices.Distinct().Count() == 5, "Five simultaneous columns must own different entries");
+int repeated = columns.Acquire(2, chord, out bool duplicate);
+Check(duplicate && repeated == indices[2], "Duplicate callback only reuses its own column/note");
+int rapid = columns.Acquire(2, new object(), out duplicate);
+Check(!duplicate && rapid == indices[2], "Rapid events replace only the same column");
+Check(columns.IsActive(indices[0]) && columns.IsActive(indices[4]), "Other columns remain active");
+for (int lane = 0; lane < 5; lane++) Check(columns.Rank(indices[lane]) == 0, "No cross-column stacking");
+var overlap = new JudgmentLanePool(5, 2);
+int older = overlap.Acquire(0, new object(), out _);
+int newer = overlap.Acquire(0, new object(), out _);
+int otherLane = overlap.Acquire(4, new object(), out _);
+Check(overlap.Rank(older) == 1 && overlap.Rank(newer) == 0, "Stack only within a column");
+Check(overlap.Rank(otherLane) == 0, "An unrelated column has its own stack");
+Check(overlap.Acquire(0, new object(), out _) == older && overlap.IsActive(otherLane), "Recycle oldest in same column");
+overlap.Release(newer);
+Check(!overlap.IsActive(newer) && overlap.Acquire(0, new object(), out _) == newer, "Reuse released slot");
+// Preallocated source objects: measuring slot operations, not object construction or assertions.
+var events = new[] { new object(), new object(), new object() };
+for (int i = 0; i < 100; i++) columns.Acquire(i % 5, events[i % 3], out _);
+long before = GC.GetAllocatedBytesForCurrentThread();
+for (int i = 0; i < 10_000; i++) columns.Acquire(i % 5, events[i % 3], out _);
+Check(GC.GetAllocatedBytesForCurrentThread() == before, "No managed allocations for rapid lane slot reuse");
+columns.Clear();
+for (int lane = 0; lane < 5; lane++) Check(!columns.HasActiveLane(lane), "Reset clears every lane");
+
 string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../"));
+LaneMappingChecks.Run(root, Check);
 string[] sources = Directory.GetFiles(Path.Combine(root, "Assets/Script/Gameplay/Judgments"), "*.cs")
     .Concat(new[] { "HUD/TrackView.cs", "Player/TrackPlayer.cs", "Player/FiveFretGuitarPlayer.cs",
         "Player/FiveLaneKeysPlayer.cs", "Player/ProKeysPlayer.cs", "Player/DrumsPlayer.cs" }

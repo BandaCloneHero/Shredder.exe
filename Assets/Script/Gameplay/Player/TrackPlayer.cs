@@ -125,6 +125,11 @@ namespace YARG.Gameplay.Player
             protected set => laneCount = value;
         }
 
+        // Every highway instrument must supply its real visual layout; no central fallback.
+        public abstract int JudgmentLaneCount { get; }
+        public abstract float GetJudgmentLaneX(int lane);
+        public virtual float GetJudgmentLaneWidth(int lane) => 1f / Mathf.Max(1, LaneCount);
+
         private float _spawnAheadDelay;
 
         protected float SongLength;
@@ -144,7 +149,6 @@ namespace YARG.Gameplay.Player
             JudgmentSettings ??= new RhythmJudgmentSettings();
             JudgmentSettings.Validate();
             TrackView = trackView;
-            TrackView.InitializeJudgments(GameManager);
             playerReaction = TrackView.GetComponentInChildren<ReactionController>(true);
             playerReaction?.ConfigureForInstrument(player.Profile.CurrentInstrument);
             playerReaction?.ConfigureCommandPoses(player.Profile.GameMode,
@@ -304,8 +308,6 @@ namespace YARG.Gameplay.Player
                 Engine.SetSpeed(GameManager.SongSpeed);
             }
 
-            ReportJudgmentConfiguration();
-
             GameManager.BeatEventHandler.Audio.Subscribe(MetronomeTick, BeatEventType.Measure);
             GameManager.BeatEventHandler.Audio.Subscribe(MetronomeTock, BeatEventType.QuarterNote);
             GameManager.BeatEventHandler.Visual.Subscribe(SunburstEffects.PulseSunburst, BeatEventType.StrongBeat);
@@ -315,6 +317,9 @@ namespace YARG.Gameplay.Player
             ResetNoteCounters();
 
             FinishInitialization();
+            // Layouts (custom drums, open lane, Pro Keys transforms) now exist before pooling/projecting.
+            TrackView.InitializeJudgments(GameManager, this);
+            ReportJudgmentConfiguration();
 
             SongLength = (float) chart.GetEndTime();
 
@@ -1069,6 +1074,26 @@ namespace YARG.Gameplay.Player
         protected abstract void InitializeSpawnedLane(LaneElement lane, int laneIndex);
         protected virtual void ModifyLaneFromNote(LaneElement lane, TNote note) {}
         protected virtual int GetLedColorIndex(TNote note) => -1;
+        protected abstract int GetJudgmentLane(TNote note);
+        protected virtual bool ExpandJudgmentChord => false;
+
+        private void ShowNoteJudgment(TNote note, RhythmJudgment judgment, double? milliseconds)
+        {
+            if (ExpandJudgmentChord)
+            {
+                // Guitar judges a complete chord once. Fan out VISUALS only, with that actual result.
+                foreach (var part in note.AllNotes)
+                    TrackView.ShowJudgment(part, GetJudgmentLane(part), judgment, milliseconds);
+            }
+            else
+                TrackView.ShowJudgment(note, GetJudgmentLane(note), judgment, milliseconds);
+        }
+
+        protected void ShowInvalidJudgment(int lane)
+        {
+            if (!GameManager.IsSeekingReplay)
+                TrackView.ShowJudgment(null, lane, RhythmJudgment.Miss, null);
+        }
 
         protected abstract void RescaleLanesForBRE();
 
@@ -1082,7 +1107,7 @@ namespace YARG.Gameplay.Player
                 var judgment = JudgmentSettings.Classify(milliseconds);
                 // Lane/autohit forgiveness remains authoritative: an accepted hit is never a visual miss.
                 if (judgment == RhythmJudgment.Miss) judgment = RhythmJudgment.Good;
-                TrackView.ShowJudgment(note.ParentOrSelf, judgment, milliseconds);
+                ShowNoteJudgment(note, judgment, milliseconds);
             }
 
             if (Player.Profile.IsBot && !GameManager.IsSeekingReplay && !GameManager.Paused)
@@ -1133,7 +1158,7 @@ namespace YARG.Gameplay.Player
         {
             RaiseBossNoteMissed();
             if (!GameManager.IsSeekingReplay && !note.IsBigRockEnding)
-                TrackView.ShowJudgment(note.ParentOrSelf, RhythmJudgment.Miss, null);
+                ShowNoteJudgment(note, RhythmJudgment.Miss, null);
 
             if (IsFc)
             {
@@ -1165,9 +1190,6 @@ namespace YARG.Gameplay.Player
 
         protected virtual void OnOverhit()
         {
-            if (!GameManager.IsSeekingReplay)
-                TrackView.ShowJudgment(null, RhythmJudgment.Miss, null);
-
             if (!GameManager.IsSeekingReplay)
                 playerReaction?.TriggerMissReaction();
 

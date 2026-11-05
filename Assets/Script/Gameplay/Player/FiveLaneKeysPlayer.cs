@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -532,6 +532,16 @@ public override bool ShouldUpdateInputsOnResume => true;
             _fretArray.SetBreMode(false);
         }
 
+        public override int JudgmentLaneCount => LaneCount + 1; // Plus the full-width open/wildcard area.
+        private int JudgmentLaneForFret(int fret) =>
+            _highwayOrdering.TryGetValue(fret, out int position) ? position : LaneCount;
+        protected override int GetJudgmentLane(GuitarNote note) =>
+            IsNormalNote(note) ? JudgmentLaneForFret(note.Fret) : LaneCount;
+        public override float GetJudgmentLaneX(int lane) =>
+            lane == LaneCount ? 0.5f : (lane + 0.5f) / Mathf.Max(1, LaneCount);
+        public override float GetJudgmentLaneWidth(int lane) =>
+            lane == LaneCount ? 1 : 1f / Mathf.Max(1, LaneCount);
+
         protected override int GetLedColorIndex(GuitarNote note)
         {
             return Math.Clamp(note.Fret - 1, 0, 4);
@@ -566,6 +576,7 @@ public override bool ShouldUpdateInputsOnResume => true;
         private void OnOverhit(int key)
         {
             OnOverhit();
+            ShowInvalidJudgment(JudgmentLaneForFret((int)GetFretIndex((FiveLaneKeysAction)key)));
 
             if (key is (int) FiveLaneKeysAction.OpenNote && !UsingOpenLane)
             {

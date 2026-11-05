@@ -1,5 +1,9 @@
 # Julgamento de notas em Shredder.exe
 
+**Posicionamento atualizado:** os feedbacks agora são independentes por coluna. Consulte
+[julgamentos por pista](julgamentos-por-pista.md) para o comportamento atual, cobertura dos
+instrumentos, arquivos alterados e testes desta alteração visual.
+
 ## Estado da entrega
 
 Código integrado à gameplay e ao prefab compartilhado do HUD. Não é uma cena de demonstração.
@@ -28,9 +32,9 @@ visuais são construídos e pré-alocados automaticamente na inicialização de 
   configuração original no Unity, não é possível atribuir todo o sintoma relatado a uma
   única causa. A nova configuração substitui essas janelas por ±100 ms para partidas novas.
   Também foi corrigida a exclusão do limite antecipado exato no motor de teclas.
-- Guitarra usa um callback por acorde; teclas e bateria podem emitir callbacks por parte.
-  O HUD agrupa pelo objeto `ParentOrSelf`, mantém o pior resultado real e reutiliza a mesma
-  animação para as partes desse acorde, sem esperar sua conclusão para mostrar o primeiro acerto.
+- Guitarra usa um callback por acorde; o HUD distribui esse resultado pelas colunas de
+  `note.AllNotes`. Teclas e bateria mantêm os callbacks por parte, com seus desvios reais.
+  Cada coluna tem um pool independente; duplicatas só são combinadas dentro da própria coluna.
 - Teclas podem resolver acordes após uma tolerância de stagger. O motor agora fornece
   `NoteHitTime`, preservando o timestamp de cada tecla antes de limpá-lo. Os demais motores
   fornecem o instante em que o motor efetivamente confirmou o acerto, inclusive suas regras
@@ -92,7 +96,7 @@ Em **RhythmJudgmentDisplay**, no prefab **TrackView**:
 - Fonte TMP, tamanho principal e tamanho dos milissegundos.
 - Cores individuais e espessura do contorno escuro.
 - Profundidade na highway, deslocamento, escala e distância entre feedbacks.
-- Limite de feedbacks simultâneos: 1–8, inicialmente 3. Com 1, cada evento substitui o anterior.
+- Limite de feedbacks simultâneos **por pista**: 1–8, inicialmente 1. Só recicla dentro da mesma pista.
 - Crescimento, estabilização, permanência e desaparecimento: 0,08 / 0,10 / 0,20 / 0,20 s.
 - Escala inicial e máxima; ÓTIMO! usa intensidade menor; BOM!/ERROU! usam intensidade discreta.
 - Ativação do brilho e do impacto, com intensidades independentes.
@@ -178,9 +182,9 @@ as outras variantes de instrumento, desempenho no Profiler, pausa, resoluções 
    `PerfectMs=100`/`GreatMs=100` para que todo acerto normal seja PERFEITO!;
    `PerfectMs=0`/`GreatMs=100` para que quase todo acerto não exato seja ÓTIMO!;
    `PerfectMs=0`/`GreatMs=0`/`GoodMs=100` para BOM!. Restaure 25/60/100 ao terminar.
-6. Toque um acorde: apenas um feedback lógico, atualizado pelo pior desvio das partes; sustente uma
+6. Toque um acorde: feedbacks nas colunas envolvidas, mantendo um único resultado lógico na guitarra; sustente uma
    nota longa: um feedback inicial, sem repetição durante a sustentação. Confira pontos/combo existentes.
-7. Toque uma sequência rápida: feedback imediato; no limite do pool, o mais antigo é reutilizado.
+7. Toque uma sequência rápida: feedback imediato; no limite do pool por pista, o mais antigo daquela pista é reutilizado.
    Teste capacidade 1 e 3, e desligue brilho/impacto no Inspector.
 8. Repita em 30, 60, 120 e 144 FPS; compare os ms com entradas controladas, sem esperar acertar
    offsets exatos manualmente. Confira também highway mais rápida/lenta e diferentes calibrações.
