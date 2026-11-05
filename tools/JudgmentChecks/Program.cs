@@ -16,16 +16,16 @@ foreach (double sign in new[] { -1d, 1d })
         Check(settings.Classify(sign * ms) == RhythmJudgment.Perfect, $"Perfect {sign * ms}");
     foreach (double ms in new[] { 25.001, 26, 42, 50, 60 })
         Check(settings.Classify(sign * ms) == RhythmJudgment.Great, $"Great {sign * ms}");
-    foreach (double ms in new[] { 60.001, 61, 87, 100 })
+    foreach (double ms in new[] { 60.001, 61, 87, 100, 120, 150, 170, 180 })
         Check(settings.Classify(sign * ms) == RhythmJudgment.Good, $"Good {sign * ms}");
-    Check(settings.Classify(sign * 100.001) == RhythmJudgment.Miss, "Outside window");
+    Check(settings.Classify(sign * 180.001) == RhythmJudgment.Miss, "Outside window");
 }
 var original = new EnginePreset.HitWindowPreset { IsDynamic = true, MinWindow = .04, MaxWindow = .14 };
 var configured = settings.Configure(original);
 var window = configured.Create();
-Check(!configured.IsDynamic && configured.MinWindow == .2 && configured.MaxWindow == .2, "Full window conversion");
+Check(!configured.IsDynamic && configured.MinWindow == .36 && configured.MaxWindow == .36, "Full window conversion");
 Check(original.IsDynamic && original.MinWindow == .04, "Must not mutate shared preset");
-Check(Math.Abs(window.GetFrontEnd(.2) + .1) < 1e-9 && Math.Abs(window.GetBackEnd(.2) - .1) < 1e-9, "Symmetric window");
+Check(Math.Abs(window.GetFrontEnd(.36) + .18) < 1e-9 && Math.Abs(window.GetBackEnd(.36) - .18) < 1e-9, "Symmetric window");
 settings.UseMillisecondWindow = false;
 var legacy = settings.Configure(original);
 Check(legacy.IsDynamic && legacy.MinWindow == .04 && legacy.MaxWindow == .14, "Legacy opt-out");
@@ -69,8 +69,22 @@ Check(GC.GetAllocatedBytesForCurrentThread() == before, "No managed allocations 
 columns.Clear();
 for (int lane = 0; lane < 5; lane++) Check(!columns.HasActiveLane(lane), "Reset clears every lane");
 
+// A slow creation frame previously consumed the entire visual lifetime before first draw.
+var animation = new JudgmentFeedbackClock();
+animation.Restart(10);
+animation.Advance(10, 2.5f);
+Check(animation.Age == 0, "New image must survive its creation frame even after a 2.5 second stall");
+animation.Advance(11, .016f);
+Check(Math.Abs(animation.Age - .016f) < 1e-6, "Animation advances on following frames");
+animation.Restart(12);
+animation.Advance(12, 1);
+Check(animation.Age == 0, "Rapid replacement restarts visibly in its own lane");
+animation.Advance(13, -.5f);
+Check(animation.Age == 0, "Visual age cannot go backwards");
+
 string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../"));
 LaneMappingChecks.Run(root, Check);
+EarlyHitChecks.Run(Check);
 string[] sources = Directory.GetFiles(Path.Combine(root, "Assets/Script/Gameplay/Judgments"), "*.cs")
     .Concat(new[] { "HUD/TrackView.cs", "Player/TrackPlayer.cs", "Player/FiveFretGuitarPlayer.cs",
         "Player/FiveLaneKeysPlayer.cs", "Player/ProKeysPlayer.cs", "Player/DrumsPlayer.cs" }
@@ -79,7 +93,7 @@ string[] sources = Directory.GetFiles(Path.Combine(root, "Assets/Script/Gameplay
 foreach (string prefab in new[] { "FiveFretGuitarVisual", "FiveLaneKeysVisual", "ProKeysVisual", "FourLaneDrumsVisual" })
 {
     string yaml = File.ReadAllText(Path.Combine(root, "Assets/Prefabs/Gameplay/Visual", prefab + ".prefab"));
-    Check(yaml.Contains("  JudgmentSettings:\n    UseMillisecondWindow: 1\n    PerfectMs: 25\n    GreatMs: 60\n    GoodMs: 100"),
+    Check(yaml.Contains("  JudgmentSettings:\n    UseMillisecondWindow: 1\n    PerfectMs: 25\n    GreatMs: 60\n    GoodMs: 180"),
         $"Serialized timing defaults missing from {prefab}");
 }
 string hud = File.ReadAllText(Path.Combine(root, "Assets/Prefabs/Gameplay/HUD/TrackView.prefab"));
@@ -94,7 +108,7 @@ Check(scene.Contains("_trackViewPrefab: {fileID: 504031665406120138, guid: " + h
 // Original artwork is imported under Assets and wired to the actual gameplay HUD.
 foreach (var pair in new[] { ("perfect", "perfeito"), ("great", "otimo"), ("good", "bom"), ("miss", "errou") })
 {
-    string asset = Path.Combine(root, "Assets/Art/UI/Julgamentos", pair.Item2 + ".png");
+    string asset = Path.Combine(root, "Assets/Resources/Julgamentos", pair.Item2 + ".png");
     byte[] imported = File.ReadAllBytes(asset);
     Check(imported.SequenceEqual(File.ReadAllBytes(Path.Combine(root, "Images/Julgamentos", pair.Item2 + ".png"))),
         $"Original artwork must be preserved: {pair.Item2}");
@@ -102,16 +116,20 @@ foreach (var pair in new[] { ("perfect", "perfeito"), ("great", "otimo"), ("good
         $"RGBA PNG: {pair.Item2}");
     string meta = File.ReadAllText(asset + ".meta");
     string guid = System.Text.RegularExpressions.Regex.Match(meta, @"guid: (\w+)").Groups[1].Value;
-    Check(meta.Contains("textureType: 8") && meta.Contains("spriteMode: 1") && meta.Contains("alphaIsTransparency: 1"),
-        $"Single transparent UI sprite import: {pair.Item2}");
-    Check(hud.Contains("_" + pair.Item1 + "Sprite: {fileID: 21300000, guid: " + guid),
-        $"Correct judgment sprite wired in gameplay prefab: {pair.Item2}");
+    Check(meta.Contains("textureType: 0") && meta.Contains("spriteMode: 0") && meta.Contains("alphaIsTransparency: 1") && meta.Contains("textureFormat: 4"),
+        $"Transparent Texture2D import: {pair.Item2}");
+    Check(hud.Contains("_" + pair.Item1 + "Texture: {fileID: 2800000, guid: " + guid),
+        $"Correct judgment texture wired in gameplay prefab: {pair.Item2}");
 }
 string presentation = File.ReadAllText(Path.Combine(root, "Assets/Script/Gameplay/Judgments/RhythmJudgmentDisplay.cs"));
 Check(!presentation.Contains("TextMeshProUGUI") && !presentation.Contains("SetText(") && !presentation.Contains("Timing"),
     "Judgment presentation must contain no generated label or timing text");
-Check(presentation.Contains("preserveAspect = true") && presentation.Contains("selected.Main.color = Color.white"),
+Check(presentation.Contains("FitArtwork(selected.Main, texture)") && presentation.Contains("selected.Main.color = Color.white"),
     "Preserve artwork aspect and original colors");
+Check(presentation.Contains("Resources.Load<Texture2D>(\"Julgamentos/perfeito\")") &&
+    presentation.Contains("Resources.Load<Texture2D>(\"Julgamentos/errou\")"), "Artwork has an import-independent resource lookup");
+Check(presentation.Contains("selected.Animation.Restart(Time.frameCount)") &&
+    presentation.Contains("entry.Animation.Advance(Time.frameCount, Time.unscaledDeltaTime)"), "Display uses the tested visual clock");
 Check(hud.Contains("_imageSize: {x: 220, y: 96}") && hud.Contains("_fitToLane: 0"),
     "Larger images must not be automatically shrunk to a single narrow column");
 

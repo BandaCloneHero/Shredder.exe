@@ -1,7 +1,7 @@
 # Julgamentos por pista
 
 **Apresentação atual:** os julgamentos usam as quatro imagens fornecidas em
-`Images/Julgamentos`, importadas como sprites em `Assets/Art/UI/Julgamentos` e ligadas ao
+`Images/Julgamentos`, importadas como texturas UI em `Assets/Resources/Julgamentos` e ligadas ao
 prefab `TrackView`. Não há texto gerado nem valor/sufixo de milissegundos na tela.
 Os PNG originais foram preservados byte a byte, incluindo suas cores e transparência.
 O cálculo interno da precisão continua inalterado.
@@ -84,8 +84,8 @@ No componente `RhythmJudgmentDisplay` do prefab `TrackView`:
 - `Preview Lane`: coluna usada pelos comandos de diagnóstico do componente durante a música.
 
 **Nenhuma configuração manual de referências é necessária.** O prefab já recebeu os valores
-novos, e `TrackPlayer`/`TrackView` fornecem automaticamente layout e câmera. As janelas
-25/60/100 ms e os campos de calibração não foram alterados nesta tarefa.
+novos, e `TrackPlayer`/`TrackView` fornecem automaticamente layout e câmera. As janelas atuais são 25/60/180 ms; a ampliação do limite BOM! foi autorizada posteriormente
+pelo usuário. Os campos de calibração continuam preservados.
 Não há nova revisão ou novo patch de Core exigido por esta alteração visual.
 
 ## Arquivos desta alteração
@@ -149,7 +149,7 @@ No Editor, testar:
 
 Nesta atualização foram modificados `RhythmJudgmentDisplay.cs`, `TrackView.prefab`,
 `tools/JudgmentChecks/Program.cs` e estes documentos. Foram adicionadas as quatro cópias PNG
-em `Assets/Art/UI/Julgamentos`, seus `.meta` de Sprite/UI e o `.meta` da pasta.
+em `Assets/Resources/Julgamentos`, seus `.meta` de textura RGBA/UI e o `.meta` da pasta.
 Não é necessário ligar referências manualmente na Unity.
 
 Cada classificação seleciona sua própria imagem sem tintura sobre a arte:
@@ -157,11 +157,11 @@ Cada classificação seleciona sua própria imagem sem tintura sobre a arte:
 PERFEITO! ciano, ÓTIMO! verde, BOM! amarelo e ERROU! vermelho.
 As fases de crescimento, estabilização e fade, o pool por coluna e a integração global
 nos instrumentos com highway continuam funcionando pelo mesmo caminho.
-A apresentação agora cria dois componentes `Image` por slot (principal e brilho), sem TMP,
+A apresentação agora cria dois componentes `RawImage` por slot (principal e brilho), sem TMP,
 sem materiais privados de fonte e sem o elemento que desenhava os milissegundos.
 
 Conferência adicional: identidade binária dos quatro PNG, canal RGBA, importação Sprite/UI,
-referências por GUID no prefab, preservação de proporção/cor e ausência de texto de precisão.
+referências de textura por GUID no prefab, preservação de proporção/cor e ausência de texto de precisão.
 A importação limita a textura a 1024 px, sem mipmaps, sem leitura de CPU e com alpha preservado;
 os arquivos fonte completos continuam intactos no repositório.
 
@@ -179,3 +179,51 @@ mais destaque. A execução visual da Unity ainda não foi possível neste ambie
 Resultado desta atualização de imagens: **119 verificações aprovadas** no harness,
 mais a conferência do alpha transparente dos quatro PNGs e `git diff --check` sem erros.
 Os jogadores, `RhythmJudgmentSettings` e o submódulo `YARG.Core` não receberam alterações.
+
+
+## Correção de imagens ausentes e janela mais tolerante
+
+Após o relato de desaparecimento sem erros no Console, a apresentação passou de Sprite/Image
+para **Texture2D/RawImage**. As imagens foram movidas, com seus GUIDs preservados, para
+`Assets/Resources/Julgamentos`. O prefab aponta para o asset principal da textura (fileID 2800000),
+e a inicialização também procura cada textura pelo caminho em Resources quando uma referência
+serializada estiver ausente. Isso elimina a dependência de IDs de subassets Sprite.
+São quatro texturas RGBA32, com alpha, limite de 1024 px, sem mipmaps nem leitura de CPU.
+As imagens grandes, suas cores originais, o pool por coluna e a ausência de ms na tela permanecem.
+
+Foi encontrada uma falha concreta no tempo de vida visual: `Update` somava o delta inteiro
+do frame, mesmo quando o julgamento tinha acabado de ser criado naquele frame. Um delta
+maior que a duração da animação podia encerrar o feedback antes de sua primeira renderização.
+`JudgmentFeedbackClock` agora ignora esse delta inicial. O feedback novo sempre sobrevive
+ao frame de criação; sua idade avança a partir dos frames seguintes. Este relógio é apenas
+visual e não participa do julgamento musical. A causa exata do desaparecimento no Editor
+do usuário não foi reproduzida aqui; não se afirma que era exclusivamente esse problema.
+
+A pedido do usuário, **BOM! foi ampliado de ±100 para ±180 ms**, simetricamente. PERFEITO!
+continua até ±25 ms e ÓTIMO! até ±60 ms. Um toque correto a -150 ms é registrado pelo motor
+como acerto e classificado BOM!, mesmo antes de a nota chegar à linha. Os novos valores estão
+no `RhythmJudgmentSettings` e nos quatro prefabs de jogador; nenhuma alteração adicional do
+submódulo Core é necessária. Replays preservam os parâmetros gravados e as regras de instrumento
+continuam valendo (traste/pad incorreto não vira acerto apenas por estar na janela).
+
+Arquivos desta correção:
+
+- `RhythmJudgmentDisplay.cs` e `TrackView.prefab`: texturas diretas e fallback de carregamento.
+- `JudgmentFeedbackClock.cs` e `.meta`: proteção contra sumiço no frame de criação.
+- `RhythmJudgmentSettings.cs`: limite inicial de BOM! em 180 ms.
+- Prefabs `FiveFretGuitarVisual`, `FiveLaneKeysVisual`, `ProKeysVisual`, `FourLaneDrumsVisual`: 25/60/180.
+- Quatro PNG e metadados realocados de Art/UI para Resources/Julgamentos, preservando a arte.
+- Harness: `EarlyHitChecks.cs`, `Program.cs` e projeto de testes.
+
+Verificado: **1254 verificações aprovadas**, incluindo 224 cenários dos motores reais com as
+configurações da aplicação: guitarra e baixo All Taps, teclas de cinco pistas, Pro Keys, bateria 4/5 e Pro Drums,
+em 30/60/120/144 FPS, com entradas de ±120, ±150, ±170 e ±180 ms. Cada cenário toca três notas
+(incluindo após a primeira), confere timestamps, classificação BOM! e combo. Também foi testada
+a criação de uma animação num frame de 2,5 segundos, que mantém idade zero nesse frame,
+a reutilização rápida do slot e os limites de classificação. As imagens continuam idênticas
+aos arquivos fornecidos pelo usuário.
+
+Não há confirmação de renderização no Editor neste ambiente. No próximo teste, reinicie a
+música (o motor captura a janela na inicialização) e confira as imagens, entradas antecipadas,
+acordes, pausa/retomada e uma sequência rápida. O Console deve registrar janela efetiva de
+-180 a +180 ms e HUD inicializado=True. Nenhuma ligação manual de referências é exigida.

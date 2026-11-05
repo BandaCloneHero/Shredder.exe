@@ -1,5 +1,7 @@
 # Julgamento de notas em Shredder.exe
 
+**Janela atual de aceitação:** BOM! ampliado para ±180 ms a pedido do usuário; PERFEITO! ±25 ms e ÓTIMO! ±60 ms.
+
 **Apresentação atual:** os quatro julgamentos usam as imagens do usuário, em tamanho maior e sem texto de milissegundos.
 
 **Posicionamento atualizado:** os feedbacks agora são independentes por coluna. Consulte

@@ -9,6 +9,7 @@
     <ProjectReference Include="../../YARG.Core/YARG.Core/YARG.Core.csproj" />
     <Compile Include="../../Assets/Script/Gameplay/Judgments/RhythmJudgmentSettings.cs" Link="RhythmJudgmentSettings.cs" />
     <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgmentLanePool.cs" Link="JudgmentLanePool.cs" />
+    <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgmentFeedbackClock.cs" Link="JudgmentFeedbackClock.cs" />
     <Reference Include="Microsoft.CodeAnalysis" HintPath="$(MSBuildSDKsPath)/../Roslyn/bincore/Microsoft.CodeAnalysis.dll" />
     <Reference Include="Microsoft.CodeAnalysis.CSharp" HintPath="$(MSBuildSDKsPath)/../Roslyn/bincore/Microsoft.CodeAnalysis.CSharp.dll" />
   </ItemGroup>

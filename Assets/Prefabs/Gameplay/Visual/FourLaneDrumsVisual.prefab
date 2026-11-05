@@ -308,7 +308,7 @@ MonoBehaviour:
     UseMillisecondWindow: 1
     PerfectMs: 25
     GreatMs: 60
-    GoodMs: 100
+    GoodMs: 180
   <TrackCamera>k__BackingField: {fileID: 5042276788195936079}
   CameraPositioner: {fileID: 2787801384921991726}
   HighwayCameraRendering: {fileID: 0}

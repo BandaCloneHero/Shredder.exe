@@ -13,7 +13,8 @@ namespace YARG.Gameplay.Judgments
         public bool UseMillisecondWindow = true;
         [Min(0)] public float PerfectMs = 25;
         [Min(0)] public float GreatMs = 60;
-        [Min(1)] public float GoodMs = 100;
+        [Tooltip("Janela de aceitação antecipada/atrasada. Acima de GreatMs, acertos válidos são BOM!.")]
+        [Min(1)] public float GoodMs = 180;
 
         public void Validate()
         {

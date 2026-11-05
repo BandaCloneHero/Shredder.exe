@@ -8,10 +8,10 @@ namespace YARG.Gameplay.Judgments
     public sealed class RhythmJudgmentDisplay : MonoBehaviour
     {
         [Header("Imagens de julgamento")]
-        [SerializeField] private Sprite _perfectSprite;
-        [SerializeField] private Sprite _greatSprite;
-        [SerializeField] private Sprite _goodSprite;
-        [SerializeField] private Sprite _missSprite;
+        [SerializeField] private Texture2D _perfectTexture;
+        [SerializeField] private Texture2D _greatTexture;
+        [SerializeField] private Texture2D _goodTexture;
+        [SerializeField] private Texture2D _missTexture;
         [SerializeField] private Vector2 _imageSize = new(220, 96);
 
         [Header("Cores dos efeitos")]
@@ -48,18 +48,18 @@ namespace YARG.Gameplay.Judgments
         [SerializeField, Min(0)] private int _previewLane;
 
         public float HighwayDepth => _highwayDepth;
-        public bool IsInitialized => _entries != null;
+        public bool IsInitialized { get; private set; }
 
         private sealed class Entry
         {
             public RectTransform Rect;
             public CanvasGroup Group;
-            public Image Main, Glow;
+            public RawImage Main, Glow;
             public JudgmentImpactGraphic Impact;
             public int Slot;
             public RhythmJudgment Judgment;
             public double? Milliseconds;
-            public float Age;
+            public JudgmentFeedbackClock Animation;
 
         }
 
@@ -87,9 +87,14 @@ namespace YARG.Gameplay.Judgments
                 Debug.LogError("[Julgamento] HUD sem RectTransform/Canvas. O feedback não foi inicializado.", this);
                 return;
             }
-            if (_perfectSprite == null || _greatSprite == null || _goodSprite == null || _missSprite == null)
+            // Main Texture2D assets have stable references; no dependency on Sprite subasset IDs.
+            if (_perfectTexture == null) _perfectTexture = Resources.Load<Texture2D>("Julgamentos/perfeito");
+            if (_greatTexture == null) _greatTexture = Resources.Load<Texture2D>("Julgamentos/otimo");
+            if (_goodTexture == null) _goodTexture = Resources.Load<Texture2D>("Julgamentos/bom");
+            if (_missTexture == null) _missTexture = Resources.Load<Texture2D>("Julgamentos/errou");
+            if (_perfectTexture == null || _greatTexture == null || _goodTexture == null || _missTexture == null)
             {
-                Debug.LogError("[Julgamento] Sprites ausentes. Verifique as quatro imagens no prefab TrackView.", this);
+                Debug.LogError("[Julgamento] Imagens ausentes em Resources/Julgamentos. Verifique a importação dos PNGs e Git LFS.", this);
                 return;
             }
             _root = CreateRect("Julgamentos", hudParent, _imageSize);
@@ -113,6 +118,7 @@ namespace YARG.Gameplay.Judgments
                 entry.Rect.gameObject.SetActive(false);
                 _entries[i] = entry;
             }
+            IsInitialized = true;
         }
 
         private static RectTransform CreateRect(string name, Transform parent, Vector2 size)
@@ -125,15 +131,22 @@ namespace YARG.Gameplay.Judgments
             return rect;
         }
 
-        private Image CreateImage(string name, Transform parent)
+        private RawImage CreateImage(string name, Transform parent)
         {
             var rect = CreateRect(name, parent, _imageSize);
-            var graphic = rect.gameObject.AddComponent<Image>();
-            graphic.preserveAspect = true;
+            var graphic = rect.gameObject.AddComponent<RawImage>();
             graphic.raycastTarget = false;
             graphic.color = Color.white; // Preserve the artist's gradient, outline and transparency.
-            graphic.sprite = _perfectSprite;
+            graphic.texture = _perfectTexture;
+            FitArtwork(graphic, _perfectTexture);
             return graphic;
+        }
+
+        private void FitArtwork(RawImage image, Texture texture)
+        {
+            float width = Mathf.Max(1, _imageSize.x), height = Mathf.Max(1, _imageSize.y);
+            float factor = Mathf.Min(width / texture.width, height / texture.height);
+            image.rectTransform.sizeDelta = new Vector2(texture.width * factor, texture.height * factor);
         }
 
         public void SetLaneScreenPosition(int lane, Vector2? screenPosition, Vector2? screenRightEdge)
@@ -152,7 +165,7 @@ namespace YARG.Gameplay.Judgments
 
         public void Show(object logicalNote, int lane, RhythmJudgment judgment, double? milliseconds)
         {
-            if (_slots == null || !isActiveAndEnabled || (_game != null && _game.Paused) ||
+            if (!IsInitialized || !isActiveAndEnabled || (_game != null && _game.Paused) ||
                 (uint)lane >= (uint)LaneCount) return;
             int slot = _slots.Acquire(lane, logicalNote, out bool existing);
             var selected = _entries[slot];
@@ -165,7 +178,7 @@ namespace YARG.Gameplay.Judgments
             }
             selected.Judgment = judgment;
             selected.Milliseconds = milliseconds;
-            selected.Age = 0;
+            selected.Animation.Restart(Time.frameCount);
             var color = judgment switch
             {
                 RhythmJudgment.Perfect => _perfect,
@@ -173,15 +186,16 @@ namespace YARG.Gameplay.Judgments
                 RhythmJudgment.Good => _good,
                 _ => _miss
             };
-            var sprite = judgment switch
+            var texture = judgment switch
             {
-                RhythmJudgment.Perfect => _perfectSprite,
-                RhythmJudgment.Great => _greatSprite,
-                RhythmJudgment.Good => _goodSprite,
-                _ => _missSprite
+                RhythmJudgment.Perfect => _perfectTexture,
+                RhythmJudgment.Great => _greatTexture,
+                RhythmJudgment.Good => _goodTexture,
+                _ => _missTexture
             };
-            selected.Main.sprite = selected.Glow.sprite = sprite;
-            selected.Main.rectTransform.sizeDelta = selected.Glow.rectTransform.sizeDelta = _imageSize;
+            selected.Main.texture = selected.Glow.texture = texture;
+            FitArtwork(selected.Main, texture);
+            FitArtwork(selected.Glow, texture);
             selected.Main.color = Color.white;
             selected.Glow.color = new Color(1, 1, 1, _glowIntensity);
             selected.Glow.gameObject.SetActive(_enableGlow && (int)judgment <= (int)RhythmJudgment.Great);
@@ -195,12 +209,12 @@ namespace YARG.Gameplay.Judgments
 
         private void Update()
         {
-            if (_entries == null || (_game != null && _game.Paused)) return;
+            if (!IsInitialized || (_game != null && _game.Paused)) return;
             foreach (var entry in _entries)
             {
                 if (!_slots.IsActive(entry.Slot)) continue;
-                entry.Age += Time.unscaledDeltaTime;
-                if (entry.Age >= _growth + _settle + _hold + _fade)
+                entry.Animation.Advance(Time.frameCount, Time.unscaledDeltaTime);
+                if (entry.Animation.Age >= _growth + _settle + _hold + _fade)
                 {
                     _slots.Release(entry.Slot);
                     entry.Rect.gameObject.SetActive(false);
@@ -215,7 +229,7 @@ namespace YARG.Gameplay.Judgments
             float intensity = entry.Judgment == RhythmJudgment.Perfect ? 1 :
                 entry.Judgment == RhythmJudgment.Great ? 0.8f : 0.35f;
             float peak = 1 + (_peakScale - 1) * intensity;
-            float age = entry.Age;
+            float age = entry.Animation.Age;
             float scale;
             if (age < _growth) scale = Mathf.Lerp(_initialScale, peak, Ease(age / Mathf.Max(0.001f, _growth)));
             else if (age < _growth + _settle) scale = Mathf.Lerp(peak, 1, Ease((age - _growth) / Mathf.Max(0.001f, _settle)));
