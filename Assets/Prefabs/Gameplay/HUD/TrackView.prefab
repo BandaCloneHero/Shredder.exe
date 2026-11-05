@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 504031665406120133}
   - component: {fileID: 3641518085919765280}
+  - component: {fileID: 8934482200100012345}
   m_Layer: 5
   m_Name: TrackView
   m_TagString: Untagged
@@ -50,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27061eb36ef0b1f4fadfa93dd5228555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _judgments: {fileID: 8934482200100012345}
   _highwayEditContainer: {fileID: 7971716324907425269}
   _topElementContainer: {fileID: 2784863481168182611}
   _centerElementContainer: {fileID: 7858415040353329453}
@@ -3511,3 +3513,38 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3967995507941194808, guid: 249f3206655c65946a0f15b17834fca4, type: 3}
   m_PrefabInstance: {fileID: 4463004701591968911}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8934482200100012345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504031665406120138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be328e63d3f744a5a0136ddf6a3bbbb7, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _font: {fileID: 11400000, guid: bd78233bc3a8ea940a15e0d7ce6a701a, type: 2}
+  _fontSize: 48
+  _millisecondsFontSize: 23
+  _perfect: {r: 1, g: 0.81, b: 0.08, a: 1}
+  _great: {r: 0.25, g: 1, b: 0.22, a: 1}
+  _good: {r: 0.25, g: 0.85, b: 1, a: 1}
+  _miss: {r: 1, g: 0.18, b: 0.22, a: 1}
+  _outlineWidth: 0.22
+  _highwayDepth: 0.12
+  _positionOffset: {x: 0, y: 28}
+  _scale: 1
+  _overlapDistance: {x: 0, y: 58}
+  _maximumFeedbacks: 3
+  _growth: 0.08
+  _settle: 0.1
+  _hold: 0.2
+  _fade: 0.2
+  _initialScale: 0.68
+  _peakScale: 1.2
+  _enableGlow: 1
+  _glowIntensity: 0.22
+  _enableImpact: 1
+  _impactIntensity: 0.3

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using YARG.Core.Engine;
 using YARG.Gameplay.Visuals;
+using YARG.Gameplay.Judgments;
 using YARG.Helpers.Extensions;
 using YARG.Player;
 
@@ -31,6 +32,18 @@ namespace YARG.Gameplay.HUD
         [SerializeField]
         private PlayerNameDisplay _playerNameDisplay;
 
+
+        [SerializeField] private RhythmJudgmentDisplay _judgments;
+
+        public void InitializeJudgments(GameManager game)
+        {
+            if (_judgments == null)
+                _judgments = GetComponent<RhythmJudgmentDisplay>() ?? gameObject.AddComponent<RhythmJudgmentDisplay>();
+            _judgments.Initialize(_scaleContainer, game);
+        }
+
+        public void ShowJudgment(object logicalNote, RhythmJudgment judgment, double? milliseconds) =>
+            _judgments?.Show(logicalNote, judgment, milliseconds);
 
         private HighwayCameraRendering _highwayRenderer;
         private Vector3 _lastTrackPlayerPosition;
@@ -136,6 +149,9 @@ namespace YARG.Gameplay.HUD
                 _highwayRenderer.GetTrackPositionScreenSpace(highwayIndex, 0.5f, CENTER_ELEMENT_DEPTH);
             var centerPosition = trackPositionScreenSpace ?? _hiddenPosition;
             _centerElementContainer.transform.position = centerPosition;
+            if (_judgments != null)
+                _judgments.SetScreenPosition(_highwayRenderer.GetTrackPositionScreenSpace(
+                    highwayIndex, 0.5f, _judgments.HighwayDepth) ?? _hiddenPosition);
         }
 
         // Keep the edit box sized to the track bounds and vertically centered to the track.
@@ -257,6 +273,7 @@ namespace YARG.Gameplay.HUD
         public void ForceReset()
         {
             _textNotifications.SetActive(true);
+            _judgments?.Clear();
 
             _soloBox.ForceReset();
             _textNotifications.ForceReset();

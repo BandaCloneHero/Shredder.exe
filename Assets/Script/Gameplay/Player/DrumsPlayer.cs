@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -169,7 +169,9 @@ namespace YARG.Gameplay.Player
             if (!Player.IsReplay)
             {
                 // Create the engine params from the engine preset
-                EngineParams = Player.EnginePreset.Drums.Create(StarMultiplierThresholds, SoloBonusStarMultiplierThresholds, mode);
+                var timingPreset = Player.EnginePreset.Drums.Copy();
+                timingPreset.HitWindow = JudgmentSettings.Configure(timingPreset.HitWindow);
+                EngineParams = timingPreset.Create(StarMultiplierThresholds, SoloBonusStarMultiplierThresholds, mode);
             }
             else
             {

@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -153,7 +153,9 @@ namespace YARG.Gameplay.Player
             if (!Player.IsReplay)
             {
                 // Create the engine params from the engine preset
-                EngineParams = Player.EnginePreset.ProKeys.Create(StarMultiplierThresholds, SoloBonusStarMultiplierThresholds, false);
+                var timingPreset = Player.EnginePreset.ProKeys.Copy();
+                timingPreset.HitWindow = JudgmentSettings.Configure(timingPreset.HitWindow);
+                EngineParams = timingPreset.Create(StarMultiplierThresholds, SoloBonusStarMultiplierThresholds, false);
             }
             else
             {

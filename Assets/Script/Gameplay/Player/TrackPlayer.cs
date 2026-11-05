@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -12,6 +12,7 @@ using YARG.Core.Engine;
 using YARG.Core.Input;
 using YARG.Core.Logging;
 using YARG.Gameplay.HUD;
+using YARG.Gameplay.Judgments;
 using YARG.Gameplay.Visuals;
 using YARG.Helpers;
 using YARG.Playback;
@@ -56,7 +57,12 @@ namespace YARG.Gameplay.Player
 
         public double SpawnTimeOffset => (ZeroFadePosition + _spawnAheadDelay + -STRIKE_LINE_POS) / NoteSpeed;
 
+        [Header("Julgamento — janelas em milissegundos")]
+        [SerializeField] protected RhythmJudgmentSettings JudgmentSettings = new();
+
         protected TrackView TrackView { get; private set; }
+
+        protected virtual void OnValidate() => JudgmentSettings.Validate();
 
         [field: Header("Visuals")]
         [field: SerializeField]
@@ -136,6 +142,7 @@ namespace YARG.Gameplay.Player
             Initialize(index, player, chart, lastHighScore);
 
             TrackView = trackView;
+            TrackView.InitializeJudgments(GameManager);
             playerReaction = TrackView.GetComponentInChildren<ReactionController>(true);
             playerReaction?.ConfigureForInstrument(player.Profile.CurrentInstrument);
             playerReaction?.ConfigureCommandPoses(player.Profile.GameMode,
@@ -275,6 +282,7 @@ namespace YARG.Gameplay.Player
             var events = NoteTrack.TextEvents;
 
             Engine = CreateEngine();
+            Engine.PreferClosestNote = !Player.IsReplay && JudgmentSettings.UseMillisecondWindow;
             base.ComboMeter.Initialize(player.EnginePreset, Engine.BaseParameters.MaxMultiplier, GameManager.Players.Count > 1);
 
             Engine.OnComboIncrement += OnComboIncrement;
@@ -977,6 +985,7 @@ namespace YARG.Gameplay.Player
             BeatlineIndex = 0;
 
             Engine = CreateEngine();
+            Engine.PreferClosestNote = !Player.IsReplay && JudgmentSettings.UseMillisecondWindow;
 
             if (GameManager.IsPractice)
             {
@@ -1048,6 +1057,15 @@ namespace YARG.Gameplay.Player
         protected virtual void OnNoteHit(int index, TNote note)
         {
             RaiseBossNoteHit(note.Time, Engine.CurrentTime);
+            if (!GameManager.IsSeekingReplay && !note.IsBigRockEnding)
+            {
+                double speed = Engine.BaseParameters.SongSpeed;
+                double milliseconds = (Engine.NoteHitTime - note.Time) * 1000 / (speed > 0 ? speed : 1);
+                var judgment = JudgmentSettings.Classify(milliseconds);
+                // Lane/autohit forgiveness remains authoritative: an accepted hit is never a visual miss.
+                if (judgment == RhythmJudgment.Miss) judgment = RhythmJudgment.Good;
+                TrackView.ShowJudgment(note.ParentOrSelf, judgment, milliseconds);
+            }
 
             if (Player.Profile.IsBot && !GameManager.IsSeekingReplay && !GameManager.Paused)
             {
@@ -1096,6 +1114,8 @@ namespace YARG.Gameplay.Player
         protected virtual void OnNoteMissed(int index, TNote note)
         {
             RaiseBossNoteMissed();
+            if (!GameManager.IsSeekingReplay && !note.IsBigRockEnding)
+                TrackView.ShowJudgment(note.ParentOrSelf, RhythmJudgment.Miss, null);
 
             if (IsFc)
             {
@@ -1127,6 +1147,8 @@ namespace YARG.Gameplay.Player
 
         protected virtual void OnOverhit()
         {
+            if (!GameManager.IsSeekingReplay)
+                TrackView.ShowJudgment(null, RhythmJudgment.Miss, null);
 
             if (!GameManager.IsSeekingReplay)
                 playerReaction?.TriggerMissReaction();
