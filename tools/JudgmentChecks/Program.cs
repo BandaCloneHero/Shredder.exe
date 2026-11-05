@@ -91,6 +91,30 @@ string hudGuid = System.Text.RegularExpressions.Regex.Match(hudMeta, @"guid: (\w
 string scene = File.ReadAllText(Path.Combine(root, "Assets/Scenes/Gameplay.unity"));
 Check(scene.Contains("_trackViewPrefab: {fileID: 504031665406120138, guid: " + hudGuid), "Gameplay references the configured HUD");
 
+// Original artwork is imported under Assets and wired to the actual gameplay HUD.
+foreach (var pair in new[] { ("perfect", "perfeito"), ("great", "otimo"), ("good", "bom"), ("miss", "errou") })
+{
+    string asset = Path.Combine(root, "Assets/Art/UI/Julgamentos", pair.Item2 + ".png");
+    byte[] imported = File.ReadAllBytes(asset);
+    Check(imported.SequenceEqual(File.ReadAllBytes(Path.Combine(root, "Images/Julgamentos", pair.Item2 + ".png"))),
+        $"Original artwork must be preserved: {pair.Item2}");
+    Check(imported.Length > 26 && imported[0] == 137 && imported[1] == 80 && imported[25] == 6,
+        $"RGBA PNG: {pair.Item2}");
+    string meta = File.ReadAllText(asset + ".meta");
+    string guid = System.Text.RegularExpressions.Regex.Match(meta, @"guid: (\w+)").Groups[1].Value;
+    Check(meta.Contains("textureType: 8") && meta.Contains("spriteMode: 1") && meta.Contains("alphaIsTransparency: 1"),
+        $"Single transparent UI sprite import: {pair.Item2}");
+    Check(hud.Contains("_" + pair.Item1 + "Sprite: {fileID: 21300000, guid: " + guid),
+        $"Correct judgment sprite wired in gameplay prefab: {pair.Item2}");
+}
+string presentation = File.ReadAllText(Path.Combine(root, "Assets/Script/Gameplay/Judgments/RhythmJudgmentDisplay.cs"));
+Check(!presentation.Contains("TextMeshProUGUI") && !presentation.Contains("SetText(") && !presentation.Contains("Timing"),
+    "Judgment presentation must contain no generated label or timing text");
+Check(presentation.Contains("preserveAspect = true") && presentation.Contains("selected.Main.color = Color.white"),
+    "Preserve artwork aspect and original colors");
+Check(hud.Contains("_imageSize: {x: 220, y: 96}") && hud.Contains("_fitToLane: 0"),
+    "Larger images must not be automatically shrunk to a single narrow column");
+
 foreach (string file in sources)
 {
     var errors = CSharpSyntaxTree.ParseText(File.ReadAllText(file), new CSharpParseOptions(LanguageVersion.CSharp9))

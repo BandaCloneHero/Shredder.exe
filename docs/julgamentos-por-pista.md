@@ -1,9 +1,16 @@
 # Julgamentos por pista
 
+**Apresentação atual:** os julgamentos usam as quatro imagens fornecidas em
+`Images/Julgamentos`, importadas como sprites em `Assets/Art/UI/Julgamentos` e ligadas ao
+prefab `TrackView`. Não há texto gerado nem valor/sufixo de milissegundos na tela.
+Os PNG originais foram preservados byte a byte, incluindo suas cores e transparência.
+O cálculo interno da precisão continua inalterado.
+
 O julgamento existente agora recebe a coluna visual da nota. Cada coluna possui seus próprios
 slots de feedback; uma nota na pista vermelha não substitui o texto da verde. Esta alteração
 usa o cálculo de precisão existente e não modifica o Core, as janelas, combo, multiplicadores
-ou pontuação. Os milissegundos e as animações anteriores foram mantidos.
+ou pontuação. As animações foram mantidas; os milissegundos continuam disponíveis internamente para o julgamento,
+mas não são desenhados no HUD.
 
 ## Fluxo e cobertura global
 
@@ -16,7 +23,7 @@ ou pontuação. Os milissegundos e as animações anteriores foram mantidos.
 5. O pool escolhe um slot exclusivamente naquela coluna. Durante a animação, a posição é
    reprojetada para acompanhar resolução, escala, movimento da highway e range do Pro Keys.
 
-A profundidade padrão é `0`: o mesmo plano da linha de acerto. O deslocamento inicial `(0, 28)`
+A profundidade padrão é `0`: o mesmo plano da linha de acerto. O deslocamento inicial `(0, 54)`
 faz o texto aparecer um pouco acima dela, em unidades locais do Canvas. Não há coordenadas
 absolutas por resolução nem escolha aleatória de posições.
 
@@ -67,10 +74,13 @@ No componente `RhythmJudgmentDisplay` do prefab `TrackView`:
 - `Maximum Feedbacks`: agora é o limite **por pista**, inicialmente **1**. Aumentar permite
   sobreposição controlada dentro de cada coluna; custa mais elementos pré-alocados.
 - `Highway Depth` e `Position Offset`: profundidade e deslocamento relativos à linha de acerto.
-- `Scale`, `Fit To Lane` e `Lane Width Fraction`: tamanho e ajuste à largura projetada da pista.
-  O ajuste vem habilitado para evitar que os textos de um acorde se cubram mutuamente.
+- `Image Size`: área inicial **220 × 96**, preservando a proporção da imagem. `Scale` ajusta o tamanho global.
+- `Fit To Lane` vem **desativado**, para que a imagem não seja reduzida à largura de uma coluna.
+  Se ativado, `Lane Width Fraction` controla o limite relativo às pistas (inicialmente 2).
+  Imagens maiores podem se sobrepor em acordes densos; cada uma continua presa à própria coluna.
 - `Overlap Distance`: distância entre feedbacks da mesma pista, quando a capacidade é maior que 1.
-- Fonte, cores, contorno, durações, escalas de impacto, brilho e flash continuam configuráveis.
+- As quatro referências de sprite, cores dos efeitos, durações, escalas de impacto, brilho e flash
+  continuam configuráveis. Gradientes e contornos principais vêm dos próprios PNGs.
 - `Preview Lane`: coluna usada pelos comandos de diagnóstico do componente durante a música.
 
 **Nenhuma configuração manual de referências é necessária.** O prefab já recebeu os valores
@@ -133,3 +143,39 @@ No Editor, testar:
 8. Redimensionar janela, trocar resolução, mover/escalar a highway e usar várias highways:
    os textos devem continuar associados às suas pistas. Ajustar tamanho/offset pelo Inspector
    conforme a composição desejada e conferir o Profiler na máquina alvo.
+
+
+## Troca dos textos pelas imagens fornecidas
+
+Nesta atualização foram modificados `RhythmJudgmentDisplay.cs`, `TrackView.prefab`,
+`tools/JudgmentChecks/Program.cs` e estes documentos. Foram adicionadas as quatro cópias PNG
+em `Assets/Art/UI/Julgamentos`, seus `.meta` de Sprite/UI e o `.meta` da pasta.
+Não é necessário ligar referências manualmente na Unity.
+
+Cada classificação seleciona sua própria imagem sem tintura sobre a arte:
+`perfeito.png`, `otimo.png`, `bom.png`, `errou.png`. As cores dos flashes acompanham os arquivos:
+PERFEITO! ciano, ÓTIMO! verde, BOM! amarelo e ERROU! vermelho.
+As fases de crescimento, estabilização e fade, o pool por coluna e a integração global
+nos instrumentos com highway continuam funcionando pelo mesmo caminho.
+A apresentação agora cria dois componentes `Image` por slot (principal e brilho), sem TMP,
+sem materiais privados de fonte e sem o elemento que desenhava os milissegundos.
+
+Conferência adicional: identidade binária dos quatro PNG, canal RGBA, importação Sprite/UI,
+referências por GUID no prefab, preservação de proporção/cor e ausência de texto de precisão.
+A importação limita a textura a 1024 px, sem mipmaps, sem leitura de CPU e com alpha preservado;
+os arquivos fonte completos continuam intactos no repositório.
+
+Referência localizada: [RoBeats — Dark Sheep, All Perfect](https://www.youtube.com/watch?v=m26MNhHFF8E).
+A busca localizou o vídeo, mas sua reprodução foi bloqueada pelo YouTube neste ambiente.
+A miniatura acessível era do resultado final; não foi tratada como verificação da animação.
+O comportamento implementado segue a posição por coluna solicitada e as imagens do usuário,
+sem alegar uma comparação quadro a quadro com o vídeo.
+
+No Editor, confira os quatro resultados, a ausência de números/ms, acordes, sequências rápidas,
+redimensionamento e o tamanho desejado na máquina alvo. Aumente `Image Size`/`Scale` se quiser
+mais destaque. A execução visual da Unity ainda não foi possível neste ambiente.
+
+
+Resultado desta atualização de imagens: **119 verificações aprovadas** no harness,
+mais a conferência do alpha transparente dos quatro PNGs e `git diff --check` sem erros.
+Os jogadores, `RhythmJudgmentSettings` e o submódulo `YARG.Core` não receberam alterações.

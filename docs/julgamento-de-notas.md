@@ -1,5 +1,7 @@
 # Julgamento de notas em Shredder.exe
 
+**Apresentação atual:** os quatro julgamentos usam as imagens do usuário, em tamanho maior e sem texto de milissegundos.
+
 **Posicionamento atualizado:** os feedbacks agora são independentes por coluna. Consulte
 [julgamentos por pista](julgamentos-por-pista.md) para o comportamento atual, cobertura dos
 instrumentos, arquivos alterados e testes desta alteração visual.

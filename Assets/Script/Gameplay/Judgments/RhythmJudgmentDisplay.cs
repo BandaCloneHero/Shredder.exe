@@ -1,5 +1,4 @@
 using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,25 +7,28 @@ namespace YARG.Gameplay.Judgments
     /// <summary>Independent preallocated slots per lane. No coroutines, event subscriptions or per-hit GameObjects.</summary>
     public sealed class RhythmJudgmentDisplay : MonoBehaviour
     {
-        [Header("Tipografia e cores")]
-        [SerializeField] private TMP_FontAsset _font;
-        [SerializeField, Min(1)] private float _fontSize = 48;
-        [SerializeField, Min(1)] private float _millisecondsFontSize = 23;
-        [SerializeField] private Color _perfect = new(1f, 0.81f, 0.08f);
-        [SerializeField] private Color _great = new(0.25f, 1f, 0.22f);
-        [SerializeField] private Color _good = new(0.25f, 0.85f, 1f);
+        [Header("Imagens de julgamento")]
+        [SerializeField] private Sprite _perfectSprite;
+        [SerializeField] private Sprite _greatSprite;
+        [SerializeField] private Sprite _goodSprite;
+        [SerializeField] private Sprite _missSprite;
+        [SerializeField] private Vector2 _imageSize = new(220, 96);
+
+        [Header("Cores dos efeitos")]
+        [SerializeField] private Color _perfect = new(0f, 0.95f, 1f);
+        [SerializeField] private Color _great = new(0.1f, 1f, 0.1f);
+        [SerializeField] private Color _good = new(1f, 0.95f, 0.1f);
         [SerializeField] private Color _miss = new(1f, 0.18f, 0.22f);
-        [SerializeField, Range(0, 1)] private float _outlineWidth = 0.22f;
 
         [Header("Posição na highway")]
         [SerializeField, Range(0, 1)] private float _highwayDepth = 0;
-        [SerializeField] private Vector2 _positionOffset = new(0, 28);
+        [SerializeField] private Vector2 _positionOffset = new(0, 54);
         [SerializeField, Min(0.1f)] private float _scale = 1;
-        [SerializeField] private Vector2 _overlapDistance = new(0, 58);
+        [SerializeField] private Vector2 _overlapDistance = new(0, 100);
         [Tooltip("Máximo de feedbacks por pista. Uma pista nunca reutiliza o feedback de outra.")]
         [SerializeField, Range(1, 8)] private int _maximumFeedbacks = 1;
-        [SerializeField] private bool _fitToLane = true;
-        [SerializeField, Range(0.2f, 1)] private float _laneWidthFraction = 0.95f;
+        [SerializeField] private bool _fitToLane = false;
+        [SerializeField, Range(0.2f, 3)] private float _laneWidthFraction = 2f;
 
         [Header("Animação (segundos)")]
         [SerializeField, Min(0)] private float _growth = 0.08f;
@@ -52,9 +54,8 @@ namespace YARG.Gameplay.Judgments
         {
             public RectTransform Rect;
             public CanvasGroup Group;
-            public TextMeshProUGUI Main, Timing, Glow;
+            public Image Main, Glow;
             public JudgmentImpactGraphic Impact;
-            public Material GlowMaterial;
             public int Slot;
             public RhythmJudgment Judgment;
             public double? Milliseconds;
@@ -71,7 +72,6 @@ namespace YARG.Gameplay.Judgments
         private Vector2[] _lanePositions;
         private float[] _laneWidths;
         private bool[] _laneVisible;
-        private float _contentWidth = 260;
 
         public int LaneCount => _slots?.LaneCount ?? 0;
         public bool HasActiveLane(int lane) => _slots != null && _slots.HasActiveLane(lane);
@@ -87,52 +87,29 @@ namespace YARG.Gameplay.Judgments
                 Debug.LogError("[Julgamento] HUD sem RectTransform/Canvas. O feedback não foi inicializado.", this);
                 return;
             }
-            if (_font == null) _font = TMP_Settings.defaultFontAsset;
-            if (_font == null)
+            if (_perfectSprite == null || _greatSprite == null || _goodSprite == null || _missSprite == null)
             {
-                Debug.LogError("[Julgamento] Fonte TMP ausente. Verifique o prefab TrackView.", this);
+                Debug.LogError("[Julgamento] Sprites ausentes. Verifique as quatro imagens no prefab TrackView.", this);
                 return;
             }
-            _root = CreateRect("Julgamentos", hudParent, new Vector2(460, 100));
+            _root = CreateRect("Julgamentos", hudParent, _imageSize);
             _slots = new JudgmentLanePool(Mathf.Max(1, laneCount), Mathf.Clamp(_maximumFeedbacks, 1, 8));
             _lanePositions = new Vector2[_slots.LaneCount];
             _laneWidths = new float[_slots.LaneCount];
             _laneVisible = new bool[_slots.LaneCount];
             _entries = new Entry[_slots.Count];
-            if (_font == null) _font = TMP_Settings.defaultFontAsset;
             for (int i = 0; i < _entries.Length; i++)
             {
                 var entry = new Entry { Slot = i };
-                entry.Rect = CreateRect("Feedback " + i, _root, new Vector2(460, 100));
+                entry.Rect = CreateRect("Feedback " + i, _root, _imageSize);
                 entry.Group = entry.Rect.gameObject.AddComponent<CanvasGroup>();
                 entry.Group.blocksRaycasts = entry.Group.interactable = false;
                 var impact = CreateRect("Impacto", entry.Rect, new Vector2(250, 65));
                 entry.Impact = impact.gameObject.AddComponent<JudgmentImpactGraphic>();
                 entry.Impact.raycastTarget = false;
-                entry.Glow = CreateText("Brilho", entry.Rect, _fontSize, Vector2.zero, false);
-                if (entry.Glow.fontSharedMaterial != null)
-                {
-                    entry.GlowMaterial = new Material(entry.Glow.fontSharedMaterial);
-                    if (entry.GlowMaterial.HasProperty("_GlowPower"))
-                    {
-                        entry.GlowMaterial.EnableKeyword("GLOW_ON");
-                        entry.GlowMaterial.SetFloat("_GlowPower", 0.25f);
-                        entry.GlowMaterial.SetFloat("_GlowOuter", 0.15f);
-                    }
-                    entry.Glow.fontSharedMaterial = entry.GlowMaterial;
-                }
+                entry.Glow = CreateImage("Brilho", entry.Rect);
                 entry.Glow.rectTransform.localScale = Vector3.one * 1.06f;
-                entry.Main = CreateText("Julgamento", entry.Rect, _fontSize, Vector2.zero, true);
-                entry.Timing = CreateText("Milissegundos", entry.Rect, _millisecondsFontSize, new Vector2(0, -43), true);
-                // Warm TMP buffers/materials before the first hit, including Portuguese glyphs.
-                entry.Main.SetText("PERFEITO! ÓTIMO! BOM! ERROU!");
-                entry.Timing.SetText("+000 ms -000 ms");
-                entry.Glow.SetText("PERFEITO! ÓTIMO!");
-                entry.Glow.ForceMeshUpdate();
-                entry.Main.ForceMeshUpdate();
-                if (i == 0)
-                    _contentWidth = Mathf.Max(1, entry.Main.GetPreferredValues("PERFEITO!").x);
-                entry.Timing.ForceMeshUpdate();
+                entry.Main = CreateImage("Julgamento", entry.Rect);
                 entry.Rect.gameObject.SetActive(false);
                 _entries[i] = entry;
             }
@@ -148,23 +125,15 @@ namespace YARG.Gameplay.Judgments
             return rect;
         }
 
-        private TextMeshProUGUI CreateText(string name, Transform parent, float size, Vector2 position, bool outline)
+        private Image CreateImage(string name, Transform parent)
         {
-            var rect = CreateRect(name, parent, new Vector2(460, 95));
-            rect.anchoredPosition = position;
-            var text = rect.gameObject.AddComponent<TextMeshProUGUI>();
-            text.font = _font;
-            text.fontSize = size;
-            text.fontStyle = FontStyles.Bold;
-            text.alignment = TextAlignmentOptions.Center;
-            text.raycastTarget = false;
-            text.enableWordWrapping = false;
-            if (outline)
-            {
-                text.outlineColor = new Color32(15, 12, 24, 255);
-                text.outlineWidth = _outlineWidth;
-            }
-            return text;
+            var rect = CreateRect(name, parent, _imageSize);
+            var graphic = rect.gameObject.AddComponent<Image>();
+            graphic.preserveAspect = true;
+            graphic.raycastTarget = false;
+            graphic.color = Color.white; // Preserve the artist's gradient, outline and transparency.
+            graphic.sprite = _perfectSprite;
+            return graphic;
         }
 
         public void SetLaneScreenPosition(int lane, Vector2? screenPosition, Vector2? screenRightEdge)
@@ -204,28 +173,20 @@ namespace YARG.Gameplay.Judgments
                 RhythmJudgment.Good => _good,
                 _ => _miss
             };
-            string label = judgment switch
+            var sprite = judgment switch
             {
-                RhythmJudgment.Perfect => "PERFEITO!",
-                RhythmJudgment.Great => "ÓTIMO!",
-                RhythmJudgment.Good => "BOM!",
-                _ => "ERROU!"
+                RhythmJudgment.Perfect => _perfectSprite,
+                RhythmJudgment.Great => _greatSprite,
+                RhythmJudgment.Good => _goodSprite,
+                _ => _missSprite
             };
-            selected.Main.SetText(label);
-            selected.Glow.SetText(label);
-            selected.Main.color = selected.Timing.color = color;
-            if (selected.GlowMaterial != null && selected.GlowMaterial.HasProperty("_GlowColor"))
-                selected.GlowMaterial.SetColor("_GlowColor", color);
-            selected.Glow.color = new Color(color.r, color.g, color.b, _glowIntensity);
+            selected.Main.sprite = selected.Glow.sprite = sprite;
+            selected.Main.rectTransform.sizeDelta = selected.Glow.rectTransform.sizeDelta = _imageSize;
+            selected.Main.color = Color.white;
+            selected.Glow.color = new Color(1, 1, 1, _glowIntensity);
             selected.Glow.gameObject.SetActive(_enableGlow && (int)judgment <= (int)RhythmJudgment.Great);
             selected.Impact.color = new Color(color.r, color.g, color.b, _impactIntensity);
             selected.Impact.gameObject.SetActive(_enableImpact && (int)judgment <= (int)RhythmJudgment.Great);
-            selected.Timing.gameObject.SetActive(milliseconds.HasValue);
-            if (milliseconds.HasValue)
-            {
-                float rounded = (float)Math.Round(milliseconds.Value, MidpointRounding.AwayFromZero);
-                selected.Timing.SetText(rounded > 0 ? "+{0:0} ms" : rounded < 0 ? "-{0:0} ms" : "0 ms", Mathf.Abs(rounded));
-            }
             selected.Rect.gameObject.SetActive(true);
             selected.Rect.SetAsLastSibling();
             Animate(selected); // Immediate first frame, independent of Update ordering.
@@ -273,7 +234,7 @@ namespace YARG.Gameplay.Judgments
             int lane = _slots.LaneOf(slot);
             if (!_fitToLane || _laneWidths[lane] <= 0) return _scale;
             return Mathf.Min(_scale, _laneWidths[lane] * _laneWidthFraction /
-                (_contentWidth * Mathf.Max(1, _peakScale)));
+                (Mathf.Max(1, _imageSize.x) * Mathf.Max(1, _peakScale)));
         }
 
         private void PositionEntries()
@@ -335,14 +296,6 @@ namespace YARG.Gameplay.Judgments
 
         private void OnDestroy()
         {
-            // TMP outline setters create private materials; release them with the pool.
-            if (_entries != null)
-                foreach (var entry in _entries)
-                {
-                    if (entry.GlowMaterial != null) Destroy(entry.GlowMaterial);
-                    if (entry.Main != null) Destroy(entry.Main.fontMaterial);
-                    if (entry.Timing != null) Destroy(entry.Timing.fontMaterial);
-                }
             if (_root != null) Destroy(_root.gameObject);
         }
     }

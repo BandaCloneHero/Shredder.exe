@@ -3525,21 +3525,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be328e63d3f744a5a0136ddf6a3bbbb7, type: 3}
   m_Name:
   m_EditorClassIdentifier:
-  _font: {fileID: 11400000, guid: bd78233bc3a8ea940a15e0d7ce6a701a, type: 2}
-  _fontSize: 48
-  _millisecondsFontSize: 23
-  _perfect: {r: 1, g: 0.81, b: 0.08, a: 1}
-  _great: {r: 0.25, g: 1, b: 0.22, a: 1}
-  _good: {r: 0.25, g: 0.85, b: 1, a: 1}
+  _perfectSprite: {fileID: 21300000, guid: 564a577c2a9943ae85e89dfdc9bbcf27, type: 3}
+  _greatSprite: {fileID: 21300000, guid: 13bb045fcf704e5d91edff0c87c868e6, type: 3}
+  _goodSprite: {fileID: 21300000, guid: cb9ce71ba7db410c9c28ed40fe16298c, type: 3}
+  _missSprite: {fileID: 21300000, guid: 1b562ece023a48cfac87534827c7ad85, type: 3}
+  _imageSize: {x: 220, y: 96}
+  _perfect: {r: 0, g: 0.95, b: 1, a: 1}
+  _great: {r: 0.1, g: 1, b: 0.1, a: 1}
+  _good: {r: 1, g: 0.95, b: 0.1, a: 1}
   _miss: {r: 1, g: 0.18, b: 0.22, a: 1}
-  _outlineWidth: 0.22
   _highwayDepth: 0
-  _positionOffset: {x: 0, y: 28}
+  _positionOffset: {x: 0, y: 54}
   _scale: 1
-  _overlapDistance: {x: 0, y: 58}
+  _overlapDistance: {x: 0, y: 100}
   _maximumFeedbacks: 1
-  _fitToLane: 1
-  _laneWidthFraction: 0.95
+  _fitToLane: 0
+  _laneWidthFraction: 2
   _growth: 0.08
   _settle: 0.1
   _hold: 0.2
