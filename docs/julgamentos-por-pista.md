@@ -20,7 +20,7 @@ mas não são desenhados no HUD.
    `HighwayCameraRendering.GetTrackPositionScreenSpace` (câmera, viewport e deslocamento corretos).
 4. `RhythmJudgmentDisplay` converte a posição projetada para coordenadas locais do Canvas
    com `RectTransformUtility.ScreenPointToLocalPointInRectangle`.
-5. O pool escolhe um slot exclusivamente naquela coluna. Durante a animação, a posição é
+5. O pool escolhe um slot livre naquela coluna, expandindo a reserva quando necessário; não interrompe imagens ativas. Durante a animação, a posição é
    reprojetada para acompanhar resolução, escala, movimento da highway e range do Pro Keys.
 
 A profundidade padrão é `0`: o mesmo plano da linha de acerto. O deslocamento inicial `(0, 54)`
@@ -64,21 +64,23 @@ Sustains só geram feedback nos eventos já existentes, sem texto a cada frame d
 
 ## Pool e configuração
 
-O pool é construído depois que o jogador termina de montar seu layout. Tem capacidade
-independente por pista, sem criação/destruição de objetos durante sequências de notas.
-No limite, recicla o feedback mais antigo da mesma pista; as outras pistas não são afetadas.
-O empilhamento, quando habilitado, também é calculado somente dentro da mesma pista.
+O pool é construído depois que o jogador termina de montar seu layout, com uma reserva inicial
+por pista. Cada nova nota usa um slot livre; se todos estiverem ativos, a reserva cresce em bloco.
+Nenhuma imagem ativa é descartada, reiniciada ou substituída por outra nota. Quando uma animação
+termina, seu slot fica disponível para reutilização. Não há destruição por acerto.
+As imagens podem se sobrepor livremente: cada uma sobe e desaparece pela sua própria idade,
+sem deslocamento adicional quando outra nota é acertada.
 
 No componente `RhythmJudgmentDisplay` do prefab `TrackView`:
 
-- `Maximum Feedbacks`: agora é o limite **por pista**, inicialmente **1**. Aumentar permite
-  sobreposição controlada dentro de cada coluna; custa mais elementos pré-alocados.
+- `Prewarm Per Lane`: reserva inicial por pista, inicialmente **4**. Não é um limite de imagens
+  simultâneas: o pool pode crescer para acomodar todas as notas sem cortar animações.
 - `Highway Depth` e `Position Offset`: profundidade e deslocamento relativos à linha de acerto.
 - `Image Size`: área inicial **220 × 96**, preservando a proporção da imagem. `Scale` ajusta o tamanho global.
 - `Fit To Lane` vem **desativado**, para que a imagem não seja reduzida à largura de uma coluna.
   Se ativado, `Lane Width Fraction` controla o limite relativo às pistas (inicialmente 2).
   Imagens maiores podem se sobrepor em acordes densos; cada uma continua presa à própria coluna.
-- `Overlap Distance`: distância entre feedbacks da mesma pista, quando a capacidade é maior que 1.
+- As imagens compartilham a referência de sua coluna e podem se sobrepor; não existe empilhamento forçado.
 - As quatro referências de sprite, cores dos efeitos, durações, escalas de impacto, brilho e flash
   continuam configuráveis. Gradientes e contornos principais vêm dos próprios PNGs.
 - `Preview Lane`: coluna usada pelos comandos de diagnóstico do componente durante a música.
@@ -227,3 +229,48 @@ Não há confirmação de renderização no Editor neste ambiente. No próximo t
 música (o motor captura a janela na inicialização) e confira as imagens, entradas antecipadas,
 acordes, pausa/retomada e uma sequência rápida. O Console deve registrar janela efetiva de
 -180 a +180 ms e HUD inicializado=True. Nenhuma ligação manual de referências é exigida.
+
+
+## Subida suave durante o desaparecimento
+
+As imagens agora nascem **10 unidades de Canvas abaixo** da posição de referência da pista
+e sobem **26 unidades** ao longo da animação (terminando 16 unidades acima da referência).
+O movimento usa uma interpolação suave calculada pela idade de cada feedback, sem acumular
+deslocamentos quando a highway é reprojetada. Cada coluna continua independente; pausa e
+reutilização do pool usam o mesmo relógio visual existente.
+
+O impacto inicial foi mantido (0,08 s de crescimento e 0,10 s de estabilização). A permanência
+estática foi retirada e o fade ampliado para 0,40 s: o tempo total continua 0,58 s, com a imagem
+subindo enquanto fica transparente. `Start Vertical Offset`, `Rise Distance`, `Hold` e `Fade`
+podem ser ajustados no Inspector do componente `RhythmJudgmentDisplay`. O prefab já foi
+configurado; nenhuma referência manual ou alteração no Core é necessária.
+
+Arquivos alterados: `RhythmJudgmentDisplay.cs`, `TrackView.prefab` e este documento.
+A renderização final deste movimento ainda precisa ser conferida no Editor da Unity.
+
+
+## Uma imagem independente para cada nota
+
+A reserva do pool não substitui mais a imagem mais antiga. Mesmo em acertos rápidos na mesma
+coluna, cada nota nova mantém um slot e um relógio próprios até completar a subida e o fade.
+Duplicatas do callback da mesma nota são ignoradas e não reiniciam sua animação. As notas
+reais distintas nunca compartilham uma imagem ainda ativa.
+
+A configuração inicial no prefab é de quatro imagens pré-criadas por pista. Quando necessário,
+o pool cresce em bloco e mantém os índices/objetos anteriores intactos. A expansão pode criar
+objetos extras durante uma rajada; nas próximas rajadas eles já estarão disponíveis para reuso.
+O reaproveitamento só ocorre depois do fim da animação, e o reset limpa as imagens sem perder
+a reserva. Não existe um limite que apague feedbacks ativos.
+
+Foi removido o deslocamento de empilhamento: cada imagem segue somente a posição da pista
+mais sua própria subida. Uma nota nova não muda a posição nem a opacidade das anteriores.
+Novas imagens são desenhadas acima das anteriores e a sobreposição é permitida.
+
+Arquivos desta alteração: `JudgmentLanePool.cs`, `RhythmJudgmentDisplay.cs`, `TrackView.prefab`,
+`tools/JudgmentChecks/Program.cs` e este documento. Precisão, pontuação, texturas e relógio musical
+não foram modificados. Nenhuma configuração manual de referências é necessária.
+
+Os testes agora incluem uma rajada de 100 notas distintas na mesma pista, crescimento além da
+reserva inicial sem substituir slots ativos, preservação das outras pistas, retorno de slots só
+após liberação, preservação da coluna no reset e reutilização sem alocações após o aquecimento.
+A aparência final da sobreposição ainda precisa ser conferida no Editor da Unity.

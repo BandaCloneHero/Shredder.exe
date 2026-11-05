@@ -2,80 +2,81 @@ using System;
 
 namespace YARG.Gameplay.Judgments
 {
-    /// <summary>Fixed, independent slots per visual lane. Does not judge notes or change score.</summary>
+    /// <summary>Reusable slots per lane. Active feedbacks are never evicted or restarted for another note.</summary>
     public sealed class JudgmentLanePool
     {
         private struct Slot
         {
             public object Note;
-            public long Order;
+            public int Lane;
             public bool Active;
         }
 
-        private readonly Slot[] _slots;
+        private Slot[] _slots;
         public int LaneCount { get; }
-        public int PerLane { get; }
+        public int InitialPerLane { get; }
         public int Count => _slots.Length;
-        private long _order;
 
-        public JudgmentLanePool(int laneCount, int perLane)
+        public JudgmentLanePool(int laneCount, int initialPerLane)
         {
-            if (laneCount < 1 || perLane < 1) throw new ArgumentOutOfRangeException();
+            if (laneCount < 1 || initialPerLane < 1) throw new ArgumentOutOfRangeException();
             LaneCount = laneCount;
-            PerLane = perLane;
-            _slots = new Slot[laneCount * perLane];
+            InitialPerLane = initialPerLane;
+            _slots = new Slot[laneCount * initialPerLane];
+            for (int i = 0; i < _slots.Length; i++) _slots[i].Lane = i / initialPerLane;
         }
 
         public bool HasActiveLane(int lane)
         {
             if ((uint)lane >= (uint)LaneCount) return false;
-            int end = (lane + 1) * PerLane;
-            for (int i = lane * PerLane; i < end; i++)
-                if (_slots[i].Active) return true;
+            for (int i = 0; i < _slots.Length; i++)
+                if (_slots[i].Lane == lane && _slots[i].Active) return true;
             return false;
         }
 
         public int Acquire(int lane, object note, out bool existing)
         {
             if ((uint)lane >= (uint)LaneCount) throw new ArgumentOutOfRangeException(nameof(lane));
-            int start = lane * PerLane, end = start + PerLane;
             existing = false;
-            if (note != null)
-                for (int i = start; i < end; i++)
-                    if (_slots[i].Active && ReferenceEquals(_slots[i].Note, note))
+            int available = -1;
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                if (_slots[i].Lane != lane) continue;
+                if (_slots[i].Active)
+                {
+                    if (note != null && ReferenceEquals(_slots[i].Note, note))
                     {
                         existing = true;
                         return i;
                     }
-            int selected = start;
-            for (int i = start; i < end; i++)
-            {
-                if (!_slots[i].Active) { selected = i; break; }
-                if (_slots[i].Order < _slots[selected].Order) selected = i;
+                }
+                else if (available < 0) available = i;
             }
-            _slots[selected].Note = note;
-            _slots[selected].Active = true;
-            Refresh(selected);
-            return selected;
+            if (available < 0)
+            {
+                // Grow only this lane's reserve; existing slot indices and animations stay intact.
+                available = _slots.Length;
+                Array.Resize(ref _slots, _slots.Length + InitialPerLane);
+                for (int i = available; i < _slots.Length; i++) _slots[i].Lane = lane;
+            }
+            _slots[available].Note = note;
+            _slots[available].Active = true;
+            return available;
         }
 
         public bool IsActive(int slot) => _slots[slot].Active;
-        public int LaneOf(int slot) => slot / PerLane;
-        public void Refresh(int slot) => _slots[slot].Order = ++_order;
+        public int LaneOf(int slot) => _slots[slot].Lane;
 
-        public int Rank(int slot)
+        public void Release(int slot)
         {
-            int rank = 0, start = LaneOf(slot) * PerLane;
-            for (int i = start; i < start + PerLane; i++)
-                if (_slots[i].Active && _slots[i].Order > _slots[slot].Order) rank++;
-            return rank;
+            // Keep lane ownership when the animation finishes.
+            _slots[slot].Note = null;
+            _slots[slot].Active = false;
         }
 
-        public void Release(int slot) => _slots[slot] = default;
         public void Clear()
         {
-            Array.Clear(_slots, 0, _slots.Length);
-            _order = 0;
+            for (int i = 0; i < _slots.Length; i++) Release(i);
         }
     }
 }

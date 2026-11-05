@@ -3537,16 +3537,17 @@ MonoBehaviour:
   _highwayDepth: 0
   _positionOffset: {x: 0, y: 54}
   _scale: 1
-  _overlapDistance: {x: 0, y: 100}
-  _maximumFeedbacks: 1
+  _prewarmPerLane: 4
   _fitToLane: 0
   _laneWidthFraction: 2
   _growth: 0.08
   _settle: 0.1
-  _hold: 0.2
-  _fade: 0.2
+  _hold: 0
+  _fade: 0.4
   _initialScale: 0.68
   _peakScale: 1.2
+  _startVerticalOffset: -10
+  _riseDistance: 26
   _enableGlow: 1
   _glowIntensity: 0.22
   _enableImpact: 1

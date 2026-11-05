@@ -35,7 +35,7 @@ settings.GoodMs = -1;
 settings.Validate();
 Check(settings.GreatMs == 80 && settings.GoodMs == 80, "Ordered Inspector thresholds");
 
-// Exercise the actual production pool: a new column must never steal another's text.
+// Exercise the production pool: each new note has its own slot until its animation finishes.
 var columns = new JudgmentLanePool(5, 1);
 var chord = new object();
 var indices = new int[5];
@@ -48,26 +48,46 @@ Check(indices.Distinct().Count() == 5, "Five simultaneous columns must own diffe
 int repeated = columns.Acquire(2, chord, out bool duplicate);
 Check(duplicate && repeated == indices[2], "Duplicate callback only reuses its own column/note");
 int rapid = columns.Acquire(2, new object(), out duplicate);
-Check(!duplicate && rapid == indices[2], "Rapid events replace only the same column");
+Check(!duplicate && rapid != indices[2] && columns.IsActive(indices[2]), "Rapid notes preserve the previous image in the SAME column");
 Check(columns.IsActive(indices[0]) && columns.IsActive(indices[4]), "Other columns remain active");
-for (int lane = 0; lane < 5; lane++) Check(columns.Rank(indices[lane]) == 0, "No cross-column stacking");
 var overlap = new JudgmentLanePool(5, 2);
 int older = overlap.Acquire(0, new object(), out _);
 int newer = overlap.Acquire(0, new object(), out _);
 int otherLane = overlap.Acquire(4, new object(), out _);
-Check(overlap.Rank(older) == 1 && overlap.Rank(newer) == 0, "Stack only within a column");
-Check(overlap.Rank(otherLane) == 0, "An unrelated column has its own stack");
-Check(overlap.Acquire(0, new object(), out _) == older && overlap.IsActive(otherLane), "Recycle oldest in same column");
+int overflow = overlap.Acquire(0, new object(), out _);
+Check(overflow != older && overflow != newer, "Grow beyond initial capacity instead of replacing any active image");
+Check(overlap.IsActive(older) && overlap.IsActive(newer) && overlap.IsActive(otherLane), "Growth preserves all old images");
+Check(overlap.LaneOf(overflow) == 0 && overlap.LaneOf(otherLane) == 4, "Growing a lane preserves every slot's lane identity");
 overlap.Release(newer);
-Check(!overlap.IsActive(newer) && overlap.Acquire(0, new object(), out _) == newer, "Reuse released slot");
+Check(!overlap.IsActive(newer) && overlap.Acquire(0, new object(), out _) == newer, "Reuse a slot ONLY after its animation finishes");
+overlap.Release(otherLane);
+Check(overlap.Acquire(4, new object(), out _) == otherLane, "Released slot retains its original column");
+var burst = new JudgmentLanePool(5, 4);
+var burstSlots = new HashSet<int>();
+for (int i = 0; i < 100; i++) burstSlots.Add(burst.Acquire(1, new object(), out _));
+Check(burstSlots.Count == 100 && burstSlots.All(burst.IsActive), "100 distinct fast notes in one lane preserve 100 independent images");
+Check(burstSlots.All(i => burst.LaneOf(i) == 1), "All expanded slots still follow the original lane");
 // Preallocated source objects: measuring slot operations, not object construction or assertions.
 var events = new[] { new object(), new object(), new object() };
-for (int i = 0; i < 100; i++) columns.Acquire(i % 5, events[i % 3], out _);
+for (int i = 0; i < 100; i++)
+{
+    int slot = columns.Acquire(i % 5, events[i % 3], out _);
+    columns.Release(slot);
+}
 long before = GC.GetAllocatedBytesForCurrentThread();
-for (int i = 0; i < 10_000; i++) columns.Acquire(i % 5, events[i % 3], out _);
-Check(GC.GetAllocatedBytesForCurrentThread() == before, "No managed allocations for rapid lane slot reuse");
+for (int i = 0; i < 10_000; i++)
+{
+    int slot = columns.Acquire(i % 5, events[i % 3], out _);
+    columns.Release(slot);
+}
+Check(GC.GetAllocatedBytesForCurrentThread() == before, "No managed allocations when reusing finished feedback slots after warmup");
 columns.Clear();
-for (int lane = 0; lane < 5; lane++) Check(!columns.HasActiveLane(lane), "Reset clears every lane");
+for (int lane = 0; lane < 5; lane++)
+{
+    Check(!columns.HasActiveLane(lane), "Reset clears every lane");
+    int slot = columns.Acquire(lane, new object(), out _);
+    Check(columns.LaneOf(slot) == lane, "Reset preserves lane ownership for future notes");
+}
 
 // A slow creation frame previously consumed the entire visual lifetime before first draw.
 var animation = new JudgmentFeedbackClock();
@@ -78,7 +98,7 @@ animation.Advance(11, .016f);
 Check(Math.Abs(animation.Age - .016f) < 1e-6, "Animation advances on following frames");
 animation.Restart(12);
 animation.Advance(12, 1);
-Check(animation.Age == 0, "Rapid replacement restarts visibly in its own lane");
+Check(animation.Age == 0, "A newly reused slot starts visibly in its own lane");
 animation.Advance(13, -.5f);
 Check(animation.Age == 0, "Visual age cannot go backwards");
 
@@ -130,6 +150,10 @@ Check(presentation.Contains("Resources.Load<Texture2D>(\"Julgamentos/perfeito\")
     presentation.Contains("Resources.Load<Texture2D>(\"Julgamentos/errou\")"), "Artwork has an import-independent resource lookup");
 Check(presentation.Contains("selected.Animation.Restart(Time.frameCount)") &&
     presentation.Contains("entry.Animation.Advance(Time.frameCount, Time.unscaledDeltaTime)"), "Display uses the tested visual clock");
+Check(hud.Contains("_prewarmPerLane: 4") && !hud.Contains("_maximumFeedbacks:"),
+    "Prefab reserves capacity instead of setting an active-image replacement limit");
+Check(!presentation.Contains("_overlapDistance") && !presentation.Contains("_slots.Rank("),
+    "A new note must not reposition older feedbacks through forced stacking");
 Check(hud.Contains("_imageSize: {x: 220, y: 96}") && hud.Contains("_fitToLane: 0"),
     "Larger images must not be automatically shrunk to a single narrow column");
 
