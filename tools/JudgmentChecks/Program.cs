@@ -40,10 +40,26 @@ string[] sources = Directory.GetFiles(Path.Combine(root, "Assets/Script/Gameplay
     .Concat(new[] { "HUD/TrackView.cs", "Player/TrackPlayer.cs", "Player/FiveFretGuitarPlayer.cs",
         "Player/FiveLaneKeysPlayer.cs", "Player/ProKeysPlayer.cs", "Player/DrumsPlayer.cs" }
         .Select(f => Path.Combine(root, "Assets/Script/Gameplay", f))).ToArray();
+// Read the actual assets used by Gameplay; C# defaults alone do not validate prefab setup.
+foreach (string prefab in new[] { "FiveFretGuitarVisual", "FiveLaneKeysVisual", "ProKeysVisual", "FourLaneDrumsVisual" })
+{
+    string yaml = File.ReadAllText(Path.Combine(root, "Assets/Prefabs/Gameplay/Visual", prefab + ".prefab"));
+    Check(yaml.Contains("  JudgmentSettings:\n    UseMillisecondWindow: 1\n    PerfectMs: 25\n    GreatMs: 60\n    GoodMs: 100"),
+        $"Serialized timing defaults missing from {prefab}");
+}
+string hud = File.ReadAllText(Path.Combine(root, "Assets/Prefabs/Gameplay/HUD/TrackView.prefab"));
+string scriptMeta = File.ReadAllText(Path.Combine(root, "Assets/Script/Gameplay/Judgments/RhythmJudgmentDisplay.cs.meta"));
+string scriptGuid = System.Text.RegularExpressions.Regex.Match(scriptMeta, @"guid: (\w+)").Groups[1].Value;
+Check(hud.Contains("guid: " + scriptGuid) && hud.Contains("  _judgments: {fileID: 8934482200100012345}"), "HUD component wiring");
+string hudMeta = File.ReadAllText(Path.Combine(root, "Assets/Prefabs/Gameplay/HUD/TrackView.prefab.meta"));
+string hudGuid = System.Text.RegularExpressions.Regex.Match(hudMeta, @"guid: (\w+)").Groups[1].Value;
+string scene = File.ReadAllText(Path.Combine(root, "Assets/Scenes/Gameplay.unity"));
+Check(scene.Contains("_trackViewPrefab: {fileID: 504031665406120138, guid: " + hudGuid), "Gameplay references the configured HUD");
+
 foreach (string file in sources)
 {
     var errors = CSharpSyntaxTree.ParseText(File.ReadAllText(file), new CSharpParseOptions(LanguageVersion.CSharp9))
         .GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).ToArray();
     Check(errors.Length == 0, $"Syntax: {file}: {string.Join<Diagnostic>(", ", errors)}");
 }
-Console.WriteLine($"PASS: {checks} checks of real classification/settings and C# 9 syntax. Unity rendering was not tested.");
+Console.WriteLine($"PASS: {checks} checks of classification/settings, prefab wiring and C# 9 syntax. Unity rendering was not tested.");

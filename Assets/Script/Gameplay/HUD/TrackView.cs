@@ -42,8 +42,33 @@ namespace YARG.Gameplay.HUD
             _judgments.Initialize(_scaleContainer, game);
         }
 
-        public void ShowJudgment(object logicalNote, RhythmJudgment judgment, double? milliseconds) =>
+        public bool JudgmentHudReady => _judgments != null && _judgments.IsInitialized;
+
+        private bool _reportedHitJudgment;
+        private bool _reportedMissJudgment;
+
+        public void ShowJudgment(object logicalNote, RhythmJudgment judgment, double? milliseconds)
+        {
+            ReportFirstJudgment(judgment, milliseconds);
             _judgments?.Show(logicalNote, judgment, milliseconds);
+        }
+
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        private void ReportFirstJudgment(RhythmJudgment judgment, double? milliseconds)
+        {
+            if (judgment == RhythmJudgment.Miss)
+            {
+                if (_reportedMissJudgment) return;
+                _reportedMissJudgment = true;
+            }
+            else
+            {
+                if (_reportedHitJudgment) return;
+                _reportedHitJudgment = true;
+            }
+            Debug.Log($"[Julgamento] Evento real recebido: {judgment}; desvio={milliseconds} ms; " +
+                $"HUD inicializado={JudgmentHudReady}; ativo={_judgments != null && _judgments.isActiveAndEnabled}.", this);
+        }
 
         private HighwayCameraRendering _highwayRenderer;
         private Vector3 _lastTrackPlayerPosition;

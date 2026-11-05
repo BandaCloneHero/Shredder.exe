@@ -40,6 +40,7 @@ namespace YARG.Gameplay.Judgments
         [SerializeField, Range(0, 1)] private float _impactIntensity = 0.3f;
 
         public float HighwayDepth => _highwayDepth;
+        public bool IsInitialized => _entries != null;
 
         private sealed class Entry
         {
@@ -59,12 +60,27 @@ namespace YARG.Gameplay.Judgments
         private Entry[] _entries;
         private RectTransform _root;
         private GameManager _game;
+        private Canvas _canvas;
+        private RectTransform _hudParent;
         private long _order;
 
         public void Initialize(Transform hudParent, GameManager game)
         {
             _game = game;
             if (_root != null) return;
+            _hudParent = hudParent as RectTransform;
+            _canvas = hudParent != null ? hudParent.GetComponentInParent<Canvas>() : null;
+            if (_hudParent == null || _canvas == null)
+            {
+                Debug.LogError("[Julgamento] HUD sem RectTransform/Canvas. O feedback não foi inicializado.", this);
+                return;
+            }
+            if (_font == null) _font = TMP_Settings.defaultFontAsset;
+            if (_font == null)
+            {
+                Debug.LogError("[Julgamento] Fonte TMP ausente. Verifique o prefab TrackView.", this);
+                return;
+            }
             _root = CreateRect("Julgamentos", hudParent, new Vector2(460, 100));
             _root.localScale = Vector3.one * _scale;
             _entries = new Entry[Mathf.Clamp(_maximumFeedbacks, 1, 8)];
@@ -137,9 +153,11 @@ namespace YARG.Gameplay.Judgments
         public void SetScreenPosition(Vector3 screenPosition)
         {
             if (_root == null) return;
-            // Same overlay canvas coordinate space used by TrackView's center HUD.
-            _root.position = screenPosition;
-            _root.localPosition += (Vector3)_positionOffset;
+            // Convert screen pixels into the HUD's local coordinates, including CanvasScaler.
+            var camera = _canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _canvas.worldCamera;
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_hudParent, screenPosition,
+                camera, out var localPosition)) return;
+            _root.anchoredPosition = localPosition + _positionOffset;
             _root.localScale = Vector3.one * _scale;
         }
 
@@ -272,6 +290,34 @@ namespace YARG.Gameplay.Judgments
                 entry.Rect.gameObject.SetActive(false);
             }
             _order = 0;
+        }
+
+
+        [ContextMenu("Diagnóstico/Testar PERFEITO! durante a música")]
+        private void PreviewPerfect() => Preview(RhythmJudgment.Perfect, 8);
+
+        [ContextMenu("Diagnóstico/Testar ÓTIMO! durante a música")]
+        private void PreviewGreat() => Preview(RhythmJudgment.Great, -42);
+
+        [ContextMenu("Diagnóstico/Testar BOM! durante a música")]
+        private void PreviewGood() => Preview(RhythmJudgment.Good, 87);
+
+        [ContextMenu("Diagnóstico/Testar ERROU! durante a música")]
+        private void PreviewMiss() => Preview(RhythmJudgment.Miss, null);
+
+        private void Preview(RhythmJudgment judgment, double? milliseconds)
+        {
+            if (!Application.isPlaying || !IsInitialized)
+            {
+                Debug.LogWarning("[Julgamento] Inicie uma música antes de testar o HUD.", this);
+                return;
+            }
+            if (_game != null && _game.Paused)
+            {
+                Debug.LogWarning("[Julgamento] Retome a música para testar a animação.", this);
+                return;
+            }
+            Show(null, judgment, milliseconds);
         }
 
         private void OnDisable() => Clear();

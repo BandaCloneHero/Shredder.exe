@@ -189,3 +189,52 @@ as outras variantes de instrumento, desempenho no Profiler, pausa, resoluções 
 10. Pause durante um efeito, retome, reinicie prática e encerre a música: nenhuma animação atrasada
     deve reaparecer. Use o Profiler para confirmar ausência de criação/destruição por acerto e avaliar
     a legibilidade/impacto na máquina alvo.
+
+
+## Diagnóstico do relato de Play no Editor / guitarra All Taps
+
+O relato de feedback ausente e acertos restritivos foi investigado no modo de guitarra com
+All Taps. Os cinco testes `AllTapsTimingTests` usam o motor real `YargFiveFretGuitarEngine`,
+sem strum, após a primeira nota, com desvios antecipados/atrasados até ±100 ms nos quatro
+FPS solicitados e com acordes. Passaram; o sintoma do Editor não foi reproduzido no Core isolado.
+Isso não comprova o comportamento do Editor do usuário nem determina sua causa.
+
+Foram gravados explicitamente `UseMillisecondWindow=1` e `25/60/100` nos prefabs
+`FiveFretGuitarVisual`, `FiveLaneKeysVisual`, `ProKeysVisual` e `FourLaneDrumsVisual`.
+As variantes de bateria herdam esse último prefab. Assim a configuração não depende apenas
+dos inicializadores de uma classe serializável recém-adicionada.
+
+A posição do novo feedback agora converte coordenadas de tela para coordenadas locais com
+`RectTransformUtility`, considerando o Canvas/câmera. A inicialização informa erro explícito
+quando o Canvas ou a fonte TMP estão ausentes, em vez de deixar o HUD indisponível sem explicação.
+
+No Editor, filtre o Console por **[Julgamento]**. Ao iniciar uma música deve aparecer algo como:
+
+```text
+[Julgamento] FiveFretGuitarPlayer; motor=YargFiveFretGuitarEngine; janela efetiva=-100,0 a 100,0 ms; ... HUD inicializado=True.
+```
+
+No primeiro acerto e na primeira perda é registrada uma mensagem com o resultado real,
+o desvio e o estado do HUD. São mensagens limitadas por jogador, somente no Editor,
+sem registrar cada nota e sem alocar strings no build final.
+
+- Sem mensagem de inicialização: este caminho/código não chegou a executar; verificar
+  erros de compilação, atualização dos fontes e a cena realmente em execução.
+- Janela diferente de ±100 ms: verificar `JudgmentSettings` no jogador instanciado e se é replay.
+- `HUD inicializado=False`: verificar o primeiro erro de Canvas/fonte no Console.
+- Evento real recebido com HUD pronto, mas texto invisível: investigar renderização/posição.
+
+Para separar a renderização da precisão manual, durante uma música selecione
+`TrackView(Clone)` na Hierarchy e abra o menu do componente **RhythmJudgmentDisplay**.
+Em **Diagnóstico** estão os testes de PERFEITO!, ÓTIMO!, BOM! e ERROU!.
+Eles usam o mesmo pool/animação do jogo e não alteram notas, pontuação ou combo.
+O teste exige música iniciada e sem pausa.
+
+As novas alterações ainda precisam de verificação no Editor. Não há evidência suficiente
+para afirmar que a causa do relato foi eliminada sem observar essas mensagens e o resultado.
+
+
+Verificação após esta investigação: suíte completa **438 aprovados, 2 ignorados, 0 falhas**;
+os cinco testes adicionais são de guitarra All Taps. O harness agora verifica também os
+quatro prefabs reais de jogador e a conexão do prefab de HUD à cena Gameplay, além das
+classificações e da sintaxe. A validação de renderização Unity continua pendente.

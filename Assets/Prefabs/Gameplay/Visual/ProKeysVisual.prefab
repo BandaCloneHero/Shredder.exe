@@ -675,6 +675,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1518824f79a2451a9fcde2f11984e747, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  JudgmentSettings:
+    UseMillisecondWindow: 1
+    PerfectMs: 25
+    GreatMs: 60
+    GoodMs: 100
   <TrackCamera>k__BackingField: {fileID: 5450824049626431651}
   CameraPositioner: {fileID: 2948926500384017858}
   HighwayCameraRendering: {fileID: 0}

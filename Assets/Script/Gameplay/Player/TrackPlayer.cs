@@ -62,7 +62,7 @@ namespace YARG.Gameplay.Player
 
         protected TrackView TrackView { get; private set; }
 
-        protected virtual void OnValidate() => JudgmentSettings.Validate();
+        protected virtual void OnValidate() => (JudgmentSettings ??= new RhythmJudgmentSettings()).Validate();
 
         [field: Header("Visuals")]
         [field: SerializeField]
@@ -141,6 +141,8 @@ namespace YARG.Gameplay.Player
 
             Initialize(index, player, chart, lastHighScore);
 
+            JudgmentSettings ??= new RhythmJudgmentSettings();
+            JudgmentSettings.Validate();
             TrackView = trackView;
             TrackView.InitializeJudgments(GameManager);
             playerReaction = TrackView.GetComponentInChildren<ReactionController>(true);
@@ -301,6 +303,8 @@ namespace YARG.Gameplay.Player
             {
                 Engine.SetSpeed(GameManager.SongSpeed);
             }
+
+            ReportJudgmentConfiguration();
 
             GameManager.BeatEventHandler.Audio.Subscribe(MetronomeTick, BeatEventType.Measure);
             GameManager.BeatEventHandler.Audio.Subscribe(MetronomeTock, BeatEventType.QuarterNote);
@@ -996,6 +1000,7 @@ namespace YARG.Gameplay.Player
                 Engine.SetSpeed(GameManager.SongSpeed);
             }
 
+            ReportJudgmentConfiguration();
             ResetPracticeSection();
         }
 
@@ -1044,6 +1049,19 @@ namespace YARG.Gameplay.Player
 
             InitializeSpawnedNote(poolable, note);
             poolable.EnableFromPool();
+        }
+
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        private void ReportJudgmentConfiguration()
+        {
+            var window = Engine.CalculateHitWindow();
+            double speed = Engine.BaseParameters.SongSpeed;
+            double factor = 1000 / (speed > 0 ? speed : 1);
+            Debug.Log($"[Julgamento] {GetType().Name}; motor={Engine.GetType().Name}; " +
+                $"janela efetiva={window.FrontEnd * factor:F1} a {window.BackEnd * factor:F1} ms; " +
+                $"faixas={JudgmentSettings.PerfectMs}/{JudgmentSettings.GreatMs}/{JudgmentSettings.GoodMs} ms; " +
+                $"janela nova={JudgmentSettings.UseMillisecondWindow}; replay={Player.IsReplay}; " +
+                $"HUD inicializado={TrackView.JudgmentHudReady}.", this);
         }
 
         protected abstract void InitializeSpawnedNote(IPoolable poolable, TNote note);
