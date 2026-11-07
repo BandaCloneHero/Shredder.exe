@@ -31,6 +31,7 @@ namespace YARG
         public float MaxHealth => maxHealth;
         public bool IsDefeated { get; private set; }
         public event System.Action Defeated;
+        public event System.Action Damaged;
 
         public int CurrentPhase => transformed || currentHealth <= maxHealth * 0.5f ? 2 : 1;
 
@@ -99,6 +100,11 @@ namespace YARG
             float previousHealth = currentHealth;
             currentHealth -= amount;
             currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+
+            if (currentHealth < previousHealth)
+            {
+                Damaged?.Invoke();
+            }
 
             if (visualAnimator == null) visualAnimator = FindAnyObjectByType<GepetoVisualAnimator>();
             if (currentHealth <= 0f)
