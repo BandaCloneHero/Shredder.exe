@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Rendering;
 using YARG.Core.Game;
 using YARG.Helpers.Extensions;
 using YARG.Settings;
@@ -237,6 +238,8 @@ namespace YARG.Gameplay.Visuals
         // TODO: Integrate this with CustomContentManager so it can be managed in settings
         private void SetTextures()
         {
+            SetDefaultTextures();
+            ReleaseCustomTextures();
             if (_normalPreset.BaseTexture == null || _normalPreset.SidePattern == null)
             {
                 SetDefaultTextures();
@@ -264,6 +267,7 @@ namespace YARG.Gameplay.Visuals
             // If either didn't load, use defaults
             if (!success)
             {
+                ReleaseCustomTextures();
                 SetDefaultTextures();
                 return;
             }
@@ -272,6 +276,24 @@ namespace YARG.Gameplay.Visuals
             _material.SetFloat(_baseParallaxProperty, 1f);
             _material.SetTexture(_sidePatternProperty, _sidePattern);
             _material.SetFloat(_sideParallaxProperty, 1f);
+        }
+
+        private void ReleaseCustomTextures()
+        {
+            CoreUtils.Destroy(_baseTexture);
+            CoreUtils.Destroy(_sidePattern);
+            _baseTexture = null;
+            _sidePattern = null;
+        }
+
+        private void OnDestroy()
+        {
+            // Renderer.material creates private instances; shared preset textures remain untouched.
+            ReleaseCustomTextures();
+            CoreUtils.Destroy(_material);
+            _material = null;
+            foreach (var material in _trimMaterials) CoreUtils.Destroy(material);
+            _trimMaterials.Clear();
         }
 
         private void SetDefaultTextures()

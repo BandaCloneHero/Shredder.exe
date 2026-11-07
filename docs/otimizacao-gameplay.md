@@ -104,3 +104,76 @@ O projeto já registra CPU, RAM, GPU, VRAM e versão do driver no início de cad
 Guardar o log da sessão que apresentou o problema e a hora aproximada do congelamento.
 Um encerramento forçado pode deixar o final incompleto. O log e a medição no PC do evento
 são necessários para distinguir gargalos restantes de CPU/GPU/memória e problemas externos.
+
+## Segunda etapa — áudio visual, materiais e previews
+
+Esta etapa preserva as funcionalidades existentes e acrescenta:
+
+- `TextureManager`: o worker de FFT opera apenas em arrays gerenciados previamente alocados.
+  As duas leituras do mixer acontecem no thread principal, antes do processamento. Assim,
+  um trabalho pendente não consulta handles de áudio após o descarregamento da cena.
+  O upload da textura também permanece no thread principal, e cada UniTask é consumida uma vez.
+- Foi removido o armazenamento assíncrono do `NativeArray` retornado por `GetPixelData`,
+  incluindo seu `Dispose`. Essa API retorna uma visão direta do buffer da textura, que pode
+  se invalidar após atualizações; consulte a [documentação oficial da Unity](https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/texture2d/getpixeldata).
+  Agora a tarefa preenche um buffer próprio de 1.024 bytes, reutilizado. A cópia de 1 KB no
+  upload é uma escolha de segurança; seu custo e o das leituras de áudio no main thread
+  ainda precisam ser medidos no Unity Profiler.
+- Durante a pausa, o visualizador não inicia novos trabalhos nem uploads. No encerramento,
+  ele impede novo processamento e libera sua textura de vídeo, espectro e capa carregada.
+  Capas padrão e ícones compartilhados permanecem intactos. O worker termina antes da
+  limpeza final do espectro e da capa; ele não depende de objetos Unity para calcular os pixels.
+- Uma textura de vídeo já criada é liberada antes de aumentar suas dimensões, mantendo a mesma
+  referência para os consumidores e recriando o buffer quando necessário.
+- `TrackMaterial`: materiais privados criados por `Renderer.material` e texturas customizadas
+  são destruídos ao encerrar a highway. Recarregar o tema libera as texturas anteriores;
+  falhas de carregamento também liberam temporários e restauram as texturas padrão compartilhadas.
+- `JudgmentImpactGraphic`: a forma do anel e dos quatro raios é compartilhada entre instâncias.
+  As reconstruções do mesh mantêm dimensões, cores e transparência, sem repetir seno/cosseno.
+  Permanecem os mesmos 144 vértices e 72 triângulos. A trigonometria ocorre somente na criação
+  da geometria compartilhada, em vez de 288 chamadas em cada reconstrução.
+- `CameraPreviewTexture`: previews na mesma resolução reutilizam a textura compartilhada.
+  Redimensionar destrói a textura substituída; fechar a última câmera libera a textura runtime.
+
+Não foram alterados os julgamentos atuais (PERFEITO 32/30 ms), scores, dano, combo,
+sustains, música, assets de personagens, resolução, antialiasing ou limite de FPS.
+Nenhuma configuração manual adicional é necessária.
+
+### Verificações da segunda etapa
+
+`dotnet run --project tools/JudgmentChecks/JudgmentChecks.csproj --no-restore`:
+**6.632 verificações aprovadas**, incluindo as anteriores.
+
+- O `TextureManager` completo é compilado no harness contra substitutos de áudio, textura e
+  agendamento. O retorno de limpeza `UniTaskVoid` é adaptado para `Task` apenas no harness.
+  O teste verifica thread de acesso, tarefa única, pausa, pixels de FFT/waveform, resize de vídeo,
+  término de trabalho após o mixer ser marcado como encerrado, limpeza e assets compartilhados.
+- A implementação real do impacto foi compilada contra substitutos de UI. Os vértices foram
+  comparados à fórmula anterior em três dimensões, junto de topologia, cor e ausência de
+  nova trigonometria em 100 reconstruções.
+- Métodos reais de carregamento/limpeza da highway foram exercitados com recursos contados:
+  20 recargas mantêm somente três materiais privados e duas texturas customizadas; falhas
+  retornam aos assets padrão; encerrar libera os objetos próprios.
+- O preview completo foi compilado com substitutos: 100 atualizações na mesma resolução
+  não criam novas texturas; resize mantém uma textura; a última câmera libera o recurso.
+- Sintaxe C# 9 dos arquivos modificados e `git diff --check` passaram.
+
+Esses substitutos não executam a GPU, o mixer BASS nem o runtime UniTask/Unity reais. Ainda
+não houve compilação completa no Editor, medição de FPS/VRAM ou reprodução do congelamento.
+
+### Preparação para a feira
+
+Validar primeiro no Play, incluindo música com cenário reativo, vídeo, pausa, mudança de tema,
+previews e saída durante a música. Depois gerar e testar o executável no PC da feira, com a
+mesma resolução, quantidade de jogadores, músicas e dispositivos que serão usados no evento.
+Fazer uma sessão de pelo menos uma hora, passando por várias músicas e voltando ao menu,
+registrando FPS, RAM, GPU e os logs. Esse tempo é uma sugestão de validação, não garantia.
+
+Manter uma cópia da última build validada e dos dados necessários para executar as músicas
+no computador do evento. Alterações de última hora precisam de novo teste. Se o computador
+inteiro voltar a congelar, guardar o horário e os logs para continuar a investigação;
+as alterações de código não provam que a causa externa ou interna foi eliminada.
+
+Arquivos desta etapa: `TextureManager.cs`, `TrackMaterial.cs`, `JudgmentImpactGraphic.cs`,
+`CameraPreviewTexture.cs` e `tools/JudgmentChecks/Program.cs`. Testes novos:
+`TextureManagerLifetimeChecks.cs` e `UiResourceOptimizationChecks.cs`.

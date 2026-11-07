@@ -12,11 +12,11 @@ namespace YARG.Gameplay.Judgments
         [Tooltip("Desative para preservar a janela original do preset.")]
         public bool UseMillisecondWindow = true;
         [Header("Antecipado (ms)")]
-        [Min(0)] public float PerfectMs = 28;
+        [Min(0)] public float PerfectMs = 32;
         [Min(0)] public float GreatMs = 65;
         [Min(1)] public float GoodMs = 185;
         [Header("Atrasado (ms) — margem menor")]
-        [Min(0)] public float LatePerfectMs = 26;
+        [Min(0)] public float LatePerfectMs = 30;
         [Min(0)] public float LateGreatMs = 62;
         [Min(1)] public float LateGoodMs = 170;
 

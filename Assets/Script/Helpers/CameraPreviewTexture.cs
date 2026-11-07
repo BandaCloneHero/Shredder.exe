@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace YARG.Helpers
 {
@@ -17,6 +18,15 @@ namespace YARG.Helpers
         private void OnDestroy()
         {
             _previews.Remove(this);
+            if (_previews.Count == 0) ReleasePreviewTexture();
+        }
+
+        private static void ReleasePreviewTexture()
+        {
+            if (PreviewTexture == null) return;
+            PreviewTexture.Release();
+            CoreUtils.Destroy(PreviewTexture);
+            PreviewTexture = null;
         }
 
         private void UpdateRenderTexture()
@@ -26,19 +36,15 @@ namespace YARG.Helpers
 
         public static void SetAllPreviews()
         {
-            if (PreviewTexture != null)
+            int width = Mathf.Max(1, Screen.width);
+            int height = Mathf.Max(1, Screen.height);
+            if (PreviewTexture == null || PreviewTexture.width != width || PreviewTexture.height != height)
             {
-                PreviewTexture.Release();
+                ReleasePreviewTexture();
+                var descriptor = new RenderTextureDescriptor(width, height, RenderTextureFormat.ARGBHalf, 32);
+                descriptor.mipCount = 0;
+                PreviewTexture = new RenderTexture(descriptor);
             }
-
-            // Create render texture
-            var descriptor = new RenderTextureDescriptor(
-                Screen.width, Screen.height,
-                RenderTextureFormat.ARGBHalf,
-                32
-            );
-            descriptor.mipCount = 0;
-            PreviewTexture = new RenderTexture(descriptor);
 
             foreach (var script in _previews)
             {

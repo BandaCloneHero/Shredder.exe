@@ -16,7 +16,7 @@ using YARG.Core.Engine.Vocals;
 using YARG.Core.Input;
 using YARG.Core.Logging;
 using YARG.Core.Replays;
-using YARG.Core.Replays.Analyzer;
+using YARG.Gameplay.Judgments;
 using YARG.Core.Song;
 using YARG.Localization;
 using YARG.Menu.MusicLibrary;
@@ -112,30 +112,6 @@ namespace YARG.Menu.ScoreScreen
 
             var scoreScreenStats = GlobalVariables.State.ScoreScreenStats.Value;
 
-#if UNITY_EDITOR || YARG_NIGHTLY_BUILD || YARG_TEST_BUILD
-            // Do analysis of replay before showing any score data
-            // This will make it so that if the analysis takes a while the screen is blank
-            // (kinda like a loading screen)
-            try
-            {
-                if (!AnalyzeReplay(song, scoreScreenStats.ReplayInfo))
-                {
-                    DialogManager.Instance.ShowMessage("Inconsistent Replay Results!",
-                        "The replay analysis for this run produced inconsistent results to the actual gameplay.\n" +
-                        "Please report this issue to the YARG developers on GitHub or Discord.\n\n" +
-                        $"Chart Hash: {song.Hash}");
-                }
-            }
-            catch (Exception ex)
-            {
-                YargLogger.LogException(ex, $"Failed to analyze replay! Song hash: {song.Hash}");
-                DialogManager.Instance.ShowMessage("Failed To Analyze Replay!",
-                    "The replay analysis for this run resulted in an unexpected error.\n" +
-                    "Please report this issue to the YARG developers on GitHub or Discord.\n\n" +
-                    $"Chart Hash: {song.Hash}");
-            }
-#endif
-
             // Play audience chatter
             if (SettingsManager.Settings.UseCrowdFx.Value == CrowdFxMode.Enabled)
             {
@@ -187,6 +163,34 @@ namespace YARG.Menu.ScoreScreen
 
             //set restarting state
             _restartingSong = false;
+
+#if UNITY_EDITOR || YARG_NIGHTLY_BUILD || YARG_TEST_BUILD
+            // Open diagnostics only after all results navigation has been installed.
+            ValidateReplayResults(song, scoreScreenStats.ReplayInfo);
+#endif
+        }
+
+#nullable enable
+        private void ValidateReplayResults(SongEntry song, ReplayInfo? replayInfo)
+#nullable disable
+        {
+            try
+            {
+                if (!AnalyzeReplay(song, replayInfo))
+                {
+                    DialogManager.Instance.ShowMessage("Resultados do replay inconsistentes",
+                        "A verificação do replay encontrou diferenças em relação à partida. " +
+                        "Feche este aviso para continuar; a pontuação exibida continua sendo a da partida.\n\n" +
+                        $"Identificador da música: {song.Hash}");
+                }
+            }
+            catch (Exception ex)
+            {
+                YargLogger.LogException(ex, $"Failed to analyze replay! Song hash: {song.Hash}");
+                DialogManager.Instance.ShowMessage("Não foi possível verificar o replay",
+                    "Ocorreu um erro na análise do replay. Feche este aviso para continuar.\n\n" +
+                    $"Identificador da música: {song.Hash}");
+            }
         }
 
         private void OnDisable()
@@ -498,70 +502,72 @@ namespace YARG.Menu.ScoreScreen
 #nullable disable
         {
             _analyzingReplay = true;
-
-            var chart = songEntry.LoadChart();
-            if (chart == null)
+            try
             {
-                YargLogger.LogError("Chart did not load");
-                _analyzingReplay = false;
-                return true;
-            }
-
-            if (GlobalVariables.State.ScoreScreenStats.Value.PlayerScores.All(e => e.Player.Profile.IsBot))
-            {
-                YargLogger.LogInfo("No human players in ReplayEntry.");
-                _analyzingReplay = false;
-                return true;
-            }
-
-            if (replayEntry == null)
-            {
-                YargLogger.LogError("ReplayEntry is null");
-                _analyzingReplay = false;
-                return true;
-            }
-
-            var replayOptions = new ReplayReadOptions
-            {
-                KeepFrameTimes = GlobalVariables.VerboseReplays
-            };
-            var (result, data) = ReplayIO.TryLoadData(replayEntry, replayOptions);
-            if (result != ReplayReadResult.Valid)
-            {
-                YargLogger.LogFormatError("Replay did not load. {0}", result);
-                _analyzingReplay = false;
-                return true;
-            }
-
-            var results = ReplayAnalyzer.AnalyzeReplay(chart, replayEntry, data);
-            bool allPass = true;
-
-            for (int i = 0; i < results.Length; i++)
-            {
-                var analysisResult = results[i];
-
-                // Always print the stats in debug mode
-#if UNITY_EDITOR || YARG_TEST_BUILD
-                YargLogger.LogFormatInfo("({0}, {1}/{2}) Verification Result: {3}. Stats:\n{4}",
-                    data.Frames[i].Profile.Name, data.Frames[i].Profile.CurrentInstrument,
-                    data.Frames[i].Profile.CurrentDifficulty, item4: analysisResult.Passed ? "Passed" : "Failed",
-                    item5: analysisResult.StatLog);
-#endif
-
-                if (!analysisResult.Passed)
+                var chart = songEntry.LoadChart();
+                if (chart == null)
                 {
-#if !(UNITY_EDITOR || YARG_TEST_BUILD)
-                    YargLogger.LogFormatWarning("({0}, {1}/{2}) FAILED verification. Stats:\n{3}",
-                        data.Frames[i].Profile.Name, data.Frames[i].Profile.CurrentInstrument,
-                        data.Frames[i].Profile.CurrentDifficulty, item4: analysisResult.StatLog);
-#endif
-                    _analyzingReplay = false;
-                    allPass = false;
+                    YargLogger.LogError("Chart did not load");
+                    return true;
                 }
-            }
 
-            _analyzingReplay = false;
-            return allPass;
+                if (GlobalVariables.State.ScoreScreenStats.Value.PlayerScores.All(e => e.Player.Profile.IsBot))
+                {
+                    YargLogger.LogInfo("No human players in ReplayEntry.");
+                    return true;
+                }
+
+                if (replayEntry == null)
+                {
+                    YargLogger.LogError("ReplayEntry is null");
+                    return true;
+                }
+
+                var replayOptions = new ReplayReadOptions
+                {
+                    KeepFrameTimes = GlobalVariables.VerboseReplays
+                };
+                var (result, data) = ReplayIO.TryLoadData(replayEntry, replayOptions);
+                if (result != ReplayReadResult.Valid)
+                {
+                    YargLogger.LogFormatError("Replay did not load. {0}", result);
+                    return true;
+                }
+
+                var results = JudgmentReplayAnalyzer.AnalyzeReplay(chart, replayEntry, data,
+                    JudgmentReplayMetadata.Load(replayEntry, data));
+                bool allPass = true;
+
+                for (int i = 0; i < results.Length; i++)
+                {
+                    var analysisResult = results[i];
+
+                    // Always print the stats in debug mode
+#if UNITY_EDITOR || YARG_TEST_BUILD
+                    YargLogger.LogFormatInfo("({0}, {1}/{2}) Verification Result: {3}. Stats:\n{4}",
+                        data.Frames[i].Profile.Name, data.Frames[i].Profile.CurrentInstrument,
+                        data.Frames[i].Profile.CurrentDifficulty, item4: analysisResult.Passed ? "Passed" : "Failed",
+                        item5: analysisResult.StatLog);
+#endif
+
+                    if (!analysisResult.Passed)
+                    {
+#if !(UNITY_EDITOR || YARG_TEST_BUILD)
+                        YargLogger.LogFormatWarning("({0}, {1}/{2}) FAILED verification. Stats:\n{3}",
+                            data.Frames[i].Profile.Name, data.Frames[i].Profile.CurrentInstrument,
+                            data.Frames[i].Profile.CurrentDifficulty, item4: analysisResult.StatLog);
+#endif
+                        allPass = false;
+                    }
+                }
+
+                return allPass;
+            }
+            finally
+            {
+                // Loading or analysis may throw; diagnostics must never lock Continue.
+                _analyzingReplay = false;
+            }
         }
 
         private NavigationScheme.Entry _continueButtonEntry;

@@ -1,6 +1,5 @@
 using System;
 using Cysharp.Threading.Tasks;
-using Unity.Collections;
 using UnityEngine;
 using YARG.Core.Venue;
 using YARG.Helpers.Extensions;
@@ -36,7 +35,10 @@ namespace YARG.Gameplay
         private bool _videoTexFound = false;
 
         private UniTask           _updateTask = UniTask.CompletedTask;
-        private NativeArray<byte> _pixelData;
+        // Worker-owned managed storage: never retain/dispose a borrowed Texture2D data view.
+        private readonly byte[] _pixelData = new byte[FFT_TEXTURE_WIDTH * 2];
+        private bool _hasSoundData;
+        private bool _shuttingDown;
 
         private static int _soundTexId = Shader.PropertyToID("_Yarg_SoundTex");
         private static int _sourceIconId = Shader.PropertyToID("_Yarg_SourceIcon");
@@ -107,13 +109,15 @@ namespace YARG.Gameplay
             {
                 _videoTexture = new RenderTexture(VIDEO_TEX_WIDTH, VIDEO_TEX_HEIGHT, 0);
             }
-            if (width is { } checkedWidth && checkedWidth > _videoTexture.width)
+            int targetWidth = Math.Max(_videoTexture.width, width ?? _videoTexture.width);
+            int targetHeight = Math.Max(_videoTexture.height, height ?? _videoTexture.height);
+            if (targetWidth != _videoTexture.width || targetHeight != _videoTexture.height)
             {
-                _videoTexture.width = checkedWidth;
-            }
-            if (height is { } checkedHeight && checkedHeight > _videoTexture.height)
-            {
-                _videoTexture.height = checkedHeight;
+                bool wasCreated = _videoTexture.IsCreated();
+                if (wasCreated) _videoTexture.Release();
+                _videoTexture.width = targetWidth;
+                _videoTexture.height = targetHeight;
+                if (wasCreated) _videoTexture.Create();
             }
             return _videoTexture;
         }
@@ -174,11 +178,8 @@ namespace YARG.Gameplay
             }
         }
 
-        private void UpdateFFT(NativeArray<byte> pixelData)
+        private void UpdateFFT(byte[] pixelData)
         {
-            GameManager.GetMixerFFTData(_rawFft, FFT_SIZE_LOG, true);
-            GameManager.GetMixerSampleData(_rawWave);
-
             // Massage complex FFT data into real magnitudes
             // We go by twos because the real and complex components are interleaved
             for (int i = 0; i < _fft.Length * 2; i += 2)
@@ -218,33 +219,38 @@ namespace YARG.Gameplay
 
         public void Update()
         {
-            if (_soundTexture != null && _updateTask.Status.IsCompleted())
-            {
-                if (_pixelData.IsCreated)
-                {
-                    _soundTexture.Apply(false, false);
-                }
+            if (_shuttingDown || GameManager == null || _soundTexture == null || GameManager.Paused || !_updateTask.Status.IsCompleted()) return;
 
-                _pixelData = _soundTexture.GetPixelData<Byte>(0);
-                _updateTask =
-                    UniTask.RunOnThreadPool(static state => ((TextureManager) state).UpdateFFT_Threaded(), this);
+            // Consume each task once; both native audio reads and texture upload stay on the main thread.
+            var completed = _updateTask;
+            _updateTask = UniTask.CompletedTask;
+            completed.GetAwaiter().GetResult();
+            if (_hasSoundData)
+            {
+                _soundTexture.LoadRawTextureData(_pixelData);
+                _soundTexture.Apply(false, false);
             }
+            GameManager.GetMixerFFTData(_rawFft, FFT_SIZE_LOG, true);
+            GameManager.GetMixerSampleData(_rawWave);
+            _updateTask = UniTask.RunOnThreadPool(static state => ((TextureManager)state).UpdateFFT_Threaded(), this);
+            _hasSoundData = true;
         }
 
         private void UpdateFFT_Threaded()
         {
+            // Only math on preallocated managed arrays. No Unity objects or audio handles outlive the scene.
             UpdateFFT(_pixelData);
         }
 
         protected override void GameplayDestroy()
         {
+            _shuttingDown = true;
             if (_videoTexture != null)
             {
                 _videoTexture.Release();
-                _videoTexture.DiscardContents();
+                Destroy(_videoTexture);
                 _videoTexture = null;
             }
-            // Dispose FFT stuff, but only after the FFT update has completed
             _ = Destroy_Async();
         }
 
@@ -256,14 +262,12 @@ namespace YARG.Gameplay
             }
             finally
             {
-                if (_pixelData.IsCreated)
-                {
-                    _pixelData.Dispose();
-                }
+                Destroy(_soundTexture);
+                _soundTexture = null;
+                // Loaded album art is owned here; default cover/source icons are shared assets.
+                Destroy(_albumCover);
+                _albumCover = null;
             }
-
-            Destroy(_soundTexture);
-            _soundTexture = null;
         }
     }
 }

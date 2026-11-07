@@ -10,9 +10,9 @@ void Check(bool value, string message)
     if (!value) throw new InvalidOperationException(message);
 }
 var settings = new RhythmJudgmentSettings();
-foreach (double ms in new[] { -28d, -15, 0, 8, 26 })
+foreach (double ms in new[] { -32d, -28, -15, 0, 8, 26, 30 })
     Check(settings.Classify(ms) == RhythmJudgment.Perfect, $"Perfect {ms}");
-foreach (double ms in new[] { -65d, -28.001, 26.001, 42, 62 })
+foreach (double ms in new[] { -65d, -32.001, 30.001, 42, 62 })
     Check(settings.Classify(ms) == RhythmJudgment.Great, $"Great {ms}");
 foreach (double ms in new[] { -185d, -180, -65.001, 62.001, 87, 120, 150, 170 })
     Check(settings.Classify(ms) == RhythmJudgment.Good, $"Good {ms}");
@@ -105,9 +105,12 @@ LaneMappingChecks.Run(root, Check);
 OptimizationChecks.Run(Check);
 RenderTextureLifetimeChecks.Run(root, Check);
 RenderedTrackApiChecks.Run(root, Check);
+TextureManagerLifetimeChecks.Run(root, Check);
+UiResourceOptimizationChecks.Run(root, Check);
 EarlyHitChecks.Run(Check);
 WeightedJudgmentChecks.Run(Check);
 ReplayJudgmentChecks.Run(Check);
+ScoreScreenReplayChecks.Run(root, Check);
 string[] sources = Directory.GetFiles(Path.Combine(root, "Assets/Script/Gameplay/Judgments"), "*.cs")
     .Concat(new[] { "HUD/TrackView.cs", "Player/TrackPlayer.cs", "Player/FiveFretGuitarPlayer.cs",
         "Player/FiveLaneKeysPlayer.cs", "Player/ProKeysPlayer.cs", "Player/DrumsPlayer.cs" }
@@ -116,7 +119,7 @@ string[] sources = Directory.GetFiles(Path.Combine(root, "Assets/Script/Gameplay
 foreach (string prefab in new[] { "FiveFretGuitarVisual", "FiveLaneKeysVisual", "ProKeysVisual", "FourLaneDrumsVisual" })
 {
     string yaml = File.ReadAllText(Path.Combine(root, "Assets/Prefabs/Gameplay/Visual", prefab + ".prefab"));
-    Check(yaml.Contains("  JudgmentSettings:\n    UseMillisecondWindow: 1\n    PerfectMs: 28\n    GreatMs: 65\n    GoodMs: 185\n    LatePerfectMs: 26\n    LateGreatMs: 62\n    LateGoodMs: 170"),
+    Check(yaml.Contains("  JudgmentSettings:\n    UseMillisecondWindow: 1\n    PerfectMs: 32\n    GreatMs: 65\n    GoodMs: 185\n    LatePerfectMs: 30\n    LateGreatMs: 62\n    LateGoodMs: 170"),
         $"Serialized timing defaults missing from {prefab}");
 }
 string hud = File.ReadAllText(Path.Combine(root, "Assets/Prefabs/Gameplay/HUD/TrackView.prefab"));
@@ -160,7 +163,7 @@ Check(!presentation.Contains("_overlapDistance") && !presentation.Contains("_slo
 Check(hud.Contains("_imageSize: {x: 220, y: 96}") && hud.Contains("_fitToLane: 0"),
     "Larger images must not be automatically shrunk to a single narrow column");
 
-sources = sources.Concat(new[] { "Gameplay/VenueCameraRenderer.cs", "Gameplay/Visuals/HighwayCameraRendering.cs", "Gameplay/GameManager.cs", "Gameplay/GameManager.Loading.cs", "BossHealthBar.cs",
+sources = sources.Concat(new[] { "Gameplay/TextureManager.cs", "Gameplay/Visuals/TrackMaterial.cs", "Helpers/CameraPreviewTexture.cs", "Gameplay/VenueCameraRenderer.cs", "Gameplay/Visuals/HighwayCameraRendering.cs", "Gameplay/GameManager.cs", "Gameplay/GameManager.Loading.cs", "BossHealthBar.cs",
     "GepetoBossReaction.cs", "Menu/ScoreScreen/ScoreCards/ScoreCard.cs", "Menu/ScoreScreen/ScoreScreenContainer.cs",
     "Menu/ScoreScreen/ScoreScreenMenu.cs", "Menu/History/ViewTypes/ReplayViewType.cs", "Scores/PlayerScoreRecord.cs" }
     .Select(f => Path.Combine(root, "Assets/Script", f))).ToArray();

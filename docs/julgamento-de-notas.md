@@ -7,13 +7,14 @@ musical, preservando offsets, calibração e velocidade. Não arredonda para fra
 
 | Resultado | Antecipado, até | Atrasado, até | Pontos da cabeça da nota | Dano ao boss |
 | --- | ---: | ---: | ---: | ---: |
-| PERFEITO! | 28 ms | 26 ms | 100% | 1,15× |
+| PERFEITO! | 32 ms | 30 ms | 100% | 1,15× |
 | ÓTIMO! | 65 ms | 62 ms | 80% | 1,00× |
 | BOM! | 185 ms | 170 ms | 50% | 0,70× |
 | ERROU! | fora da janela ou erro registrado pelo motor | — | 0 | 0 |
 
-As faixas são contínuas: por exemplo, +27 ms é ÓTIMO!, −66 ms é BOM!.
-A configuração anterior era ±25/60/180 ms. A ampliação antecipada foi pequena; a margem
+As faixas são contínuas: por exemplo, +31 ms é ÓTIMO!, −66 ms é BOM!.
+O ajuste mais recente ampliou somente PERFEITO! de 28/26 para 32/30 ms (+4 ms de cada lado).
+A configuração anterior à assimetria era ±25/60/180 ms. A ampliação antecipada foi pequena; a margem
 atrasada de aceitação é 15 ms menor que a antecipada. Todos esses campos e os pesos ficam no
 Inspector, em `JudgmentSettings`, nos quatro prefabs de jogadores em `Assets/Prefabs/Gameplay/Visual`.
 PERFEITO! conserva o valor base do instrumento: uma nota base de 50 dá 50/40/25 pontos antes
@@ -72,6 +73,26 @@ companheiros inválidos são registrados no log e ignorados, com fallback legado
 O adaptador `JudgmentReplayAnalyzer` usa o EngineManager original e os mesmos motores da
 partida. Sua criação de instrumentos e validação estatística foram adaptadas do ReplayAnalyzer
 existente porque a fábrica de motores dele é privada. Não há um segundo cálculo de score.
+
+## Correção do aviso de replay na tela final
+
+A tela final ainda chamava diretamente `ReplayAnalyzer` do Core, enquanto gameplay, histórico e
+recálculo da banda já usavam `JudgmentReplayAnalyzer`. Assim, um acerto ÓTIMO! de 40 pontos
+podia ser reanalisado como 50, gerando “Inconsistent Replay Results!”. `ScoreScreenMenu` agora
+carrega os metadados do replay e usa o mesmo adaptador da partida, mantendo o fallback legado.
+
+O diagnóstico também era aberto antes da inicialização da navegação de resultados. A tela
+empilhava seus controles por cima do diálogo; fechar a janela podia remover o esquema errado.
+Agora os avisos são abertos depois da navegação final estar instalada. Um `finally` libera
+`_analyzingReplay` em retornos normais e exceções, impedindo que uma falha na análise deixe
+Continuar bloqueado. Avisos reais continuam existindo, em português; os scores não são substituídos.
+
+Verificação desta correção: **6.584 verificações aprovadas** no harness, incluindo os métodos
+reais de análise/diagnóstico da tela final com motores reais, replay novo/legado solo,
+divergência deliberada e exceção de carregamento. UI/navegação e carregamento de arquivo são
+substitutos controlados nesse teste; não equivale a testar a janela real no Editor.
+No Play, terminar uma música solo com ÓTIMOS/BONS, conferir a ausência do falso aviso e testar
+Continuar e Reiniciar. Se houver uma divergência real, conferir se Fechar restaura os controles.
 
 ## Arquivos desta alteração
 
