@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+using YARG.Gameplay.Judgments;
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -154,7 +155,7 @@ namespace YARG.Gameplay.Player
             {
                 // Create the engine params from the engine preset
                 var timingPreset = Player.EnginePreset.ProKeys.Copy();
-                timingPreset.HitWindow = JudgmentSettings.Configure(timingPreset.HitWindow);
+                timingPreset.HitWindow = JudgmentSession.Policy.Configure(timingPreset.HitWindow);
                 EngineParams = timingPreset.Create(StarMultiplierThresholds, SoloBonusStarMultiplierThresholds, false);
             }
             else
@@ -169,7 +170,9 @@ namespace YARG.Gameplay.Player
                 EngineContainer = null;
             }
 
-            var engine = new YargProKeysEngine(NoteTrack, SyncTrack, EngineParams, Player.Profile.IsBot);
+            YargProKeysEngine engine = JudgmentSession.WeightedScoring
+                ? new JudgedProKeysEngine(NoteTrack, SyncTrack, EngineParams, Player.Profile.IsBot, JudgmentSession)
+                : new YargProKeysEngine(NoteTrack, SyncTrack, EngineParams, Player.Profile.IsBot);
             EngineContainer = GameManager.EngineManager.Register(engine, NoteTrack.Instrument, Chart, Player.RockMeterPreset);
 
             HitWindow = EngineParams.HitWindow;

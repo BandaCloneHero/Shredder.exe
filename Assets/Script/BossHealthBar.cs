@@ -1,3 +1,4 @@
+using YARG.Gameplay.Judgments;
 using UnityEngine;
 using UnityEngine.UI;
 using YARG.Gameplay;
@@ -15,14 +16,6 @@ namespace YARG
         [Tooltip("Proporção de notas que um jogador solo precisa acertar para derrotar Gepeto.")]
         [Range(0.5f, 1f)]
         [SerializeField] private float soloTargetHitRate = 0.72f;
-        [Tooltip("Janela em segundos para considerar um acerto muito preciso.")]
-        [SerializeField] private float preciseHitWindow = 0.05f;
-        [Tooltip("Janela em segundos para considerar um acerto bom.")]
-        [SerializeField] private float goodHitWindow = 0.12f;
-        [SerializeField] private float preciseDamageMultiplier = 1.15f;
-        [SerializeField] private float goodDamageMultiplier = 1f;
-        [SerializeField] private float looseDamageMultiplier = 0.7f;
-
         [Header("Velocidade de Suavização")]
         [SerializeField] private float healthBarSmoothSpeed = 250f;
 
@@ -76,18 +69,14 @@ namespace YARG
             healthSlider.value = displayedHealth;
         }
 
-        public void RegisterNoteHit(double noteTime, double hitTime, float damageMultiplier = 1f)
+        public void RegisterNoteHit(RhythmJudgmentResult result, float damageMultiplier = 1f)
         {
             if (currentHealth <= 0f || expectedNoteCount <= 0) return;
             currentCombo++;
 
-            float timingError = Mathf.Abs((float)(hitTime - noteTime));
-            float timingMultiplier = timingError <= preciseHitWindow
-                ? preciseDamageMultiplier
-                : timingError <= goodHitWindow ? goodDamageMultiplier : looseDamageMultiplier;
             float comboMultiplier = currentCombo >= 30 ? 1.1f : currentCombo >= 10 ? 1.05f : 1f;
             float damagePerHit = maxHealth / (expectedNoteCount * Mathf.Max(0.01f, soloTargetHitRate));
-            TakeDamage(damagePerHit * timingMultiplier * comboMultiplier * Mathf.Clamp01(damageMultiplier));
+            TakeDamage(damagePerHit * result.DamageMultiplier * comboMultiplier * Mathf.Clamp01(damageMultiplier));
         }
 
         public float RecoverHealth(float amount)

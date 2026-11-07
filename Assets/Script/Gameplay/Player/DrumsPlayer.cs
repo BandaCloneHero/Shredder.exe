@@ -1,4 +1,5 @@
-﻿using System;
+using YARG.Gameplay.Judgments;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -170,7 +171,7 @@ namespace YARG.Gameplay.Player
             {
                 // Create the engine params from the engine preset
                 var timingPreset = Player.EnginePreset.Drums.Copy();
-                timingPreset.HitWindow = JudgmentSettings.Configure(timingPreset.HitWindow);
+                timingPreset.HitWindow = JudgmentSession.Policy.Configure(timingPreset.HitWindow);
                 EngineParams = timingPreset.Create(StarMultiplierThresholds, SoloBonusStarMultiplierThresholds, mode);
             }
             else
@@ -185,7 +186,9 @@ namespace YARG.Gameplay.Player
                 EngineContainer = null;
             }
 
-            var engine = new YargDrumsEngine(NoteTrack, SyncTrack, EngineParams, Player.Profile.IsBot, Player.Profile.GameMode is GameMode.EliteDrums);
+            YargDrumsEngine engine = JudgmentSession.WeightedScoring
+                ? new JudgedDrumsEngine(NoteTrack, SyncTrack, EngineParams, Player.Profile.IsBot, Player.Profile.GameMode is GameMode.EliteDrums, JudgmentSession)
+                : new YargDrumsEngine(NoteTrack, SyncTrack, EngineParams, Player.Profile.IsBot, Player.Profile.GameMode is GameMode.EliteDrums);
             EngineContainer = GameManager.EngineManager.Register(engine, NoteTrack.Instrument, Chart, Player.RockMeterPreset);
 
             HitWindow = EngineParams.HitWindow;

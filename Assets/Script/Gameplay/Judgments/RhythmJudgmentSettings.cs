@@ -11,27 +11,65 @@ namespace YARG.Gameplay.Judgments
     {
         [Tooltip("Desative para preservar a janela original do preset.")]
         public bool UseMillisecondWindow = true;
-        [Min(0)] public float PerfectMs = 25;
-        [Min(0)] public float GreatMs = 60;
-        [Tooltip("Janela de aceitação antecipada/atrasada. Acima de GreatMs, acertos válidos são BOM!.")]
-        [Min(1)] public float GoodMs = 180;
+        [Header("Antecipado (ms)")]
+        [Min(0)] public float PerfectMs = 28;
+        [Min(0)] public float GreatMs = 65;
+        [Min(1)] public float GoodMs = 185;
+        [Header("Atrasado (ms) — margem menor")]
+        [Min(0)] public float LatePerfectMs = 26;
+        [Min(0)] public float LateGreatMs = 62;
+        [Min(1)] public float LateGoodMs = 170;
+
+        [Header("Pontuação relativa ao acerto perfeito")]
+        [Range(0.02f, 0.99f)] public float GreatScoreMultiplier = 0.8f;
+        [Range(0.01f, 0.98f)] public float GoodScoreMultiplier = 0.5f;
+        [Header("Dano ao boss")]
+        [Min(0)] public float PerfectDamageMultiplier = 1.15f;
+        [Min(0)] public float GreatDamageMultiplier = 1f;
+        [Min(0)] public float GoodDamageMultiplier = 0.7f;
+
+        public RhythmJudgmentSettings Copy() => (RhythmJudgmentSettings)MemberwiseClone();
 
         public void Validate()
         {
             PerfectMs = Mathf.Max(0, PerfectMs);
             GreatMs = Mathf.Max(PerfectMs, GreatMs);
             GoodMs = Mathf.Max(1, Mathf.Max(GreatMs, GoodMs));
+            LatePerfectMs = Mathf.Min(PerfectMs, Mathf.Max(0, LatePerfectMs));
+            LateGreatMs = Mathf.Min(GreatMs, Mathf.Max(LatePerfectMs, LateGreatMs));
+            LateGoodMs = Mathf.Min(GoodMs, Mathf.Max(1, Mathf.Max(LateGreatMs, LateGoodMs)));
+            GreatScoreMultiplier = Mathf.Clamp(GreatScoreMultiplier, 0.02f, 0.99f);
+            GoodScoreMultiplier = Mathf.Clamp(GoodScoreMultiplier, 0.01f, GreatScoreMultiplier - 0.01f);
+            PerfectDamageMultiplier = Mathf.Max(0.03f, PerfectDamageMultiplier);
+            GreatDamageMultiplier = Mathf.Clamp(GreatDamageMultiplier, 0.02f, PerfectDamageMultiplier - 0.01f);
+            GoodDamageMultiplier = Mathf.Clamp(GoodDamageMultiplier, 0.01f, GreatDamageMultiplier - 0.01f);
         }
 
         public RhythmJudgment Classify(double signedMilliseconds)
         {
-            // Epsilon only compensates binary floating-point subtraction at exact boundaries.
             double value = Math.Abs(signedMilliseconds);
-            if (value <= PerfectMs + 1e-7) return RhythmJudgment.Perfect;
-            if (value <= GreatMs + 1e-7) return RhythmJudgment.Great;
-            if (!UseMillisecondWindow || value <= GoodMs + 1e-7) return RhythmJudgment.Good;
+            bool early = signedMilliseconds <= 0;
+            if (value <= (early ? PerfectMs : LatePerfectMs) + 1e-7) return RhythmJudgment.Perfect;
+            if (value <= (early ? GreatMs : LateGreatMs) + 1e-7) return RhythmJudgment.Great;
+            if (!UseMillisecondWindow || value <= (early ? GoodMs : LateGoodMs) + 1e-7) return RhythmJudgment.Good;
             return RhythmJudgment.Miss;
         }
+
+        public double ScoreMultiplier(RhythmJudgment judgment) => judgment switch
+        {
+            RhythmJudgment.Perfect => 1,
+            RhythmJudgment.Great => GreatScoreMultiplier,
+            RhythmJudgment.Good => GoodScoreMultiplier,
+            _ => 0
+        };
+
+        public float DamageMultiplier(RhythmJudgment judgment) => judgment switch
+        {
+            RhythmJudgment.Perfect => PerfectDamageMultiplier,
+            RhythmJudgment.Great => GreatDamageMultiplier,
+            RhythmJudgment.Good => GoodDamageMultiplier,
+            _ => 0
+        };
 
         public EnginePreset.HitWindowPreset Configure(EnginePreset.HitWindowPreset original)
         {
@@ -40,9 +78,9 @@ namespace YARG.Gameplay.Judgments
             if (UseMillisecondWindow)
             {
                 window.IsDynamic = false;
-                // Core expects the FULL window in seconds, not a per-side duration.
-                window.MinWindow = window.MaxWindow = GoodMs * 0.002;
-                window.FrontToBackRatio = 1;
+                window.MinWindow = window.MaxWindow = (GoodMs + LateGoodMs) * 0.001;
+                // Core splits the TOTAL window with this ratio. No frame-based comparisons.
+                window.FrontToBackRatio = 2d * GoodMs / (GoodMs + LateGoodMs);
             }
             return window;
         }

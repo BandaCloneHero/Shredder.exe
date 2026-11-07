@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using YARG.Gameplay.Judgments;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using YARG.Core.Logging;
@@ -140,7 +141,7 @@ namespace YARG.Menu.History
                 return;
             }
 
-            var results = ReplayAnalyzer.AnalyzeReplay(chart, _entry, data);
+            var results = JudgmentReplayAnalyzer.AnalyzeReplay(chart, _entry, data, JudgmentReplayMetadata.Load(_entry, data));
             for (int i = 0; i < results.Length; i++)
             {
                 var analysisResult = results[i];
@@ -167,7 +168,11 @@ namespace YARG.Menu.History
             }
 
             // Ask the user for an ending location
-            FileExplorerHelper.OpenSaveFile(null, _entry!.ReplayName, "replay", path => File.Copy(_entry.FilePath, path, true));
+            FileExplorerHelper.OpenSaveFile(null, _entry!.ReplayName, "replay", path =>
+            {
+                File.Copy(_entry.FilePath, path, true);
+                JudgmentReplayMetadata.CopyCompanion(_entry.FilePath, path);
+            });
         }
 
         public override void PlayWithReplayClick()

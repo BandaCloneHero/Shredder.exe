@@ -1,3 +1,4 @@
+using YARG.Gameplay.Judgments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -154,6 +155,7 @@ namespace YARG.Gameplay
 
         public ReplayInfo ReplayInfo { get; private set; }
         public ReplayData ReplayData { get; private set; }
+        public JudgmentReplayMetadata ReplayJudgments { get; private set; }
 
         public List<PauseInfo> PauseInfo { get; } = new List<PauseInfo>();
 
@@ -640,6 +642,7 @@ namespace YARG.Gameplay
                     Player = player.Player,
                     Stats = player.BaseStats,
                     FinalEnergy = player.EnergyPercent,
+                    Judgments = (player as TrackPlayer)?.CaptureJudgmentSummary(),
                     AverageMultiplier = player.BaseEngine.BaseNoteScore == 0 ?
                         0 :
                         // PendingScore should be 0 at this point, so no reason to add it
@@ -680,6 +683,7 @@ namespace YARG.Gameplay
                     continue;
                 }
 
+                var judgments = (player as TrackPlayer)?.CaptureJudgmentSummary();
                 playerEntries.Add(new PlayerScoreRecord
                 {
                     PlayerId = profile.Id,
@@ -697,6 +701,11 @@ namespace YARG.Gameplay
                     IsFc = player.IsFc,
                     IsReplay = player.Player.IsReplay,
 
+                    PerfectJudgments = judgments?.Perfect,
+                    GreatJudgments = judgments?.Great,
+                    GoodJudgments = judgments?.Good,
+                    MissedJudgments = judgments?.MissedNotes,
+                    InvalidJudgments = judgments?.InvalidInputs,
                     Percent = player.BaseStats.Percent
                 });
 
@@ -720,7 +729,7 @@ namespace YARG.Gameplay
                 {
                     return;
                 }
-                var results = ReplayAnalyzer.AnalyzeReplay(Chart, replayInfo, ReplayData);
+                var results = JudgmentReplayAnalyzer.AnalyzeReplay(Chart, replayInfo, ReplayData, ReplayJudgments);
                 foreach (var result in results)
                 {
                     humanBandScore += result.ResultStats.TotalScore + result.ResultStats.BandBonusScore;
@@ -816,6 +825,8 @@ namespace YARG.Gameplay
                 return null;
             }
 
+            var policies = new List<RhythmJudgmentSettings>(_players.Count);
+            var profileIds = new List<Guid>(_players.Count);
             var frames = new List<ReplayFrame>(_players.Count);
             var replayStats = new List<ReplayStats>(_players.Count);
             var colorProfiles = new Dictionary<Guid, ColorProfile>();
@@ -833,6 +844,9 @@ namespace YARG.Gameplay
 
                 var (frame, stats) = player.ConstructReplayData();
                 frames.Add(frame);
+                var session = (player as TrackPlayer)?.JudgmentSession;
+                policies.Add(session != null && session.WeightedScoring ? session.Policy.Copy() : null);
+                profileIds.Add(player.Player.Profile.Id);
                 replayStats.Add(stats);
                 bandScore += player.Score;
 
@@ -861,6 +875,8 @@ namespace YARG.Gameplay
                 return null;
             }
 
+            ReplayJudgments = new JudgmentReplayMetadata { Players = profileIds.ToArray(), Policies = policies.ToArray() };
+            ReplayJudgments.Save(replayInfo);
             ReplayContainer.AddEntry(replayInfo);
             _isReplaySaved = true;
             return replayInfo;

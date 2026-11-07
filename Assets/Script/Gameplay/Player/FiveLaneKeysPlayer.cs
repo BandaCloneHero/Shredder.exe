@@ -1,4 +1,5 @@
-﻿using System;
+using YARG.Gameplay.Judgments;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -168,7 +169,7 @@ public override bool ShouldUpdateInputsOnResume => true;
             {
                 // Create the engine params from the engine preset
                 var timingPreset = Player.EnginePreset.ProKeys.Copy();
-                timingPreset.HitWindow = JudgmentSettings.Configure(timingPreset.HitWindow);
+                timingPreset.HitWindow = JudgmentSession.Policy.Configure(timingPreset.HitWindow);
                 EngineParams = timingPreset.Create(StarMultiplierThresholds, SoloBonusStarMultiplierThresholds, isBass);
                 //EngineParams = EnginePreset.Precision.FiveFretGuitar.Create(StarMultiplierThresholds, isBass);
             }
@@ -184,7 +185,9 @@ public override bool ShouldUpdateInputsOnResume => true;
                 EngineContainer = null;
             }
 
-            var engine = new YargFiveLaneKeysEngine(NoteTrack, SyncTrack, EngineParams, Player.Profile.IsBot);
+            YargFiveLaneKeysEngine engine = JudgmentSession.WeightedScoring
+                ? new JudgedFiveLaneKeysEngine(NoteTrack, SyncTrack, EngineParams, Player.Profile.IsBot, JudgmentSession)
+                : new YargFiveLaneKeysEngine(NoteTrack, SyncTrack, EngineParams, Player.Profile.IsBot);
             EngineContainer = GameManager.EngineManager.Register(engine, NoteTrack.Instrument, Chart, Player.RockMeterPreset);
 
             HitWindow = EngineParams.HitWindow;

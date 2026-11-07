@@ -10,22 +10,20 @@ void Check(bool value, string message)
     if (!value) throw new InvalidOperationException(message);
 }
 var settings = new RhythmJudgmentSettings();
-foreach (double sign in new[] { -1d, 1d })
-{
-    foreach (double ms in new[] { 0d, 8, 10, 15, 25 })
-        Check(settings.Classify(sign * ms) == RhythmJudgment.Perfect, $"Perfect {sign * ms}");
-    foreach (double ms in new[] { 25.001, 26, 42, 50, 60 })
-        Check(settings.Classify(sign * ms) == RhythmJudgment.Great, $"Great {sign * ms}");
-    foreach (double ms in new[] { 60.001, 61, 87, 100, 120, 150, 170, 180 })
-        Check(settings.Classify(sign * ms) == RhythmJudgment.Good, $"Good {sign * ms}");
-    Check(settings.Classify(sign * 180.001) == RhythmJudgment.Miss, "Outside window");
-}
+foreach (double ms in new[] { -28d, -15, 0, 8, 26 })
+    Check(settings.Classify(ms) == RhythmJudgment.Perfect, $"Perfect {ms}");
+foreach (double ms in new[] { -65d, -28.001, 26.001, 42, 62 })
+    Check(settings.Classify(ms) == RhythmJudgment.Great, $"Great {ms}");
+foreach (double ms in new[] { -185d, -180, -65.001, 62.001, 87, 120, 150, 170 })
+    Check(settings.Classify(ms) == RhythmJudgment.Good, $"Good {ms}");
+foreach (double ms in new[] { -185.001, 170.001, 180d })
+    Check(settings.Classify(ms) == RhythmJudgment.Miss, $"Outside asymmetric window {ms}");
 var original = new EnginePreset.HitWindowPreset { IsDynamic = true, MinWindow = .04, MaxWindow = .14 };
 var configured = settings.Configure(original);
 var window = configured.Create();
-Check(!configured.IsDynamic && configured.MinWindow == .36 && configured.MaxWindow == .36, "Full window conversion");
+Check(!configured.IsDynamic && Math.Abs(configured.MinWindow - .355) < 1e-9 && Math.Abs(configured.MaxWindow - .355) < 1e-9, "Full window conversion");
 Check(original.IsDynamic && original.MinWindow == .04, "Must not mutate shared preset");
-Check(Math.Abs(window.GetFrontEnd(.36) + .18) < 1e-9 && Math.Abs(window.GetBackEnd(.36) - .18) < 1e-9, "Symmetric window");
+Check(Math.Abs(window.GetFrontEnd(.355) + .185) < 1e-9 && Math.Abs(window.GetBackEnd(.355) - .170) < 1e-9, "Asymmetric window");
 settings.UseMillisecondWindow = false;
 var legacy = settings.Configure(original);
 Check(legacy.IsDynamic && legacy.MinWindow == .04 && legacy.MaxWindow == .14, "Legacy opt-out");
@@ -105,6 +103,8 @@ Check(animation.Age == 0, "Visual age cannot go backwards");
 string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../"));
 LaneMappingChecks.Run(root, Check);
 EarlyHitChecks.Run(Check);
+WeightedJudgmentChecks.Run(Check);
+ReplayJudgmentChecks.Run(Check);
 string[] sources = Directory.GetFiles(Path.Combine(root, "Assets/Script/Gameplay/Judgments"), "*.cs")
     .Concat(new[] { "HUD/TrackView.cs", "Player/TrackPlayer.cs", "Player/FiveFretGuitarPlayer.cs",
         "Player/FiveLaneKeysPlayer.cs", "Player/ProKeysPlayer.cs", "Player/DrumsPlayer.cs" }
@@ -113,7 +113,7 @@ string[] sources = Directory.GetFiles(Path.Combine(root, "Assets/Script/Gameplay
 foreach (string prefab in new[] { "FiveFretGuitarVisual", "FiveLaneKeysVisual", "ProKeysVisual", "FourLaneDrumsVisual" })
 {
     string yaml = File.ReadAllText(Path.Combine(root, "Assets/Prefabs/Gameplay/Visual", prefab + ".prefab"));
-    Check(yaml.Contains("  JudgmentSettings:\n    UseMillisecondWindow: 1\n    PerfectMs: 25\n    GreatMs: 60\n    GoodMs: 180"),
+    Check(yaml.Contains("  JudgmentSettings:\n    UseMillisecondWindow: 1\n    PerfectMs: 28\n    GreatMs: 65\n    GoodMs: 185\n    LatePerfectMs: 26\n    LateGreatMs: 62\n    LateGoodMs: 170"),
         $"Serialized timing defaults missing from {prefab}");
 }
 string hud = File.ReadAllText(Path.Combine(root, "Assets/Prefabs/Gameplay/HUD/TrackView.prefab"));
@@ -157,10 +157,14 @@ Check(!presentation.Contains("_overlapDistance") && !presentation.Contains("_slo
 Check(hud.Contains("_imageSize: {x: 220, y: 96}") && hud.Contains("_fitToLane: 0"),
     "Larger images must not be automatically shrunk to a single narrow column");
 
+sources = sources.Concat(new[] { "Gameplay/GameManager.cs", "Gameplay/GameManager.Loading.cs", "BossHealthBar.cs",
+    "GepetoBossReaction.cs", "Menu/ScoreScreen/ScoreCards/ScoreCard.cs", "Menu/ScoreScreen/ScoreScreenContainer.cs",
+    "Menu/ScoreScreen/ScoreScreenMenu.cs", "Menu/History/ViewTypes/ReplayViewType.cs", "Scores/PlayerScoreRecord.cs" }
+    .Select(f => Path.Combine(root, "Assets/Script", f))).ToArray();
 foreach (string file in sources)
 {
     var errors = CSharpSyntaxTree.ParseText(File.ReadAllText(file), new CSharpParseOptions(LanguageVersion.CSharp9))
         .GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).ToArray();
     Check(errors.Length == 0, $"Syntax: {file}: {string.Join<Diagnostic>(", ", errors)}");
 }
-Console.WriteLine($"PASS: {checks} checks of classification/settings, prefab wiring and C# 9 syntax. Unity rendering was not tested.");
+Console.WriteLine($"PASS: {checks} checks of timing, real weighted engines, counters, chords/sustains, replay round-trips, prefab wiring and C# 9 syntax. Unity rendering was not tested.");

@@ -1,3 +1,4 @@
+using YARG.Gameplay.Judgments;
 using System.Collections.Generic;
 using UnityEngine;
 using YARG;
@@ -10,7 +11,7 @@ public class GepetoBossReaction : MonoBehaviour
     [SerializeField] private BossHealthBar bossHealthBar;
 
     private readonly List<TrackPlayer> subscribedPlayers = new();
-    private readonly Dictionary<TrackPlayer, System.Action<double, double>> hitHandlers = new();
+    private readonly Dictionary<TrackPlayer, System.Action<RhythmJudgmentResult>> hitHandlers = new();
     private readonly Dictionary<TrackPlayer, float> playerDamage = new();
     private readonly Dictionary<TrackPlayer, System.Action> missHandlers = new();
     private BossAttackController attackController;
@@ -48,7 +49,7 @@ public class GepetoBossReaction : MonoBehaviour
                 continue;
 
             subscribedPlayers.Add(trackPlayer);
-            System.Action<double, double> handler = (noteTime, hitTime) => OnNoteHit(trackPlayer, noteTime, hitTime);
+            System.Action<RhythmJudgmentResult> handler = result => OnNoteHit(trackPlayer, result);
             hitHandlers.Add(trackPlayer, handler);
             playerDamage.Add(trackPlayer, 0f);
             trackPlayer.BossNoteHit += handler;
@@ -61,7 +62,7 @@ public class GepetoBossReaction : MonoBehaviour
         attackController.Tick(gameManager, subscribedPlayers);
     }
 
-    private void OnNoteHit(TrackPlayer player, double noteTime, double hitTime)
+    private void OnNoteHit(TrackPlayer player, RhythmJudgmentResult result)
     {
         if (gameManager != null && gameManager.IsSeekingReplay)
             return;
@@ -69,7 +70,7 @@ public class GepetoBossReaction : MonoBehaviour
         if (bossHealthBar == null) return;
         float healthBefore = bossHealthBar.CurrentHealth;
         attackController.RegisterHit(player);
-        bossHealthBar.RegisterNoteHit(noteTime, hitTime, attackController.DamageMultiplier(player));
+        bossHealthBar.RegisterNoteHit(result, attackController.DamageMultiplier(player));
         playerDamage[player] += Mathf.Max(0f, healthBefore - bossHealthBar.CurrentHealth);
     }
 

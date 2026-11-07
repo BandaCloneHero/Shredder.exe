@@ -1,427 +1,124 @@
-LISTA DE MÚSICAS POR INSTRUMENTOS
-Data: 13/10/2026
-
-Pastas analisadas: musicas/Lisarb2_2c e musicas/drive-download-20261010T200231Z-1-001.
-Critério: instrumentos com notas jogáveis em pelo menos uma dificuldade de notes.mid ou notes.chart.
-A contagem principal considera Guitarra, Baixo, Bateria e Teclado (normal ou Pro Keys).
-Vocal/harmonias, guitarra adicional e versões Pro são informados como extras, sem duplicar os quatro instrumentos.
-Não usei apenas diff_* do song.ini: uma dificuldade declarada não prova que existam notas.
-Contagem por pasta de música; versões com o mesmo título em pastas diferentes permanecem separadas.
-Este inventário identifica partes jogáveis; não certifica precisão musical ou funcionamento no jogo.
-
-RESUMO
-Total: 95 músicas.
-1 instrumento(s): 58 música(s).
-2 instrumento(s): 0 música(s).
-3 instrumento(s): 15 música(s).
-4 instrumento(s): 22 música(s).
-
-Por pack:
-- Lisarb: 57 músicas; 1 instrumento: 57; 2: 0; 3: 0; 4: 0.
-- drive-download: 38 músicas; 1 instrumento: 1; 2: 0; 3: 15; 4: 22.
-
-Se você também contar vocal/harmonias como um instrumento: 1 instrumento(s): 57, 2 instrumento(s): 1, 3 instrumento(s): 1, 4 instrumento(s): 15, 5 instrumento(s): 21.
-Vocal aparece em 36 músicas. Harmonias não são contadas como vários instrumentos.
-
-============================================================================
-1 INSTRUMENTO(S) — 58 MÚSICA(S)
-============================================================================
-
-- Artista desconhecido — 01.1 Natiruts - Natiruts Reggae Power (Live)
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.1 Natiruts - Natiruts Reggae Power (Live)
-
-- Artista desconhecido — 01.2 Sambo - Maneiras
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.2 Sambo - Maneiras
-
-- Artista desconhecido — 01.3 Mamonas Assassinas - Chopis Centis
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.3 Mamonas Assassinas - Chopis Centis
-
-- Artista desconhecido — 01.4 Pitty - Noite Inteira
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.4 Pitty - Noite Inteira
-
-- Artista desconhecido — 01.7 Ednaldo Pereira - What Is The Brother 2
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.7 Ednaldo Pereira - What Is The Brother 2
-
-- Artista desconhecido — 01.E Cazuza - Exagerado
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.E Cazuza - Exagerado
-
-- Artista desconhecido — 02.3 Fresno - Infinito
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.3 Fresno - Infinito
-
-- Artista desconhecido — 02.4 O Terno - O Cinza
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.4 O Terno - O Cinza
-
-- Artista desconhecido — 02.5 Ana Frango Elétrico - Torturadores
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.5 Ana Frango Elétrico - Torturadores
-
-- Artista desconhecido — 02.8 Aldo Sena - Lambada Complicada
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.8 Aldo Sena - Lambada Complicada
-
-- Artista desconhecido — 02.E Mamonas Assassinas - Pelados Em Santos
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.E Mamonas Assassinas - Pelados Em Santos
-
-- Artista desconhecido — 03.1 Raul Seixas - Metamorfose Ambulante
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.1 Raul Seixas - Metamorfose Ambulante
-
-- Artista desconhecido — 03.3 Skank - Dois Rios
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.3 Skank - Dois Rios
-
-- Artista desconhecido — 03.5 Pitty - Mascara
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.5 Pitty - Mascara
-
-- Artista desconhecido — 03.6 Nenhum De Nos - O Astronauta de Marmore
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.6 Nenhum De Nos - O Astronauta de Marmore
-
-- Artista desconhecido — 03.7 Palavra Cantada - Rato
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.7 Palavra Cantada - Rato
-
-- Artista desconhecido — 03.8 Kuase Nada - De Borest
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.8 Kuase Nada - De Borest
-
-- Artista desconhecido — 04.3 Eutenia - They Wanna Watch Me Fall
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.3 Eutenia - They Wanna Watch Me Fall
-
-- Artista desconhecido — 04.5 Ednaldo Pereira - Chance (Matheus Richard)
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.5 Ednaldo Pereira - Chance (Matheus Richard)
+A análise está concluída. **Nenhum arquivo foi modificado e nenhum arquivo do Unity será incluído na implementação.**
 
-- Artista desconhecido — 07.1 Selvagens a Procura de Lei - Tarde Livre
-  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/07. ROQUEN ROUL SEXTA FEIRAAAA/07.1 Selvagens a Procura de Lei - Tarde Livre
+**Arquitetura atual**
 
-- Artista desconhecido — 07.2 Angra - Caveman
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/07. ROQUEN ROUL SEXTA FEIRAAAA/07.2 Angra - Caveman
+O frontend usa HTML, CSS e JavaScript sem framework em `docs/`. O backend usa Node.js, Express e Socket.IO em [servidor/server.js](/workspaces/Shredder.exe/servidor/server.js:1).
 
-- Artista desconhecido — 08.1 Detonautas - Quando o Sol se for
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/08. O Fim De Uma Era/08.1 Detonautas - Quando o Sol se for
+O Express entrega os arquivos de `docs/` e fornece duas formas de comunicação:
 
-- Artista desconhecido — 08.2 Matanza - Ela Roubou Meu Caminhao
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/08. O Fim De Uma Era/08.2 Matanza - Ela Roubou Meu Caminhao
+- **HTTP:** chamadas `fetch("/api/...")` para contas, perfis, loja, fases e painel do operador.
+- **Socket.IO:** salas, instrumentos, tickets, resultados, ranking e notificações de conquistas.
 
-- Artista desconhecido — 09.1 Ednaldo Pereira - God Is Good Metal (Matheus Richard)
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/09. Perdido/09.1 Ednaldo Pereira - God Is Good Metal (Matheus Richard)
+As chamadas usam a mesma origem do site: `account.js` tem `baseUrl()` vazio e os sockets são criados com `io()`.
 
-- Artista desconhecido — 09.2 Hardneja Sertacore - Evidencias
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/09. Perdido/09.2 Hardneja Sertacore - Evidencias
+Há também uma estrutura de navegação persistente: [site-navigation.js](/workspaces/Shredder.exe/servidor/site-navigation.js:1) entrega `docs/site.html`, que abre as páginas em um iframe. O documento externo mantém as notificações de conquistas durante a navegação. A autenticação precisará respeitar essa estrutura.
 
-- Artista desconhecido — 10.2 Almah - King
-  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/10. Abram os oleos/10.2 Almah - King
+**Contas e sessões existentes**
 
-- Artista desconhecido — 11.2 Ecliptyka - Times Are Changed
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/11. Flash Extinto Em 2020/11.2 Ecliptyka - Times Are Changed
+Já existe um sistema completo de usuário e senha:
 
-- Artista desconhecido — 12.1 Ze Ramalho - Sr Ozzy (Part. Robertinho de Recife)
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/12. Sem iPhone,Fica de iHope/12.1 Ze Ramalho - Sr Ozzy (Part. Robertinho de Recife)
+| Componente | Funcionamento atual |
+|---|---|
+| Cadastro e login | `/api/auth/register` e `/api/auth/login` |
+| Senhas | Hash com `scrypt` e salt |
+| Contas | `servidor/accounts.json`, indexado pelo username normalizado |
+| Sessões | Tokens aleatórios; servidor armazena seus hashes em `sessions.json` |
+| Validade | Sete dias |
+| Persistência no navegador | Token em `localStorage`, chave `shredder.account.token.v1` |
+| Restauração | `/api/auth/session` ao carregar a página |
+| Saída | `/api/auth/logout` |
+| Operadores oficiais | Lista configurada no servidor, atualmente baseada em usernames |
 
-- Artista desconhecido — 12.2 Manowel - Heavydencias
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/12. Sem iPhone,Fica de iHope/12.2 Manowel - Heavydencias
+Os perfis guardam conquistas, moedas, cosméticos, estatísticas e progresso. **A integração precisa preservar esses dados e o acesso atual por senha.**
 
-- Artista desconhecido — 13.2 Andragonia - The Choice
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/13. E a Vida Segue/13.2 Andragonia - The Choice
+Existe uma segunda identidade, separada da conta: `shredder_player`, armazenada no navegador. Na tela inicial, o ID de operador é editável e recebe inicialmente um valor aleatório `OP-...`. Atualmente, esse ID não é uma identidade autenticada.
 
-- Artista desconhecido — 14.1 Angra -  Light of Transcendence
-  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/14. Um momento pra ouvir Trap/14.1 Angra -  Light of Transcendence
+O arquivo [firebase-config.js](/workspaces/Shredder.exe/docs/firebase-config.js:1) contém somente valores de exemplo. Não encontrei inicialização do Firebase nem uso efetivo de Firebase Authentication. O comentário menciona Firestore, mas **Firestore não é necessário para este login**.
 
-- Artista desconhecido — 14.2 Command6 - Armageddon
-  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/14. Um momento pra ouvir Trap/14.2 Command6 - Armageddon
+**Pontos de segurança que a implementação deverá resolver**
 
-- Artista desconhecido — 15.1 Raimundos - Mulher de Fases
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/15. Eu Sou A Velocidade/15.1 Raimundos - Mulher de Fases
+O backend já exige sessão para várias alterações de perfil, compras, fases e funções administrativas. Entretanto:
 
-- Artista desconhecido — 15.2 Massacration - Metal Is The Law
-  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/15. Eu Sou A Velocidade/15.2 Massacration - Metal Is The Law
+- `criarSala`, `entrarSala` e `entrar_sala` aceitam IDs e nomes enviados pelo navegador.
+- `partidaFinalizada` recebe identidade do cliente e encaminha o resultado para persistência.
+- `partidas.js` localiza a conta do resultado pelo username recebido.
+- Algumas permissões de sala dependem dessa identidade previamente aceita.
 
-- Artista desconhecido — 16.2 Almah - Believer
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/16. As Lendas Nunca Morrem/16.2 Almah - Believer
+Assim, adicionar apenas o botão Google deixaria uma lacuna: o navegador continuaria podendo declarar outra identidade.
 
-- Batrakia — Alvo Marcado
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.7 Batrakia - Alvo Marcado
+O servidor deverá obter o UID de um token Firebase validado e usá-lo para determinar a conta. Os campos enviados pelo cliente não poderão escolher o proprietário da operação. A validação com Firebase Admin verifica o ID token e fornece o UID autenticado. [Documentação oficial](https://firebase.google.com/docs/auth/admin/verify-id-tokens).
 
-- Bruno Sutter — Galopeira
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.6 Bruno Sutter - Galopeira
+O envio de resultados pelo executável e a confirmação por operador também precisarão continuar funcionando. Isso será tratado no backend e na associação dos tickets, sem alterar o código Unity.
 
-- Cazuza — Brasil
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.4 Cazuza - Brasil
+**Hospedagem e domínios**
 
-- Charlie Brown Jr — Hoje Eu Acordei Feliz (Live)
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/16. As Lendas Nunca Morrem/16.1 Charlie Brown Jr - Hoje Eu Acordei Feliz (Ao Vivo)
+Confirmei pela API do GitHub que o Pages está configurado assim:
 
-- Charlie Brown Jr — Senhor do Tempo
-  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.5 Charlie Brown Jr - Senhor Do Tempo
+| Item | Configuração |
+|---|---|
+| Origem | Branch `main`, pasta `/docs` |
+| Endereço | `https://bandaclonehero.github.io/Shredder.exe/` |
+| Domínio personalizado no Pages | Nenhum |
 
-- Cine — Garota Radical
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.4 Cine - Garota Radical
+Também encontrei evidências de outra publicação:
 
-- Codinome Winchester — O Paulista
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/05. Entre Bem e o Mal/05.2 Codinome Winchester - O Paulista
+- [sync-server-accounts.js](/workspaces/Shredder.exe/servidor/sync-server-accounts.js:1) aponta para `shredder.feira-de-jogos.dev.br` e para `/var/www/html/servidor/accounts.json`.
+- [NAVEGACAO.md](/workspaces/Shredder.exe/servidor/NAVEGACAO.md:14) documenta a publicação do frontend e backend juntos e o comando `pm2 restart shredder`.
 
-- El Bando — A História do Mamute
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/05. Entre Bem e o Mal/05.1 El Bando - A Historia Do Mamute
+Isso indica uma instalação Node gerenciada por PM2 nesse servidor. Não foi possível confirmar o funcionamento público atual desse endereço pela ferramenta web nem identificar sua configuração de proxy/TLS.
 
-- Gabriel o Pensador — Palavras Repetidas
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.8 Gabriel O Pensador - Palavras Repetidas
+**O GitHub Pages sozinho não executa o backend.** Como o frontend usa URLs relativas e Socket.IO na mesma origem, a configuração atual depende do servidor Node. Para usar o Pages como frontend funcional, seriam necessários endereço explícito do backend, CORS e ajustes nos caminhos; recomendo manter frontend e backend juntos na primeira implementação.
 
-- Hori — Quem eu Sou
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/06. Um Oferecimento Rede Globo/06.2 Hori - Quem Eu Sou
+Domínios a cadastrar em **Firebase Authentication → Settings → Authorized domains**:
 
-- Jota Quest — O Sol
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.6 Jota Quest - O Sol
+| Domínio | Quando autorizar |
+|---|---|
+| `shredder.feira-de-jogos.dev.br` | Se for o endereço usado pelos jogadores |
+| `bandaclonehero.github.io` | Se o login também funcionar na publicação Pages |
+| `localhost` | Para desenvolvimento local |
+| Host exato de preview/Codespaces | Somente se usado para testar o login |
 
-- Kasino — Can't Get Over
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.E Kasino - Can't Get Over
+Os domínios são cadastrados sem protocolo, porta ou caminho. O `authDomain` do projeto, normalmente `<projectId>.firebaseapp.com`, deverá corresponder à configuração real do Firebase. [Documentação do login Google](https://firebase.google.com/docs/auth/web/google-signin).
 
-- Kiko Loureiro — No Gravity
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/10. Abram os oleos/10.1 Kiko Loureiro - No Gravity
+**Arquivos envolvidos**
 
-- Luiz Gonzaga — Asa Branca
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.2 Luiz Gonzaga - Asa Branca
+| Arquivos | Alteração planejada |
+|---|---|
+| [docs/firebase-config.js](/workspaces/Shredder.exe/docs/firebase-config.js) | Configuração pública real do projeto Firebase |
+| [docs/js/account.js](/workspaces/Shredder.exe/docs/js/account.js) | Integração Firebase, persistência, obtenção de tokens, UID e logout |
+| [docs/js/account-ui.js](/workspaces/Shredder.exe/docs/js/account-ui.js) | Botão “Entrar com Google”, nome, foto e estados de carregamento/erro |
+| [docs/index.html](/workspaces/Shredder.exe/docs/index.html) e [docs/style.css](/workspaces/Shredder.exe/docs/style.css) | Integração visual pontual; retirar o ID editável como fonte de identidade |
+| [docs/app.js](/workspaces/Shredder.exe/docs/app.js) | Identidade autenticada nas salas, requisições e resultados |
+| Demais HTMLs que inicializam `ShredderAccount` | Carregamento consistente da integração Firebase |
+| `docs/js/site-shell.js` e `achievement-live.js` | Sincronização da autenticação com o documento externo e notificações |
+| `docs/js/resultado-partida.js` | Associação dos resultados pendentes à conta autenticada |
+| `docs/operador.html` e scripts `docs/js/operador-*.js` | Atualizar os consumidores que leem diretamente o token legado |
+| [servidor/server.js](/workspaces/Shredder.exe/servidor/server.js) | Validação Firebase nas APIs e sockets; identidade e autorização |
+| [servidor/partidas.js](/workspaces/Shredder.exe/servidor/partidas.js) e [perfil-operador.js](/workspaces/Shredder.exe/servidor/perfil-operador.js) | Associação estável por UID, preservando perfis e histórico |
+| `servidor/package.json` e `package-lock.json` | Dependência `firebase-admin` |
+| `servidor/test/` | Testes de autenticação, vinculação e regressão |
+| `.gitignore` e documentação do servidor | Proteção de credenciais locais e instruções de configuração |
 
-- Mr. Gyn — Minha Juventude
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.1 Mr. Gyn - Minha Juventude
+Provavelmente criarei módulos separados para inicialização Firebase no frontend e validação no servidor, evitando concentrar toda a integração em `server.js`.
 
-- Orquestra Da Terra — Rei do Gado
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/01. Mais Do Que Samba e Futebol/01.6 Orquestra da Terra - Rei Do Gado
+`accounts.json` exigirá uma evolução de estrutura ou um índice de associação com UID. **Não será substituído por uma base vazia nem terá os dados existentes descartados.**
 
-- Plain White T's — Hey There Delilah
-  Instrumentos: Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Plain White T's - Hey There Delilah
+**Plano de implementação proposto**
 
-- Project46 — Rédeas
-  Instrumentos: Guitarra. Pack: Lisarb. Extras: Guitarra adicional.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/11. Flash Extinto Em 2020/11.1 Project46 - Redeas
+1. **Preparar Firebase e ambiente.** Habilitar o provedor Google, configurar os domínios e fornecer ao backend suas credenciais por ambiente ou mecanismo seguro da hospedagem. Somente a configuração pública Firebase ficará no frontend.
 
-- Sandy & Junior — A Lenda
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/03. Os Sons Da Noite Retornam/03.2 Sandy & Junior - A Lenda
+2. **Integrar o gerenciador existente.** Acrescentar login Google sem remover usuário/senha. Manter compatibilidade com os consumidores de `ShredderAccount` e acrescentar UID, nome e foto.
 
-- Selvagens à Procura de Lei — Brasileiro
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/04. Momento Brasil/04.2 Selvagens a Procura de Lei - Brasileiro
+3. **Garantir persistência.** Usar a persistência local do SDK Firebase, aguardar a restauração antes de redirecionar páginas e obter tokens atualizados para as requisições. A persistência local mantém o usuário conectado após atualizar ou reabrir a página. [Documentação de persistência](https://firebase.google.com/docs/auth/web/auth-state-persistence).
 
-- Shaman — Brand New Me
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/13. E a Vida Segue/13.1 Shaman - Brand New Me
+4. **Preservar e vincular contas antigas.** Usar o UID como identificador permanente das contas Google, preservando o username como nome público/compatibilidade. Uma conta antiga só será vinculada após comprovação de acesso a ela e à conta Google. Não haverá associação automática por coincidência de nome ou email, nem concessão de acesso de operador por nome Google.
 
-- Shaman — Fairy Tale
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/06. Um Oferecimento Rede Globo/06.1 Shaman - Fairy Tale
+5. **Autenticar o backend.** Validar tokens com Firebase Admin nas APIs e conexões Socket.IO. Derivar a conta no servidor, conferir propriedade e permissões e tratar expiração, reconexão e logout. O fluxo legado continuará autenticado durante a transição.
 
-- Tim Maia — Ela Partiu
-  Instrumentos: Guitarra. Pack: Lisarb.
-  Pasta: musicas/Lisarb2_2c/Lisarb2/02. Nao Toque Raul/02.1 Tim Maia - Ela Partiu
+6. **Integrar a interface.** Adicionar o botão ao visual atual, mostrar nome e foto sem remover cosméticos existentes e manter “Sair”. Validar o fluxo Google considerando o iframe atual.
 
-============================================================================
-2 INSTRUMENTO(S) — 0 MÚSICA(S)
-============================================================================
+7. **Verificar regressões.** Testar restauração, saída, troca de conta, token inválido/expirado, tentativa de usar UID alheio, vinculação de conta antiga e permissões de operador. Conferir salas, tickets, resultados, ranking, conquistas e login por senha.
 
-Nenhuma música encontrada nesta categoria.
+Para concluir a configuração posteriormente, faltam o projeto Firebase real, sua configuração pública e a confirmação do endereço principal de uso. Credenciais administrativas deverão ser configuradas diretamente no ambiente do backend.
 
-============================================================================
-3 INSTRUMENTO(S) — 15 MÚSICA(S)
-============================================================================
-
-- A Perfect Circle — The Hollow
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/A Perfect Circle - The Hollow
-
-- All That Remains — The Air That I Breathe
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/All That Remains - The Air That I Breathe
-
-- Amon Amarth — Asator
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Amon Amarth - Asator
-
-- Attila — About That Life
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Attila - About That Life
-
-- Grateful Dead — Friend Of The Devil
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Friend Of The Devil
-
-- Grateful Dead — Help on the Way-Slipknot
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Help on the Way-Slipknot
-
-- Grateful Dead — St. Stephen
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - St. Stephen
-
-- Grateful Dead — Till the Morning Comes
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Till the Morning Comes
-
-- Grateful Dead — Unbroken Chain
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Unbroken Chain
-
-- New Order — Ceremony
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Ceremony
-
-- Phish — The Landlady
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Phish - The Landlady
-
-- The Velvet Underground — Femme Fatale
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Femme Fatale
-
-- The Velvet Underground — I'll Be Your Mirror
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - I'll Be Your Mirror
-
-- The Velvet Underground — Rock & Roll
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Rock & Roll
-
-- Yellowcard — Lights and Sounds
-  Instrumentos: Baixo, Bateria, Guitarra. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Yellowcard - Lights and Sounds
-
-============================================================================
-4 INSTRUMENTO(S) — 22 MÚSICA(S)
-============================================================================
-
-- Alestorm — You Are a Pirate
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Alestorm - You Are a Pirate
-
-- All That Remains — Six
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/All That Remains - Six
-
-- Angra — Angels Cry
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Angels Cry
-
-- Angra — Spread Your Fire
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Spread Your Fire
-
-- Angra — Waiting Silence
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Waiting Silence
-
-- Angra — Wuthering Heights
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Angra - Wuthering Heights
-
-- Between the Buried and Me — Sun of Nothing
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Between the Buried and Me - Sun of Nothing
-
-- Between the Buried and Me — Telos
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/METAL PACK/METAL PACK/Between the Buried and Me - Telos
-
-- Faith No More — Easy
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Faith No More - Easy
-
-- Grateful Dead — Born Cross-Eyed
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Born Cross-Eyed
-
-- Grateful Dead — Shakedown Street
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Shakedown Street
-
-- Jamiroquai — Cosmic Girl
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Jamiroquai - Cosmic Girl
-
-- Jamiroquai — Virtual Insanity
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Jamiroquai - Virtual Insanity
-
-- New Order — Age Of Consent
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Age Of Consent
-
-- New Order — Regret
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - Regret
-
-- New Order — The Perfect Kiss
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/New Order - The Perfect Kiss
-
-- Phish — Eliza
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Pro Bass, Pro Guitar.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Phish - Eliza
-
-- The Grateful Dead — Bertha
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Grateful Dead - Phish/Grateful Dead - Phish/Grateful Dead - Bertha
-
-- The Velvet Underground — Sunday Morning
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Sunday Morning
-
-- The Velvet Underground — Sweet Jane
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Sweet Jane
-
-- The Velvet Underground — Venus in Furs
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/The Velvet Underground - Venus in Furs
-
-- Yellowcard — Breathing
-  Instrumentos: Baixo, Bateria, Guitarra, Teclado. Pack: drive-download. Extras: Vocal.
-  Pasta: musicas/drive-download-20261010T200231Z-1-001/Alternative Pack Vol.2/Alternative Pack Vol.2/Yellowcard - Breathing
-
-VERIFICAÇÃO
-95 pastas de música classificadas; 57 charts .chart e 38 charts MIDI lidos; nenhum chart ficou sem classificação.
-Leitura de MIDI conferida contra os dois charts WAV existentes e contra um arquivo de teste com running status.
-Há linhas malformadas em alguns song.ini do pack Alternative; seus charts foram lidos mesmo assim. Os arquivos não foram alterados.
+**Aguardo sua autorização antes de modificar o código.**

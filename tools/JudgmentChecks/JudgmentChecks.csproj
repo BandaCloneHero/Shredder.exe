@@ -6,6 +6,10 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgmentReplayMetadata.cs" Link="JudgmentReplayMetadata.cs" />
+    <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgmentReplayAnalyzer.cs" Link="JudgmentReplayAnalyzer.cs" />
+    <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgedEngines.cs" Link="JudgedEngines.cs" />
+    <Compile Include="../../Assets/Script/Gameplay/Judgments/RhythmJudgmentSession.cs" Link="RhythmJudgmentSession.cs" />
     <ProjectReference Include="../../YARG.Core/YARG.Core/YARG.Core.csproj" />
     <Compile Include="../../Assets/Script/Gameplay/Judgments/RhythmJudgmentSettings.cs" Link="RhythmJudgmentSettings.cs" />
     <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgmentLanePool.cs" Link="JudgmentLanePool.cs" />

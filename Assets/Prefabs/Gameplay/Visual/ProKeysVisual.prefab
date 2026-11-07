@@ -677,9 +677,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   JudgmentSettings:
     UseMillisecondWindow: 1
-    PerfectMs: 25
-    GreatMs: 60
-    GoodMs: 180
+    PerfectMs: 28
+    GreatMs: 65
+    GoodMs: 185
+    LatePerfectMs: 26
+    LateGreatMs: 62
+    LateGoodMs: 170
+    GreatScoreMultiplier: 0.8
+    GoodScoreMultiplier: 0.5
+    PerfectDamageMultiplier: 1.15
+    GreatDamageMultiplier: 1
+    GoodDamageMultiplier: 0.7
   <TrackCamera>k__BackingField: {fileID: 5450824049626431651}
   CameraPositioner: {fileID: 2948926500384017858}
   HighwayCameraRendering: {fileID: 0}

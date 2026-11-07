@@ -1,248 +1,114 @@
 # Julgamento de notas em Shredder.exe
 
-**Janela atual de aceitação:** BOM! ampliado para ±180 ms a pedido do usuário; PERFEITO! ±25 ms e ÓTIMO! ±60 ms.
+## Configuração atual
 
-**Apresentação atual:** os quatro julgamentos usam as imagens do usuário, em tamanho maior e sem texto de milissegundos.
+A comparação usa o timestamp double de entrada convertido pelo SongRunner para o relógio
+musical, preservando offsets, calibração e velocidade. Não arredonda para frames ou ms inteiros.
 
-**Posicionamento atualizado:** os feedbacks agora são independentes por coluna. Consulte
-[julgamentos por pista](julgamentos-por-pista.md) para o comportamento atual, cobertura dos
-instrumentos, arquivos alterados e testes desta alteração visual.
+| Resultado | Antecipado, até | Atrasado, até | Pontos da cabeça da nota | Dano ao boss |
+| --- | ---: | ---: | ---: | ---: |
+| PERFEITO! | 28 ms | 26 ms | 100% | 1,15× |
+| ÓTIMO! | 65 ms | 62 ms | 80% | 1,00× |
+| BOM! | 185 ms | 170 ms | 50% | 0,70× |
+| ERROU! | fora da janela ou erro registrado pelo motor | — | 0 | 0 |
 
-## Estado da entrega
+As faixas são contínuas: por exemplo, +27 ms é ÓTIMO!, −66 ms é BOM!.
+A configuração anterior era ±25/60/180 ms. A ampliação antecipada foi pequena; a margem
+atrasada de aceitação é 15 ms menor que a antecipada. Todos esses campos e os pesos ficam no
+Inspector, em `JudgmentSettings`, nos quatro prefabs de jogadores em `Assets/Prefabs/Gameplay/Visual`.
+PERFEITO! conserva o valor base do instrumento: uma nota base de 50 dá 50/40/25 pontos antes
+dos multiplicadores existentes. Pro Keys e Pro Drums conservam seus próprios valores base.
 
-Código integrado à gameplay e ao prefab compartilhado do HUD. Não é uma cena de demonstração.
-A execução/renderização no Editor da Unity ainda precisa ser validada; não há Unity instalado
-neste ambiente. Não considero os critérios visuais comprovados apenas pelos testes .NET.
+`UseMillisecondWindow` desativado preserva a janela do preset. Permissões de sustain,
+HOPO, strum, notas seguradas, lanes e autohit continuam no motor. Se ele aceitar um acerto
+por uma dessas permissões fora da janela normal, o resultado é BOM!, preservando o acerto.
+Não foi alterada a calibração global de áudio/entrada; um atraso constante deve ser calibrado.
 
-Neste checkout não é necessário arrastar referências ou montar objetos manualmente.
-O componente `RhythmJudgmentDisplay` já está em `Assets/Prefabs/Gameplay/HUD/TrackView.prefab`,
-com a fonte TMP Barlow Black existente, cores, posição e animação configuradas. Os elementos
-visuais são construídos e pré-alocados automaticamente na inicialização de cada highway.
+## Integração
 
-## Análise da arquitetura
+- `RhythmJudgmentSettings`: limites antecipados/atrasados, configuração do preset e pesos.
+- `RhythmJudgmentSession`: resultado único por nota, compartilhado por pontuação, HUD,
+  dano ao boss e contadores. A política é copiada ao iniciar a sessão.
+- `JudgedEngines`: subclasses dos motores existentes, modificando apenas a pontuação da
+  cabeça da nota pelo `AddScore(int)` original. Combo, Star Power, bônus de solo, sustains,
+  band multiplier e cálculo de estrelas continuam no fluxo original.
+- Os quatro `TrackPlayer` concretos instanciam essas subclasses: guitarra/baixo de cinco
+  trastes (incluindo All Taps), teclas de cinco/seis pistas, Pro Keys/sete teclas brancas,
+  baterias de quatro/cinco pistas e Pro Drums. Vocais mantêm o julgamento próprio de afinação;
+  não recebem contagens temporais fictícias. Six Fret e Pro Guitar não têm jogador ativo nesta cena.
+- Teclas capturam o timestamp antes de o motor limpar o estado da tecla, inclusive ao resolver
+  acordes por stagger. Os motores de guitarra/bateria usam o instante real de confirmação do motor.
+- `TrackPlayer` encaminha o mesmo resultado ao HUD e ao boss. `BossHealthBar` não calcula uma
+  segunda classificação; preserva o bônus de combo e as penalidades do combate.
+- Em guitarra, um acorde gera um evento lógico de combo/pontuação e um julgamento visual por
+  parte. Os contadores contam cada parte: um acorde de três notas perfeito soma três perfeitos.
+  Teclas e bateria preservam seus callbacks por parte. Sustains contam apenas o início.
+- ERROU! no resumo soma notas perdidas e entradas inválidas efetivamente registradas pelo
+  motor; por isso pode exceder o número de notas perdidas. Uma callback repetida não conta
+  uma nota duas vezes. Reinício e seek limpam/reconstroem os contadores.
 
-- `Input/Bindings/ControlBinding.cs` encaminha `eventPtr.time`. `InputManager` usa o relógio
-  do Input System, não frames, para a entrada.
-- `BasePlayer.OnGameInput` converte esse timestamp usando `GameManager.GetRelativeInputTime`,
-  aplica `InputCalibration` e enfileira a entrada no motor. `UpdateInputs` aplica a mesma
-  calibração ao avanço do motor. Este fluxo foi preservado.
-- `SongRunner` converte o relógio de entrada para o tempo da música, incluindo velocidade;
-  áudio e vídeo possuem suas compensações existentes. Nenhum relógio adicional foi criado.
-- `YARG.Core/Engine/BaseEngine.ProcessInputs` processa cada evento em seu timestamp antes
-  do avanço até o tempo do frame. Portanto, uma entrada enfileirada durante um frame lento
-  não é avaliada como se tivesse ocorrido no fim desse frame.
-- O motor já tinha janelas temporais, inclusive presets dinâmicos com janelas mais estreitas.
-  Não foi encontrada uma conversão explícita do julgamento para frames. Sem executar a
-  configuração original no Unity, não é possível atribuir todo o sintoma relatado a uma
-  única causa. A nova configuração substitui essas janelas por ±100 ms para partidas novas.
-  Também foi corrigida a exclusão do limite antecipado exato no motor de teclas.
-- Guitarra usa um callback por acorde; o HUD distribui esse resultado pelas colunas de
-  `note.AllNotes`. Teclas e bateria mantêm os callbacks por parte, com seus desvios reais.
-  Cada coluna tem um pool independente; duplicatas só são combinadas dentro da própria coluna.
-- Teclas podem resolver acordes após uma tolerância de stagger. O motor agora fornece
-  `NoteHitTime`, preservando o timestamp de cada tecla antes de limpá-lo. Os demais motores
-  fornecem o instante em que o motor efetivamente confirmou o acerto, inclusive suas regras
-  existentes de strum/HOPO e autohit.
-- Sustains continuam nos callbacks próprios de início/fim e na pontuação existente.
-  O feedback de precisão só consome `OnNoteHit`, `OnNoteMissed` e `OnOverhit`.
-- `TrackView` continua posicionando o HUD pela projeção da highway. O novo elemento usa
-  essa mesma projeção e o contêiner de escala existente.
+## Apresentação e resultado final
 
-## Julgamento real
+As imagens existentes em `Assets/Resources/Julgamentos` continuam aparecendo na própria coluna,
+sem ms, com crescimento, subida curta e transparência. Cada nota tem sua própria animação;
+uma nota nova não reinicia a imagem anterior. Consulte [julgamentos por pista](julgamentos-por-pista.md).
 
-`RhythmJudgmentSettings.Configure` copia o preset do instrumento sem alterar o preset
-compartilhado. Aplica uma janela total de 0,200 s, simétrica, para produzir ±100 ms no motor.
-As faixas iniciais são contínuas, sem arredondamento antes da classificação:
+`GameManager.EndSong` captura um resumo por jogador e o transfere por `PlayerScoreCard` para
+`ScoreCard`. `JudgmentResultsView` cria quatro linhas com imagens e contadores no painel de
+estatísticas básicas já existente, dentro da área rolável. Não requer montar objetos ou arrastar
+referências na Unity. Os contadores também são salvos em novas colunas nullable de
+`PlayerScoreRecord`; o mecanismo existente `CreateTable` migra a tabela. Registros antigos
+permanecem sem contagens, em vez de receber números inventados.
 
-| Resultado | Diferença absoluta |
-| --- | --- |
-| PERFEITO! | até 25 ms, inclusive |
-| ÓTIMO! | acima de 25 até 60 ms |
-| BOM! | acima de 60 até 100 ms |
-| ERROU! | entrada inválida ou nota perdida pelo motor |
+## Replays
 
-O valor com sinal é `(NoteHitTime - note.Time) * 1000 / Engine.BaseParameters.SongSpeed`.
-Negativo significa antecipado; positivo, atrasado. Só a apresentação arredonda para ms inteiros.
-Uma perda/entrada inválida não recebe um número fictício.
+O formato binário do Core permanece intacto. Partidas novas salvam um arquivo companheiro
+`nome.replay.judgments.json`, com versão, checksum, jogadores e políticas de julgamento.
+A reprodução e a reanálise usam essas políticas, inclusive no recálculo sem bots. A exportação
+pelo jogo copia o companheiro; ao transferir arquivos manualmente, mantenha os dois juntos.
+Replays antigos sem companheiro continuam com os motores/regras originais. Arquivos
+companheiros inválidos são registrados no log e ignorados, com fallback legado.
 
-As permissões existentes de lanes/trills/autohit continuam soberanas. Se elas aceitarem uma
-nota fora da janela normal, o HUD mostra BOM! com o desvio real, em vez de contradizer o motor
-mostrando ERROU! em uma nota pontuada. Não foram removidas essas regras de instrumento.
-O modo de prática mantém a política existente de não estreitar a janela ao reduzir a velocidade.
+O adaptador `JudgmentReplayAnalyzer` usa o EngineManager original e os mesmos motores da
+partida. Sua criação de instrumentos e validação estatística foram adaptadas do ReplayAnalyzer
+existente porque a fábrica de motores dele é privada. Não há um segundo cálculo de score.
 
-Notas equivalentes próximas não roubam a entrada da nota mais próxima: antes da lógica normal,
-o motor pode perder a anterior pelo caminho normal de miss, preservando a entrada para a próxima.
-Essa escolha só ocorre durante o processamento de uma entrada, nunca apenas porque um frame
-passou pelo ponto médio. Mantém as regras do instrumento para verificar compatibilidade.
+## Arquivos desta alteração
 
-A pontuação por nota, os pontos de sustain, o combo e os multiplicadores não receberam pesos
-por classificação. PERFEITO!, ÓTIMO! e BOM! consomem o acerto já confirmado pelo motor.
-Notas não podem pontuar duas vezes pelas proteções existentes `WasHit`/`WasMissed`.
+Criados em `Assets/Script/Gameplay/Judgments`, com seus `.meta`:
+`JudgedEngines.cs`, `RhythmJudgmentSession.cs`, `JudgmentReplayMetadata.cs`,
+`JudgmentReplayAnalyzer.cs` e `JudgmentResultsView.cs`.
 
-Replays continuam usando os parâmetros gravados, sem substituir suas janelas pelo Inspector.
-A preferência nova por nota mais próxima está habilitada só em partidas novas, para não mudar
-as regras de replays antigos. A seleção em overlaps de notas idênticas não é versionada no
-formato de replay atual; esse caso precisa de validação antes de prometer reprodução idêntica
-de novos replays. Vocais mantêm seu sistema específico de avaliação de afinação.
+Modificados: `RhythmJudgmentSettings.cs`, `TrackPlayer.cs`, `FiveFretGuitarPlayer.cs`,
+`FiveLaneKeysPlayer.cs`, `ProKeysPlayer.cs`, `DrumsPlayer.cs`, os quatro prefabs de jogadores,
+`BossHealthBar.cs`, `GepetoBossReaction.cs`, `GameManager.cs`, `GameManager.Loading.cs`,
+`ScoreScreenContainer.cs`, `ScoreScreenMenu.cs`, `ScoreCard.cs`, `PlayerScoreRecord.cs` e
+`ReplayViewType.cs`. O harness `tools/JudgmentChecks` foi ampliado.
+As imagens e a animação de gameplay aprovadas não foram modificadas.
 
-## Inspector
+## Verificação
 
-Nos componentes de jogador da highway, seção **Julgamento — janelas em milissegundos**:
+Execute `dotnet run --project tools/JudgmentChecks/JudgmentChecks.csproj --no-restore`.
+Resultado executado nesta entrega: **3.748 verificações aprovadas, sem falhas**.
+O harness compila os settings, sessão, motores ponderados e adaptadores de replay reais
+contra o Core. Testa antecipação/atraso em 30/60/120/144 FPS; velocidades 0,75×/1×/1,5×;
+50/40/25 e valores próprios de Pro Keys/Pro Drums; contadores; reset; acorde com sustain;
+replay novo/legado e exportação; assets e referências reais dos prefabs; sintaxe C# 9.
 
-- `UseMillisecondWindow`: habilita a janela nova; desativado preserva o preset original.
-- `PerfectMs`, `GreatMs`, `GoodMs`: limites ordenados, inicialmente 25, 60, 100.
+O ambiente não tem Unity Editor. Ainda dependem de Play no Editor: renderização e layout
+final em diferentes resoluções/multiplayer; animação e pausa/retomada visuais; sensação dos
+limites com sua calibração; combate completo e migração da base SQLite da instalação.
+Não se deve confundir a compilação do harness com a compilação completa do projeto Unity.
 
-A janela de aceitação é capturada ao criar o motor: reinicie a música/seção depois de alterar
-`GoodMs` ou `UseMillisecondWindow`. Não reduza apenas o limite visual no meio de uma partida.
+Para validar numa música: acertar perto do centro deve dar PERFEITO!, aproximadamente
+50 ms antes/depois deve dar ÓTIMO!, cerca de 100 ms antes/depois deve dar BOM!, e deixar
+passar deve dar ERROU!. Compare a pontuação em trechos equivalentes sem mudar combo/SP;
+verifique a diferença de dano e, ao terminar, as quatro imagens/contagens nas estatísticas
+básicas. Teste acordes, sustain, inputs inválidos e reinício, e depois reproduza o replay.
 
-Em **RhythmJudgmentDisplay**, no prefab **TrackView**:
+## Dependência do Core já existente
 
-- Fonte TMP, tamanho principal e tamanho dos milissegundos.
-- Cores individuais e espessura do contorno escuro.
-- Profundidade na highway, deslocamento, escala e distância entre feedbacks.
-- Limite de feedbacks simultâneos **por pista**: 1–8, inicialmente 1. Só recicla dentro da mesma pista.
-- Crescimento, estabilização, permanência e desaparecimento: 0,08 / 0,10 / 0,20 / 0,20 s.
-- Escala inicial e máxima; ÓTIMO! usa intensidade menor; BOM!/ERROU! usam intensidade discreta.
-- Ativação do brilho e do impacto, com intensidades independentes.
-
-Configure fonte, tamanhos e capacidade do pool antes de iniciar a música. O pool não é
-reconstruído durante sequências rápidas. Não há Instantiate/Destroy por acerto, coroutines,
-bibliotecas novas, imagens externas ou pós-processamento. O impacto é uma malha UI pequena.
-Os efeitos congelam na pausa; reset/prática/seek limpam os elementos; saída da cena libera o pool.
-
-## Arquivos
-
-Criados:
-
-- `Assets/Script/Gameplay/Judgments/RhythmJudgmentSettings.cs`
-- `Assets/Script/Gameplay/Judgments/RhythmJudgmentDisplay.cs`
-- `Assets/Script/Gameplay/Judgments/JudgmentImpactGraphic.cs`
-- Metadados Unity dos três scripts e da pasta.
-- `YARG.Core/YARG.Core.UnitTests/Engine/MillisecondJudgmentTests.cs`
-- `tools/JudgmentChecks/`: projeto, programa, shim mínimo para atributos/Mathf e `.gitignore`.
-- `docs/patches/rhythm-judgments-core.patch`
-- `scripts/apply-rhythm-core-patch.py`
-- Este documento.
-
-Modificados:
-
-- `Assets/Script/Gameplay/Player/TrackPlayer.cs`: configuração compartilhada e consumo dos callbacks.
-- `FiveFretGuitarPlayer.cs`, `FiveLaneKeysPlayer.cs`, `ProKeysPlayer.cs`, `DrumsPlayer.cs`
-  na mesma pasta: construção dos parâmetros com a janela configurada.
-- `Assets/Script/Gameplay/HUD/TrackView.cs`: inicialização, projeção e limpeza do feedback.
-- `Assets/Prefabs/Gameplay/HUD/TrackView.prefab`: componente e referências reais.
-- No submódulo `YARG.Core/YARG.Core/Engine/`: `BaseEngine.cs`, `BaseEngine.Generic.cs`,
-  `Guitar/GuitarEngine.cs`, `Drums/DrumsEngine.cs`, `Keys/KeysEngine.cs`,
-  `Keys/FiveLaneKeys/FiveLaneKeysEngine.cs`, `Keys/ProKeys/Engines/ProKeysEngine.cs`.
-
-**Transporte do submódulo:** o Core estava vazio e foi inicializado na revisão exigida
-`3beb94e526558134145bcd3e409428f759001a40`. As alterações estão no seu diretório de trabalho;
-não foram feitos commits. Um commit apenas no repositório principal não inclui arquivos
-modificados dentro do submódulo. Para transportar a entrega sem publicar um commit do Core,
-o patch completo inclui o código e os testes. Em outro checkout, execute:
-
-```sh
-git submodule update --init YARG.Core
-python3 scripts/apply-rhythm-core-patch.py
-```
-
-O script verifica conflitos antes de aplicar e reconhece quando o patch já está aplicado.
-Não é uma etapa de configuração necessária neste workspace, onde as mudanças já existem.
-
-## Verificações executadas
-
-- Suíte completa do Core: **433 aprovados, 2 ignorados, 0 falhas**.
-- Dos aprovados, **14 testes novos** cobrem ±100 ms e rejeição em ±101 ms,
-  timestamps em 30/60/120/144 FPS, frame atrasado, velocidade musical, nota mais próxima,
-  ausência de miss prematuro, acorde com timestamps individuais e sustain sem callbacks repetidos.
-- Harness `tools/JudgmentChecks`: **44 verificações aprovadas**, incluindo classificações
-  com sinal, limites fracionários, conversão para a janela total, preservação do preset,
-  opt-out legado e sintaxe C# 9 dos scripts Unity alterados.
-- `git diff --check` nos arquivos alterados e verificação das referências do prefab.
-- Patch aplicado em cópias limpas dos arquivos originais: resultado idêntico ao Core modificado.
-- Há avisos preexistentes de nulabilidade no Core. A suíte também mantém dois testes de scan ignorados.
-
-Comandos de reprodução:
-
-```sh
-dotnet test YARG.Core/YARG.Core.UnitTests/YARG.Core.UnitTests.csproj
-dotnet run --project tools/JudgmentChecks/JudgmentChecks.csproj
-```
-
-O shim do harness não emula Unity/TMP e não comprova compilação da aplicação Unity.
-O Editor ainda precisa compilar/importar os scripts, carregar o prefab e validar o resultado visual,
-as outras variantes de instrumento, desempenho no Profiler, pausa, resoluções e multiplayer.
-
-## Teste durante uma música no Editor
-
-1. Abra a gameplay pelo fluxo normal e inicie uma música com notas espaçadas, acordes e sustains.
-   Confirme a ausência de erros de compilação e de referências no Console.
-2. Com calibração correta, acerte próximo do instante ideal: deve aparecer **PERFEITO!**, dourado,
-   com ms e impacto. Desvios reais de ±10 ms continuam nessa faixa.
-3. Antecipe/atrase aproximadamente 40–50 ms: **ÓTIMO!**, verde. Confira `-` antecipado e `+` atrasado.
-4. Desvie aproximadamente 80–90 ms: **BOM!**, ciano. Acima de 100 ms a nota normal deve ser perdida;
-   não pressione nada ou use uma entrada inválida para conferir **ERROU!**, vermelho e sem ms inventados.
-5. Para uma checagem determinística das faixas durante gameplay, altere temporariamente no Inspector
-   `PerfectMs=100`/`GreatMs=100` para que todo acerto normal seja PERFEITO!;
-   `PerfectMs=0`/`GreatMs=100` para que quase todo acerto não exato seja ÓTIMO!;
-   `PerfectMs=0`/`GreatMs=0`/`GoodMs=100` para BOM!. Restaure 25/60/100 ao terminar.
-6. Toque um acorde: feedbacks nas colunas envolvidas, mantendo um único resultado lógico na guitarra; sustente uma
-   nota longa: um feedback inicial, sem repetição durante a sustentação. Confira pontos/combo existentes.
-7. Toque uma sequência rápida: feedback imediato; no limite do pool por pista, o mais antigo daquela pista é reutilizado.
-   Teste capacidade 1 e 3, e desligue brilho/impacto no Inspector.
-8. Repita em 30, 60, 120 e 144 FPS; compare os ms com entradas controladas, sem esperar acertar
-   offsets exatos manualmente. Confira também highway mais rápida/lenta e diferentes calibrações.
-9. Teste 1280×720, 1920×1080, ultrawide e múltiplas highways; mova/escale a highway pelo HUD existente.
-   Ajuste profundidade/deslocamento se a composição específica da câmera exigir.
-10. Pause durante um efeito, retome, reinicie prática e encerre a música: nenhuma animação atrasada
-    deve reaparecer. Use o Profiler para confirmar ausência de criação/destruição por acerto e avaliar
-    a legibilidade/impacto na máquina alvo.
-
-
-## Diagnóstico do relato de Play no Editor / guitarra All Taps
-
-O relato de feedback ausente e acertos restritivos foi investigado no modo de guitarra com
-All Taps. Os cinco testes `AllTapsTimingTests` usam o motor real `YargFiveFretGuitarEngine`,
-sem strum, após a primeira nota, com desvios antecipados/atrasados até ±100 ms nos quatro
-FPS solicitados e com acordes. Passaram; o sintoma do Editor não foi reproduzido no Core isolado.
-Isso não comprova o comportamento do Editor do usuário nem determina sua causa.
-
-Foram gravados explicitamente `UseMillisecondWindow=1` e `25/60/100` nos prefabs
-`FiveFretGuitarVisual`, `FiveLaneKeysVisual`, `ProKeysVisual` e `FourLaneDrumsVisual`.
-As variantes de bateria herdam esse último prefab. Assim a configuração não depende apenas
-dos inicializadores de uma classe serializável recém-adicionada.
-
-A posição do novo feedback agora converte coordenadas de tela para coordenadas locais com
-`RectTransformUtility`, considerando o Canvas/câmera. A inicialização informa erro explícito
-quando o Canvas ou a fonte TMP estão ausentes, em vez de deixar o HUD indisponível sem explicação.
-
-No Editor, filtre o Console por **[Julgamento]**. Ao iniciar uma música deve aparecer algo como:
-
-```text
-[Julgamento] FiveFretGuitarPlayer; motor=YargFiveFretGuitarEngine; janela efetiva=-100,0 a 100,0 ms; ... HUD inicializado=True.
-```
-
-No primeiro acerto e na primeira perda é registrada uma mensagem com o resultado real,
-o desvio e o estado do HUD. São mensagens limitadas por jogador, somente no Editor,
-sem registrar cada nota e sem alocar strings no build final.
-
-- Sem mensagem de inicialização: este caminho/código não chegou a executar; verificar
-  erros de compilação, atualização dos fontes e a cena realmente em execução.
-- Janela diferente de ±100 ms: verificar `JudgmentSettings` no jogador instanciado e se é replay.
-- `HUD inicializado=False`: verificar o primeiro erro de Canvas/fonte no Console.
-- Evento real recebido com HUD pronto, mas texto invisível: investigar renderização/posição.
-
-Para separar a renderização da precisão manual, durante uma música selecione
-`TrackView(Clone)` na Hierarchy e abra o menu do componente **RhythmJudgmentDisplay**.
-Em **Diagnóstico** estão os testes de PERFEITO!, ÓTIMO!, BOM! e ERROU!.
-Eles usam o mesmo pool/animação do jogo e não alteram notas, pontuação ou combo.
-O teste exige música iniciada e sem pausa.
-
-As novas alterações ainda precisam de verificação no Editor. Não há evidência suficiente
-para afirmar que a causa do relato foi eliminada sem observar essas mensagens e o resultado.
-
-
-Verificação após esta investigação: suíte completa **438 aprovados, 2 ignorados, 0 falhas**;
-os cinco testes adicionais são de guitarra All Taps. O harness agora verifica também os
-quatro prefabs reais de jogador e a conexão do prefab de HUD à cena Gameplay, além das
-classificações e da sintaxe. A validação de renderização Unity continua pendente.
+Esta alteração não cria outro commit de submódulo. O checkout usa as correções anteriores
+do Core. Se outro checkout não as tiver, existe `docs/patches/rhythm-judgments-core.patch`
+e o aplicador `scripts/apply-rhythm-core-patch.py`. O ponteiro remoto do submódulo já causou
+`not our ref` anteriormente; não confundir esse problema de distribuição com estes novos scripts.

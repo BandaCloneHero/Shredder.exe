@@ -1,4 +1,5 @@
-﻿using System;
+using YARG.Gameplay.Judgments;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
@@ -302,6 +303,7 @@ namespace YARG.Gameplay
             }
 
             ReplayData = data;
+            ReplayJudgments = JudgmentReplayMetadata.Load(ReplayInfo, data);
             YargPlayers = players;
             return true;
         }

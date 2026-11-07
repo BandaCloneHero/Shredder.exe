@@ -11,9 +11,12 @@ using YARG.Gameplay.Judgments;
 
 internal static class EarlyHitChecks
 {
-    private sealed class Scenario
+    internal sealed class Scenario
     {
         public BaseEngine Engine;
+        public SongChart Song;
+        public YargProfile Profile;
+        public RhythmJudgmentSession Session;
         public List<GameInput> Inputs = new();
         public List<double> Hits = new();
         public Func<bool> AllHit;
@@ -24,7 +27,7 @@ internal static class EarlyHitChecks
         var settings = new RhythmJudgmentSettings();
         foreach (string mode in new[] { "AllTaps", "BassAllTaps", "FiveLaneKeys", "ProKeys", "FourLaneDrums", "ProDrums", "FiveLaneDrums" })
         foreach (int fps in new[] { 30, 60, 120, 144 })
-        foreach (double offset in new[] { -.180, -.170, -.150, -.120, .120, .150, .170, .180 })
+        foreach (double offset in new[] { -.184999, -.180, -.150, -.120, .120, .150, .169999 })
         {
             var scenario = Create(mode, offset, settings);
             int nextInput = 0;
@@ -50,11 +53,13 @@ internal static class EarlyHitChecks
         }
     }
 
-    private static Scenario Create(string mode, double offset, RhythmJudgmentSettings settings)
+    internal static Scenario Create(string mode, double offset, RhythmJudgmentSettings settings, bool weighted = true, double speed = 1)
     {
-        var result = new Scenario();
+        var result = new Scenario { Session = new RhythmJudgmentSession(settings, weighted) };
         var sync = new SyncTrack(480);
         sync.Tempos.Add(new TempoChange(120, 0, 0));
+        sync.TimeSignatures.Add(new TimeSignatureChange(4, 4, 0, 0, 0, 0, 0, 0));
+        result.Song = new SongChart(480) { SyncTrack = sync };
         float[] thresholds = { .05f, .1f, .2f, .4f, .6f, .9f };
         if (mode is "AllTaps" or "BassAllTaps" or "FiveLaneKeys")
         {
@@ -67,11 +72,14 @@ internal static class EarlyHitChecks
             var instrument = mode == "BassAllTaps" ? Instrument.FiveFretBass : guitar ? Instrument.FiveFretGuitar : Instrument.Keys;
             var chart = new InstrumentDifficulty<GuitarNote>(instrument,
                 Difficulty.Expert, notes, new(), new());
+            result.Song.GetFiveFretTrack(instrument).AddDifficulty(Difficulty.Expert, chart);
+            result.Profile = new YargProfile { CurrentInstrument = instrument, CurrentDifficulty = Difficulty.Expert,
+                GameMode = guitar ? GameMode.FiveFretGuitar : GameMode.ProKeys };
             if (guitar)
             {
                 var preset = EnginePreset.Default.FiveFretGuitar.Copy();
                 preset.HitWindow = settings.Configure(preset.HitWindow);
-                var engine = new YargFiveFretGuitarEngine(chart, sync, preset.Create(thresholds, thresholds, mode == "BassAllTaps"), false);
+                var engine = new JudgedGuitarEngine(chart, sync, preset.Create(thresholds, thresholds, mode == "BassAllTaps"), false, result.Session);
                 engine.OnNoteHit += (_, _) => result.Hits.Add(engine.NoteHitTime);
                 result.Engine = engine;
                 for (int i = 0; i < 3; i++)
@@ -84,7 +92,7 @@ internal static class EarlyHitChecks
             {
                 var preset = EnginePreset.Default.ProKeys.Copy();
                 preset.HitWindow = settings.Configure(preset.HitWindow);
-                var engine = new YargFiveLaneKeysEngine(chart, sync, preset.Create(thresholds, thresholds, false), false);
+                var engine = new JudgedFiveLaneKeysEngine(chart, sync, preset.Create(thresholds, thresholds, false), false, result.Session);
                 engine.OnNoteHit += (_, _) => result.Hits.Add(engine.NoteHitTime);
                 result.Engine = engine;
                 for (int i = 0; i < 3; i++)
@@ -101,9 +109,11 @@ internal static class EarlyHitChecks
             for (int i = 0; i < 3; i++) notes.Add(new ProKeysNote(0, ProKeysNoteFlags.None, NoteFlags.None, i + 1, 0, (uint)((i + 1) * 960), 0));
             Link(notes);
             var chart = new InstrumentDifficulty<ProKeysNote>(Instrument.ProKeys, Difficulty.Expert, notes, new(), new());
+            result.Song.ProKeys.AddDifficulty(Difficulty.Expert, chart);
+            result.Profile = new YargProfile { CurrentInstrument = Instrument.ProKeys, CurrentDifficulty = Difficulty.Expert, GameMode = GameMode.ProKeys };
             var preset = EnginePreset.Default.ProKeys.Copy();
             preset.HitWindow = settings.Configure(preset.HitWindow);
-            var engine = new YargProKeysEngine(chart, sync, preset.Create(thresholds, thresholds, false), false);
+            var engine = new JudgedProKeysEngine(chart, sync, preset.Create(thresholds, thresholds, false), false, result.Session);
             engine.OnNoteHit += (_, _) => result.Hits.Add(engine.NoteHitTime);
             result.Engine = engine;
             result.AllHit = () => notes.All(n => n.WasHit);
@@ -121,16 +131,19 @@ internal static class EarlyHitChecks
             var instrument = mode == "FiveLaneDrums" ? Instrument.FiveLaneDrums : mode == "ProDrums" ? Instrument.ProDrums : Instrument.FourLaneDrums;
             var drumMode = mode == "FiveLaneDrums" ? DrumsEngineParameters.DrumMode.FiveLane : mode == "ProDrums" ? DrumsEngineParameters.DrumMode.ProFourLane : DrumsEngineParameters.DrumMode.NonProFourLane;
             var chart = new InstrumentDifficulty<DrumNote>(instrument, Difficulty.Expert, notes, new(), new());
+            result.Song.GetDrumsTrack(instrument).AddDifficulty(Difficulty.Expert, chart);
+            result.Profile = new YargProfile { CurrentInstrument = instrument, CurrentDifficulty = Difficulty.Expert,
+                GameMode = mode == "FiveLaneDrums" ? GameMode.FiveLaneDrums : GameMode.FourLaneDrums };
             var preset = EnginePreset.Default.Drums.Copy();
             preset.HitWindow = settings.Configure(preset.HitWindow);
-            var engine = new YargDrumsEngine(chart, sync, preset.Create(thresholds, thresholds, drumMode), false, false);
+            var engine = new JudgedDrumsEngine(chart, sync, preset.Create(thresholds, thresholds, drumMode), false, false, result.Session);
             engine.OnNoteHit += (_, _) => result.Hits.Add(engine.NoteHitTime);
             result.Engine = engine;
             result.AllHit = () => notes.All(n => n.WasHit);
             for (int i = 0; i < 3; i++) result.Inputs.Add(GameInput.Create(i + 1 + offset, DrumsAction.RedDrum, 1f));
         }
         result.Engine.PreferClosestNote = true;
-        result.Engine.SetSpeed(1);
+        result.Engine.SetSpeed(speed);
         return result;
     }
 

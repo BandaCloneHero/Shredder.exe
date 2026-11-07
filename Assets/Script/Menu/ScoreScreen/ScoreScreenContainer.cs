@@ -1,4 +1,5 @@
-﻿using YARG.Core.Engine;
+using YARG.Gameplay.Judgments;
+using YARG.Core.Engine;
 using YARG.Core.Replays;
 using YARG.Player;
 using YARG.Replays;
@@ -13,6 +14,7 @@ namespace YARG.Menu.ScoreScreen
         public YargPlayer Player;
         public BaseStats  Stats;
         public float FinalEnergy;
+        public JudgmentSummary Judgments;
     }
 
     public struct ScoreScreenStats

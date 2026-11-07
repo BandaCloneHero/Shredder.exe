@@ -1,5 +1,8 @@
 # Julgamentos por pista
 
+Este documento descreve a apresentação já aprovada. Para as janelas assimétricas, os pesos
+de score/dano e os contadores acrescentados depois, consulte [configuração atual](julgamento-de-notas.md).
+
 **Apresentação atual:** os julgamentos usam as quatro imagens fornecidas em
 `Images/Julgamentos`, importadas como texturas UI em `Assets/Resources/Julgamentos` e ligadas ao
 prefab `TrackView`. Não há texto gerado nem valor/sufixo de milissegundos na tela.

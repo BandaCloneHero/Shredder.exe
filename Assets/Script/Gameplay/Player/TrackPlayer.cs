@@ -32,14 +32,14 @@ namespace YARG.Gameplay.Player
                 Player.Profile.CurrentInstrument, this is FiveLaneKeysPlayer);
             playerReaction?.QueueCommandInput(input);
         }
-        public event Action<double, double> BossNoteHit;
+        public event Action<RhythmJudgmentResult> BossNoteHit;
         public event Action BossNoteMissed;
 
         public virtual int BossEventCount => BaseStats.TotalNotes;
 
-        protected void RaiseBossNoteHit(double noteTime, double hitTime)
+        protected void RaiseBossNoteHit(RhythmJudgmentResult result)
         {
-            BossNoteHit?.Invoke(noteTime, hitTime);
+            BossNoteHit?.Invoke(result);
         }
 
         protected void RaiseBossNoteMissed()
@@ -59,6 +59,9 @@ namespace YARG.Gameplay.Player
 
         [Header("Julgamento — janelas em milissegundos")]
         [SerializeField] protected RhythmJudgmentSettings JudgmentSettings = new();
+
+        public RhythmJudgmentSession JudgmentSession { get; protected set; }
+        public abstract JudgmentSummary CaptureJudgmentSummary();
 
         protected TrackView TrackView { get; private set; }
 
@@ -218,7 +221,17 @@ namespace YARG.Gameplay.Player
 
         protected List<TNote> Notes { get; set; }
 
-        public override int BossEventCount => Notes == null ? 0 : Notes.Count(note => !note.IsBigRockEnding);
+        public override int BossEventCount
+        {
+            get
+            {
+                if (Notes == null || Engine == null) return 0;
+                int count = 0;
+                foreach (var note in Notes)
+                    if (!note.IsBigRockEnding) count += Engine.GetNumberOfNotes(note);
+                return count;
+            }
+        }
 
         protected int NoteIndex { get; private set; }
 
@@ -287,8 +300,11 @@ namespace YARG.Gameplay.Player
 
             var events = NoteTrack.TextEvents;
 
+            JudgmentSession = new RhythmJudgmentSession(
+                Player.IsReplay ? GameManager.ReplayJudgments?.GetPolicy(Player.ReplayIndex) ?? JudgmentSettings : JudgmentSettings,
+                !Player.IsReplay || GameManager.ReplayJudgments?.GetPolicy(Player.ReplayIndex) != null);
             Engine = CreateEngine();
-            Engine.PreferClosestNote = !Player.IsReplay && JudgmentSettings.UseMillisecondWindow;
+            Engine.PreferClosestNote = JudgmentSession.WeightedScoring && JudgmentSession.Policy.UseMillisecondWindow;
             base.ComboMeter.Initialize(player.EnginePreset, Engine.BaseParameters.MaxMultiplier, GameManager.Players.Count > 1);
 
             Engine.OnComboIncrement += OnComboIncrement;
@@ -993,8 +1009,11 @@ namespace YARG.Gameplay.Player
 
             BeatlineIndex = 0;
 
+            JudgmentSession = new RhythmJudgmentSession(
+                Player.IsReplay ? GameManager.ReplayJudgments?.GetPolicy(Player.ReplayIndex) ?? JudgmentSettings : JudgmentSettings,
+                !Player.IsReplay || GameManager.ReplayJudgments?.GetPolicy(Player.ReplayIndex) != null);
             Engine = CreateEngine();
-            Engine.PreferClosestNote = !Player.IsReplay && JudgmentSettings.UseMillisecondWindow;
+            Engine.PreferClosestNote = JudgmentSession.WeightedScoring && JudgmentSession.Policy.UseMillisecondWindow;
 
             if (GameManager.IsPractice)
             {
@@ -1017,6 +1036,7 @@ namespace YARG.Gameplay.Player
             // Reset the track effect overlay
             ResetTrackEffectOverlay(time);
 
+            JudgmentSession.Reset();
             base.SetReplayTime(time);
         }
 
@@ -1062,10 +1082,12 @@ namespace YARG.Gameplay.Player
             var window = Engine.CalculateHitWindow();
             double speed = Engine.BaseParameters.SongSpeed;
             double factor = 1000 / (speed > 0 ? speed : 1);
+            var policy = JudgmentSession.Policy;
             Debug.Log($"[Julgamento] {GetType().Name}; motor={Engine.GetType().Name}; " +
                 $"janela efetiva={window.FrontEnd * factor:F1} a {window.BackEnd * factor:F1} ms; " +
-                $"faixas={JudgmentSettings.PerfectMs}/{JudgmentSettings.GreatMs}/{JudgmentSettings.GoodMs} ms; " +
-                $"janela nova={JudgmentSettings.UseMillisecondWindow}; replay={Player.IsReplay}; " +
+                $"antecipado={policy.PerfectMs}/{policy.GreatMs}/{policy.GoodMs} ms; " +
+                $"atrasado={policy.LatePerfectMs}/{policy.LateGreatMs}/{policy.LateGoodMs} ms; " +
+                $"janela nova={policy.UseMillisecondWindow}; replay={Player.IsReplay}; " +
                 $"HUD inicializado={TrackView.JudgmentHudReady}.", this);
         }
 
@@ -1074,6 +1096,21 @@ namespace YARG.Gameplay.Player
         protected abstract void InitializeSpawnedLane(LaneElement lane, int laneIndex);
         protected virtual void ModifyLaneFromNote(LaneElement lane, TNote note) {}
         protected virtual int GetLedColorIndex(TNote note) => -1;
+        public override JudgmentSummary CaptureJudgmentSummary()
+        {
+            if (JudgmentSession == null || !JudgmentSession.WeightedScoring) return null;
+            // Include remaining notes when a song ends early. Already judged notes are idempotent.
+            foreach (var note in Notes)
+            {
+                if (note.IsBigRockEnding) continue;
+                if (ExpandJudgmentChord)
+                    JudgmentSession.Miss(note, 1 + note.ChildNotes.Count);
+                else
+                    foreach (var part in note.AllNotes) JudgmentSession.Miss(part);
+            }
+            return JudgmentSession.Snapshot();
+        }
+
         protected abstract int GetJudgmentLane(TNote note);
         protected virtual bool ExpandJudgmentChord => false;
 
@@ -1099,15 +1136,13 @@ namespace YARG.Gameplay.Player
 
         protected virtual void OnNoteHit(int index, TNote note)
         {
-            RaiseBossNoteHit(note.Time, Engine.CurrentTime);
-            if (!GameManager.IsSeekingReplay && !note.IsBigRockEnding)
+            if (!note.IsBigRockEnding)
             {
-                double speed = Engine.BaseParameters.SongSpeed;
-                double milliseconds = (Engine.NoteHitTime - note.Time) * 1000 / (speed > 0 ? speed : 1);
-                var judgment = JudgmentSettings.Classify(milliseconds);
-                // Lane/autohit forgiveness remains authoritative: an accepted hit is never a visual miss.
-                if (judgment == RhythmJudgment.Miss) judgment = RhythmJudgment.Good;
-                ShowNoteJudgment(note, judgment, milliseconds);
+                var result = JudgmentSession.Hit(note, note.Time, Engine.NoteHitTime,
+                    Engine.BaseParameters.SongSpeed, ExpandJudgmentChord ? 1 + note.ChildNotes.Count : 1);
+                RaiseBossNoteHit(result);
+                if (!GameManager.IsSeekingReplay)
+                    ShowNoteJudgment(note, result.Grade, result.Milliseconds);
             }
 
             if (Player.Profile.IsBot && !GameManager.IsSeekingReplay && !GameManager.Paused)
@@ -1156,7 +1191,11 @@ namespace YARG.Gameplay.Player
 
         protected virtual void OnNoteMissed(int index, TNote note)
         {
-            RaiseBossNoteMissed();
+            if (!note.IsBigRockEnding)
+            {
+                JudgmentSession.Miss(note, ExpandJudgmentChord ? 1 + note.ChildNotes.Count : 1);
+                RaiseBossNoteMissed();
+            }
             if (!GameManager.IsSeekingReplay && !note.IsBigRockEnding)
                 ShowNoteJudgment(note, RhythmJudgment.Miss, null);
 
@@ -1190,6 +1229,8 @@ namespace YARG.Gameplay.Player
 
         protected virtual void OnOverhit()
         {
+            JudgmentSession.InvalidInput();
+            RaiseBossNoteMissed();
             if (!GameManager.IsSeekingReplay)
                 playerReaction?.TriggerMissReaction();
 

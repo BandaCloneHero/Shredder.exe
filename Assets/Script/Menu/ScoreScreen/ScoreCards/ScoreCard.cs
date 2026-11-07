@@ -1,4 +1,5 @@
-﻿using System;
+using YARG.Gameplay.Judgments;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -135,18 +136,24 @@ namespace YARG.Menu.ScoreScreen
             ScoreScreenText.Apply(transform);
         }
 
-        public void Initialize(bool isHighScore, YargPlayer player, T stats, float averageMultiplier)
+        private JudgmentSummary _judgments;
+        private GameObject _judgmentResults;
+
+        public void Initialize(bool isHighScore, YargPlayer player, T stats, float averageMultiplier, JudgmentSummary judgments = null)
         {
             IsHighScore = isHighScore;
             Player = player;
             Stats = stats;
             AverageMultiplier = averageMultiplier;
+            _judgments = judgments?.Copy();
         }
 
         public virtual void SetCardContents()
         {
             ShowResultPortrait();
             SetBossContribution();
+            if (_judgmentResults == null && _judgments != null && _basicStatsRect != null)
+                _judgmentResults = JudgmentResultsView.Create(_basicStatsRect, _notesHit, _judgments);
             _playerName.text = Player.Profile.Name;
 
             _instrument.text = Player.Profile.CurrentInstrument.ToLocalizedName();

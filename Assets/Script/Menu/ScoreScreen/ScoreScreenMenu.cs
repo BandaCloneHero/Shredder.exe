@@ -326,7 +326,7 @@ namespace YARG.Menu.ScoreScreen
                     case GameMode.FiveFretGuitar:
                     {
                         card = Instantiate(_guitarCardPrefab, _cardContainer);
-                        ((ScoreCard<GuitarStats>)card).Initialize(score.IsHighScore, score.Player, score.Stats as GuitarStats, score.AverageMultiplier);
+                        ((ScoreCard<GuitarStats>)card).Initialize(score.IsHighScore, score.Player, score.Stats as GuitarStats, score.AverageMultiplier, score.Judgments);
                         break;
                     }
                     case GameMode.FourLaneDrums:
@@ -334,7 +334,7 @@ namespace YARG.Menu.ScoreScreen
                     case GameMode.EliteDrums:
                     {
                         card = Instantiate(_drumsCardPrefab, _cardContainer);
-                        ((ScoreCard<DrumsStats>)card).Initialize(score.IsHighScore, score.Player, score.Stats as DrumsStats, score.AverageMultiplier);
+                        ((ScoreCard<DrumsStats>)card).Initialize(score.IsHighScore, score.Player, score.Stats as DrumsStats, score.AverageMultiplier, score.Judgments);
                         break;
                     }
                     case GameMode.Vocals:
@@ -346,7 +346,7 @@ namespace YARG.Menu.ScoreScreen
                     case GameMode.ProKeys:
                     {
                         card = Instantiate(_keysCardPrefab, _cardContainer);
-                        ((ScoreCard<KeysStats>) card).Initialize(score.IsHighScore, score.Player, score.Stats as KeysStats, score.AverageMultiplier);
+                        ((ScoreCard<KeysStats>) card).Initialize(score.IsHighScore, score.Player, score.Stats as KeysStats, score.AverageMultiplier, score.Judgments);
                         break;
                     }
                 }

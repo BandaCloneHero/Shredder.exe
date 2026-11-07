@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SQLite;
 using YARG.Core;
 using YARG.Core.Game;
@@ -39,6 +39,13 @@ namespace YARG.Scores
         /// Use <see cref="GetPercent"/> to get the actual percent value.
         /// </remarks>
         public float? Percent { get; set; }
+
+        // Null for historical plays that predate per-note judgments.
+        public int? PerfectJudgments { get; set; }
+        public int? GreatJudgments { get; set; }
+        public int? GoodJudgments { get; set; }
+        public int? MissedJudgments { get; set; }
+        public int? InvalidJudgments { get; set; }
 
         public float GetPercent()
         {
