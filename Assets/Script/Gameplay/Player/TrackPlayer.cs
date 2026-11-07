@@ -221,17 +221,8 @@ namespace YARG.Gameplay.Player
 
         protected List<TNote> Notes { get; set; }
 
-        public override int BossEventCount
-        {
-            get
-            {
-                if (Notes == null || Engine == null) return 0;
-                int count = 0;
-                foreach (var note in Notes)
-                    if (!note.IsBigRockEnding) count += Engine.GetNumberOfNotes(note);
-                return count;
-            }
-        }
+        // ResetNoteCounters already computes this for the current chart/practice section.
+        public override int BossEventCount => TotalNotes;
 
         protected int NoteIndex { get; private set; }
 

@@ -62,6 +62,7 @@ namespace YARG.Gameplay
         private int _effectiveFps;
 
         private int _venueLayerMask;
+        private double _nextOutputSearchTime;
 
         private static float _frameAccumulator = 0f;
         private static float _fpsWindowStart = 0f;
@@ -111,45 +112,52 @@ namespace YARG.Gameplay
             }
         }
 
-        private void RecreateTextures()
+        private bool TryFindOutput()
         {
-            if (_venueTexture != null)
-            {
-                _venueTexture.Release();
-                _venueTexture.DiscardContents();
-            }
+            if (_venueOutput != null) return true;
+            // Venues may load before the gameplay UI. Wait without allocating GPU resources each frame.
+            double now = Time.realtimeSinceStartupAsDouble;
+            if (now < _nextOutputSearchTime) return false;
+            _nextOutputSearchTime = now + 0.5;
+            var output = GameObject.Find("Venue Output");
+            if (output != null) _venueOutput = output.GetComponent<RawImage>();
+            return _venueOutput != null;
+        }
 
-            var outputWidth = (int)(Screen.width * renderScale);
-            var outputHeight = (int)(Screen.height * renderScale);
-
-            ScalableBufferManager.ResizeBuffers(renderScale, renderScale);
-
+        private static void ReleaseTextures()
+        {
+            _trailsTextureHandle?.Release();
+            _trailsTextureHandle = null;
             if (_trailsTexture != null)
             {
-                _trailsTextureHandle?.Release();
-                _trailsTextureHandle = null;
                 _trailsTexture.Release();
-                _trailsTexture.DiscardContents();
+                CoreUtils.Destroy(_trailsTexture);
+                _trailsTexture = null;
             }
+            if (_venueTexture != null)
+            {
+                if (_venueOutput != null && _venueOutput.texture == _venueTexture) _venueOutput.texture = null;
+                _venueTexture.Release();
+                CoreUtils.Destroy(_venueTexture);
+                _venueTexture = null;
+            }
+            Shader.SetGlobalTexture(_trailsTextureId, Texture2D.blackTexture);
+        }
 
+        private void RecreateTextures()
+        {
+            if (!TryFindOutput()) return;
+            _renderCamera.targetTexture = null;
+            ReleaseTextures();
+
+            var outputWidth = Mathf.Max(1, (int)(Screen.width * renderScale));
+            var outputHeight = Mathf.Max(1, (int)(Screen.height * renderScale));
+            ScalableBufferManager.ResizeBuffers(renderScale, renderScale);
             var descriptor = new RenderTextureDescriptor(outputWidth, outputHeight, RenderTextureFormat.DefaultHDR, 16, 0);
 
-            if (_venueOutput != null)
-            {
-                // Don't actually create the texture unless _venueOutput is set
-                _venueTexture = new RenderTexture(descriptor);
-                _venueTexture.Create();
-                _venueOutput.texture = _venueTexture;
-            }
-            else
-            {
-                // We check again because it is possible for venue to load before the rest of the gameplay scene
-                var venueOutputObject = GameObject.Find("Venue Output");
-                if (venueOutputObject != null)
-                {
-                    _venueOutput = venueOutputObject.GetComponent<RawImage>();
-                }
-            }
+            _venueTexture = new RenderTexture(descriptor);
+            _venueTexture.Create();
+            _venueOutput.texture = _venueTexture;
 
             descriptor.depthBufferBits = 0;
             _trailsTexture = new RenderTexture(descriptor);
@@ -170,6 +178,7 @@ namespace YARG.Gameplay
 
         private void OnEnable()
         {
+            _nextOutputSearchTime = 0;
             FPS = SettingsManager.Settings.VenueFpsCap.Value;
             ResetRenderState();
             RenderPipelineManager.beginCameraRendering += OnPreCameraRender;
@@ -186,21 +195,12 @@ namespace YARG.Gameplay
 
         private void OnDestroy()
         {
-            if (_venueTexture != null)
+            if (_renderCamera != null)
             {
-                _venueTexture.Release();
-                Destroy(_venueTexture);
-                _venueTexture = null;
+                _renderCamera.enabled = false;
+                _renderCamera.targetTexture = null;
             }
-
-            if (_trailsTexture != null)
-            {
-                _trailsTextureHandle?.Release();
-                _trailsTextureHandle = null;
-                _trailsTexture.Release();
-                Destroy(_trailsTexture);
-                _trailsTexture = null;
-            }
+            ReleaseTextures();
 
             if (_alphaFixMaterial != null)
             {
@@ -214,28 +214,23 @@ namespace YARG.Gameplay
 
         private void OnSceneUnloaded(Scene scene)
         {
-            if (_venueTexture != null)
+            if (_renderCamera != null)
             {
-                _venueTexture.Release();
-                Destroy(_venueTexture);
-                _venueTexture = null;
+                _renderCamera.enabled = false;
+                _renderCamera.targetTexture = null;
             }
-
-            if (_trailsTexture != null)
-            {
-                _trailsTextureHandle?.Release();
-                _trailsTextureHandle = null;
-                _trailsTexture.Release();
-                Destroy(_trailsTexture);
-                _trailsTexture = null;
-            }
+            ReleaseTextures();
+            IsRendered = false;
 
             _venueOutput = null;
         }
 
         private void Update()
         {
-            if (ScreenSizeDetector.HasScreenSizeChanged || _venueTexture == null)
+            if (!TryFindOutput()) return;
+            if (ScreenSizeDetector.HasScreenSizeChanged || _venueTexture == null || _trailsTexture == null ||
+                _venueTexture.width != Mathf.Max(1, (int)(Screen.width * renderScale)) ||
+                _venueTexture.height != Mathf.Max(1, (int)(Screen.height * renderScale)))
             {
                 RecreateTextures();
                 // Force a render this frame to avoid flickering when resizing

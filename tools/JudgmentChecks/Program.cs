@@ -102,6 +102,8 @@ Check(animation.Age == 0, "Visual age cannot go backwards");
 
 string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../"));
 LaneMappingChecks.Run(root, Check);
+OptimizationChecks.Run(Check);
+RenderTextureLifetimeChecks.Run(root, Check);
 EarlyHitChecks.Run(Check);
 WeightedJudgmentChecks.Run(Check);
 ReplayJudgmentChecks.Run(Check);
@@ -157,7 +159,7 @@ Check(!presentation.Contains("_overlapDistance") && !presentation.Contains("_slo
 Check(hud.Contains("_imageSize: {x: 220, y: 96}") && hud.Contains("_fitToLane: 0"),
     "Larger images must not be automatically shrunk to a single narrow column");
 
-sources = sources.Concat(new[] { "Gameplay/GameManager.cs", "Gameplay/GameManager.Loading.cs", "BossHealthBar.cs",
+sources = sources.Concat(new[] { "Gameplay/VenueCameraRenderer.cs", "Gameplay/Visuals/HighwayCameraRendering.cs", "Gameplay/GameManager.cs", "Gameplay/GameManager.Loading.cs", "BossHealthBar.cs",
     "GepetoBossReaction.cs", "Menu/ScoreScreen/ScoreCards/ScoreCard.cs", "Menu/ScoreScreen/ScoreScreenContainer.cs",
     "Menu/ScoreScreen/ScoreScreenMenu.cs", "Menu/History/ViewTypes/ReplayViewType.cs", "Scores/PlayerScoreRecord.cs" }
     .Select(f => Path.Combine(root, "Assets/Script", f))).ToArray();
@@ -167,4 +169,4 @@ foreach (string file in sources)
         .GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).ToArray();
     Check(errors.Length == 0, $"Syntax: {file}: {string.Join<Diagnostic>(", ", errors)}");
 }
-Console.WriteLine($"PASS: {checks} checks of timing, real weighted engines, counters, chords/sustains, replay round-trips, prefab wiring and C# 9 syntax. Unity rendering was not tested.");
+Console.WriteLine($"PASS: {checks} checks of timing, real weighted engines, counters, chords/sustains, replay round-trips, pool bookkeeping, simulated render-texture ownership, prefab wiring and C# 9 syntax. Unity rendering was not tested.");

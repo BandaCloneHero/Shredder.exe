@@ -102,7 +102,7 @@ namespace YARG.Gameplay.Visuals
             if (HighwaysOutputTexture != null)
             {
                 HighwaysOutputTexture.Release();
-                HighwaysOutputTexture.DiscardContents();
+                CoreUtils.Destroy(HighwaysOutputTexture);
             }
 
             var descriptor = new RenderTextureDescriptor(Screen.width, Screen.height, RenderTextureFormat.DefaultHDR, 32, 0);
@@ -341,6 +341,7 @@ namespace YARG.Gameplay.Visuals
             if (_highwaysAlphaTexture != null)
             {
                 _highwaysAlphaTexture.Release();
+                CoreUtils.Destroy(_highwaysAlphaTexture);
             }
 
             float scaling = 1.0f;
@@ -360,10 +361,15 @@ namespace YARG.Gameplay.Visuals
             RenderPipelineManager.beginCameraRendering -= OnPreCameraRender;
             RenderPipelineManager.endCameraRendering -= OnEndCameraRender;
 
+            if (_renderCamera != null && _renderCamera.targetTexture == HighwaysOutputTexture)
+                _renderCamera.targetTexture = null;
+            if (_highwaysOutput != null && _highwaysOutput.texture == HighwaysOutputTexture)
+                _highwaysOutput.texture = null;
+            Shader.SetGlobalTexture(YargHighwaysAlphaTextureID, Texture2D.blackTexture);
             if (HighwaysOutputTexture != null)
             {
                 HighwaysOutputTexture.Release();
-                HighwaysOutputTexture.DiscardContents();
+                CoreUtils.Destroy(HighwaysOutputTexture);
                 HighwaysOutputTexture = null;
             }
             if (_highwaysAlphaTexture != null)
@@ -371,6 +377,7 @@ namespace YARG.Gameplay.Visuals
                 _highwaysAlphaTextureHandle?.Release();
                 _highwaysAlphaTextureHandle = null;
                 _highwaysAlphaTexture.Release();
+                CoreUtils.Destroy(_highwaysAlphaTexture);
                 _highwaysAlphaTexture = null;
             }
         }

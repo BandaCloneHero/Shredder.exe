@@ -197,7 +197,9 @@ namespace YARG.Gameplay.HUD
             int index = _judgmentPlayer.HighwayIndex;
             _judgments.SetLaneScreenPosition(lane,
                 _highwayRenderer.GetTrackPositionScreenSpace(index, x, _judgments.HighwayDepth),
-                _highwayRenderer.GetTrackPositionScreenSpace(index, x + halfWidth, _judgments.HighwayDepth));
+                _judgments.NeedsLaneWidth
+                    ? _highwayRenderer.GetTrackPositionScreenSpace(index, x + halfWidth, _judgments.HighwayDepth)
+                    : null);
         }
 
         // Keep the edit box sized to the track bounds and vertically centered to the track.

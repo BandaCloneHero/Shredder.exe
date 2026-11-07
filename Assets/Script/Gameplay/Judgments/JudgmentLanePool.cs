@@ -10,12 +10,20 @@ namespace YARG.Gameplay.Judgments
             public object Note;
             public int Lane;
             public bool Active;
+            public int NextInLane;
+            public int ActiveIndex;
         }
 
         private Slot[] _slots;
+        private int[] _activeSlots;
+        private readonly int[] _laneHeads;
+        private readonly int[] _laneTails;
+        private readonly int[] _laneActiveCounts;
         public int LaneCount { get; }
         public int InitialPerLane { get; }
         public int Count => _slots.Length;
+        public int ActiveCount { get; private set; }
+        public int ActiveSlotAt(int index) => _activeSlots[index];
 
         public JudgmentLanePool(int laneCount, int initialPerLane)
         {
@@ -23,25 +31,38 @@ namespace YARG.Gameplay.Judgments
             LaneCount = laneCount;
             InitialPerLane = initialPerLane;
             _slots = new Slot[laneCount * initialPerLane];
-            for (int i = 0; i < _slots.Length; i++) _slots[i].Lane = i / initialPerLane;
+            _activeSlots = new int[_slots.Length];
+            _laneHeads = new int[laneCount];
+            _laneTails = new int[laneCount];
+            _laneActiveCounts = new int[laneCount];
+            for (int lane = 0; lane < laneCount; lane++)
+            {
+                int start = lane * initialPerLane;
+                _laneHeads[lane] = start;
+                _laneTails[lane] = start + initialPerLane - 1;
+                InitializeLaneSlots(lane, start, start + initialPerLane);
+            }
         }
 
-        public bool HasActiveLane(int lane)
+        private void InitializeLaneSlots(int lane, int start, int end)
         {
-            if ((uint)lane >= (uint)LaneCount) return false;
-            for (int i = 0; i < _slots.Length; i++)
-                if (_slots[i].Lane == lane && _slots[i].Active) return true;
-            return false;
+            for (int i = start; i < end; i++)
+            {
+                _slots[i].Lane = lane;
+                _slots[i].NextInLane = i + 1 < end ? i + 1 : -1;
+            }
         }
+
+        public bool HasActiveLane(int lane) => (uint)lane < (uint)LaneCount && _laneActiveCounts[lane] > 0;
 
         public int Acquire(int lane, object note, out bool existing)
         {
             if ((uint)lane >= (uint)LaneCount) throw new ArgumentOutOfRangeException(nameof(lane));
             existing = false;
             int available = -1;
-            for (int i = 0; i < _slots.Length; i++)
+            // Visit only this lane, including any reserves appended by earlier bursts.
+            for (int i = _laneHeads[lane]; i >= 0; i = _slots[i].NextInLane)
             {
-                if (_slots[i].Lane != lane) continue;
                 if (_slots[i].Active)
                 {
                     if (note != null && ReferenceEquals(_slots[i].Note, note))
@@ -54,13 +75,18 @@ namespace YARG.Gameplay.Judgments
             }
             if (available < 0)
             {
-                // Grow only this lane's reserve; existing slot indices and animations stay intact.
                 available = _slots.Length;
                 Array.Resize(ref _slots, _slots.Length + InitialPerLane);
-                for (int i = available; i < _slots.Length; i++) _slots[i].Lane = lane;
+                Array.Resize(ref _activeSlots, _slots.Length);
+                InitializeLaneSlots(lane, available, _slots.Length);
+                _slots[_laneTails[lane]].NextInLane = available;
+                _laneTails[lane] = _slots.Length - 1;
             }
             _slots[available].Note = note;
             _slots[available].Active = true;
+            _slots[available].ActiveIndex = ActiveCount;
+            _activeSlots[ActiveCount++] = available;
+            _laneActiveCounts[lane]++;
             return available;
         }
 
@@ -69,14 +95,20 @@ namespace YARG.Gameplay.Judgments
 
         public void Release(int slot)
         {
-            // Keep lane ownership when the animation finishes.
+            if (!_slots[slot].Active) return;
+            int index = _slots[slot].ActiveIndex;
+            int moved = _activeSlots[--ActiveCount];
+            _activeSlots[index] = moved;
+            _slots[moved].ActiveIndex = index;
+            _laneActiveCounts[_slots[slot].Lane]--;
+            // Keep lane ownership and linked reserves when the animation finishes.
             _slots[slot].Note = null;
             _slots[slot].Active = false;
         }
 
         public void Clear()
         {
-            for (int i = 0; i < _slots.Length; i++) Release(i);
+            while (ActiveCount > 0) Release(_activeSlots[ActiveCount - 1]);
         }
     }
 }

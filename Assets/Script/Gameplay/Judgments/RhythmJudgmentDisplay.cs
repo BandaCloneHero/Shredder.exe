@@ -78,6 +78,7 @@ namespace YARG.Gameplay.Judgments
         private bool[] _laneVisible;
 
         public int LaneCount => _slots?.LaneCount ?? 0;
+        public bool NeedsLaneWidth => _fitToLane;
         public bool HasActiveLane(int lane) => _slots != null && _slots.HasActiveLane(lane);
 
         public void Initialize(Transform hudParent, GameManager game, int laneCount)
@@ -171,7 +172,6 @@ namespace YARG.Gameplay.Judgments
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(_hudParent, screenRightEdge.Value,
                     camera, out var edge))
                 _laneWidths[lane] = Mathf.Abs(edge.x - _lanePositions[lane].x) * 2;
-            PositionEntries();
         }
 
         public void Show(object logicalNote, int lane, RhythmJudgment judgment, double? milliseconds)
@@ -210,24 +210,30 @@ namespace YARG.Gameplay.Judgments
             selected.Rect.gameObject.SetActive(true);
             selected.Rect.SetAsLastSibling();
             Animate(selected); // Immediate first frame, independent of Update ordering.
-            PositionEntries();
+            PositionEntry(selected);
         }
 
-        private void Update()
+        private void LateUpdate()
         {
-            if (!IsInitialized || (_game != null && _game.Paused)) return;
-            foreach (var entry in _entries)
+            if (!IsInitialized) return;
+            bool paused = _game != null && _game.Paused;
+            float lifetime = _growth + _settle + _hold + _fade;
+            // Projection is supplied by gameplay's Update. Position only active images once, afterwards.
+            for (int i = 0; i < _slots.ActiveCount;)
             {
-                if (!_slots.IsActive(entry.Slot)) continue;
-                entry.Animation.Advance(Time.frameCount, Time.unscaledDeltaTime);
-                if (entry.Animation.Age >= _growth + _settle + _hold + _fade)
+                var entry = _entries[_slots.ActiveSlotAt(i)];
+                if (!paused) entry.Animation.Advance(Time.frameCount, Time.unscaledDeltaTime);
+                if (!paused && entry.Animation.Age >= lifetime)
                 {
                     _slots.Release(entry.Slot);
                     entry.Rect.gameObject.SetActive(false);
+                    // Release swaps the last active slot into i, so process that slot next.
+                    continue;
                 }
-                else Animate(entry);
+                Animate(entry);
+                PositionEntry(entry);
+                i++;
             }
-            PositionEntries();
         }
 
         private void Animate(Entry entry)
@@ -257,21 +263,16 @@ namespace YARG.Gameplay.Judgments
                 (Mathf.Max(1, _imageSize.x) * Mathf.Max(1, _peakScale)));
         }
 
-        private void PositionEntries()
+        private void PositionEntry(Entry entry)
         {
-            if (_entries == null) return;
             float lifetime = Mathf.Max(0.001f, _growth + _settle + _hold + _fade);
-            foreach (var entry in _entries)
-            {
-                if (!_slots.IsActive(entry.Slot)) continue;
-                int lane = _slots.LaneOf(entry.Slot);
-                // Derive motion from age, never accumulate it: reprojection cannot double the drift.
-                float rise = Mathf.SmoothStep(0, 1, Mathf.Clamp01(entry.Animation.Age / lifetime));
-                float verticalOffset = _startVerticalOffset + _riseDistance * rise;
-                entry.Rect.anchoredPosition = _lanePositions[lane] + _positionOffset +
-                    new Vector2(0, verticalOffset);
-                if (!_laneVisible[lane]) entry.Group.alpha = 0;
-            }
+            int lane = _slots.LaneOf(entry.Slot);
+            // Derive motion from age, never accumulate it: reprojection cannot double the drift.
+            float rise = Mathf.SmoothStep(0, 1, Mathf.Clamp01(entry.Animation.Age / lifetime));
+            float verticalOffset = _startVerticalOffset + _riseDistance * rise;
+            entry.Rect.anchoredPosition = _lanePositions[lane] + _positionOffset +
+                new Vector2(0, verticalOffset);
+            if (!_laneVisible[lane]) entry.Group.alpha = 0;
         }
 
         private static float Ease(float t) => 1 - Mathf.Pow(1 - Mathf.Clamp01(t), 3);
@@ -279,10 +280,8 @@ namespace YARG.Gameplay.Judgments
         public void Clear()
         {
             if (_entries == null) return;
-            foreach (var entry in _entries)
-            {
-                entry.Rect.gameObject.SetActive(false);
-            }
+            for (int i = 0; i < _slots.ActiveCount; i++)
+                _entries[_slots.ActiveSlotAt(i)].Rect.gameObject.SetActive(false);
             _slots.Clear();
         }
 
