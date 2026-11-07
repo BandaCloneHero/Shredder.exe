@@ -191,6 +191,30 @@ namespace YARG.Gameplay.Visuals
             return _cameras.Count - (_vocalTrack != null ? 1 : 0);
         }
 
+        /// <summary>Registered render tracks, including the shared vocals track when present.</summary>
+        public int RenderedTrackCount => _cameras.Count;
+
+        /// <summary>
+        /// Screen-pixel bounds for responsive UI, using the current projection rather than the
+        /// raised camera used to size the highway. Returns null while projection initialization is pending.
+        /// </summary>
+        public Rect? GetRenderedTrackBoundsScreenSpace(int trackIndex)
+        {
+            if (!isActiveAndEnabled || _needsCameraReset || (uint)trackIndex >= (uint)_cameras.Count ||
+                trackIndex >= MAX_MATRICES || _cameras[trackIndex] == null || Screen.width <= 0 || Screen.height <= 0)
+                return null;
+
+            if (_vocalTrack != null && _cameras[trackIndex] == _vocalTrack.GetTrackCamera())
+            {
+                // Vocals use an orthographic UI rectangle, not the highway's world-space fade distance.
+                var layout = _vocalTrack.GetVocalLayoutRect();
+                return new Rect(layout.x * Screen.width, layout.y * Screen.height,
+                    layout.width * Screen.width, layout.height * Screen.height);
+            }
+
+            return GetTrackBoundsScreenSpace(trackIndex);
+        }
+
         public void RecalculateScaleFactors()
         {
             if (_cameras.Count == 0)

@@ -104,6 +104,7 @@ string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../
 LaneMappingChecks.Run(root, Check);
 OptimizationChecks.Run(Check);
 RenderTextureLifetimeChecks.Run(root, Check);
+RenderedTrackApiChecks.Run(root, Check);
 EarlyHitChecks.Run(Check);
 WeightedJudgmentChecks.Run(Check);
 ReplayJudgmentChecks.Run(Check);
