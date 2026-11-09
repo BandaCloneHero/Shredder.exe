@@ -30,3 +30,17 @@ O jogador é parte de uma das poucas bandas humanas que quer se manter relevante
 - Vinícius Anjos - Apoio na programação
 
 - Larissa Mello Laurindo - Artes Visuais
+# Dependência C# do Shredder.exe
+
+Antes de abrir no Unity **6000.3.5f2**, execute na raiz:
+
+```sh
+python3 scripts/restore-compatible-core.py
+```
+
+O projeto usa YARG.Core `3beb94e526558134145bcd3e409428f759001a40`
+mais o patch versionado de julgamentos. O restaurador preserva checkouts existentes
+de outra versão e pode ser executado novamente sem reaplicar o patch.
+Não substitua pelo Core mais recente nem remova `Assets/Script/Audio/Bass`.
+Restaure também os pacotes de `Assets/packages.config` com NuGetForUnity.
+Veja [o diagnóstico de compilação](docs/correcao-compilacao.md).

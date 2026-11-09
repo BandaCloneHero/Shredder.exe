@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>UNITY_STANDALONE_LINUX</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../YARG.Core/YARG.Core/YARG.Core.csproj" />
+    <Compile Include="../../Assets/Script/Audio/Bass/*.cs" Link="Bass/%(Filename)%(Extension)" />
+    <Compile Include="../../Assets/Script/Audio/PitchDetection/*.cs" Link="PitchDetection/%(Filename)%(Extension)" />
+    <PackageReference Include="ManagedBass" Version="3.1.1" />
+    <PackageReference Include="ManagedBass.Fx" Version="3.1.1" />
+    <PackageReference Include="ManagedBass.Mix" Version="3.1.1" />
+  </ItemGroup>
+</Project>
