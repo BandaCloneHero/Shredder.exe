@@ -1,5 +1,22 @@
 # Correção de compatibilidade C# — Shredder.exe
 
+## Teste de EngineTimer no Windows em português
+
+O Core compilava, mas um teste esperava ponto decimal sem fixar a cultura.
+`EngineTimer.ToString()` usa a cultura atual por padrão, produzindo vírgula no
+Windows em português. Foi preservado esse comportamento de produção: o teste
+original agora declara `[SetCulture("en-US")]` e um teste adicional declara
+`[SetCulture("pt-BR")]`, verificando explicitamente o resultado com vírgula.
+Nenhum cálculo de tempo ou áudio mudou.
+
+A correção está em `docs/patches/core-timer-culture-tests.patch` e é aplicada
+também pelo restaurador existente, via `scripts/apply-rhythm-core-patch.py`.
+Não é necessário reaplicar o patch de julgamentos manualmente. Essa mudança
+afeta somente testes, portanto não exige gerar outro pacote Core para o Unity.
+Backup do teste anterior: `/tmp/shredder-timer-test-backup/EngineTimerTests.cs`.
+Suíte reexecutada em Release com cultura `pt-BR`: **439 aprovados, 2 ignorados,
+zero falhas** (441 testes, incluindo a nova cobertura regional).
+
 ## Correção da dependência efetivamente carregada pelo Unity
 
 Os 19 erros atuais enviados pelo Console citam os contratos da master recente
