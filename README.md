@@ -39,10 +39,10 @@ python3 scripts/restore-compatible-core.py
 ```
 
 O projeto usa YARG.Core `3beb94e526558134145bcd3e409428f759001a40`
-mais o patch versionado de julgamentos. Se esse patch tiver sido transformado em
-um commit local indisponível no remoto, o restaurador reconhece o conteúdo exato,
-salva um backup Git e recupera a base pública com o mesmo patch. Checkouts com
-outras alterações são preservados. O comando pode ser executado novamente.
+mais o patch versionado de julgamentos. O restaurador recupera também uma `master`
+limpa ou um commit local indisponível no remoto: salva um backup Git e volta à
+base pública com o patch. Alterações locais não commitadas e arquivos não
+rastreados impedem a troca e são preservados. O comando pode ser executado novamente.
 Não substitua pelo Core mais recente nem remova `Assets/Script/Audio/Bass`.
 Restaure também os pacotes de `Assets/packages.config` com NuGetForUnity.
 Veja [o diagnóstico de compilação](docs/correcao-compilacao.md).

@@ -1,5 +1,42 @@
 # Correção de compatibilidade C# — Shredder.exe
 
+## Correção do restaurador no Windows
+
+A mensagem `YARG.Core is not an initialized Git checkout`, mesmo com
+`git -C YARG.Core status` funcionando, era causada por uma comparação textual
+entre o caminho retornado pelo Git e o caminho do Python. Git for Windows pode
+usar barras `/` e outra capitalização da unidade. A validação agora usa
+`os.path.samefile`, que compara a identidade no sistema de arquivos e aceita
+submódulos cujo `.git` é um arquivo.
+
+O restaurador também recupera agora um checkout **limpo** da master, inclusive
+`2f3900cf91aa141149d60cb122e88876e1709abb`, sem exigir igualdade com a árvore do
+patch. Antes da troca, verifica a ausência de alterações e arquivos não rastreados,
+busca somente a revisão pública fixada se ela estiver ausente, valida o patch
+num índice temporário e salva o HEAD atual em um bundle. O checkout usa
+`--no-overwrite-ignore` para não sobrescrever arquivos ignorados em conflito.
+As descrições históricas abaixo de recusa de qualquer master limpa foram
+substituídas por esse comportamento.
+
+Com o script atualizado, execute na raiz no Windows:
+
+```bat
+py scripts\restore-compatible-core.py
+git -C YARG.Core rev-parse HEAD
+```
+
+A revisão final deve ser `3beb94e526558134145bcd3e409428f759001a40`, com o patch
+de julgamentos aplicado. `git submodule update --init --no-fetch` não resolve um
+gitlink que ainda aponta para um commit local indisponível como `fb7be371`;
+ele tenta justamente esse commit, sem buscar objetos. O restaurador usa a revisão
+pública diretamente e não precisa desse comando.
+
+Verificação: cinco testes em `scripts/test_restore_compatible_core.py` passaram.
+Também foi restaurado um checkout temporário real da master indicada, com `.git`
+em formato de arquivo; o patch foi validado e a segunda execução foi bem-sucedida.
+Essa integração foi executada no Linux; a comparação de caminhos Windows foi
+coberta por teste com o retorno do Git simulado.
+
 ## Reincidência investigada em 10/11/2026
 
 O commit principal `f816604` voltou a fixar um commit local de Core,

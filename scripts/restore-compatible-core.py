@@ -18,23 +18,23 @@ def git(*args, cwd=ROOT, env=None):
                           capture_output=True, text=True, env=env).stdout.strip()
 
 
-def recover_committed_patch(current):
-    # A local commit of the shipped patch is compatible but cannot be fetched
-    # from the official remote. Only normalize an EXACT tree match, never
-    # a commit containing additional changes or a dirty checkout.
+def recover_clean_checkout(current):
+    # Preserve every local edit. A clean master checkout can be switched back
+    # safely after saving its current commit and checking the patch in isolation.
     if git('status', '--porcelain', '--untracked-files=all', cwd=CORE):
         return False
+    try:
+        git('cat-file', '-e', REVISION + '^{commit}', cwd=CORE)
+    except subprocess.CalledProcessError:
+        git('fetch', REMOTE, REVISION, cwd=CORE)
     with tempfile.TemporaryDirectory(prefix='shredder-core-index-') as tmp:
         env = dict(os.environ, GIT_INDEX_FILE=str(Path(tmp) / 'index'))
         git('read-tree', REVISION, cwd=CORE, env=env)
         git('apply', '--cached', str(PATCH), cwd=CORE, env=env)
-        expected_tree = git('write-tree', cwd=CORE, env=env)
-    if git('rev-parse', 'HEAD^{tree}', cwd=CORE) != expected_tree:
-        return False
     backup = Path(tempfile.mkdtemp(prefix='shredder-core-backup-')) / 'local-core.bundle'
     git('bundle', 'create', str(backup), 'HEAD', cwd=CORE)
     print(f'Preserved local Core commit {current} in {backup}', flush=True)
-    git('checkout', '--detach', REVISION, cwd=CORE)
+    git('checkout', '--no-overwrite-ignore', '--detach', REVISION, cwd=CORE)
     return True
 
 
@@ -48,12 +48,15 @@ def restore():
             if CORE.exists():
                 CORE.rmdir()
             checkout.rename(CORE)
-    if git('rev-parse', '--show-toplevel', cwd=CORE) != str(CORE):
+    # Git for Windows returns forward slashes and may use different drive-letter
+    # casing. Compare filesystem identity, not the spelling of the two paths.
+    checkout_root = git('rev-parse', '--show-toplevel', cwd=CORE)
+    if not os.path.samefile(checkout_root, CORE):
         sys.exit('YARG.Core is not an initialized Git checkout. No files changed.')
     current = git('rev-parse', 'HEAD', cwd=CORE)
-    if current != REVISION and not recover_committed_patch(current):
+    if current != REVISION and not recover_clean_checkout(current):
         sys.exit(f'Core is at {current}, expected {REVISION}. Existing files were preserved. '
-                 'Back up/move that checkout before restoring; do not use the latest Core.')
+                 'Commit or back up/move the local changes before restoring.')
     subprocess.run([sys.executable, str(ROOT / 'scripts/apply-rhythm-core-patch.py')], check=True)
     print(f'Compatible Core ready: {REVISION} + rhythm-judgments-core.patch')
 
