@@ -1,6 +1,61 @@
 # Correção de compatibilidade C# — Shredder.exe
 
-## Diagnóstico
+## Reincidência investigada em 10/11/2026
+
+O commit principal `f816604` voltou a fixar um commit local de Core,
+`db5dc09f5a55dc294d0dd68dc92d0e6a3153bdcc`. Esse objeto existe neste ambiente,
+mas não pode ser recuperado do remoto oficial informado no erro `not our ref`.
+Ele é filho direto de `3beb94e5` e contém exatamente o patch de julgamentos já
+versionado: nove arquivos, sem mudanças nos contratos de áudio.
+
+Neste checkout, o Core estava em `db5dc09` e sem alterações locais, portanto
+já continha contratos compatíveis. A comparação com `origin/master` confirmou
+todos os grupos de incompatibilidades relatados: `InputDeviceInfo` substitui
+tuplas e argumentos separados, surgem push streams/amostras de venue,
+microfone multicanal/reverb, fábricas de streams e canais tone/one-shot,
+e `SetPlaybackSpeed_Internal` substitui `SetSpeed_Internal`.
+Baixar a master para contornar o commit indisponível introduz esses erros;
+não há indicação de que as implementações BASS do jogo precisem dessa migração.
+
+O caminho efetivo é **`YARG.Core` na raiz** (`path = YARG.Core` em `.gitmodules`).
+`Assets/Plugins/YARG.Core` é apenas o nome histórico da seção de configuração.
+Manifesto e lock UPM já apontam para a pasta correta; não há outro Core em
+`Assets/Plugins/YARG.Core` neste checkout.
+
+Nesta revisão, foram modificados:
+
+- Gitlink `YARG.Core`: novamente fixado na revisão pública `3beb94e5`, no índice,
+  sem commit ou push.
+- `scripts/restore-compatible-core.py`: recupera automaticamente um commit local
+  somente se seu checkout estiver limpo e sua árvore inteira for exatamente igual
+  à base pública com o patch. Calcula essa árvore com índice Git temporário,
+  preserva o commit em um bundle e faz checkout da base antes de reaplicar o patch.
+  Qualquer conteúdo adicional, inclusive arquivos não rastreados, impede a troca.
+- `README.md` e este relatório: instruções e diagnóstico atualizados.
+
+Os sete fontes e dois testes de Core do patch foram restaurados como alterações
+locais, mantendo os mesmos bytes do commit `db5dc09`. Nenhum arquivo BASS,
+referência de áudio ou arquivo `.meta` foi alterado nesta revisão. As versões
+ManagedBass/Fx/Mix 3.1.1 e demais dependências foram mantidas.
+
+Backups desta revisão: `/tmp/shredder-core-recovery-20261110/local-core.bundle`
+(histórico Git completo de `db5dc09`, verificado com `git bundle verify`) e
+`/tmp/shredder-core-recovery-20261110/source-before.tar.gz` (fontes e configurações
+antes das mudanças). O restaurador também salvou seu próprio bundle, com o
+caminho impresso durante a execução. Não foi usado `git reset --hard`.
+
+Os comandos de verificação e suas limitações estão descritos abaixo. Os testes
+do restaurador incluíram checkout vazio, repetição, recuperação do commit local,
+preservação de arquivo não rastreado e recusa da master incompatível. A compilação
+isolada dos fontes BASS reais e contratos passou com **zero erros**, com os oito
+avisos preexistentes de nullable/análise estática em uma compilação inicial.
+Foram reexecutadas e aprovadas as **6.632 verificações de gameplay/replays** e
+os testes do Core: **438 aprovados, 2 ignorados, nenhuma falha**. Uma comparação
+byte a byte confirmou que os nove arquivos restaurados do Core são idênticos
+aos do commit local preservado. A validação completa no Unity continua pendente
+por ausência do Editor neste ambiente.
+
+## Diagnóstico original de 09/11/2026
 
 O checkout recebido tinha `YARG.Core/` vazio. O pacote local
 `in.yarg.core` em `Packages/manifest.json` aponta para `../YARG.Core/YARG.Core`.
@@ -60,8 +115,9 @@ python3 scripts/restore-compatible-core.py
 ```
 
 O restaurador baixa a revisão fixada quando a pasta está vazia, aplica o patch
-e permite repetição sem duplicá-lo. Recusa um checkout de outra revisão sem
-sobrescrever os arquivos existentes. Não use `git submodule update --remote`.
+e permite repetição sem duplicá-lo. Também recupera um commit local com conteúdo
+exatamente igual à base pública com o patch, preservando-o em backup. Recusa
+outros conteúdos/revisões sem sobrescrevê-los. Não use `git submodule update --remote`.
 O aplicador de patch também verifica a revisão antes de modificar uma base nova.
 
 Restaure os pacotes com NuGetForUnity no Editor, ou com sua CLI:
