@@ -32,17 +32,26 @@ O jogador é parte de uma das poucas bandas humanas que quer se manter relevante
 - Larissa Mello Laurindo - Artes Visuais
 # Dependência C# do Shredder.exe
 
-Antes de abrir no Unity **6000.3.5f2**, execute na raiz:
+Abra no Unity **6000.3.5f2** com `Packages/manifest.json` e
+`Packages/in.yarg.core-0.13.0-shredder.1.tgz` desta versão do projeto.
+O Unity usa esse pacote local fixado, contendo YARG.Core `3beb94e5` mais o
+patch de julgamentos. Isso impede que uma `master` incompatível no submódulo
+volte a causar os erros de override nos arquivos BASS. Não é necessário executar
+Python para carregar esse Core no Unity.
+
+Para trabalhar nos fontes do submódulo ou executar os testes .NET:
 
 ```sh
 python3 scripts/restore-compatible-core.py
 ```
 
-O projeto usa YARG.Core `3beb94e526558134145bcd3e409428f759001a40`
-mais o patch versionado de julgamentos. O restaurador recupera também uma `master`
+O restaurador recupera também uma `master`
 limpa ou um commit local indisponível no remoto: salva um backup Git e volta à
 base pública com o patch. Alterações locais não commitadas e arquivos não
 rastreados impedem a troca e são preservados. O comando pode ser executado novamente.
 Não substitua pelo Core mais recente nem remova `Assets/Script/Audio/Bass`.
+O pacote foi exportado por `scripts/package-compatible-core.py`, com licença,
+proveniência e metadados Unity. Edições no submódulo não alteram automaticamente
+o pacote usado pelo Unity: uma mudança de Core exige gerar uma nova versão dele.
 Restaure também os pacotes de `Assets/packages.config` com NuGetForUnity.
 Veja [o diagnóstico de compilação](docs/correcao-compilacao.md).

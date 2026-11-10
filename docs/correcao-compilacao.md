@@ -1,5 +1,65 @@
 # Correção de compatibilidade C# — Shredder.exe
 
+## Correção da dependência efetivamente carregada pelo Unity
+
+Os 19 erros atuais enviados pelo Console citam os contratos da master recente
+(`InputDeviceInfo`, push streams, venues, reverb/microfone e canais tone/one-shot).
+Os arquivos BASS do projeto implementam os contratos da revisão `3beb94e5`.
+A compilação isolada dos mesmos arquivos passou com o Core compatível, inclusive
+com os símbolos Windows Editor/Player e as DLLs reais de `Assets/Packages`.
+Isso confirma a incompatibilidade na dependência carregada no Windows.
+
+Para eliminar a recorrência causada por gitlinks locais indisponíveis e checkouts
+divergentes do submódulo, o manifesto agora referencia
+`file:in.yarg.core-0.13.0-shredder.1.tgz`. Esse pacote local versionado é exportado
+da base pública mais o patch existente, sem depender do HEAD local. Mantém o
+nome de pacote e a assembly `YARG.Core.Package`; o código BASS não foi removido
+nem substituído. O submódulo e todos os seus arquivos continuam preservados para
+desenvolvimento e testes .NET.
+
+O formato de dependência por tarball local é suportado pelo
+[Package Manager do Unity](https://docs.unity.com/en-us/engine/6000.3/manual/packages-list/managing-packages-manifest/upm-manifest-prj).
+Somente a entrada antiga do Core foi invalidada no lock; o Unity a recria para
+o novo pacote. As demais dependências e versões não foram atualizadas.
+
+O gerador `scripts/package-compatible-core.py` produz um arquivo determinístico
+de aproximadamente 393 KB com licença, revisão pública e SHA256 do patch.
+Os **295 arquivos C#** foram comparados byte a byte com o Core compatível.
+Os `.meta` existentes foram preservados, incluindo o GUID da assembly; metadados
+ausentes no upstream foram gerados com GUIDs determinísticos para o pacote
+imutável. Nenhum arquivo `.meta` de `Assets` foi alterado.
+
+No Windows, feche o Editor, atualize **juntos** o manifesto, o lock e o `.tgz`
+versionado, e reabra o projeto. O Core do Unity deixa de depender da master na
+pasta `YARG.Core`. Não é necessário limpar toda a Library ou restaurar aquele
+gitlink indisponível. Alterações futuras nos fontes do submódulo exigem exportar
+uma nova versão do pacote para chegar ao Unity.
+
+As verificações foram ampliadas em `tools/CompilationChecks` para C# 9,
+Windows Editor, Windows Player e uso das DLLs reais importadas pelo Unity.
+Os substitutos continuam restritos aos serviços Unity/aplicativo indisponíveis;
+Core e ManagedBass são reais. Não há Editor instalado neste ambiente para
+confirmar a resolução UPM, a compilação integral ou reprodução sonora.
+
+Backup antes desta mudança: `/tmp/shredder-bass-fix-backup/project-before.tar.gz`.
+
+Resultados desta revisão: **zero erros** nas compilações isoladas Windows Editor
+e Windows Player usando o Core extraído do `.tgz` entregue e as DLLs reais de
+ManagedBass do projeto; três testes de integridade/reprodução do pacote passaram.
+Permanecem os avisos preexistentes de nullable no Core e CA2265 no PitchTracker.
+Esses resultados não equivalem a executar o Unity Editor.
+
+Arquivos desta revisão:
+
+- `Packages/manifest.json`, `Packages/packages-lock.json` e o novo
+  `Packages/in.yarg.core-0.13.0-shredder.1.tgz`.
+- `scripts/package-compatible-core.py` e `scripts/test_packaged_core.py`.
+- `tools/CompilationChecks/CompilationChecks.csproj`, `EnvironmentShims.cs`
+  e seu `README.md`.
+- `README.md` e este relatório.
+
+Nenhum commit, push ou mudança no índice Git foi feito nesta revisão.
+
 ## Correção do restaurador no Windows
 
 A mensagem `YARG.Core is not an initialized Git checkout`, mesmo com

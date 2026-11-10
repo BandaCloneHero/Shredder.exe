@@ -1,5 +1,8 @@
 // Compile-only substitutes for Unity/application services. Never included in Assets or invoked.
 using System;
+#if UNITY_EDITOR
+namespace UnityEditor { public static class EditorUtility { public static bool audioMasterMute; } }
+#endif
 namespace UnityEngine {
  public static class Application { public static string dataPath => ""; public static string streamingAssetsPath => ""; }
  public static class Mathf {

@@ -2,14 +2,32 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>UNITY_STANDALONE_LINUX</DefineConstants>
+    <LangVersion>9</LangVersion>
+    <BassCheckPlatform Condition="'$(BassCheckPlatform)' == ''">LinuxPlayer</BassCheckPlatform>
+    <UseUnityManagedBass Condition="'$(UseUnityManagedBass)' == ''">false</UseUnityManagedBass>
+    <CoreProjectPath Condition="'$(CoreProjectPath)' == ''">../../YARG.Core/YARG.Core/YARG.Core.csproj</CoreProjectPath>
+    <DefineConstants Condition="'$(BassCheckPlatform)' == 'LinuxPlayer'">UNITY_STANDALONE_LINUX</DefineConstants>
+    <DefineConstants Condition="'$(BassCheckPlatform)' == 'WindowsPlayer'">UNITY_STANDALONE_WIN;UNITY_64</DefineConstants>
+    <DefineConstants Condition="'$(BassCheckPlatform)' == 'WindowsEditor'">UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_STANDALONE_WIN;UNITY_64</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../YARG.Core/YARG.Core/YARG.Core.csproj" />
+    <ProjectReference Include="$(CoreProjectPath)" />
     <Compile Include="../../Assets/Script/Audio/Bass/*.cs" Link="Bass/%(Filename)%(Extension)" />
     <Compile Include="../../Assets/Script/Audio/PitchDetection/*.cs" Link="PitchDetection/%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseUnityManagedBass)' != 'true'">
     <PackageReference Include="ManagedBass" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Fx" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Mix" Version="3.1.1" />
   </ItemGroup>
+  <ItemGroup Condition="'$(UseUnityManagedBass)' == 'true'">
+    <!-- Use the actual variants restored by NuGetForUnity, including net45. -->
+    <Reference Include="ManagedBass" HintPath="../../Assets/Packages/ManagedBass.3.1.1/lib/net45/ManagedBass.dll" />
+    <Reference Include="ManagedBass.Fx" HintPath="../../Assets/Packages/ManagedBass.Fx.3.1.1/lib/netstandard1.4/ManagedBass.Fx.dll" />
+    <Reference Include="ManagedBass.Mix" HintPath="../../Assets/Packages/ManagedBass.Mix.3.1.1/lib/netstandard1.4/ManagedBass.Mix.dll" />
+  </ItemGroup>
+  <Target Name="ValidateBassCheckPlatform" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(BassCheckPlatform)' != 'LinuxPlayer' and '$(BassCheckPlatform)' != 'WindowsPlayer' and '$(BassCheckPlatform)' != 'WindowsEditor'"
+           Text="BassCheckPlatform must be LinuxPlayer, WindowsPlayer or WindowsEditor." />
+  </Target>
 </Project>
