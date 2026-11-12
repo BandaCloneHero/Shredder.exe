@@ -4494,12 +4494,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1212139298}
+  m_Father: {fileID: 1900000011}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -392.1, y: 180.8}
-  m_SizeDelta: {x: 350, y: 350}
+  m_AnchoredPosition: {x: 0, y: 100}
+  m_SizeDelta: {x: 600, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &766600155
 MonoBehaviour:
@@ -5530,7 +5530,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -42.324127, y: 1.511998}
-  m_SizeDelta: {x: 616.638, y: 119.104004}
+  m_SizeDelta: {x: 616.638, y: 155}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &984414235
 MonoBehaviour:
@@ -5552,7 +5552,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 653da7a630f68344381c6a6a431f6fe7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 81f50ba91da648489c6ca05128f7d136, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6506,8 +6506,7 @@ RectTransform:
   - {fileID: 922548497}
   - {fileID: 2069844444}
   - {fileID: 1134502286}
-  - {fileID: 766600154}
-  - {fileID: 1376673709}
+  - {fileID: 1900000011}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -6691,8 +6690,8 @@ RectTransform:
   m_Father: {fileID: 1376673709}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -42.324127, y: 1.512}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1317226601
@@ -7022,15 +7021,15 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1317226600}
   - {fileID: 984414234}
+  - {fileID: 1317226600}
   - {fileID: 1389458973}
-  m_Father: {fileID: 1212139298}
+  m_Father: {fileID: 1900000011}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -283.676, y: -1.512}
-  m_SizeDelta: {x: 428.915, y: 6.892}
+  m_AnchoredPosition: {x: 75, y: -225}
+  m_SizeDelta: {x: 478, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1376673710
 MonoBehaviour:
@@ -7123,8 +7122,8 @@ MonoBehaviour:
   notificationFont: {fileID: 11400000, guid: 04973a14f12bf384f8093a8b70f63fcb, type: 2}
   attackNotificationFont: {fileID: 11400000, guid: f941d094fa226f74e9866f5e556ce769, type: 2}
   defeatNotificationDuration: 5
-  phase1Color: {r: 0, g: 1, b: 0, a: 1}
-  phase2Color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  phase1Color: {r: 0.95, g: 0.08, b: 0.12, a: 1}
+  phase2Color: {r: 1, g: 0.42, b: 0.08, a: 1}
   phase3Color: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &1376673713
 MonoBehaviour:
@@ -7999,8 +7998,9 @@ GameObject:
   - component: {fileID: 1389458973}
   - component: {fileID: 1389458975}
   - component: {fileID: 1389458974}
+  - component: {fileID: 1900000002}
   m_Layer: 5
-  m_Name: Heart
+  m_Name: BossEmblem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8022,8 +8022,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -275.64, y: 1.512}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: -364, y: 1.512}
+  m_SizeDelta: {x: 120, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1389458974
 MonoBehaviour:
@@ -8045,7 +8045,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 26380d83abeaf2f4d88fd9f008b61a5d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8260371857794e8dadd9d2128ba2ee87, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8063,6 +8063,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1389458972}
   m_CullTransparentMesh: 1
+--- !u!114 &1900000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389458972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fca0f2c43f84ba59de354a4a009054f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::BossEmblemAnimator
+  bossHealthBar: {fileID: 1376673710}
+  normalSprite: {fileID: 21300000, guid: 8260371857794e8dadd9d2128ba2ee87, type: 3}
+  hitSprite: {fileID: 21300000, guid: 3bcfd53884464ab791bb5a3f5ac7ea57, type: 3}
+  phase2Sprite: {fileID: 21300000, guid: 0aeb3e2059c443db88a39f64c38bca9e, type: 3}
+  hitDuration: 0.18
+  minimumHitInterval: 0.28
+  transformationDuration: 0.45
 --- !u!1 &1403276640
 GameObject:
   m_ObjectHideFlags: 0
@@ -10985,6 +11004,75 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f09d7030713b2e34dbc210e5e014add2, type: 3}
+--- !u!1 &1900000010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1900000011}
+  - component: {fileID: 1900000012}
+  - component: {fileID: 1900000013}
+  m_Layer: 5
+  m_Name: Boss Responsive HUD
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1900000011
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900000010}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 766600154}
+  - {fileID: 1376673709}
+  m_Father: {fileID: 1212139298}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -200, y: 220}
+  m_SizeDelta: {x: 720, y: 580}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1900000012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900000010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a511e5b4b8ec4c979c142d3b4dd99e90, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::BossResponsiveLayout
+  highwayRenderer: {fileID: 1516249583}
+  trackPadding: 32
+  playerHudPadding: 90
+  screenPadding: 24
+  headerHeight: 170
+  footerHeight: 70
+--- !u!225 &1900000013
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900000010}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

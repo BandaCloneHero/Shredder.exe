@@ -24,10 +24,35 @@ namespace YARG.Gameplay.HUD
         [Range(0, 1)]
         private float value;
 
-        void OnValidate()
+#if UNITY_EDITOR
+        private void OnValidate()
         {
+            value = Mathf.Clamp01(value);
+            // Serialized references may not be ready during a script reload.
+            // Update RectTransforms on the editor's main thread after loading.
+            UnityEditor.EditorApplication.delayCall -= UpdatePreview;
+            UnityEditor.EditorApplication.delayCall += UpdatePreview;
+        }
+
+        private void UpdatePreview()
+        {
+            if (this == null)
+            {
+                return;
+            }
+
+            if (progressMask == null || progressImg == null)
+            {
+                Debug.LogError(
+                    $"{nameof(ProgressBarFadedEdge)} requires both {nameof(progressMask)} and " +
+                    $"{nameof(progressImg)} to be assigned in the Inspector. " +
+                    $"Missing: {(progressMask == null ? nameof(progressMask) : nameof(progressImg))}.", this);
+                return;
+            }
+
             SetProgress(value);
         }
+#endif
 
         /// <summary>
         /// Sets position of the progress bar.

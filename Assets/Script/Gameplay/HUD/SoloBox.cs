@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using YARG.Core.Engine;
 using YARG.Localization;
+using Cysharp.Text;
 
 namespace YARG.Gameplay.HUD
 {

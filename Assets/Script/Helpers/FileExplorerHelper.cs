@@ -1,6 +1,7 @@
 ﻿using System;
 using SimpleFileBrowser;
 using YARG.Core.Logging;
+using YARG.Menu.Persistent;
 
 using System.Diagnostics;
 using System.IO;
