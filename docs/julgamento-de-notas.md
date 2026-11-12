@@ -129,7 +129,9 @@ básicas. Teste acordes, sustain, inputs inválidos e reinício, e depois reprod
 
 ## Dependência do Core já existente
 
-Esta alteração não cria outro commit de submódulo. O checkout usa as correções anteriores
-do Core. Se outro checkout não as tiver, existe `docs/patches/rhythm-judgments-core.patch`
-e o aplicador `scripts/apply-rhythm-core-patch.py`. O ponteiro remoto do submódulo já causou
-`not our ref` anteriormente; não confundir esse problema de distribuição com estes novos scripts.
+O Core compatível é a revisão pública `3beb94e526558134145bcd3e409428f759001a40`
+com `docs/patches/rhythm-judgments-core.patch`. Execute
+`python3 scripts/restore-compatible-core.py` antes de abrir outro checkout no Unity.
+Os antigos ponteiros privados `55b7c62` e `848add0` não estão disponíveis no remoto
+oficial. Atualizar para o Core mais recente introduz mudanças incompatíveis de API.
+Veja [o diagnóstico de compilação](correcao-compilacao.md).

@@ -1,0 +1,28 @@
+diff --git a/YARG.Core.UnitTests/Engine/EngineTimerTests.cs b/YARG.Core.UnitTests/Engine/EngineTimerTests.cs
+index 6554c3ad..1ac8ade8 100644
+--- a/YARG.Core.UnitTests/Engine/EngineTimerTests.cs
++++ b/YARG.Core.UnitTests/Engine/EngineTimerTests.cs
+@@ -100,6 +100,7 @@ public class EngineTimerTests
+     }
+ 
+     [Test]
++    [SetCulture("en-US")]
+     public void ToString_FormatsStartedTimerWithSixDecimalPlaces()
+     {
+         var timer = new EngineTimer("Test", 1.25);
+@@ -108,4 +109,15 @@ public class EngineTimerTests
+ 
+         Assert.That(timer.ToString(), Is.EqualTo("2.500000 - 3.750000"));
+     }
++
++    [Test]
++    [SetCulture("pt-BR")]
++    public void ToString_FormatsStartedTimerUsingCurrentCulture()
++    {
++        var timer = new EngineTimer("Test", 1.25);
++
++        timer.Start(2.5);
++
++        Assert.That(timer.ToString(), Is.EqualTo("2,500000 - 3,750000"));
++    }
+ }

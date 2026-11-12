@@ -125,9 +125,10 @@ namespace YARG.Audio.BASS
             Bass.DeviceBufferLength = 2 * devPeriod;
 
             // Affects Windows only. Forces device names to be in UTF-8 on Windows rather than ANSI.
-            Bass.UnicodeDeviceInformation = true;
+            // These convenience properties are absent from ManagedBass's .NET Standard build.
+            Bass.Configure(Configuration.UnicodeDeviceInformation, true);
             Bass.FloatingPointDSP = true;
-            Bass.VistaTruePlayPosition = false;
+            Bass.Configure(Configuration.TruePlayPosition, false);
             Bass.UpdateThreads = GlobalAudioHandler.MAX_THREADS;
 
             // Undocumented BASS_CONFIG_MP3_OLDGAPS config.
