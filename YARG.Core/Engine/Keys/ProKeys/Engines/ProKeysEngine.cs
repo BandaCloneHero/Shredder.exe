@@ -85,6 +85,7 @@ namespace YARG.Core.Engine.Keys
 
             note.SetHitState(true, false);
 
+            double hitInputTime = KeyPressTimes[note.Key];
             KeyPressTimes[note.Key] = DEFAULT_PRESS_TIME;
 
             // Cancel rest of hit logic during BRE phrase. Key on CodaHasStarted, not IsCodaActive
@@ -167,6 +168,7 @@ namespace YARG.Core.Engine.Keys
                 }
             }
 
+            NoteHitTime = IsBot || hitInputTime == DEFAULT_PRESS_TIME ? CurrentTime : hitInputTime;
             OnNoteHit?.Invoke(NoteIndex, note);
             base.HitNote(note);
         }

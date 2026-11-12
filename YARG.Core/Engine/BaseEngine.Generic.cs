@@ -1267,6 +1267,47 @@ namespace YARG.Core.Engine
             return true;
         }
 
+        protected override void PrepareHitLogic()
+        {
+            if (!PreferClosestNote || !IsProcessingInput || IsBot || NoteIndex >= Notes.Count) return;
+            var parent = Notes[NoteIndex];
+            var window = EngineParameters.HitWindow;
+            double fullWindow = window.CalculateHitWindow(GetAverageNoteDistance(parent));
+            double frontend = window.GetFrontEnd(fullWindow);
+            double backend = window.GetBackEnd(fullWindow);
+            for (int i = NoteIndex + 1; i < Notes.Count; i++)
+            {
+                var next = Notes[i];
+                if (next.Time - CurrentTime > -frontend) break;
+                if (next.WasFullyHitOrMissed() || next.ChildNotes.Count != parent.ChildNotes.Count ||
+                    CurrentTime > next.Time + backend ||
+                    Math.Abs(next.Time - CurrentTime) >= Math.Abs(parent.Time - CurrentTime)) continue;
+                bool same = true;
+                foreach (var part in parent.AllNotes)
+                {
+                    bool found = false;
+                    foreach (var other in next.AllNotes)
+                        if (part.LaneNote == other.LaneNote) { found = true; break; }
+                    if (!found) { same = false; break; }
+                }
+                // Keep the normal instrument rules (frets, keys, pads, chord staggering).
+                if (!same || !CanNoteBeHit(next)) continue;
+                MissNoteForNearest(parent);
+                // The input is still untouched; the normal hit path now sees the closer note.
+                break;
+            }
+        }
+
+        protected virtual void MissNoteForNearest(TNoteType parent)
+        {
+            if (TreatChordAsSeparate)
+            {
+                foreach (var part in parent.AllNotes)
+                    if (!part.WasHit && !part.WasMissed) MissNote(part);
+            }
+            else MissNote(parent);
+        }
+
         protected double CalculateSustainPoints(ref ActiveSustain<TNoteType> sustain, uint tick)
         {
             uint scoreTick = Math.Clamp(tick, sustain.Note.Tick, sustain.Note.TickEnd);

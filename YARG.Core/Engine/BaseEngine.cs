@@ -64,6 +64,13 @@ namespace YARG.Core.Engine
         public int NoteIndex { get; protected set; }
 
         public double CurrentTime { get; protected set; }
+
+        // Opt-in for Shredder timing; legacy/replay engines retain their original rules.
+        public bool PreferClosestNote { get; set; }
+        protected bool IsProcessingInput { get; private set; }
+
+        // Timestamp of the input responsible for the current hit callback, in chart seconds.
+        public double NoteHitTime { get; protected set; }
         public double LastUpdateTime { get; protected set; }
 
         public double LastQueuedInputTime { get; protected set; }
@@ -239,10 +246,12 @@ namespace YARG.Core.Engine
                 RunQueuedUpdates(input.Time);
 
                 // Update engine state with input.
+                IsProcessingInput = true;
                 MutateStateWithInput(input);
 
                 // Run the engine.
                 RunEngineLoop(input.Time);
+                IsProcessingInput = false;
 
                 // Skip non-input update if possible
                 if (input.Time == time)
@@ -398,6 +407,7 @@ namespace YARG.Core.Engine
 
                 UpdateStarPower();
 
+                PrepareHitLogic();
                 UpdateHitLogic(time);
             } while (ReRunHitLogic);
         }
@@ -405,6 +415,8 @@ namespace YARG.Core.Engine
         public virtual void Reset(bool keepCurrentButtons = false)
         {
             NoteIndex = 0;
+            IsProcessingInput = false;
+            NoteHitTime = double.MinValue;
 
             CurrentTime = double.MinValue;
             LastUpdateTime = double.MinValue;
@@ -441,6 +453,8 @@ namespace YARG.Core.Engine
         /// <param name="time">The time in which to simulate hit logic at.</param>
         /// <returns>True if a note was updated (hit or missed). False if no changes.</returns>
         protected abstract void UpdateHitLogic(double time);
+
+        protected virtual void PrepareHitLogic() { }
 
         protected virtual void UpdateMultiplier()
         {

@@ -194,9 +194,18 @@ namespace YARG.Core.Engine.Keys
             KeyMask = active ? KeyMask | (1 << key) : KeyMask & ~(1 << key);
         }
 
+        protected override void MissNoteForNearest(TNoteType parent)
+        {
+            // A skipped old note clears key times; retain the current input for the closer note.
+            Span<double> pressTimes = stackalloc double[KeyPressTimes.Length];
+            KeyPressTimes.AsSpan().CopyTo(pressTimes);
+            base.MissNoteForNearest(parent);
+            pressTimes.CopyTo(KeyPressTimes);
+        }
+
         protected bool IsKeyInTime(TNoteType note, int key, double frontEnd)
         {
-            return KeyPressTimes[key] > note.Time + frontEnd;
+            return KeyPressTimes[key] >= note.Time + frontEnd;
         }
 
         protected abstract bool IsKeyInTime(TNoteType note, double frontEnd);

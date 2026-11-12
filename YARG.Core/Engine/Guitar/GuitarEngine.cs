@@ -309,6 +309,7 @@ namespace YARG.Core.Engine.Guitar
 
             WasNoteGhosted = false;
 
+            NoteHitTime = CurrentTime;
             OnNoteHit?.Invoke(NoteIndex, note);
             base.HitNote(note);
         }

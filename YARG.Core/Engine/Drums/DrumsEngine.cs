@@ -205,6 +205,7 @@ namespace YARG.Core.Engine.Drums
             // Score and such is accounted for above.
             if (!activationAutoHit)
             {
+                NoteHitTime = CurrentTime;
                 OnNoteHit?.Invoke(NoteIndex, note);
             }
 
