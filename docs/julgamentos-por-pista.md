@@ -6,7 +6,9 @@ de score/dano e os contadores acrescentados depois, consulte [configuração atu
 **Apresentação atual:** os julgamentos usam as quatro imagens fornecidas em
 `Images/Julgamentos`, importadas como texturas UI em `Assets/Resources/Julgamentos` e ligadas ao
 prefab `TrackView`. Não há texto gerado nem valor/sufixo de milissegundos na tela.
-Os PNG originais foram preservados byte a byte, incluindo suas cores e transparência.
+A versão ativa agora tem tipografia cyberpunk com acentos magenta; as cores de cada classificação
+e a transparência foram mantidas. As artes anteriores foram arquivadas em `Images/Julgamentos/Originais`.
+Consulte [artes e briefing](../Images/Julgamentos/README.md).
 O cálculo interno da precisão continua inalterado.
 
 O julgamento existente agora recebe a coluna visual da nota. Cada coluna possui seus próprios

@@ -7,22 +7,13 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
             rel="stylesheet"
         />
         <link rel="stylesheet" href="style.css" />
-        <style>
-            /* Ajuste automático para deixar as fontes maiores nos campos do ticket */
-            #ticket-id,
-            #ticket-mode,
-            #ticket-instrument,
-            #ticket-stage {
-                font-size: 1.7rem !important;
-                color: var(--cyan);
-            }
-        </style>
     </head>
     <body data-page="ticket">
+        <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
         <header class="topbar">
             <a class="brand-lockup" href="index.html"
                 ><span class="brand-mark">//</span> SHREDDER<span
@@ -30,38 +21,32 @@
                     >.exe</span
                 ></a
             >
-            <div class="top-status">
+            <div class="top-status legacy-page-context" aria-hidden="true">
                 <span class="status-dot"></span> CONEXÃO CONFIRMADA
             </div>
+        <nav class="page-nav" aria-label="Navegação principal"><a href="lobby.html" aria-current="page">Jogar</a><a href="ranking.html">Ranking</a><a href="perfil.html">Meu perfil</a></nav>
         </header>
-        <main class="ticket-shell">
-            <div class="stepper">
-                <span class="step done">01 <b>INSTRUMENTO</b></span>
-                <span class="step-line done"></span>
-                <span class="step done">02 <b>FASE</b></span>
-                <span class="step-line done"></span>
-                <span class="step active">03 <b>TICKET</b></span>
-            </div>
-            <p class="eyebrow">CREDENCIAL DE REDE // EMITIDA</p>
-            <h1>Seu ticket de <span>sessão.</span></h1>
+        <main id="main-content" tabindex="-1" class="ticket-shell">
+            <nav class="stepper" aria-label="Etapas da partida"><span class="step done"><span aria-hidden="true">01</span> <b>SALA</b></span><span class="step-line done" aria-hidden="true"></span><span class="step done"><span aria-hidden="true">02</span> <b>INSTRUMENTO</b></span><span class="step-line done" aria-hidden="true"></span><span class="step done"><span aria-hidden="true">03</span> <b>FASE</b></span><span class="step-line done" aria-hidden="true"></span><span class="step active" aria-current="step"><span aria-hidden="true">04</span> <b>TICKET</b></span></nav>
+            <p class="eyebrow">TUDO PRONTO PARA TOCAR</p>
+            <h1>Sua banda está <span>pronta.</span></h1>
             <p class="section-intro">
-                O uplink foi registrado. Leve esta credencial para o jogo quando
-                o sinal estiver pronto.
+                Mostre este ticket ao operador para iniciar a partida.
             </p>
 
             <section class="data-ticket panel-cut">
                 <div class="ticket-top">
-                    <span>SHREDDER.exe / SESSION PASS</span>
+                    <span>SHREDDER.exe / TICKET DA BANDA</span>
                     <span id="ticket-date">--/--/----</span>
                 </div>
                 <div class="ticket-main">
                     <div class="ticket-emblem">S<span>01</span></div>
                     <div class="ticket-summary">
-                        <p class="eyebrow">OPERADOR PRINCIPAL</p>
+                        <p class="eyebrow">JOGADOR</p>
                         <h2 id="ticket-player">---</h2>
                         <div class="ticket-meta">
                             <div>
-                                <span>ID DE REDE</span>
+                                <span>ID DO JOGADOR</span>
                                 <strong id="ticket-id">---</strong>
                             </div>
                             <div>
@@ -92,29 +77,28 @@
                 </div>
                 <div class="ticket-roster">
                     <div class="roster-heading">
-                        <span>ROSTER DA SESSÃO</span>
+                        <span>QUEM VAI TOCAR</span>
                         <strong
-                            ><span id="ticket-count">0</span> OPERADORES</strong
+                            ><span id="ticket-count">0</span> JOGADORES</strong
                         >
                     </div>
                     <div id="ticket-lobby"></div>
                 </div>
                 <div class="ticket-bottom">
                     <span
-                        >LOCAL LOBBY // L-<span id="ticket-code"
+                        >SALA / L-<span id="ticket-code"
                             >----</span
                         ></span
                     >
-                    <span>NOISE IS A CHOICE</span>
+                    <span>BORA FAZER BARULHO.</span>
                 </div>
             </section>
 
-            <section id="ticket-boss-panel" class="ticket-boss-panel" aria-labelledby="ticket-boss-title" hidden>
-                <h2 id="ticket-boss-title">Resultado da batalha</h2>
-                <p id="ticket-boss-status" role="status" aria-live="polite"></p>
+            <section id="ticket-boss-panel" class="ticket-actions" aria-label="Ações da campanha" hidden>
                 <button id="ticket-boss-continue" class="button button-primary" type="button" data-owner-control hidden disabled>Continuar campanha</button>
             </section>
         </main>
+        <script src="google-config.js"></script>
         <script src="js/account.js"></script>
         <script src="js/account-ui.js"></script>
         <script>

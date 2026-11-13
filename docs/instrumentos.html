@@ -7,12 +7,13 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
             rel="stylesheet"
         />
         <link rel="stylesheet" href="style.css" />
     </head>
     <body data-page="instrumentos">
+        <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
         <header class="topbar">
             <a class="brand-lockup" href="index.html"
                 ><span class="brand-mark">//</span> SHREDDER<span
@@ -20,36 +21,30 @@
                     >.exe</span
                 ></a
             >
-            <div class="top-status">
+            <div class="top-status legacy-page-context" aria-hidden="true">
                 <span class="status-dot"></span> UPLINK ESTÁVEL
                 <span class="top-divider"></span
                 ><span id="top-player">OPERADOR</span>
             </div>
+        <nav class="page-nav" aria-label="Navegação principal"><a href="lobby.html" aria-current="page">Jogar</a><a href="ranking.html">Ranking</a><a href="perfil.html">Meu perfil</a></nav>
         </header>
 
-        <main class="page-shell">
-            <div class="stepper">
-                <span class="step active">01 <b>INSTRUMENTO</b></span>
-                <span class="step-line"></span>
-                <span class="step">02 <b>FASE</b></span>
-                <span class="step-line"></span>
-                <span class="step">03 <b>TICKET</b></span>
-            </div>
+        <main id="main-content" tabindex="-1" class="page-shell">
+            <nav class="stepper" aria-label="Etapas da partida"><span class="step done"><span aria-hidden="true">01</span> <b>SALA</b></span><span class="step-line done" aria-hidden="true"></span><span class="step active" aria-current="step"><span aria-hidden="true">02</span> <b>INSTRUMENTO</b></span><span class="step-line" aria-hidden="true"></span><span class="step "><span aria-hidden="true">03</span> <b>FASE</b></span><span class="step-line" aria-hidden="true"></span><span class="step "><span aria-hidden="true">04</span> <b>TICKET</b></span></nav>
 
             <section class="section-heading">
                 <div>
-                    <p class="eyebrow">LOADOUT // ESCOLHA DE SINAL</p>
-                    <h1>Qual é a sua <span>frequência?</span></h1>
+                    <p class="eyebrow">SEU LUGAR NA BANDA</p>
+                    <h1>O que você vai <span>tocar?</span></h1>
                 </div>
-                <div class="operator-chip">
-                    <span>OPERADOR</span>
+                <div class="operator-chip page-identity-chip">
+                    <span>JOGADOR</span>
                     <strong id="operator-name">---</strong>
                 </div>
             </section>
 
             <p class="section-intro">
-                Selecione uma estação. Cada instrumento pode ser ocupado por
-                apenas um operador nesta sessão.
+                Escolha um instrumento livre. Cada jogador ocupa um lugar na banda.
             </p>
 
             <section
@@ -184,16 +179,15 @@
 
             <section class="lobby-console panel-cut">
                 <div class="console-head">
-                    <span>LOBBY COLETIVO</span>
-                    <span class="console-live"><i></i> LIVE / LOCAL</span>
+                    <span>SUA BANDA</span>
+                    <span class="console-live"><i></i> Na sala</span>
                 </div>
                 <div class="console-content">
                     <div>
-                        <p class="eyebrow">NÓ DE CONVITE</p>
-                        <h2>Envie o sinal.</h2>
+                        <p class="eyebrow">CONVIDE A BANDA</p>
+                        <h2>Mais gente, mais som.</h2>
                         <p>
-                            Escaneie para abrir este lobby em outro dispositivo
-                            e entrar na mesma sessão local.
+                            Abra o QR code em outro dispositivo para entrar nesta sala.
                         </p>
                         <span class="console-url" id="lobby-url">---</span>
                     </div>
@@ -210,18 +204,18 @@
                                 padding: 5px;
                             "
                         ></div>
-                        <span>SCAN // JOIN</span>
+                        <span>Escaneie para entrar</span>
                     </div>
                     <div class="lobby-roster">
-                        <p class="eyebrow">OPERADORES CONECTADOS</p>
+                        <p class="eyebrow">QUEM VAI TOCAR</p>
                         <div id="lobby-list"></div>
                     </div>
                 </div>
             </section>
 
             <div class="page-actions">
-                <a class="text-link" href="index.html"
-                    >← REINICIAR IDENTIDADE</a
+                <a class="text-link" href="lobby.html"
+                    >← Voltar às salas</a
                 >
                 <button
                     id="continue-instrument"
@@ -231,11 +225,12 @@
                     type="button"
                     disabled
                 >
-                    ESCOLHER FASE <b>→</b>
+                    Escolher fase <b>→</b>
                 </button>
             </div>
         </main>
 
+        <script src="google-config.js"></script>
         <script src="js/account.js"></script>
         <script src="js/account-ui.js"></script>
         <script>
@@ -269,7 +264,7 @@
             if (!player || !player.nome) {
                 window.location.href = `index.html${window.location.search}`;
             }
-            const meuNomeOperador = player?.id || player?.nome;
+            const meuNomeOperador = player?.nome;
 
             let minhaSalaId = null;
             let estadoAtualSala = {};
@@ -345,7 +340,7 @@
                             statusEl.innerText = "DISPONÍVEL";
                             statusEl.style.color = "";
                         }
-                    } else if (operadorQueEscolheu === meuNomeOperador) {
+                    } else if (operadorQueEscolheu === player.id || operadorQueEscolheu === meuNomeOperador) {
                         if (frameEl) frameEl.src = "images/Moldura-ocupada.png";
                         if (occupiedEl) occupiedEl.hidden = false;
                         meuInstrumentoEscolhido = card.dataset.instrument;
@@ -371,7 +366,7 @@
                         card.style.pointerEvents = "none";
                         card.style.opacity = "0.5";
                         if (statusEl) {
-                            statusEl.innerText = `OCUPADO // ${operadorQueEscolheu}`;
+                            statusEl.innerText = `Ocupado por ${nomeParaExibir(operadorQueEscolheu, estado.apelidos)}`;
                             statusEl.style.color = "#ff3333";
                         }
                     }
@@ -437,6 +432,7 @@
                 socket.emit("escolher_instrumento", {
                     salaId: minhaSalaId,
                     instrumento: nomeInstrumento,
+                    operadorId: player.id,
                     operadorNome: meuNomeOperador,
                 });
             }

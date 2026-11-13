@@ -1,0 +1,4 @@
+Google Sign in branding: https://developers.google.com/identity/branding-guidelines
+Logo: https://developers.google.com/static/identity/images/g-logo.png
+Font: Google Sans Medium from Google Fonts, if present.
+Assets used only for Google sign-in identification.

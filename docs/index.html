@@ -6,55 +6,42 @@
   <title>Shredder.exe // Acesso</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="page-login" data-page="login">
-  <main class="login-shell">
+        <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
+  <main id="main-content" tabindex="-1" class="login-shell">
     <section class="login-panel panel-cut" aria-labelledby="login-title">
       <div class="brand-lockup">
         <span class="brand-mark">//</span> SHREDDER<span class="brand-accent">.exe</span>
       </div>
-      <p class="eyebrow">REDE DE PERFORMANCE // NÓ 01</p>
-      <h1 id="login-title">Conecte-se à<br><span>frequência humana.</span></h1>
-      <p class="lede">Entre na sessão local e monte sua banda para desafiar o ruído corporativo.</p>
+      <p class="eyebrow">RITMO. BANDA. RESISTÊNCIA.</p>
+      <h1 id="login-title">Forme sua banda.<br><span>Faça barulho.</span></h1>
+      <p class="lede">Do primeiro riff ao último combo.</p>
       
-      <form id="login-form" class="stack-form" novalidate>
-        <label for="player-id">ID DE OPERADOR</label>
-        <div class="input-wrap">
-          <span class="input-prefix">ID:</span>
-          <input id="player-id" name="id" autocomplete="username" maxlength="24" required>
-        </div>
-        
-        <label for="player-name">NOME DE EXIBIÇÃO</label>
-        <div class="input-wrap">
-          <span class="input-prefix">OP:</span>
-          <input id="player-name" name="name" autocomplete="nickname" maxlength="24" placeholder="Como a rede deve te chamar?" required>
-        </div>
-        
-        <p id="login-error" class="form-error" role="alert"></p>
-        
-        <button class="button button-primary button-wide" type="submit">
-          <span>INICIAR UPLINK</span><b>↗</b>
-        </button>
-      </form>
+      <p id="login-error" class="form-error" role="alert"></p>
+      <p id="login-session-status" role="status" aria-live="polite"></p>
+      <button id="login-continue" class="button button-primary button-wide" type="button" hidden>Encontrar uma sala</button>
       
-      <p class="microcopy">
-        <span class="status-dot"></span> SESSÃO LOCAL // CRIPTOGRAFIA OFFLINE
-      </p>
+      <div id="google-login-main" class="google-login-button-host" hidden></div>
+      <p id="google-login-status" class="form-error" role="status" aria-live="polite" hidden></p>
+
     </section>
 
     <aside class="login-aside">
       <div class="signal-lines"></div>
-      <span class="aside-label">LIVE FEED / 2167</span>
+      <span class="aside-label">NO PALCO, JUNTOS.</span>
+      <img class="login-hero-instrument" src="images/Guitarra.png" alt="" aria-hidden="true">
       <div class="waveform" aria-hidden="true">
         <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
       </div>
-      <p>O futuro foi masterizado.<br><strong>Agora toque por ele.</strong></p>
-      <span class="aside-code">SYS.ENTRY_//_HUMAN_BAND</span>
+      <p>Quatro instrumentos.<br><strong>Uma banda no palco.</strong></p>
+      <span class="aside-code">GUITARRA · BAIXO · BATERIA · TECLADO</span>
     </aside>
   </main>
   
+<script src="google-config.js"></script>
   <script src="js/account.js"></script>
   <script src="js/account-ui.js"></script>
   <script>

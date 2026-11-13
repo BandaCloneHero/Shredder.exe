@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using YARG;
 using YARG.Gameplay;
+using TMPro;
 
 public class GepetoVisualAnimator : MonoBehaviour
 {
@@ -79,6 +80,16 @@ public class GepetoVisualAnimator : MonoBehaviour
     private Outline musicalOutline;
     private float transformationEffectRemaining;
 
+    [Header("Layout responsivo do personagem")]
+    [SerializeField] private bool responsiveLayout = true;
+    private RectTransform layoutCanvas;
+    private TMP_Text[] layoutTexts = System.Array.Empty<TMP_Text>();
+    private int layoutPlayerCount = -1;
+    private float nextLayoutRefresh;
+    private float layoutDiscoveryUntil;
+    private readonly Vector3[] layoutCorners = new Vector3[4];
+    private readonly List<GepetoHudLayout.Area> protectedHudAreas = new();
+
     private int currentAnimationStart = 0;
     private int currentAnimationEnd = 7;
     private float timer = 0f;
@@ -98,7 +109,10 @@ public class GepetoVisualAnimator : MonoBehaviour
         if (robotImage != null) originalImageColor = robotImage.color;
         if (robotImage != null)
         {
+            robotImage.raycastTarget = false;
             musicalRect = robotImage.rectTransform;
+            var canvas = robotImage.GetComponentInParent<Canvas>();
+            layoutCanvas = canvas != null ? canvas.rootCanvas.transform as RectTransform : null;
             restingScale = musicalRect.localScale;
             restingPosition = musicalRect.anchoredPosition3D;
             restingRotation = musicalRect.localRotation;
@@ -193,6 +207,7 @@ public class GepetoVisualAnimator : MonoBehaviour
     private void LateUpdate()
     {
         if (musicalRect == null) return;
+        UpdatePortraitLayout();
         ApplySpriteSizing();
         if (!musicalFeedbackEnabled || isDying)
         {
@@ -243,6 +258,61 @@ public class GepetoVisualAnimator : MonoBehaviour
             musicalRect.localRotation = restingRotation;
         }
         if (musicalOutline != null) musicalOutline.enabled = false;
+    }
+
+    private void UpdatePortraitLayout()
+    {
+        if (!responsiveLayout || layoutCanvas == null || musicalRect == null) return;
+        if (musicalGameManager == null) musicalGameManager = FindAnyObjectByType<GameManager>();
+        int players = Mathf.Max(1, musicalGameManager != null ? musicalGameManager.Players.Count : 1);
+        if (players != layoutPlayerCount) layoutDiscoveryUntil = Time.unscaledTime + 8f;
+        if (players != layoutPlayerCount || (Time.unscaledTime < layoutDiscoveryUntil && Time.unscaledTime >= nextLayoutRefresh))
+        {
+            layoutTexts = layoutCanvas.GetComponentsInChildren<TMP_Text>(true);
+            layoutPlayerCount = players;
+            nextLayoutRefresh = Time.unscaledTime + 1f;
+        }
+        var canvasRect = layoutCanvas.rect;
+        if (canvasRect.width <= 0f || canvasRect.height <= 0f) return;
+        protectedHudAreas.Clear();
+        // Reserve the left HUD even before percentage text receives its first value.
+        protectedHudAreas.Add(new GepetoHudLayout.Area(0, canvasRect.height * .72f,
+            canvasRect.width * .30f, canvasRect.height * .28f));
+        foreach (var text in layoutTexts)
+        {
+            if (text == null || !text.isActiveAndEnabled || !text.gameObject.activeInHierarchy
+                || (bossHealthBar != null && text.transform.IsChildOf(bossHealthBar.transform))) continue;
+            if ((text.text ?? string.Empty).IndexOf('%') < 0 && text.name.IndexOf("Accuracy", System.StringComparison.OrdinalIgnoreCase) < 0
+                && text.name.IndexOf("Percent", System.StringComparison.OrdinalIgnoreCase) < 0) continue;
+            var area = text.rectTransform;
+            if (area.parent is RectTransform parent && parent.rect.width < canvasRect.width * .45f
+                && parent.rect.height < canvasRect.height * .4f) area = parent;
+            area.GetWorldCorners(layoutCorners);
+            Vector3 min = layoutCanvas.InverseTransformPoint(layoutCorners[0]);
+            Vector3 max = min;
+            for (int i = 1; i < 4; i++)
+            {
+                Vector3 point = layoutCanvas.InverseTransformPoint(layoutCorners[i]);
+                min = Vector3.Min(min, point); max = Vector3.Max(max, point);
+            }
+            protectedHudAreas.Add(new GepetoHudLayout.Area(min.x - canvasRect.xMin - 16,
+                min.y - canvasRect.yMin - 16, max.x - min.x + 32, max.y - min.y + 32));
+        }
+        var placement = GepetoHudLayout.Calculate(canvasRect.width, canvasRect.height, players, protectedHudAreas);
+        if (placement.Size <= 0f) return;
+        musicalRect.anchorMin = musicalRect.anchorMax = new Vector2(.5f, .5f);
+        musicalRect.pivot = new Vector2(.5f, .5f);
+        musicalRect.sizeDelta = new Vector2(placement.Size, placement.Size);
+        restingPosition = new Vector3(placement.X - canvasRect.width * .5f,
+            placement.Y - canvasRect.height * .5f, restingPosition.z);
+        if (bossHealthBar != null && bossHealthBar.transform.parent == layoutCanvas
+            && bossHealthBar.transform is RectTransform healthRect)
+        {
+            healthRect.anchorMin = healthRect.anchorMax = new Vector2(.5f, .5f);
+            healthRect.pivot = new Vector2(.5f, .5f);
+            healthRect.anchoredPosition = new Vector2(restingPosition.x, restingPosition.y - placement.Size * .56f - 32f);
+            healthRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, placement.Size);
+        }
     }
 
     private void ApplySpriteSizing()

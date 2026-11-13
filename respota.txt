@@ -1,124 +1,79 @@
-A análise está concluída. **Nenhum arquivo foi modificado e nenhum arquivo do Unity será incluído na implementação.**
+Preciso comparar a implementação de login Google deste jogo da Feira de Jogos com a homologação do projeto Shredder.exe. Analise a implementação que funciona e entregue um relatório técnico com trechos relevantes de código, caminhos dos arquivos e nomes das funções. Não modifique arquivos, não execute login, não consulte usuários e não faça deploy.
 
-**Arquitetura atual**
+IMPORTANTE: não inclua chaves privadas, arquivos ADC, contas de serviço em JSON, client secrets OAuth, tokens, cookies, senhas, arquivos .env completos, dados pessoais, UID de usuários ou registros brutos de autenticação. Não envie o repositório inteiro. Configuração pública Firebase pode ser apresentada com apiKey e appId substituídos por marcadores; indique os nomes dos campos e de onde são obtidos. Não presuma que Firebase UID seja o userId da Feira.
 
-O frontend usa HTML, CSS e JavaScript sem framework em `docs/`. O backend usa Node.js, Express e Socket.IO em [servidor/server.js](/workspaces/Shredder.exe/servidor/server.js:1).
+CONTEXTO DO SHREDDER.EXE
+- Frontend HTML/JavaScript sem bundler; backend Node.js/Express/Socket.IO.
+- Homologação isolada no GitHub Codespaces, com porta 3001 privada e acesso HTTPS pelo encaminhamento app.github.dev.
+- Firebase projectId: shredder-d22a2; authDomain: shredder-d22a2.firebaseapp.com.
+- O domínio temporário foi adicionado aos domínios autorizados. Google foi habilitado no Firebase Console, conforme informado pelo responsável.
+- Web SDK oficial via CDN www.gstatic.com/firebasejs, versão configurada 12.19.0.
+- initializeAuth com inMemoryPersistence e browserPopupRedirectResolver; GoogleAuthProvider com prompt: select_account; signInWithPopup disparado diretamente pelo clique.
+- A preparação do SDK termina com sucesso. O popup efetivamente abre, conforme observado pelo responsável. Ainda não sabemos em qual ponto dentro do fluxo Google a operação é rejeitada.
+- A promessa de signInWithPopup é rejeitada como FirebaseError com código textual fora da lista estática local. O diagnóstico mostra AUTHENTICATION_FAILED CODE_NOT_ALLOWLISTED TYPE_FirebaseError.
+- Não se chega ao getIdToken(true) nem ao POST /validate do receptor nesta sequência. O código original foi descartado pela filtragem, portanto não está disponível para comparação.
+- Não há vínculo automático por e-mail, cadastro local ou emissão de sessão Shredder nesse teste.
+- O receptor independente utilizará Firebase Admin SDK, ADC por representação de conta de serviço e verifyIdToken(token, true), com checagens adicionais de projeto, provedor e autenticação recente. A leitura ADC já foi comprovada em um teste anterior. Isso não comprova o fluxo Web.
+- Não queremos substituir a sessão local existente por uma sessão Firebase nem implementar créditos/pagamentos nesta etapa.
 
-O Express entrega os arquivos de `docs/` e fornece duas formas de comunicação:
+O QUE PRECISO DA IMPLEMENTAÇÃO DESTE JOGO
 
-- **HTTP:** chamadas `fetch("/api/...")` para contas, perfis, loja, fases e painel do operador.
-- **Socket.IO:** salas, instrumentos, tickets, resultados, ranking e notificações de conquistas.
+1. Arquitetura e tecnologia realmente utilizadas
+Identifique se o login é Firebase Authentication com Google ou outro fluxo, como Google Identity Services, OAuth/OIDC próprio ou um serviço central de identidade da Feira. Diferencie o que estiver comprovado em código do que depender de configuração externa. Informe frontend, backend, bundler, SDKs e versões exatas encontradas nos manifestos/lockfiles ou imports.
 
-As chamadas usam a mesma origem do site: `account.js` tem `baseUrl()` vazio e os sockets são criados com `io()`.
+2. Fluxo frontend completo, com trechos de código
+Forneça caminhos e funções de:
+- Carregamento e inicialização do Firebase/SDK equivalente.
+- Obtenção da configuração pública, sem credenciais privadas.
+- Configuração de persistência e popupRedirectResolver.
+- Criação do provedor e seus customParameters/scopes.
+- Handler do botão que chama signInWithPopup ou equivalente.
+- Tratamento de sucesso, obtenção do Firebase ID Token e envio ao backend.
+- Tratamento de erros e encerramento da sessão Firebase.
+Indique se initializeApp/getAuth/initializeAuth são usados e se há instâncias duplicadas, componentes intermediários ou utilitários que alteram o comportamento.
 
-Há também uma estrutura de navegação persistente: [site-navigation.js](/workspaces/Shredder.exe/servidor/site-navigation.js:1) entrega `docs/site.html`, que abre as páginas em um iframe. O documento externo mantém as notificações de conquistas durante a navegação. A autenticação precisará respeitar essa estrutura.
+3. Hospedagem e restrições do navegador
+Informe, com evidências locais ou configuração pública disponível:
+- Onde frontend e backend são hospedados e como compartilham ou diferenciam origens.
+- Se o fluxo já foi testado em Codespaces, preview privado, proxy autenticado ou somente domínio público.
+- Se funciona em iframe ou exige navegação no documento principal.
+- Tratamentos para cookies entre sites, armazenamento bloqueado, popup, COOP/COEP e Content-Security-Policy.
+- Regras públicas relevantes de CSP, Referrer-Policy, proxy, CORS e credentials do fetch, sem cookies/cabeçalhos de autenticação.
+- Existência de proxy próprio para /__/auth/* ou configuração especial de authDomain. Não assumir que exista se não estiver comprovado.
 
-**Contas e sessões existentes**
+4. Configuração externa necessária
+Se essas informações já forem conhecidas pelo responsável ou estiverem documentadas, descreva sem alterar nada:
+- Provedor Google e domínios autorizados no Firebase Authentication.
+- authDomain e URI de redirecionamento OAuth utilizados.
+- Tipo/modo da tela de consentimento e exigência de usuários de teste.
+- Restrições da API key por HTTP referrer e por APIs permitidas, sem revelar o valor da chave.
+- APIs necessárias ao fluxo e como o responsável verificou sua configuração.
+- Possíveis restrições para contas institucionais do IFSC.
+Se não houver acesso ou evidência, marque como NÃO VERIFICADO. Não habilite APIs, altere IAM ou peça novas credenciais para elaborar o relatório.
 
-Já existe um sistema completo de usuário e senha:
+5. Erros do SDK e observabilidade segura
+Mostre como a aplicação preserva error.code sem expor message, stack, customData, tokens ou dados pessoais. Identifique se códigos de erro podem ser produzidos dinamicamente pelas respostas da API e ficar fora do enum AuthErrorCode.
+Se já existirem registros comprovadamente sanitizados, apresente somente códigos estáticos de erro, etapa e status HTTP. Não leia ou copie logs brutos, corpos de requisição, URLs com parâmetros, e-mails ou informações de conta. Não execute uma nova autenticação para coletar erros.
 
-| Componente | Funcionamento atual |
-|---|---|
-| Cadastro e login | `/api/auth/register` e `/api/auth/login` |
-| Senhas | Hash com `scrypt` e salt |
-| Contas | `servidor/accounts.json`, indexado pelo username normalizado |
-| Sessões | Tokens aleatórios; servidor armazena seus hashes em `sessions.json` |
-| Validade | Sete dias |
-| Persistência no navegador | Token em `localStorage`, chave `shredder.account.token.v1` |
-| Restauração | `/api/auth/session` ao carregar a página |
-| Saída | `/api/auth/logout` |
-| Operadores oficiais | Lista configurada no servidor, atualmente baseada em usernames |
+6. Backend, somente para comparação
+Forneça pequenos trechos com os caminhos/funções que:
+- Recebem e validam o Firebase ID Token.
+- Configuram projeto e credenciais sem mostrar seus valores privados.
+- Aplicam verifyIdToken e eventual checkRevoked.
+- Criam/reutilizam a sessão própria do jogo.
+- Distinguem identidade Google/Firebase de conta local e do userId da Feira.
+Não envie código de pagamentos nem dados reais de jogadores.
 
-Os perfis guardam conquistas, moedas, cosméticos, estatísticas e progresso. **A integração precisa preservar esses dados e o acesso atual por senha.**
+7. Comparação e recomendação
+Com base no código encontrado, liste as diferenças concretas em relação ao contexto do Shredder e quais podem explicar uma rejeição depois de abrir o popup, antes de obter o ID Token. Separe fatos, hipóteses e configurações não verificadas.
+Priorize uma correção mínima e um diagnóstico seguro, preservando inMemoryPersistence, sessão local e isolamento da homologação. Não recomende tornar a porta pública, remover verificações de segurança ou copiar credenciais como atalho.
 
-Existe uma segunda identidade, separada da conta: `shredder_player`, armazenada no navegador. Na tela inicial, o ID de operador é editável e recebe inicialmente um valor aleatório `OP-...`. Atualmente, esse ID não é uma identidade autenticada.
+FORMATO DE ENTREGA
+- Resumo do fluxo que realmente funciona.
+- Arquivos e funções envolvidos.
+- Trechos mínimos de código relevantes, com segredos removidos.
+- Configurações externas comprovadas e pendências.
+- Diferenças em relação ao Shredder e hipóteses priorizadas.
+- Próximo passo de diagnóstico que não exija repetir login ou consultar usuários.
 
-O arquivo [firebase-config.js](/workspaces/Shredder.exe/docs/firebase-config.js:1) contém somente valores de exemplo. Não encontrei inicialização do Firebase nem uso efetivo de Firebase Authentication. O comentário menciona Firestore, mas **Firestore não é necessário para este login**.
-
-**Pontos de segurança que a implementação deverá resolver**
-
-O backend já exige sessão para várias alterações de perfil, compras, fases e funções administrativas. Entretanto:
-
-- `criarSala`, `entrarSala` e `entrar_sala` aceitam IDs e nomes enviados pelo navegador.
-- `partidaFinalizada` recebe identidade do cliente e encaminha o resultado para persistência.
-- `partidas.js` localiza a conta do resultado pelo username recebido.
-- Algumas permissões de sala dependem dessa identidade previamente aceita.
-
-Assim, adicionar apenas o botão Google deixaria uma lacuna: o navegador continuaria podendo declarar outra identidade.
-
-O servidor deverá obter o UID de um token Firebase validado e usá-lo para determinar a conta. Os campos enviados pelo cliente não poderão escolher o proprietário da operação. A validação com Firebase Admin verifica o ID token e fornece o UID autenticado. [Documentação oficial](https://firebase.google.com/docs/auth/admin/verify-id-tokens).
-
-O envio de resultados pelo executável e a confirmação por operador também precisarão continuar funcionando. Isso será tratado no backend e na associação dos tickets, sem alterar o código Unity.
-
-**Hospedagem e domínios**
-
-Confirmei pela API do GitHub que o Pages está configurado assim:
-
-| Item | Configuração |
-|---|---|
-| Origem | Branch `main`, pasta `/docs` |
-| Endereço | `https://bandaclonehero.github.io/Shredder.exe/` |
-| Domínio personalizado no Pages | Nenhum |
-
-Também encontrei evidências de outra publicação:
-
-- [sync-server-accounts.js](/workspaces/Shredder.exe/servidor/sync-server-accounts.js:1) aponta para `shredder.feira-de-jogos.dev.br` e para `/var/www/html/servidor/accounts.json`.
-- [NAVEGACAO.md](/workspaces/Shredder.exe/servidor/NAVEGACAO.md:14) documenta a publicação do frontend e backend juntos e o comando `pm2 restart shredder`.
-
-Isso indica uma instalação Node gerenciada por PM2 nesse servidor. Não foi possível confirmar o funcionamento público atual desse endereço pela ferramenta web nem identificar sua configuração de proxy/TLS.
-
-**O GitHub Pages sozinho não executa o backend.** Como o frontend usa URLs relativas e Socket.IO na mesma origem, a configuração atual depende do servidor Node. Para usar o Pages como frontend funcional, seriam necessários endereço explícito do backend, CORS e ajustes nos caminhos; recomendo manter frontend e backend juntos na primeira implementação.
-
-Domínios a cadastrar em **Firebase Authentication → Settings → Authorized domains**:
-
-| Domínio | Quando autorizar |
-|---|---|
-| `shredder.feira-de-jogos.dev.br` | Se for o endereço usado pelos jogadores |
-| `bandaclonehero.github.io` | Se o login também funcionar na publicação Pages |
-| `localhost` | Para desenvolvimento local |
-| Host exato de preview/Codespaces | Somente se usado para testar o login |
-
-Os domínios são cadastrados sem protocolo, porta ou caminho. O `authDomain` do projeto, normalmente `<projectId>.firebaseapp.com`, deverá corresponder à configuração real do Firebase. [Documentação do login Google](https://firebase.google.com/docs/auth/web/google-signin).
-
-**Arquivos envolvidos**
-
-| Arquivos | Alteração planejada |
-|---|---|
-| [docs/firebase-config.js](/workspaces/Shredder.exe/docs/firebase-config.js) | Configuração pública real do projeto Firebase |
-| [docs/js/account.js](/workspaces/Shredder.exe/docs/js/account.js) | Integração Firebase, persistência, obtenção de tokens, UID e logout |
-| [docs/js/account-ui.js](/workspaces/Shredder.exe/docs/js/account-ui.js) | Botão “Entrar com Google”, nome, foto e estados de carregamento/erro |
-| [docs/index.html](/workspaces/Shredder.exe/docs/index.html) e [docs/style.css](/workspaces/Shredder.exe/docs/style.css) | Integração visual pontual; retirar o ID editável como fonte de identidade |
-| [docs/app.js](/workspaces/Shredder.exe/docs/app.js) | Identidade autenticada nas salas, requisições e resultados |
-| Demais HTMLs que inicializam `ShredderAccount` | Carregamento consistente da integração Firebase |
-| `docs/js/site-shell.js` e `achievement-live.js` | Sincronização da autenticação com o documento externo e notificações |
-| `docs/js/resultado-partida.js` | Associação dos resultados pendentes à conta autenticada |
-| `docs/operador.html` e scripts `docs/js/operador-*.js` | Atualizar os consumidores que leem diretamente o token legado |
-| [servidor/server.js](/workspaces/Shredder.exe/servidor/server.js) | Validação Firebase nas APIs e sockets; identidade e autorização |
-| [servidor/partidas.js](/workspaces/Shredder.exe/servidor/partidas.js) e [perfil-operador.js](/workspaces/Shredder.exe/servidor/perfil-operador.js) | Associação estável por UID, preservando perfis e histórico |
-| `servidor/package.json` e `package-lock.json` | Dependência `firebase-admin` |
-| `servidor/test/` | Testes de autenticação, vinculação e regressão |
-| `.gitignore` e documentação do servidor | Proteção de credenciais locais e instruções de configuração |
-
-Provavelmente criarei módulos separados para inicialização Firebase no frontend e validação no servidor, evitando concentrar toda a integração em `server.js`.
-
-`accounts.json` exigirá uma evolução de estrutura ou um índice de associação com UID. **Não será substituído por uma base vazia nem terá os dados existentes descartados.**
-
-**Plano de implementação proposto**
-
-1. **Preparar Firebase e ambiente.** Habilitar o provedor Google, configurar os domínios e fornecer ao backend suas credenciais por ambiente ou mecanismo seguro da hospedagem. Somente a configuração pública Firebase ficará no frontend.
-
-2. **Integrar o gerenciador existente.** Acrescentar login Google sem remover usuário/senha. Manter compatibilidade com os consumidores de `ShredderAccount` e acrescentar UID, nome e foto.
-
-3. **Garantir persistência.** Usar a persistência local do SDK Firebase, aguardar a restauração antes de redirecionar páginas e obter tokens atualizados para as requisições. A persistência local mantém o usuário conectado após atualizar ou reabrir a página. [Documentação de persistência](https://firebase.google.com/docs/auth/web/auth-state-persistence).
-
-4. **Preservar e vincular contas antigas.** Usar o UID como identificador permanente das contas Google, preservando o username como nome público/compatibilidade. Uma conta antiga só será vinculada após comprovação de acesso a ela e à conta Google. Não haverá associação automática por coincidência de nome ou email, nem concessão de acesso de operador por nome Google.
-
-5. **Autenticar o backend.** Validar tokens com Firebase Admin nas APIs e conexões Socket.IO. Derivar a conta no servidor, conferir propriedade e permissões e tratar expiração, reconexão e logout. O fluxo legado continuará autenticado durante a transição.
-
-6. **Integrar a interface.** Adicionar o botão ao visual atual, mostrar nome e foto sem remover cosméticos existentes e manter “Sair”. Validar o fluxo Google considerando o iframe atual.
-
-7. **Verificar regressões.** Testar restauração, saída, troca de conta, token inválido/expirado, tentativa de usar UID alheio, vinculação de conta antiga e permissões de operador. Conferir salas, tickets, resultados, ranking, conquistas e login por senha.
-
-Para concluir a configuração posteriormente, faltam o projeto Firebase real, sua configuração pública e a confirmação do endereço principal de uso. Credenciais administrativas deverão ser configuradas diretamente no ambiente do backend.
-
-**Aguardo sua autorização antes de modificar o código.**
+Não envie tudo indiscriminadamente: preciso das evidências e dos trechos relacionados ao login, não de uma cópia integral do projeto.

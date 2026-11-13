@@ -101,6 +101,7 @@ animation.Advance(13, -.5f);
 Check(animation.Age == 0, "Visual age cannot go backwards");
 
 string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../"));
+GepetoLayoutChecks.Run(root, Check);
 LaneMappingChecks.Run(root, Check);
 OptimizationChecks.Run(Check);
 RenderTextureLifetimeChecks.Run(root, Check);
@@ -164,7 +165,7 @@ Check(hud.Contains("_imageSize: {x: 220, y: 96}") && hud.Contains("_fitToLane: 0
     "Larger images must not be automatically shrunk to a single narrow column");
 
 sources = sources.Concat(new[] { "Gameplay/TextureManager.cs", "Gameplay/Visuals/TrackMaterial.cs", "Helpers/CameraPreviewTexture.cs", "Gameplay/VenueCameraRenderer.cs", "Gameplay/Visuals/HighwayCameraRendering.cs", "Gameplay/GameManager.cs", "Gameplay/GameManager.Loading.cs", "BossHealthBar.cs",
-    "GepetoBossReaction.cs", "Menu/ScoreScreen/ScoreCards/ScoreCard.cs", "Menu/ScoreScreen/ScoreScreenContainer.cs",
+    "GepetoBossReaction.cs", "GepetoVisualAnimator.cs", "GepetoHudLayout.cs", "Menu/ScoreScreen/ScoreCards/ScoreCard.cs", "Menu/ScoreScreen/ScoreScreenContainer.cs",
     "Menu/ScoreScreen/ScoreScreenMenu.cs", "Menu/History/ViewTypes/ReplayViewType.cs", "Scores/PlayerScoreRecord.cs" }
     .Select(f => Path.Combine(root, "Assets/Script", f))).ToArray();
 foreach (string file in sources)

@@ -10,6 +10,17 @@ const { catalogoLoja, itensPorId } = require("./catalogo-loja");
 const { salvarArquivoAvatar } = require("./avatar-personalizado");
 const { validarNomePublico } = require("./protecao-nomes");
 const { progressoConquistas } = require("./progresso-conquistas");
+const { gravarJsonAtomico } = require("./persistencia-json");
+const { validarPreservacaoIdentidades } = require("./identidades");
+const { nomePublicoJogador } = require("./nomes-publicos");
+const { validarNomeConta } = require("./operadores");
+const { criarGoogleIdentity } = require("./google-identity");
+const { criarCreditosFeira } = require("./feira-creditos");
+const { registrarRotasGoogle } = require("./google-auth-routes");
+const { criarPoliticaAutenticacao, registrarOpcoesAutenticacao } = require("./auth-policy");
+const { configurarCodespaces, criarProxyCodespaces } = require("./codespaces-auth");
+const codespaces = configurarCodespaces();
+const GOOGLE_ONLY = process.env.SHREDDER_GOOGLE_ONLY !== "false";
 
 const scryptAsync = promisify(scrypt);
 const app = express();
@@ -17,9 +28,13 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 app.use(express.json());
+if (codespaces) app.use(criarProxyCodespaces(codespaces));
+app.use(criarPoliticaAutenticacao({ googleOnly: GOOGLE_ONLY, origemPublica: process.env.SHREDDER_PUBLIC_ORIGIN }));
+registrarOpcoesAutenticacao(app, { googleOnly: GOOGLE_ONLY, codespaces });
 app.use(require('./site-navigation'));
 app.use(express.static(path.join(__dirname, "../docs"), {
     setHeaders(res, filePath) {
+        if (/\.(?:html|js)$/.test(filePath)) res.setHeader("Cache-Control", "no-store");
         if (filePath.endsWith(".webp")) res.setHeader("Cache-Control", "public, max-age=604800");
     },
 }));
@@ -30,8 +45,29 @@ const partidas = criarPersistenciaPartidas(ACCOUNTS_FILE, {
     encerramentoFeira: process.env.FEIRA_ENCERRA_EM || ENCERRAMENTO_FEIRA,
 });
 let accountStore = { accounts: {} };
+let accountStoreOriginal = null;
 let sessions = new Map();
 const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
+const feiraCreditos = criarCreditosFeira({
+    arquivo: path.join(__dirname, "creditos-feira.json"),
+    resolverConta({username, accountId}) {
+        if (accountId) return partidas.localizarContaPorId(accountId)?.account;
+        const raiz = partidas.lerContas();
+        return (raiz.accounts || raiz)[normalizeUsername(username)];
+    },
+});
+const { verificarIdTokenGoogle } = criarGoogleIdentity({aoValidar: prova => {
+    feiraCreditos.guardarCredencial(prova);
+    feiraCreditos.agendar();
+}});
+app.get("/api/feira/creditos", (req, res) => {
+    res.set("Cache-Control", "no-store");
+    const session = getAuthenticatedSession(req);
+    if (!session) return res.status(401).json({ok:false,code:"LOCAL_SESSION_REQUIRED"});
+    try { return res.json({ok:true,...feiraCreditos.consultar(session.account.accountId)}); }
+    catch { return res.status(503).json({ok:false,code:"FEIRA_STATUS_UNAVAILABLE"}); }
+});
+
 const PROFILE_AVATAR_IDS = new Set(["night-sentinel", "astral-oracle", "fox-wanderer", "dune-explorer", "deep-diver", "crystal-golem", "forest-spirit", "nocturne", "alien-roamer", "neon-android", "starfarer", "void-knight", "frost-mage", "sun-guardian", "shadow-scout", "brass-automaton", "mothling", "neon-familiar", "rune-guardian", "aurora-entity", "pulse-vanguard", "neon-reaper", "beat-runner", "soundcrow"]);
 
 function loadAccounts() {
@@ -39,6 +75,7 @@ function loadAccounts() {
         if (fs.existsSync(ACCOUNTS_FILE)) {
             const migracao = partidas.migrarContas();
             accountStore = migracao.raiz.accounts ? migracao.raiz : { accounts: migracao.raiz };
+            accountStoreOriginal = JSON.stringify(migracao.raiz);
             console.log(`> Arquivo de contas: ${ACCOUNTS_FILE}`);
             console.log(`> Perfis completados: ${migracao.atualizadas}`);
             if (migracao.backup) console.log(`> Backup das contas: ${migracao.backup}`);
@@ -50,15 +87,28 @@ function loadAccounts() {
     }
 }
 
+function refreshAccounts() {
+    const raiz = partidas.lerContas();
+    accountStore = raiz.accounts ? raiz : { accounts: raiz };
+    accountStoreOriginal = JSON.stringify(raiz);
+}
+
 function saveAccounts() {
     try {
-        fs.writeFileSync(
-            ACCOUNTS_FILE,
-            JSON.stringify(accountStore, null, 2),
-            "utf8",
-        );
+        const atual = partidas.lerContas();
+        if (JSON.stringify(atual) !== accountStoreOriginal) {
+            const error = new Error("As contas mudaram. Atualize e tente novamente.");
+            error.status = 409;
+            throw error;
+        }
+        const proxima = atual.accounts ? accountStore : accountStore.accounts;
+        validarPreservacaoIdentidades(atual, proxima);
+        gravarJsonAtomico(ACCOUNTS_FILE, proxima);
+        accountStoreOriginal = JSON.stringify(proxima);
     } catch (error) {
-        console.error("> Erro ao salvar accounts.json:", error);
+        // Não deixar uma compra/avatar que falhou visível apenas no cache.
+        refreshAccounts();
+        throw error;
     }
 }
 
@@ -73,19 +123,12 @@ function loadSessions() {
         }
     } catch (error) {
         console.error("> Erro ao carregar sessions.json:", error);
+        throw error; // Não iniciar com sessões parcialmente carregadas.
     }
 }
 
-function saveSessions() {
-    try {
-        fs.writeFileSync(
-            SESSIONS_FILE,
-            JSON.stringify(Object.fromEntries(sessions.entries()), null, 2),
-            "utf8",
-        );
-    } catch (error) {
-        console.error("> Erro ao salvar sessions.json:", error);
-    }
+function saveSessions(proximas = sessions) {
+    gravarJsonAtomico(SESSIONS_FILE, Object.fromEntries(proximas.entries()));
 }
 
 loadAccounts();
@@ -137,13 +180,17 @@ function validCredentials(username, password) {
     );
 }
 
-function createSession(accountKey) {
+function createSession(accountKey, { substituirToken } = {}) {
     const token = randomBytes(32).toString("hex");
-    sessions.set(sessionKey(token), {
+    const proximas = new Map(sessions);
+    if (substituirToken) proximas.delete(sessionKey(substituirToken));
+    proximas.set(sessionKey(token), {
         accountKey,
+        ...(accountStore.accounts[accountKey]?.sessionGeneration ? { generation: accountStore.accounts[accountKey].sessionGeneration } : {}),
         expiresAt: Date.now() + SESSION_DURATION_MS,
     });
-    saveSessions();
+    saveSessions(proximas);
+    sessions = proximas;
     return token;
 }
 
@@ -162,8 +209,9 @@ function getAuthenticatedSession(req) {
         return null;
     }
 
-    const account = accountStore.accounts[session.accountKey];
-    if (!account) return null;
+    refreshAccounts();
+    const account = Object.hasOwn(accountStore.accounts, session.accountKey) && accountStore.accounts[session.accountKey];
+    if (!account || session.generation !== account.sessionGeneration) return null;
     return { token, accountKey: session.accountKey, account };
 }
 
@@ -197,7 +245,7 @@ function exigirOperadorOficial(req, res) {
 }
 
 app.post("/api/auth/register", async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password } = req.body || {};
     const cleanUsername = String(username || "").trim();
     if (!validCredentials(cleanUsername, password)) {
         return res.status(400).json({
@@ -208,11 +256,12 @@ app.post("/api/auth/register", async (req, res) => {
 
     try {
         validarNomePublico(cleanUsername, "Nome de conta");
+        validarNomeConta(cleanUsername);
     } catch (error) {
-        return res.status(400).json({ ok: false, error: error.message, code: error.code });
+        return res.status(error.status || 500).json({ ok: false, error: error.message, code: error.code });
     }
     const key = normalizeUsername(cleanUsername);
-    if (accountStore.accounts[key]) {
+    if (Object.hasOwn(accountStore.accounts, key)) {
         return res
             .status(409)
             .json({ ok: false, error: "Esse usuário já existe." });
@@ -220,38 +269,33 @@ app.post("/api/auth/register", async (req, res) => {
 
     const salt = randomBytes(16).toString("hex");
     const hash = await passwordHash(password, salt);
-    accountStore.accounts[key] = inicializarPerfil({
-        username: cleanUsername,
-        salt,
-        passwordHash: hash,
-    });
-    saveAccounts();
-    const token = createSession(key);
-    return res.status(201).json({ ok: true, token, username: cleanUsername });
+    try {
+        // Releitura e unicidade depois do scrypt: nunca publica um snapshot antigo.
+        const salvo = partidas.criarConta({ username: cleanUsername, credenciais: { salt, passwordHash: hash } });
+        refreshAccounts();
+        const token = createSession(salvo.accountKey);
+        return res.status(201).json({ ok: true, token, username: salvo.account.username });
+    } catch (error) {
+        return res.status(error.status || 500).json({ ok: false, error: error.status ? error.message : "Não foi possível persistir o cadastro ou a sessão." });
+    }
 });
 
 app.post("/api/auth/login", async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password } = req.body || {};
     const key = normalizeUsername(username);
 
-    // LÊ O ARQUIVO DO DISCO NA HORA (Garante que se você resetou via script, ele pega a alteração)
-    let accountStore;
+    let accounts;
     try {
-        const rawData = fs.readFileSync(
-            path.join(__dirname, "accounts.json"),
-            "utf8",
-        );
-        accountStore = JSON.parse(rawData);
-    } catch (err) {
-        return res
-            .status(500)
-            .json({ ok: false, error: "Erro ao ler banco de dados." });
+        refreshAccounts();
+        const raiz = partidas.lerContas();
+        accounts = raiz.accounts || raiz;
+    } catch {
+        return res.status(500).json({ ok: false, error: "Erro ao ler banco de dados." });
     }
 
-    const accounts = accountStore.accounts || accountStore;
-    const account = accounts[key];
+    const account = Object.hasOwn(accounts, key) && accounts[key];
 
-    if (!account || typeof password !== "string") {
+    if (!account || typeof password !== "string" || typeof account.salt !== "string" || typeof account.passwordHash !== "string") {
         return res
             .status(401)
             .json({ ok: false, error: "Usuário ou senha inválidos." });
@@ -271,8 +315,14 @@ app.post("/api/auth/login", async (req, res) => {
             .json({ ok: false, error: "Usuário ou senha inválidos." });
     }
 
+    // A senha pode ter sido trocada enquanto scrypt estava em execução.
+    refreshAccounts();
+    const atual = Object.hasOwn(accountStore.accounts, key) && accountStore.accounts[key];
+    if (!atual || atual.salt !== account.salt || atual.passwordHash !== account.passwordHash) {
+        return res.status(401).json({ ok: false, error: "Usuário ou senha inválidos." });
+    }
     const token = createSession(key);
-    return res.json({ ok: true, token, username: account.username });
+    return res.json({ ok: true, token, username: atual.username });
 });
 
 app.get("/api/perfil/:username", (req, res) => {
@@ -371,8 +421,10 @@ app.post("/api/perfil/avatar", (req, res) => {
     if (typeof avatar !== "string" || (avatar !== "" && !PROFILE_AVATAR_IDS.has(avatar) && !customAvatarPermitido)) {
         return res.status(400).json({ ok: false, error: "Avatar inválido. Escolha uma das imagens disponíveis." });
     }
-    session.account.avatar = avatar;
-    session.account.updatedAt = new Date().toISOString();
+    // A verificação de operador acima também pode atualizar o cache global.
+    const account = accountStore.accounts[session.accountKey];
+    account.avatar = avatar;
+    account.updatedAt = new Date().toISOString();
     saveAccounts();
     return res.json({ ok: true, avatar });
 });
@@ -462,14 +514,16 @@ app.get("/api/auth/session", (req, res) => {
             .status(401)
             .json({ ok: false, error: "Sessão expirada ou inválida." });
     }
-    return res.json({ ok: true, username: session.account.username });
+    return res.json({ ok: true, username: session.account.username, ...(GOOGLE_ONLY ? { nickname: session.account.nickname || session.account.username, needsNickname: !session.account.nicknameChosenAt } : {}) });
 });
 
 app.post("/api/auth/logout", (req, res) => {
     const session = getAuthenticatedSession(req);
     if (session) {
-        sessions.delete(sessionKey(session.token));
-        saveSessions();
+        const proximas = new Map(sessions);
+        proximas.delete(sessionKey(session.token));
+        saveSessions(proximas);
+        sessions = proximas;
     }
     return res.json({ ok: true });
 });
@@ -850,6 +904,7 @@ function resumoSalas() {
         roomName: sala.roomName,
         banda: sala.banda,
         criadorUsername: sala.criadorUsername,
+        criadorApelido: nomePublicoJogador(sala.criadorUsername, accountStore.accounts),
         criadoEm: sala.criadoEm,
         jogadores: sala.jogadores.map((jogador) => jogador.username),
         quantidadeJogadores: sala.jogadores.length,
@@ -871,6 +926,16 @@ function enviarEstadoSala(salaId) {
         instrumentos: sala.instrumentos,
         campanha: sala.campanha,
         ticketPendente: Boolean(sala.ticketsPendentes?.length),
+        apelidos: Object.fromEntries(sala.jogadores.flatMap(jogador => {
+            const username = sala.operadores[jogador.id]?.nome || jogador.username;
+            const apelido = nomePublicoJogador(username, accountStore.accounts);
+            return [[jogador.id, apelido], [username, apelido]];
+        })),
+        participantes: sala.jogadores.map(jogador => {
+            const username = sala.operadores[jogador.id]?.nome || jogador.username;
+            return { id: jogador.id, username, apelido: nomePublicoJogador(username, accountStore.accounts),
+                instrumento: Object.entries(sala.instrumentos).find(([, dono]) => dono === jogador.id || dono === username)?.[0] || null };
+        }),
         operadores: Object.values(sala.operadores).map(
             (operador) => operador.nome,
         ),
@@ -987,6 +1052,7 @@ io.on("connection", (socket) => {
                     notasAcertadas: resultadoValidado.notasAcertadas,
                     notasErradas: resultadoValidado.notasErradas,
                     fullCombo: resultadoValidado.fullCombo,
+                    novasConquistas: salvo.novasConquistas || [],
                 };
                 sala.resultadosRecentes = sala.resultadosRecentes.filter((item) => item.partidaId !== registro.partidaId);
                 sala.resultadosRecentes.push(registro);
@@ -1050,6 +1116,22 @@ io.on("connection", (socket) => {
         }
 
         const resultadosSalvos = [];
+        // A confirmation may save one player before a later write fails. Preserve this
+        // ticket's actual unlocks across safe retries; duplicate saves grant nothing again.
+        ticket.conquistasResultados ??= [];
+        function lembrarConquistas(username, novas = []) {
+            let resumo = ticket.conquistasResultados.find(item => normalizeUsername(item.username) === normalizeUsername(username));
+            if (!resumo) {
+                resumo = { username, ids: [] };
+                ticket.conquistasResultados.push(resumo);
+            }
+            for (const id of novas) if (!resumo.ids.includes(id)) resumo.ids.push(id);
+            return resumo.ids;
+        }
+        function lembrarConquistasDeBanda(salvo) {
+            for (const jogador of salvo.notificacoesPorJogador || [])
+                lembrarConquistas(jogador.username, jogador.novasConquistas || []);
+        }
         try {
             finalizarConquistaDaFeira();
             if (ticket.modo?.tipo === "historia") validarFaseDosJogadores(ticket.jogadores, ticket.modo.fase);
@@ -1086,7 +1168,22 @@ io.on("connection", (socket) => {
                         notificacoes: salvo.notificacoesConquistas,
                     });
                 }
-                resultadosSalvos.push({ username: resultado.username, instrumento: resultado.instrumento, partidaId: resultado.partidaId });
+                resultadosSalvos.push({
+                    username: resultado.username,
+                    instrumento: resultado.instrumento,
+                    partidaId: resultado.partidaId,
+                    ticketId: ticket.ticketId,
+                    recebidoEm: new Date().toISOString(),
+                    perfil: { nome: resultado.username, instrumento: resultado.instrumento, modoJogo: item.perfil?.modoJogo },
+                    musica: resultado.musica,
+                    pontuacao: resultado.pontuacao,
+                    precisao: resultado.precisao,
+                    maiorCombo: resultado.maiorCombo,
+                    notasAcertadas: resultado.notasAcertadas,
+                    notasErradas: resultado.notasErradas,
+                    fullCombo: resultado.fullCombo,
+                    novasConquistas: lembrarConquistas(resultado.username, salvo.novasConquistas || []),
+                });
             }
             if (ticket.banda) {
                 const membros = ticket.resultadosExecutavel.map((item) => {
@@ -1109,6 +1206,7 @@ io.on("connection", (socket) => {
                     membros,
                 });
                 accountStore = salvoBanda.raiz.accounts ? salvoBanda.raiz : { accounts: salvoBanda.raiz };
+                lembrarConquistasDeBanda(salvoBanda);
                 publicarConquistasEmLote(salvoBanda);
                 io.to("ranking").emit("rankingAtualizado", { records: salvoBanda.records });
                 resultadosSalvos.push({ nome: ticket.banda.nome, pontuacao: pontuacaoBanda, tipo: "banda" });
@@ -1121,12 +1219,33 @@ io.on("connection", (socket) => {
                     ...(item.concluida === undefined ? {} : { concluida: item.concluida }),
                 })));
                 accountStore = salvoBanda.raiz.accounts ? salvoBanda.raiz : { accounts: salvoBanda.raiz };
+                lembrarConquistasDeBanda(salvoBanda);
                 publicarConquistasEmLote(salvoBanda);
             }
         } catch (error) {
             console.error("> Falha ao confirmar resultados do ticket:", error);
             if (typeof callback === "function") callback({ ok: false, erro: error.message || "Falha ao salvar resultados." });
             return;
+        }
+
+        let creditosFeira = {enabled:false};
+        try {
+            creditosFeira = feiraCreditos.registrarConfirmados(resultadosSalvos);
+            feiraCreditos.agendar();
+        } catch {
+            // Results stay saved. Never retry a payment whose outcome is unknown.
+            creditosFeira = {enabled:true,status:"registration_failed"};
+            console.error("> Resultados salvos; créditos da Feira precisam de revisão.");
+        }
+
+        for (const resultado of resultadosSalvos.filter(item => item.tipo !== "banda")) {
+            // Freeze the summary before removing its ticket; only official confirmation publishes it.
+            const registro = { ...resultado, novasConquistas: [...resultado.novasConquistas] };
+            const anterior = resultadosExecutavelRecentes.findIndex(item => item.partidaId === registro.partidaId);
+            if (anterior !== -1) resultadosExecutavelRecentes.splice(anterior, 1);
+            resultadosExecutavelRecentes.push(registro);
+            if (resultadosExecutavelRecentes.length > 40) resultadosExecutavelRecentes.shift();
+            io.to("operador-resultados-global").emit("resultado_individual_recebido", registro);
         }
 
         const filaIndex = ticketsSessaoPendentes.findIndex((item) => item.ticketId === ticket.ticketId);
@@ -1150,7 +1269,7 @@ io.on("connection", (socket) => {
             enviarEstadoSala(ticket.roomId);
         }
         io.to("operador-resultados-global").emit("ticket_sessao_removido", { ticketId: ticket.ticketId });
-        if (typeof callback === "function") callback({ ok: true, resultados: resultadosSalvos });
+        if (typeof callback === "function") callback({ ok: true, resultados: resultadosSalvos, creditosFeira });
     });
 
     socket.on("remover_ticket_sessao", ({ token, ticketId } = {}, callback) => {
@@ -1393,7 +1512,10 @@ io.on("connection", (socket) => {
         cliente.data.operadorNome = operadorNome;
         cliente.username = operadorNome;
         if (sala.donoId === operadorId) sala.socketDonoId = cliente.id;
-        if (jogadorExistente) jogadorExistente.socketId = cliente.id;
+        if (jogadorExistente) {
+            jogadorExistente.socketId = cliente.id;
+            jogadorExistente.username = operadorNome;
+        }
         if (!sala.host) sala.host = operadorId;
         sala.operadores[operadorId] = {
             socketId: cliente.id,
@@ -1424,13 +1546,13 @@ io.on("connection", (socket) => {
 
     socket.on("kick_player", ({ roomId, targetUsername } = {}) => {
         const sala = salas[roomId];
-        if (!sala || sala.host !== socket.username || !targetUsername) return;
+        if (!sala || sala.donoId !== socket.data.operadorId || sala.socketDonoId !== socket.id || socket.data.salaId !== roomId || !targetUsername) return;
 
         const targetEntry = Object.entries(sala.operadores).find(
             ([id, operador]) =>
                 id === targetUsername || operador.nome === targetUsername,
         );
-        if (!targetEntry || targetEntry[0] === socket.username) return;
+        if (!targetEntry || targetEntry[0] === socket.data.operadorId) return;
 
         const [targetId] = targetEntry;
         delete sala.operadores[targetId];
@@ -1503,6 +1625,19 @@ io.on("connection", (socket) => {
         }, ROOM_RECONNECT_GRACE_MS);
         sala.disconnectTimers.set(operadorId, timer);
     });
+});
+
+require('./profile-nickname-routes.cjs').registrarApelido(app, { partidas, getAuthenticatedSession, refreshAccounts, publicar: records => io.emit('rankingAtualizado', records) });
+
+registrarRotasGoogle(app, {
+    partidas, verificarIdTokenGoogle, getAuthenticatedSession, refreshAccounts, createSession, passwordHash,
+    googleOnly: GOOGLE_ONLY,
+});
+
+app.use((error, _req, res, _next) => {
+    // Erros de parsing podem conter trechos do corpo (senha/ID Token).
+    console.error("> Falha na operação.");
+    res.status(error.status || 500).json({ ok: false, error: "Não foi possível concluir a operação. Verifique os dados e tente novamente." });
 });
 
 const PORT = Number(process.env.PORT) || 3000;

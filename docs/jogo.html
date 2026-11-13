@@ -6,21 +6,27 @@
     <title>Shredder.exe // Partida</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body data-page="jogo">
-    <main class="page-shell">
+        <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
+    <header class="topbar">
+        <a class="brand-lockup" href="lobby.html"><span class="brand-mark">//</span> SHREDDER<span class="brand-accent">.exe</span></a>
+        <nav class="page-nav" aria-label="Navegação principal"><a href="lobby.html" aria-current="page">Jogar</a><a href="ranking.html">Ranking</a><a href="perfil.html">Meu perfil</a></nav>
+    </header>
+    <main id="main-content" tabindex="-1" class="page-shell">
         <section class="section-heading">
-            <div><p class="eyebrow">PARTIDA // SINAL AO VIVO</p><h1>Shredder<span>.exe</span></h1></div>
+            <div><p class="eyebrow">NO PALCO</p><h1>Shredder<span>.exe</span></h1></div>
         </section>
         <div id="phaser-game"></div>
-        <p id="statusJogo" class="lobby-status" role="status" aria-live="polite">AGUARDANDO RESULTADO DA PARTIDA...</p>
+        <p id="statusJogo" class="lobby-status" role="status" aria-live="polite">Aguardando o resultado da música…</p>
         <div class="page-actions">
-            <a href="lobby.html" class="button button-ghost">VOLTAR AO LOBBY</a>
-            <button id="sincronizar-resultado" class="button button-primary" type="button" hidden>TENTAR SINCRONIZAR NOVAMENTE</button>
+            <a href="lobby.html" class="button button-ghost">Voltar às salas</a>
+            <button id="sincronizar-resultado" class="button button-primary" type="button" hidden>Reenviar resultado</button>
         </div>
     </main>
+    <script src="google-config.js"></script>
     <script src="js/account.js"></script>
     <script src="js/account-ui.js"></script>
     <script>

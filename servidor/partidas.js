@@ -1,7 +1,11 @@
 const fs = require('fs');
+const politicaRanking = require('../docs/js/ranking-policy');
 const path = require('path');
 const { randomUUID } = require('crypto');
 const { validarNomePublico } = require('./protecao-nomes');
+const { gravarJsonAtomico } = require('./persistencia-json');
+const { criarPersistenciaIdentidades, contasDaRaiz, validarIdentidades, validarPreservacaoIdentidades } = require('./identidades');
+const { validarNomeConta } = require('./operadores');
 const { CONQUISTAS, perfilPublico, revisaoPerfil, aplicarAjustesPerfil, erroPerfil } = require('./perfil-operador');
 const INSTRUMENTOS = ['guitarra', 'baixo', 'bateria', 'teclado'];
 const MAX_FASE = 100000;
@@ -278,26 +282,20 @@ function premiarBanda(raiz, membros, contas) {
     return notificacoesPorJogador;
 }
 
-function criarPersistenciaPartidas(arquivo, { encerramentoFeira = ENCERRAMENTO_FEIRA } = {}) {
+function criarPersistenciaPartidas(arquivo, { encerramentoFeira = ENCERRAMENTO_FEIRA, operadores } = {}) {
     const fimFeira = Date.parse(encerramentoFeira);
     if (!Number.isFinite(fimFeira)) throw new Error('Data de encerramento da feira inválida.');
     let feiraPremiada = false;
-    const ler = () => JSON.parse(fs.readFileSync(arquivo, 'utf8'));
-    const contas = raiz => raiz.accounts || Object.fromEntries(
-        Object.entries(raiz).filter(([chave]) => !['bandRecords', 'fairAchievement'].includes(chave)),
-    );
+    const identidades = criarPersistenciaIdentidades(arquivo, { inicializarPerfil, operadores });
+    const ler = identidades.lerContas;
+    const contas = contasDaRaiz;
     const gravar = raiz => {
-        const temporario = `${arquivo}.${randomUUID()}.tmp`;
-        try {
-            fs.writeFileSync(temporario, JSON.stringify(raiz, null, 2), { encoding: 'utf8', mode: 0o600 });
-            fs.renameSync(temporario, arquivo);
-        } finally {
-            if (fs.existsSync(temporario)) fs.unlinkSync(temporario);
-        }
+        validarPreservacaoIdentidades(ler(), raiz);
+        gravarJsonAtomico(arquivo, raiz);
     };
     const registros = raiz => {
         const individuais = Object.entries(contas(raiz)).flatMap(([username, conta]) => {
-        const identidade = { jogadorId: username.toLowerCase(), nome: conta.username || username };
+        const identidade = { jogadorId: username.toLowerCase(), nome: conta.nickname || conta.username || username };
         const partidas = Object.values(conta.resultadosPartidas || {}).map(r => ({
             ...identidade,
             instrumento: r.instrumento[0].toUpperCase() + r.instrumento.slice(1),
@@ -329,9 +327,30 @@ function criarPersistenciaPartidas(arquivo, { encerramentoFeira = ENCERRAMENTO_F
             banda: registro.banda,
             membros: registro.membros || [],
         }));
-        return [...individuais, ...bandas];
+        return [...individuais, ...bandas].filter(politicaRanking.permitir);
     };
     return {
+        ...identidades,
+        alterarApelido(accountId, nickname) {
+            if (typeof nickname !== 'string') throw erroPerfil('Apelido inválido.');
+            const clean = nickname.trim().normalize('NFC');
+            if (!clean.length || clean.length > 40 || /[\p{Cc}\p{Cf}<>]/u.test(clean)) throw erroPerfil('Apelido inválido.');
+            validarNomePublico(clean, 'Apelido');
+            const raiz = ler();
+            const conta = Object.values(contas(raiz)).find(c => c.accountId === accountId);
+            if (!accountId || !conta) throw erroPerfil('Conta não encontrada.', 404);
+            if (clean.toLowerCase() !== conta.username.toLowerCase()) validarNomeConta(clean, null, operadores?.());
+            if (conta.nicknameChosenAt) {
+                if (conta.nickname !== clean) throw erroPerfil('O apelido já foi confirmado.', 409);
+                return { nickname: clean, records: registros(raiz), needsNickname: false };
+            }
+            const confirmedAt = new Date().toISOString();
+            conta.nickname = clean;
+            conta.nicknameChosenAt = confirmedAt;
+            conta.updatedAt = confirmedAt;
+            gravar(raiz);
+            return { nickname: clean, records: registros(raiz), needsNickname: false };
+        },
         salvarAvatarPersonalizado(username, avatar) {
             if (typeof avatar !== 'string' || !/^custom\/[a-f0-9-]{36}$/.test(avatar)) throw erroPerfil('Avatar personalizado inválido.');
             const raiz = ler();
@@ -369,6 +388,7 @@ function criarPersistenciaPartidas(arquivo, { encerramentoFeira = ENCERRAMENTO_F
             const novasConquistas = conta.achievements.filter(id => !conquistasAnteriores.has(id));
             const notificacoesConquistas = registrarNotificacoesConquistas(conta, novasConquistas);
             const novaKey = conta.username.toLowerCase();
+            if (Object.hasOwn(alteracoes, 'username')) validarNomeConta(conta.username, key, operadores?.());
             if (novaKey !== key && Object.hasOwn(contas(raiz), novaKey)) throw erroPerfil('Esse username já existe.', 409);
             if (credenciais) {
                 // Recebido apenas do código do servidor, após scrypt; nunca do payload HTTP.
@@ -376,9 +396,10 @@ function criarPersistenciaPartidas(arquivo, { encerramentoFeira = ENCERRAMENTO_F
                 conta.passwordHash = credenciais.passwordHash;
             }
             if (novaKey !== key) {
-                Object.defineProperty(contas(raiz), novaKey, { value: conta, enumerable: true, configurable: true, writable: true });
-                delete contas(raiz)[key];
+                Object.defineProperty(raiz.accounts || raiz, novaKey, { value: conta, enumerable: true, configurable: true, writable: true });
+                delete (raiz.accounts || raiz)[key];
             }
+            if (credenciais || Object.hasOwn(alteracoes, 'username')) conta.sessionGeneration = randomUUID();
             conta.updatedAt = new Date().toISOString();
             gravar(raiz);
             return {
@@ -395,6 +416,7 @@ function criarPersistenciaPartidas(arquivo, { encerramentoFeira = ENCERRAMENTO_F
         migrarContas() {
             const original = fs.readFileSync(arquivo, 'utf8');
             const raiz = JSON.parse(original);
+            validarIdentidades(raiz);
             let atualizadas = 0;
             const timestamp = new Date().toISOString();
             // Apenas adiciona padrões ausentes. Não contabiliza partidas ou muda

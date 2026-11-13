@@ -7,12 +7,13 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
             rel="stylesheet"
         />
         <link rel="stylesheet" href="style.css" />
     </head>
     <body data-page="lobby">
+        <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
         <header class="topbar">
             <a class="brand-lockup" href="index.html"
                 ><span class="brand-mark">//</span> SHREDDER<span
@@ -20,42 +21,37 @@
                     >.exe</span
                 ></a
             >
-            <div class="top-status">
+            <div class="top-status legacy-page-context" aria-hidden="true">
                 <span class="status-dot"></span> <span>UPLINK ESTÁVEL</span
                 ><span class="top-divider"></span
                 ><span id="lobby-player">OPERADOR</span>
             </div>
+        <nav class="page-nav" aria-label="Navegação principal"><a href="lobby.html" aria-current="page">Jogar</a><a href="ranking.html">Ranking</a><a href="perfil.html">Meu perfil</a></nav>
         </header>
 
-        <main class="page-shell lobby-shell">
-            <div class="stepper">
-                <span class="step active">01 <b>SALA</b></span>
-                <span class="step-line"></span>
-                <span class="step">02 <b>INSTRUMENTO</b></span>
-                <span class="step-line"></span>
-                <span class="step">03 <b>FASE</b></span>
-            </div>
+        <main id="main-content" tabindex="-1" class="page-shell lobby-shell">
+            <nav class="stepper" aria-label="Etapas da partida"><span class="step active" aria-current="step"><span aria-hidden="true">01</span> <b>SALA</b></span><span class="step-line" aria-hidden="true"></span><span class="step "><span aria-hidden="true">02</span> <b>INSTRUMENTO</b></span><span class="step-line" aria-hidden="true"></span><span class="step "><span aria-hidden="true">03</span> <b>FASE</b></span><span class="step-line" aria-hidden="true"></span><span class="step "><span aria-hidden="true">04</span> <b>TICKET</b></span></nav>
 
             <section class="section-heading">
                 <div>
-                    <p class="eyebrow">REDE // ENCONTRE SUA FREQUÊNCIA</p>
-                    <h1>Escolha uma <span>sala.</span></h1>
+                    <p class="eyebrow">JOGUE EM BANDA</p>
+                    <h1>Entre em uma <span>sala.</span></h1>
                 </div>
-                <div class="operator-chip">
-                    <span>LOGADO COMO</span>
+                <div class="operator-chip page-identity-chip">
+                    <span>JOGADOR</span>
                     <strong id="lobby-player-chip">OPERADOR</strong>
                 </div>
             </section>
 
             <p id="lobby-status" class="lobby-status">
-                SINAL ONLINE // SALAS EM TEMPO REAL
+                Salas disponíveis
             </p>
 
             <section class="lobby-create panel-cut">
                 <div>
-                    <p class="eyebrow">NOVA TRANSMISSÃO</p>
+                    <p class="eyebrow">SEU PALCO</p>
                     <h2>Crie uma sala.</h2>
-                    <p>Abra uma sala para até quatro operadores. Se informar uma banda, o nome acompanha os tickets e as pontuações do grupo.</p>
+                    <p>Até quatro jogadores. Dê um nome à sala e convide sua banda.</p>
                 </div>
                 <form id="form-criar-sala" class="room-form" novalidate>
                     <label for="room-name">NOME DA SALA</label>
@@ -85,7 +81,7 @@
                         class="button button-primary"
                         type="submit"
                     >
-                        <span>CRIAR NOVA SALA</span><b>↗</b>
+                        <span>Criar sala</span><b>↗</b>
                     </button>
                 </form>
             </section>
@@ -98,25 +94,22 @@
                     <h2 id="room-directory-title">
                         <span class="heading-number">01</span> SALAS ABERTAS
                     </h2>
-                    <span class="block-note">// LIMITE DE 4 OPERADORES</span>
+                    <span class="block-note">Até 4 jogadores</span>
                 </div>
                 <div id="room-list" class="room-grid"></div>
                 <p id="lobby-empty" class="lobby-empty">
-                    &gt; Nenhuma sala ativa. Crie a primeira.
+                    O palco está livre. Crie a primeira sala.
                 </p>
             </section>
 
             <div class="page-actions">
                 <a class="text-link" href="index.html"
-                    >← REINICIAR IDENTIDADE</a
+                    >← Voltar ao início</a
                 >
-                <a class="button button-ghost" href="ranking.html">
-                    <span>ABRIR RANKING GLOBAL</span>
-                    <b>↗</b>
-                </a>
             </div>
         </main>
 
+        <script src="google-config.js"></script>
         <script src="js/account.js"></script>
         <script src="js/account-ui.js"></script>
         <script>
@@ -125,7 +118,7 @@
             window.shredderAccount.onChange((state) => {
                 if (state.isLoggedIn) {
                     document.querySelector("#lobby-player-chip").textContent =
-                        state.user;
+                        state.nickname || state.user;
                 }
             });
         </script>

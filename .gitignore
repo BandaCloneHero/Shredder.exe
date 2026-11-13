@@ -132,3 +132,18 @@ mono_crash.mem.*.blob
 
 servidor/accounts-servidor.json
 servidor/sessions.json
+
+# Dependências Node instaladas localmente
+node_modules/
+
+# Configuração privada do backend (o exemplo não contém segredos)
+.env
+.env.*
+!.env.example
+/servidor/credentials/
+**/*service-account*.json
+**/*firebase-adminsdk*.json
+
+# Registro privado de créditos (sem tokens).
+/servidor/creditos-feira.json
+/servidor/creditos-feira.json.*.tmp

@@ -7,12 +7,13 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
             rel="stylesheet"
         />
         <link rel="stylesheet" href="style.css" />
     </head>
     <body data-page="perfil">
+        <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
         <header class="topbar">
             <a class="brand-lockup" href="index.html">
                 <span class="brand-mark">//</span> SHREDDER<span
@@ -20,25 +21,29 @@
                     >.exe</span
                 >
             </a>
-            <div class="top-status">
+            <div class="top-status legacy-page-context" aria-hidden="true">
                 <span class="status-dot"></span>
-                <span id="profile-viewing">SINCRONIZANDO IDENTIDADE</span>
+                <span id="profile-viewing">Carregando perfil…</span>
                 <span class="top-divider"></span>
                 <a href="modos.html">VOLTAR À FASE</a>
             </div>
+        <nav class="page-nav" aria-label="Navegação principal"><a href="lobby.html">Jogar</a><a href="ranking.html">Ranking</a><a href="perfil.html" aria-current="page">Meu perfil</a></nav>
         </header>
 
-        <main class="page-shell profile-shell">
+        <main id="main-content" tabindex="-1" class="page-shell profile-shell">
             <section class="section-heading profile-heading">
                 <div>
-                    <p class="eyebrow">IDENTIDADE // DASHBOARD DO OPERADOR</p>
+                    <p class="eyebrow">SEU BACKSTAGE</p>
                     <h1 id="profile-nickname">
-                        Sincronizando <span>perfil.</span>
+                        Carregando <span>perfil.</span>
                     </h1>
-                <p id="profile-username" class="profile-username">
-                    // AGUARDE O SINAL
-                </p>
-                <button id="open-avatar-picker" class="button button-ghost profile-avatar-edit" type="button" hidden>ESCOLHER FOTO DE PERFIL</button>
+                <details class="profile-account-details"><summary>Identificador da conta</summary><p id="profile-username" class="profile-username">
+                    
+                </p></details>
+                <button id="open-avatar-picker" class="button button-ghost profile-avatar-edit" type="button" hidden>Trocar foto</button>
+                <details id="google-account-settings" hidden>
+                    <summary>Configurações da conta</summary>
+                </details>
                 </div>
                 <div class="profile-title-chip">
                     <span>TÍTULO EQUIPADO</span>
@@ -48,10 +53,10 @@
 
             <dialog id="avatar-picker-dialog" class="achievement-dialog avatar-picker-dialog" aria-labelledby="avatar-picker-title">
                 <div class="achievement-dialog-head">
-                    <div><p class="eyebrow">IDENTIDADE // AVATAR</p><h2 id="avatar-picker-title">Escolha sua <span>foto.</span></h2></div>
+                    <div><p class="eyebrow">SEU VISUAL</p><h2 id="avatar-picker-title">Escolha sua <span>foto.</span></h2></div>
                     <button id="close-avatar-picker" class="achievement-close" type="button" aria-label="Fechar escolha de avatar">×</button>
                 </div>
-                <p class="avatar-picker-intro">Personagens originais inspirados em batida, som e ritmo.</p>
+                <p class="avatar-picker-intro">Escolha quem sobe ao palco com você.</p>
                 <p id="profile-photo-locked" class="avatar-picker-intro">Compre <strong>Foto Própria</strong> por 2.000 tijolinhos na loja para enviar sua imagem. O desbloqueio é permanente.</p>
                 <form id="profile-avatar-form" data-endpoint="/api/perfil/avatar-imagem" hidden>
                     <label for="profile-avatar-file">Minha imagem (PNG, JPG ou WebP, até 8 MB)</label>
@@ -69,13 +74,13 @@
                 class="profile-status is-loading"
                 role="status"
             >
-                SINCRONIZANDO DADOS...
+                Carregando perfil…
             </p>
 
             <section class="profile-search-panel panel-cut">
                 <div>
-                    <p class="eyebrow">REDE // BUSCA DE OPERADORES</p>
-                    <h2>Rastrear outro perfil</h2>
+                    <p class="eyebrow">OUTROS JOGADORES</p>
+                    <h2>Buscar jogador</h2>
                 </div>
                 <form id="profile-search-form" class="profile-search-form">
                     <label class="profile-search-input">
@@ -84,12 +89,12 @@
                             id="profile-search"
                             type="search"
                             autocomplete="off"
-                            placeholder="username"
-                            aria-label="Username do operador"
+                            placeholder="Nome de usuário"
+                            aria-label="Nome de usuário do jogador"
                         />
                     </label>
                     <button class="button button-primary" type="submit">
-                        <span>CONSULTAR SINAL</span><b>↗</b>
+                        <span>Buscar</span><b>↗</b>
                     </button>
                 </form>
                 <button
@@ -98,7 +103,7 @@
                     type="button"
                     hidden
                 >
-                    VOLTAR AO MEU PERFIL
+                    Voltar ao meu perfil
                 </button>
                 <p
                     id="profile-search-error"
@@ -110,21 +115,21 @@
 
             <section class="profile-summary-grid">
                 <article class="profile-summary-card panel-cut">
-                    <span class="profile-card-label">MOEDAS // CRÉDITO</span>
+                    <span class="profile-card-label">MOEDAS</span>
                     <strong id="profile-currency">0</strong>
-                    <small>◈ saldo do operador</small>
+                    <small>Para gastar na loja</small>
                 </article>
                 <article class="profile-summary-card panel-cut">
-                    <span class="profile-card-label">PARTIDAS // TOTAL</span>
+                    <span class="profile-card-label">PARTIDAS</span>
                     <strong id="profile-games">0</strong>
-                    <small>◈ sessões registradas</small>
+                    <small>Músicas jogadas</small>
                 </article>
                 <article
                     class="profile-summary-card profile-summary-wide panel-cut"
                 >
                     <div class="profile-card-label-row">
                         <span class="profile-card-label"
-                            >PRECISÃO GLOBAL // NOTAS PROCESSADAS</span
+                            >PRECISÃO GERAL</span
                         >
                         <strong id="profile-hit-rate">0.0%</strong>
                     </div>
@@ -141,20 +146,20 @@
             <section class="profile-section profile-customization" aria-labelledby="customization-title">
                 <div class="profile-section-heading">
                     <div>
-                        <p class="eyebrow">GARAGEM // PERSONALIZAÇÃO</p>
+                        <p class="eyebrow">SEU VISUAL</p>
                         <h2 id="customization-title">Seu visual de palco</h2>
                     </div>
                     <span class="customization-balance"><b aria-hidden="true">◈</b> <span id="customization-currency">0</span> MOEDAS</span>
                 </div>
                 <div class="inventory-launcher">
-                    <div><span class="eyebrow">EQUIPAMENTO DO OPERADOR</span><strong><span id="inventory-owned-count">0</span> acessórios no inventário</strong></div>
-                    <button id="open-profile-inventory" class="button button-primary" type="button">ABRIR INVENTÁRIO <b>↗</b></button>
+                    <div><span class="eyebrow">ACESSÓRIOS EQUIPADOS</span><strong><span id="inventory-owned-count">0</span> acessórios no inventário</strong></div>
+                    <button id="open-profile-inventory" class="button button-primary" type="button">Abrir inventário <b>↗</b></button>
                 </div>
             </section>
 
             <dialog id="profile-inventory-dialog" class="achievement-dialog profile-inventory-dialog" aria-labelledby="profile-inventory-title">
                 <div class="achievement-dialog-head">
-                    <div><p class="eyebrow">GARAGEM // PERSONALIZAÇÃO</p><h2 id="profile-inventory-title">Inventário do <span>operador.</span></h2></div>
+                    <div><p class="eyebrow">SEU VISUAL</p><h2 id="profile-inventory-title">Inventário do <span>operador.</span></h2></div>
                     <button id="close-profile-inventory" class="achievement-close" type="button" aria-label="Fechar inventário">×</button>
                 </div>
                 <p id="shop-status" class="shop-status" role="status" aria-live="polite"></p>
@@ -165,15 +170,15 @@
                 <div id="inventory-panel" class="inventory-dialog-panel" role="tabpanel" aria-labelledby="inventory-tab">
                     <aside class="inventory-profile-preview" aria-label="Prévia do perfil">
                         <div class="inventory-profile-avatar" id="profile-avatar-preview"></div>
-                        <div><p class="eyebrow">PRÉVIA // PERFIL</p><strong>Seu avatar equipado</strong><span>Veja como moldura, efeito e fundo aparecem juntos.</span></div>
+                        <div><p class="eyebrow">PRÉVIA</p><strong>Seu avatar equipado</strong><span>Veja como moldura, efeito e fundo aparecem juntos.</span></div>
                     </aside>
                     <div class="inventory-loadout-heading">
-                        <div><p class="eyebrow">LOADOUT // EQUIPADO</p><h3>Espaços do perfil</h3></div>
-                        <span>ITENS APLICADOS AO AVATAR</span>
+                        <div><p class="eyebrow">EQUIPADO</p><h3>Espaços do perfil</h3></div>
+                        <span>NO SEU AVATAR</span>
                     </div>
                     <div id="profile-loadout-slots" class="inventory-loadout-slots"></div>
                 <div class="shop-subsection">
-                    <h3>INVENTÁRIO // ITENS GUARDADOS</h3>
+                    <h3>SEUS ITENS</h3>
                     <div class="shop-filters">
                         <label>TIPO <select id="inventory-filter-type" aria-label="Filtrar inventário por tipo"><option value="todos">Todos os tipos</option><option value="moldura">Molduras</option><option value="efeito">Efeitos</option><option value="fundo">Fundos</option><option value="título">Títulos</option><option value="acessório">Acessórios</option></select></label>
                         <label>RARIDADE <select id="inventory-filter-rarity" aria-label="Filtrar inventário por raridade"><option value="todas">Todas</option><option value="common">Comum</option><option value="uncommon">Incomum</option><option value="rare">Rara</option><option value="epic">Épica</option><option value="legendary">Lendária</option></select></label>
@@ -183,7 +188,7 @@
                 </div>
                 <div id="shop-panel" class="inventory-dialog-panel" role="tabpanel" aria-labelledby="shop-tab" hidden>
                 <div class="shop-subsection">
-                    <h3>CATÁLOGO // ACESSÓRIOS DISPONÍVEIS</h3>
+                    <h3>LOJA</h3>
                     <div class="shop-filters">
                         <label>TIPO <select id="shop-filter-type" aria-label="Filtrar catálogo por tipo"><option value="todos">Todos os tipos</option><option value="moldura">Molduras</option><option value="efeito">Efeitos</option><option value="fundo">Fundos</option><option value="título">Títulos</option><option value="acessório">Acessórios</option></select></label>
                         <label>RARIDADE <select id="shop-filter-rarity" aria-label="Filtrar catálogo por raridade"><option value="todas">Todas</option><option value="common">Comum</option><option value="uncommon">Incomum</option><option value="rare">Rara</option><option value="epic">Épica</option><option value="legendary">Lendária</option></select></label>
@@ -198,11 +203,11 @@
             <section class="profile-section">
                 <div class="profile-section-heading">
                     <div>
-                        <p class="eyebrow">LOADOUT // PERFORMANCE</p>
-                        <h2>Leitura por instrumento</h2>
+                        <p class="eyebrow">SEU DESEMPENHO</p>
+                        <h2>Estatísticas por instrumento</h2>
                     </div>
                     <span class="profile-section-note"
-                        >FAVORITO = SINAL PRINCIPAL</span
+                        >Seu instrumento favorito em destaque</span
                     >
                 </div>
                 <nav
@@ -219,18 +224,18 @@
             <section class="profile-section">
                 <div class="profile-section-heading">
                     <div>
-                        <p class="eyebrow">ARQUIVO // SETLIST</p>
+                        <p class="eyebrow">O QUE VOCÊ JÁ TOCOU</p>
                         <h2>Histórico de músicas</h2>
                     </div>
                 </div>
                 <div class="profile-songs panel-cut">
                     <div class="profile-song-header">
-                        <span>MÚSICA</span><span>PLAYS</span
-                        ><span>MELHOR SCORE</span><span>COMBO</span
+                        <span>MÚSICA</span><span>PARTIDAS</span
+                        ><span>RECORDE</span><span>COMBO</span
                         ><span>PRECISÃO</span>
                     </div>
                     <div id="profile-songs">
-                        <p class="profile-empty">SINCRONIZANDO...</p>
+                        <p class="profile-empty">Carregando…</p>
                     </div>
                 </div>
             </section>
@@ -238,10 +243,10 @@
             <section class="profile-section">
                 <div class="profile-section-heading">
                     <div>
-                        <p class="eyebrow">CONQUISTAS // SINAL DE PRESTÍGIO</p>
-                        <h2>Galeria de badges</h2>
+                        <p class="eyebrow">CONQUISTAS</p>
+                        <h2>Seus troféus</h2>
                     </div>
-                    <button id="open-achievements" class="button button-ghost" type="button">VER TODAS <b>↗</b></button>
+                    <button id="open-achievements" class="button button-ghost" type="button">Ver todas <b>↗</b></button>
                 </div>
                 <div
                     id="profile-achievements"
@@ -252,7 +257,7 @@
         <dialog id="achievement-dialog" class="achievement-dialog" aria-labelledby="achievement-dialog-title">
             <div class="achievement-dialog-head">
                 <div>
-                    <p class="eyebrow">ARQUIVO // CONQUISTAS</p>
+                    <p class="eyebrow">TROFÉUS</p>
                     <h2 id="achievement-dialog-title">Todos os <span>desafios.</span></h2>
                 </div>
                 <button id="close-achievements" class="achievement-close" type="button" aria-label="Fechar conquistas">×</button>
@@ -261,6 +266,7 @@
             <div id="achievement-details" class="achievement-details"></div>
         </dialog>
 
+      <script src="google-config.js"></script>
         <script src="js/account.js"></script>
         <script src="js/account-ui.js"></script>
         <script>

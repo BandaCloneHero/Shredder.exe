@@ -27,6 +27,6 @@ O jogador é parte de uma das poucas bandas humanas que quer se manter relevante
 - Marcão Davi Correia
 
 - ## Menção muito honrosa
-- Vinícius Anjos - Apoio na programação
+- Vinícius Anjos - Apoio na programação, trabalhos práticos e ideias
 
 - Larissa Mello Laurindo - Artes Visuais

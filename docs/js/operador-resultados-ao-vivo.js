@@ -72,6 +72,12 @@
             roster.append(row);
         }
         card.append(roster);
+        if (ticket.resultadosExecutavel) {
+            const achievementHelp = document.createElement('p');
+            achievementHelp.className = 'operator-help';
+            achievementHelp.textContent = 'As conquistas são calculadas automaticamente e aparecem por jogador nos resultados recentes após a confirmação.';
+            card.append(achievementHelp);
+        }
 
         const token = localStorage.getItem('shredder.account.token.v1');
         if (ticket.resultadosExecutavel) {
@@ -93,6 +99,12 @@
                     const resultadosJogadores = (response.resultados || []).filter(item => item.tipo !== 'banda').length;
                     const resultadosBandas = (response.resultados || []).filter(item => item.tipo === 'banda').length;
                     status.textContent = `RESULTADOS CONFIRMADOS // ${resultadosJogadores} perfil(is) e ${resultadosBandas} banda(s) atualizado(s).`;
+                    if (response.creditosFeira?.enabled) {
+                        status.textContent += response.creditosFeira.status === 'registration_failed'
+                            ? ' Tijolinhos: registro pendente de revisão.'
+                            : ' Tijolinhos: solicitação registrada; o pagamento será verificado separadamente.';
+                    }
+                    for (const result of response.resultados || []) if (result.tipo !== 'banda') renderMatch(result);
                     ticketCards.delete(ticket.ticketId);
                     card.remove();
                     monitorRooms();
@@ -123,6 +135,52 @@
         ticketList.append(card);
     }
 
+    function achievementSummary(ids) {
+        const section = document.createElement('section');
+        section.className = 'operator-result-achievements';
+        const heading = document.createElement('h4');
+        heading.textContent = 'CONQUISTAS DESBLOQUEADAS NESTA PARTIDA';
+        section.append(heading);
+        if (!Array.isArray(ids)) {
+            const unavailable = document.createElement('p');
+            unavailable.className = 'operator-help';
+            unavailable.textContent = 'Este resultado não informa os desbloqueios. Atualize o servidor para receber o resumo.';
+            section.append(unavailable);
+            return section;
+        }
+        const catalog = typeof PROFILE_ACHIEVEMENTS === 'undefined' ? [] : PROFILE_ACHIEVEMENTS;
+        const achievements = [...new Set(ids)].map(id => catalog.find(item => item.id === id)).filter(Boolean);
+        if (!achievements.length) {
+            const empty = document.createElement('p');
+            empty.className = 'operator-help';
+            empty.textContent = ids.length ? 'Desbloqueios recebidos; atualize o catálogo do painel para exibi-los.' : 'Nenhuma conquista nova nesta partida.';
+            section.append(empty);
+            return section;
+        }
+        const list = document.createElement('ul');
+        list.className = 'operator-unlocked-achievements';
+        for (const achievement of achievements) {
+            const badge = document.createElement('li');
+            badge.className = 'operator-unlocked-achievement';
+            const image = document.createElement('img');
+            image.src = `assets/achievements/${achievement.id}.webp?v=1`;
+            image.alt = '';
+            image.setAttribute('aria-hidden', 'true');
+            image.width = image.height = 64;
+            image.loading = 'lazy';
+            image.decoding = 'async';
+            const text = document.createElement('div');
+            const name = document.createElement('strong'); name.textContent = achievement.label;
+            const rarity = document.createElement('small'); rarity.textContent = `${achievement.rarity} · ${achievement.difficulty}`;
+            const description = document.createElement('p'); description.textContent = achievement.how;
+            text.append(name, rarity, description);
+            badge.append(image, text);
+            list.append(badge);
+        }
+        section.append(list);
+        return section;
+    }
+
     function renderMatch(result) {
         if (!result?.partidaId || receivedMatches.has(result.partidaId)) return;
         receivedMatches.add(result.partidaId);
@@ -137,7 +195,7 @@
         const details = document.createElement('p');
         details.className = 'operator-help';
         details.textContent = `${result.perfil?.modoJogo || 'Modo desconhecido'} · ${result.musica || 'Música desconhecida'} · ${result.precisao}% precisão · combo ${result.maiorCombo}${result.fullCombo ? ' · FULL COMBO' : ''}`;
-        card.append(details); matchList.prepend(card);
+        card.append(details, achievementSummary(result.novasConquistas)); matchList.prepend(card);
     }
 
     clearResultsButton.addEventListener('click', () => {

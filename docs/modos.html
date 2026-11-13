@@ -7,12 +7,13 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
             rel="stylesheet"
         />
         <link rel="stylesheet" href="style.css" />
     </head>
     <body data-page="modos">
+        <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
         <header class="topbar">
             <a class="brand-lockup" href="index.html">
                 <span class="brand-mark">//</span> SHREDDER<span
@@ -20,27 +21,22 @@
                     >.exe</span
                 >
             </a>
-            <div class="top-status">
+            <div class="top-status legacy-page-context" aria-hidden="true">
                 <span class="status-dot"></span>
                 <span id="mode-player">OPERADOR</span>
                 <span class="top-divider"></span>
                 <span id="mode-instrument">SEM LOADOUT</span>
             </div>
+        <nav class="page-nav" aria-label="Navegação principal"><a href="lobby.html" aria-current="page">Jogar</a><a href="ranking.html">Ranking</a><a href="perfil.html">Meu perfil</a></nav>
         </header>
 
-        <main class="page-shell modes-shell">
-            <div class="stepper">
-                <span class="step done">01 <b>INSTRUMENTO</b></span>
-                <span class="step-line done"></span>
-                <span class="step active">02 <b>FASE</b></span>
-                <span class="step-line"></span>
-                <span class="step">03 <b>TICKET</b></span>
-            </div>
+        <main id="main-content" tabindex="-1" class="page-shell modes-shell">
+            <nav class="stepper" aria-label="Etapas da partida"><span class="step done"><span aria-hidden="true">01</span> <b>SALA</b></span><span class="step-line done" aria-hidden="true"></span><span class="step done"><span aria-hidden="true">02</span> <b>INSTRUMENTO</b></span><span class="step-line done" aria-hidden="true"></span><span class="step active" aria-current="step"><span aria-hidden="true">03</span> <b>FASE</b></span><span class="step-line" aria-hidden="true"></span><span class="step "><span aria-hidden="true">04</span> <b>TICKET</b></span></nav>
 
             <section class="section-heading">
                 <div>
-                    <p class="eyebrow">SETLIST // SELEÇÃO DE FASE</p>
-                    <h1>Escolha sua <span>fase.</span></h1>
+                    <p class="eyebrow">PRÓXIMA MÚSICA</p>
+                    <h1>Escolha seu <span>desafio.</span></h1>
                 </div>
                 <div class="operator-chip">
                     <span>PROGRESSO</span>
@@ -54,24 +50,23 @@
                     <h2>
                         <span class="heading-number">01</span> MODO HISTÓRIA
                     </h2>
-                    <span class="block-note">// CAMPANHA DE RESISTÊNCIA</span>
+                    <span class="block-note">Derrote os chefes</span>
                 </div>
                 <p class="section-intro">
-                    Derrotem o boss para liberar a próxima fase. Se ele sobreviver,
-                    joguem a mesma fase novamente. A vitória é confirmada pelo resultado do YARG.
+                    Derrotem o chefe para liberar a próxima fase. Se perderem, tentem de novo.
                 </p>
                 <div id="stage-grid" class="stage-grid"></div>
             </section>
 
             <section class="mode-block freeplay-block">
                 <div class="block-heading">
-                    <h2><span class="heading-number">02</span> FREEPLAY</h2>
-                    <span class="block-note">// SEM LIMITES</span>
+                    <h2><span class="heading-number">02</span> TOQUE LIVRE</h2>
+                    <span class="block-note">Só tocar</span>
                 </div>
                 <button id="freeplay-card" class="freeplay-card" type="button">
                     <span class="freeplay-symbol">∞</span>
                     <span>
-                        <strong>FREQUÊNCIA LIVRE</strong>
+                        <strong>Toque do seu jeito</strong>
                         <small
                             >Escolha qualquer música e toque no seu próprio
                             ritmo.</small
@@ -83,6 +78,7 @@
 
         </main>
 
+        <script src="google-config.js"></script>
         <script src="js/account.js"></script>
         <script src="js/account-ui.js"></script>
         <script>

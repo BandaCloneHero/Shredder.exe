@@ -6,7 +6,7 @@
     <title>Shredder.exe // Painel do Operador</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         .operator-shell { max-width: 1040px; margin: auto; padding: 36px 24px 64px; }
@@ -69,6 +69,14 @@
         .incoming-results h2 { margin-top: 0; color: var(--cyan); font: 600 1rem var(--tech); }
         .incoming-results-status { color: var(--muted); margin: 14px 0; }
         .incoming-result-list { display: grid; gap: 12px; }
+        .operator-result-achievements { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+        .operator-result-achievements h4 { margin: 0 0 12px; color: var(--cyan); font: 600 .85rem var(--tech); }
+        .operator-unlocked-achievements { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px; }
+        .operator-unlocked-achievement { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--cyan); background: var(--panel); min-width: 0; }
+        .operator-unlocked-achievement img { width: 64px; height: 64px; flex: 0 0 64px; object-fit: contain; }
+        .operator-unlocked-achievement strong, .operator-unlocked-achievement small { display: block; overflow-wrap: anywhere; }
+        .operator-unlocked-achievement small { color: var(--magenta); margin-top: 4px; }
+        .operator-unlocked-achievement p { margin: 6px 0 0; color: var(--muted); font-size: .85rem; }
         .incoming-result { padding: 16px; border: 1px solid var(--line); background: var(--bg); }
         .incoming-result header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; color: var(--cyan); }
         .incoming-result dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px; margin: 14px 0; }
@@ -81,39 +89,28 @@
         @media (max-width: 560px) { .operator-grid { grid-template-columns: 1fr; } .operator-shell { padding-inline: 16px; } }
     </style>
 </head>
-<body>
+<body data-page="operador">
+        <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
     <header class="topbar">
         <a class="brand-lockup" href="lobby.html"><span class="brand-mark">//</span> SHREDDER<span class="brand-accent">.exe</span></a>
-        <a class="top-profile-link" href="ranking.html">RANKING GLOBAL ↗</a>
-    </header>
-    <main class="operator-shell">
-        <p class="eyebrow">ESTAÇÃO // REGISTRO DE RESULTADOS</p>
+        
+    <nav class="page-nav" aria-label="Navegação principal"><a href="lobby.html">Jogar</a><a href="ranking.html">Ranking</a><a href="perfil.html">Meu perfil</a></nav>
+        </header>
+    <main id="main-content" tabindex="-1" class="operator-shell">
+        <p class="eyebrow">BASTIDORES</p>
         <h1>Painel do <span>Operador.</span></h1>
-        <p class="operator-intro">Confira os resultados enviados pelo executável e confirme a associação com os jogadores do ticket. O servidor atualiza perfil e ranking somente após a confirmação.</p>
-        <section class="operator-avatar-section" aria-labelledby="operator-avatar-heading">
-            <form id="operator-avatar-form" class="operator-form panel-cut">
-                <h2 id="operator-avatar-heading">Minha foto de perfil</h2>
-                <p class="operator-help">Escolha uma foto para sua própria conta de operador. A imagem será recortada no centro e preparada em tamanho leve para o perfil.</p>
-                <div class="operator-field">
-                    <label for="operator-avatar-file">Escolher minha imagem (PNG, JPG ou WebP, até 8 MB)</label>
-                    <input id="operator-avatar-file" type="file" accept="image/png,image/jpeg,image/webp">
-                </div>
-                <img id="operator-avatar-preview" alt="Prévia da sua foto de perfil" width="128" height="128" hidden style="margin: 1rem 0; border-radius: 50%; object-fit: cover; border: 1px solid var(--cyan)">
-                <button id="operator-avatar-upload" class="button button-primary" type="submit" disabled>Salvar minha foto</button>
-                <p id="operator-avatar-status" class="operator-status" role="status" aria-live="polite"></p>
-            </form>
-        </section>
+        <p class="operator-intro">Confira os jogadores e confirme os resultados para atualizar os perfis e o ranking.</p>
         <section class="incoming-results" aria-labelledby="incoming-title">
-            <h2 id="incoming-title">Tickets de sessão recebidos</h2>
-            <p class="operator-help">Os tickets entram em uma fila FIFO global. Cada lote do YARG é associado ao ticket mais antigo sem resultados; confira os nomes e pontuações e confirme para salvar e liberar a fila.</p>
-            <p id="incoming-results-status" class="incoming-results-status" role="status" aria-live="polite">Conectando ao servidor para localizar as salas ativas...</p>
+            <h2 id="incoming-title">Fila de partidas</h2>
+            <p class="operator-help">Cada resultado é associado ao ticket mais antigo da fila. Confira jogadores e pontuações antes de confirmar.</p>
+            <p id="incoming-results-status" class="incoming-results-status" role="status" aria-live="polite">Buscando partidas…</p>
             <div id="incoming-ticket-list" class="incoming-result-list" aria-live="polite"></div>
-            <h3 class="incoming-subheading">Outros resultados individuais recentes</h3>
-            <p class="operator-help">Resultados de outros fluxos continuam visíveis abaixo; resultados do executável aguardam confirmação no ticket correspondente.</p>
+            <h3 class="incoming-subheading">Resultados confirmados recentes</h3>
+            <p class="operator-help">Pontuações e novas conquistas das últimas partidas confirmadas.</p>
             <div class="incoming-results-actions"><button id="clear-recent-results" class="button button-ghost" type="button">Limpar resultados recentes</button></div>
             <div id="incoming-match-list" class="incoming-result-list" aria-live="polite"></div>
         </section>
-        <details class="operator-mode" open>
+        <details class="operator-mode">
             <summary>Editar perfil e conquistas</summary>
             <form id="profile-form" class="operator-form panel-cut">
                 <div class="operator-load">
@@ -347,7 +344,23 @@
             </form>
             <p id="band-status" class="operator-status" role="status" aria-live="polite" aria-atomic="true"></p>
         </details>
+        <details class="operator-mode"><summary>Minha foto de perfil</summary>
+        <section class="operator-avatar-section" aria-labelledby="operator-avatar-heading">
+            <form id="operator-avatar-form" class="operator-form panel-cut">
+                <h2 id="operator-avatar-heading">Minha foto de perfil</h2>
+                <p class="operator-help">PNG, JPG ou WebP, até 8 MB. A imagem será recortada no centro.</p>
+                <div class="operator-field">
+                    <label for="operator-avatar-file">Escolher minha imagem (PNG, JPG ou WebP, até 8 MB)</label>
+                    <input id="operator-avatar-file" type="file" accept="image/png,image/jpeg,image/webp">
+                </div>
+                <img id="operator-avatar-preview" alt="Prévia da sua foto de perfil" width="128" height="128" hidden style="margin: 1rem 0; border-radius: 50%; object-fit: cover; border: 1px solid var(--cyan)">
+                <button id="operator-avatar-upload" class="button button-primary" type="submit" disabled>Salvar minha foto</button>
+                <p id="operator-avatar-status" class="operator-status" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+        </details>
     </main>
+    <script src="google-config.js"></script>
     <script src="js/account.js"></script>
     <script src="js/account-ui.js"></script>
     <script>

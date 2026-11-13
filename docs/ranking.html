@@ -7,12 +7,13 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
             rel="stylesheet"
         />
         <link rel="stylesheet" href="style.css" />
     </head>
     <body data-page="ranking">
+        <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
         <header class="topbar">
             <a class="brand-lockup" href="index.html">
                 <span class="brand-mark">//</span> SHREDDER<span
@@ -20,19 +21,20 @@
                     >.exe</span
                 >
             </a>
-            <div class="top-status">
+            <div class="top-status legacy-page-context" aria-hidden="true">
                 <span class="status-dot"></span>
                 <span id="ranking-player">OPERADOR</span>
                 <span class="top-divider"></span>
                 <a href="lobby.html">VOLTAR AO LOBBY</a>
             </div>
+        <nav class="page-nav" aria-label="Navegação principal"><a href="lobby.html">Jogar</a><a href="ranking.html" aria-current="page">Ranking</a><a href="perfil.html">Meu perfil</a></nav>
         </header>
 
-        <main class="page-shell ranking-shell">
+        <main id="main-content" tabindex="-1" class="page-shell ranking-shell">
             <section class="section-heading">
                 <div>
-                    <p class="eyebrow">PLACAR // SINAL GLOBAL</p>
-                    <h1>Ranking <span>GLOBAL.</span></h1>
+                    <p class="eyebrow">OS MAIORES RESULTADOS</p>
+                    <h1>Ranking do <span>Shredder.</span></h1>
                 </div>
                 <div class="operator-chip">
                     <span>REGISTRO</span>
@@ -41,31 +43,31 @@
             </section>
 
             <p id="ranking-status" class="ranking-status">
-                SINCRONIZANDO DADOS...
+                Carregando ranking…
             </p>
-            <p class="operator-help">Escolha Freeplay ou Modo História e uma música. Cada tabela mostra o maior resultado registrado naquela música e instrumento.</p>
+            <p class="operator-help">Escolha o modo, a música e o instrumento para comparar os recordes.</p>
 
             <section class="ranking-award panel-cut" aria-labelledby="ranking-award-title">
                 <div class="ranking-award-visual">
                     <img class="ranking-award-image" src="images/premiação.png" alt="Miniaturas dos prêmios para os primeiros colocados">
                 </div>
                 <div class="ranking-award-copy">
-                    <p class="eyebrow">FEIRA // PRÊMIO OFICIAL</p>
+                    <p class="eyebrow">VALE O PÓDIO</p>
                     <h2 id="ranking-award-title">Prêmios dos <span>campeões.</span></h2>
-                    <p>A premiação dos primeiros colocados de cada instrumento será entregue ao final da feira.</p>
+                    <p>Os primeiros de cada instrumento recebem os prêmios ao final da feira.</p>
                 </div>
             </section>
 
             <section id="ranking-champions" class="ranking-champions" aria-label="Campeões por instrumento" hidden></section>
 
             <nav class="ranking-mode-tabs" aria-label="Modo de jogo do ranking">
-                <button class="ranking-tab active" data-ranking-mode="freeplay" type="button">FREEPLAY</button>
+                <button class="ranking-tab active" data-ranking-mode="freeplay" type="button">TOQUE LIVRE</button>
                 <button class="ranking-tab" data-ranking-mode="historia" type="button">MODO HISTÓRIA</button>
             </nav>
             <label class="ranking-song-filter" for="ranking-song-select">
                 <span>MÚSICA</span>
                 <select id="ranking-song-select" disabled>
-                    <option value="">AGUARDANDO RESULTADOS</option>
+                    <option value="">Selecione uma música</option>
                 </select>
             </label>
 
@@ -109,25 +111,21 @@
 
             <section class="ranking-console">
                 <div class="console-head">
-                    <span>LEADERBOARD // PARTIDAS FINALIZADAS</span>
-                    <span>FONTE: SERVIDOR LOCAL</span>
+                    <span>MELHORES PONTUAÇÕES</span>
+                    
                 </div>
                 <div class="ranking-header">
-                    <span>POSIÇÃO / OPERADOR</span>
+                    <span>POSIÇÃO / JOGADOR</span>
                     <span>PONTUAÇÃO</span>
                 </div>
                 <div id="ranking-list" aria-live="polite">
-                    <p class="ranking-empty">SINCRONIZANDO...</p>
+                    <p class="ranking-empty">Carregando…</p>
                 </div>
                 <div id="my-ranking" class="my-ranking" hidden></div>
             </section>
-
-            <a class="button button-ghost ranking-back" href="lobby.html">
-                <span>← RETORNAR AO LOBBY</span>
-                <b>↗</b>
-            </a>
         </main>
 
+        <script src="google-config.js"></script>
         <script src="js/account.js"></script>
         <script src="js/account-ui.js"></script>
         <script>
@@ -150,6 +148,7 @@
         <script src="/socket.io/socket.io.js"></script>
         <script src="js/achievement-catalog.js"></script>
         <script src="js/achievement-notifications.js"></script>
+        <script src="js/ranking-policy.js"></script>
         <script src="app.js"></script>
         <script src="js/achievement-live.js"></script>
     </body>

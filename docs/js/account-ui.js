@@ -7,6 +7,7 @@ function shredderAvatarUrl(avatar) {
 class ShredderAccountUI {
   constructor(accountManager) {
     this.account = accountManager;
+    this.googleOnly = window.SHREDDER_GOOGLE_ONLY === true;
     this.modalEl = null;
     this.statusContainerEl = null;
     this.cosmeticsRequestId = 0;
@@ -36,8 +37,48 @@ class ShredderAccountUI {
       }
     });
 
+    this.prepareGoogle();
     await this.account.restore();
     this.updateUI(this.account.snapshot());
+    this.googleUI?.render(this.account.snapshot());
+  }
+
+  prepareGoogle() {
+    if (this.googleReadyPromise || window.SHREDDER_GOOGLE_LOGIN_ENABLED !== true) return this.googleReadyPromise;
+    this.googleReadyPromise = (async () => {
+      if (this.googleOnly) {
+        const options = await this.account.request('/api/auth/options', { auth: false });
+        if (options.developmentProxy) {
+          const dev = options.developmentProxy;
+          if (dev.origin !== window.location.origin || dev.bootstrap !== '/api/dev/codespaces') throw new Error('Origem do Codespaces inválida.');
+          const proof = await this.account.request(dev.bootstrap, {auth:false});
+          if (proof.origin !== window.location.origin || typeof proof.nonce !== 'string' || !/^[a-f0-9]{64}$/.test(proof.nonce)) throw new Error('Preparação do Codespaces inválida.');
+          this.account.codespacesProof = {origin:proof.origin, nonce:proof.nonce};
+        }
+        if (options.googleOnly !== true || options.providers?.google?.enabled !== true) {
+          throw new Error('Entrada Google não habilitada no servidor.');
+        }
+      }
+      const { prepareGoogleClient } = await import('/js/google-identity.js');
+      const renewAttempt = () => this.account.request('/api/auth/google/start', {method:'POST',body:{},auth:false});
+      const config = await renewAttempt();
+      const client = await prepareGoogleClient({enabled: window.SHREDDER_GOOGLE_LOGIN_ENABLED, config, renewAttempt});
+      if (!client) throw new Error('Configuração Google incompleta.');
+      const { GoogleAccountUI } = await import('/js/google-account-ui.js');
+      this.googleUI = new GoogleAccountUI({ account: this.account, ui: this, client });
+      if (this.googleOnly) this.errorEl.textContent = '';
+      return this.googleUI;
+    })().catch(() => {
+      this.googlePrepareFailed = true;
+      if (this.googleOnly) this.errorEl.textContent = 'Google indisponível no momento. Tente novamente mais tarde.';
+      const status = document.getElementById('google-login-status');
+      if (status) {
+        status.hidden = this.account.snapshot().isLoggedIn;
+        status.textContent = this.googleOnly ? 'Google indisponível no momento. Tente novamente mais tarde.' : 'Google indisponível neste momento. Entre com usuário e senha.';
+      }
+      return null;
+    });
+    return this.googleReadyPromise;
   }
 
   injectStyles() {
@@ -45,7 +86,11 @@ class ShredderAccountUI {
     const style = document.createElement('style');
     style.id = 'shredder-auth-styles';
     style.textContent = `
-      .shredder-auth-widget { position: fixed; top: 15px; right: 15px; z-index: 9999; font-family: system-ui, -apple-system, sans-serif; }
+      .shredder-auth-widget { position: absolute; top: 15px; right: 15px; z-index: 9999; font-family: system-ui, -apple-system, sans-serif; }
+      .shredder-auth-widget-inline { position: static; flex-shrink: 0; max-width: 100%; }
+      .shredder-profile-btn { min-width: 0; }
+      .shredder-profile-btn > span:last-child { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .shredder-logout-btn { min-height: 36px; }
       .shredder-auth-btn { background: #111; color: #00ffcc; border: 1px solid #00ffcc; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.2s; box-shadow: 0 0 10px rgba(0, 255, 204, 0.2); }
       .shredder-auth-btn:hover { background: #00ffcc; color: #111; box-shadow: 0 0 15px rgba(0, 255, 204, 0.5); }
       .shredder-auth-user { display: flex; align-items: center; gap: 10px; background: rgba(17, 17, 17, 0.9); border: 1px solid #333; padding: 6px 12px; border-radius: 6px; color: #fff; font-size: 14px; }
@@ -152,10 +197,13 @@ class ShredderAccountUI {
   createStatusWidget() {
     this.statusContainerEl = document.createElement('div');
     this.statusContainerEl.className = 'shredder-auth-widget';
-    document.body.appendChild(this.statusContainerEl);
+    const header = document.querySelector('.topbar');
+    if (header) this.statusContainerEl.classList.add('shredder-auth-widget-inline');
+    (header || document.body).appendChild(this.statusContainerEl);
   }
 
   createModal() {
+    if (this.googleOnly) return this.createGoogleOnlyModal();
     const backdrop = document.createElement('div');
     backdrop.className = 'shredder-modal-backdrop';
     backdrop.innerHTML = `
@@ -211,7 +259,37 @@ class ShredderAccountUI {
     });
   }
 
+  createGoogleOnlyModal() {
+    const backdrop = document.createElement('div');
+    backdrop.className = 'shredder-modal-backdrop';
+    backdrop.innerHTML = `
+      <div class="shredder-modal-box" role="dialog" aria-modal="true" aria-labelledby="shredder-modal-title">
+        <h3 id="shredder-modal-title">Entrar no Shredder</h3>
+        <p>Use sua conta Google. Seu perfil é criado no primeiro acesso e seu progresso fica salvo.</p>
+        <p id="shredder-error" class="shredder-error-msg" role="status" aria-live="polite">Preparando entrada com Google…</p>
+        <div class="shredder-modal-actions"><button type="button" id="shredder-btn-cancel" class="shredder-btn-secondary">Fechar</button></div>
+      </div>`;
+    document.body.appendChild(backdrop);
+    this.modalEl = backdrop;
+    this.titleEl = backdrop.querySelector('#shredder-modal-title');
+    this.errorEl = backdrop.querySelector('#shredder-error');
+    this.cancelBtn = backdrop.querySelector('#shredder-btn-cancel');
+    this.cancelBtn.addEventListener('click', () => this.closeModal());
+    backdrop.addEventListener('click', event => { if (event.target === backdrop) this.closeModal(); });
+  }
+
   openModal() {
+    if (this.googleOnly) {
+      this.errorEl.textContent = this.googlePrepareFailed ? 'Google indisponível no momento. Tente novamente mais tarde.'
+        : this.googleUI ? '' : 'Preparando entrada com Google…';
+      this.modalEl.classList.add('open');
+      this.googleUI?.modalButton?.focus();
+      return;
+    }
+    this.isRegisterMode = false;
+    this.titleEl.textContent = 'Entrar na Conta';
+    this.submitBtn.textContent = 'Entrar';
+    this.switchBtn.textContent = 'Não tem conta? Crie uma agora';
     this.errorEl.textContent = '';
     this.usernameInput.value = '';
     this.passwordInput.value = '';
@@ -221,6 +299,7 @@ class ShredderAccountUI {
 
   closeModal() {
     this.modalEl.classList.remove('open');
+    if (this.passwordInput) this.passwordInput.value = '';
   }
 
   async loadProfileCosmetics(username, stage, icon) {
@@ -256,6 +335,9 @@ class ShredderAccountUI {
   }
 
   updateUI(state) {
+    const preparationStatus = document.getElementById('google-login-status');
+    if (preparationStatus) preparationStatus.hidden = state.isLoggedIn || !this.googlePrepareFailed;
+    if (state.isLoggedIn && this.googleOnly && this.errorEl) this.errorEl.textContent = '';
     if (state.isLoggedIn) {
       this.statusContainerEl.replaceChildren();
       const userBox = document.createElement('div');
@@ -276,9 +358,9 @@ class ShredderAccountUI {
       avatarMark.className = 'shredder-avatar-mark';
       avatarStage.append(championsWings, playerIcon, avatarMark);
       const playerName = document.createElement('span');
-      playerName.textContent = state.user;
+      playerName.textContent = state.needsNickname ? 'Concluir perfil' : state.nickname || state.user;
       profileLink.append(avatarStage, playerName);
-      profileLink.setAttribute('aria-label', `Abrir perfil de ${state.user}`);
+      profileLink.setAttribute('aria-label', `Abrir perfil de ${state.nickname || state.user}`);
       const logoutBtn = document.createElement('button');
       logoutBtn.id = 'shredder-do-logout';
       logoutBtn.className = 'shredder-logout-btn';
@@ -288,7 +370,7 @@ class ShredderAccountUI {
       this.statusContainerEl.appendChild(userBox);
       this.loadProfileCosmetics(state.user, avatarStage, playerIcon);
     } else {
-      this.statusContainerEl.innerHTML = '<button id="shredder-do-login" class="shredder-auth-btn" type="button">Entrar / Conta</button>';
+      this.statusContainerEl.innerHTML = '<button id="shredder-do-login" class="shredder-auth-btn" type="button">Entrar</button>';
       this.statusContainerEl.querySelector('#shredder-do-login').addEventListener('click', () => this.openModal());
     }
   }

@@ -73,8 +73,8 @@ function profilePercent(value) {
 function profileInstrumentMarkup(profile, instrumentId) {
     const stats = profile.instrumentStats?.[instrumentId] || {};
     return `
-        <div class="profile-stat"><span>MAX SCORE</span><strong>${formatScore(profileNumber(stats.maxScore))}</strong></div>
-        <div class="profile-stat"><span>MAX COMBO</span><strong>${formatScore(profileNumber(stats.maxCombo))}</strong></div>
+        <div class="profile-stat"><span>RECORDE</span><strong>${formatScore(profileNumber(stats.maxScore))}</strong></div>
+        <div class="profile-stat"><span>MAIOR COMBO</span><strong>${formatScore(profileNumber(stats.maxCombo))}</strong></div>
         <div class="profile-stat"><span>MELHOR PRECISÃO</span><strong>${profilePercent(stats.bestAccuracy)}</strong></div>
         <div class="profile-stat"><span>MÚSICAS CONCLUÍDAS</span><strong>${formatScore(profileNumber(stats.songsCompleted))}</strong></div>
         <div class="profile-stat"><span>FULL COMBOS</span><strong>${formatScore(profileNumber(stats.fullCombos))}</strong></div>`;
@@ -104,9 +104,10 @@ function renderProfile(profile, isOwnProfile) {
 
     document.querySelector("#profile-nickname").innerHTML = `<span class="profile-avatar-stage" aria-hidden="true"><span class="avatar-effect-glow"></span><span class="avatar-effect-orbit"></span><span class="avatar-effect-sparks"><i></i><b></b></span><span class="champions-wings"><i></i><b></b></span><span class="profile-player-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 20c.4-3.6 2.8-5.6 6.5-5.6s6.1 2 6.5 5.6"></path></svg></span></span><span>${escapeHtml(profile.nickname)}</span>`;
     renderProfileAvatar(profile);
+
     setupProfileAvatarPicker(profile, isOwnProfile);
     document.querySelector("#profile-username").textContent =
-        `// ${profile.username}`;
+        profile.username;
     document.querySelector("#profile-title").textContent =
         profile.tituloEquipado;
     document.querySelector("#profile-currency").textContent = formatScore(
@@ -132,8 +133,8 @@ function renderProfile(profile, isOwnProfile) {
     document.querySelector("#profile-hit-rate").textContent =
         profilePercent(hitRatio);
     document.querySelector("#profile-viewing").textContent = isOwnProfile
-        ? "SEU PERFIL // DADOS SINCRONIZADOS"
-        : `VISUALIZANDO: ${profile.username}`;
+        ? "Seu perfil"
+        : `Perfil de ${profile.nickname || profile.username}`;
     document.querySelector("#profile-back").hidden = isOwnProfile;
 
     const tabs = document.querySelector("#profile-instrument-tabs");
@@ -154,7 +155,7 @@ function renderProfile(profile, isOwnProfile) {
                 tab.dataset.profileInstrument === instrumentId,
             );
         });
-        panel.innerHTML = `<div class="profile-panel-kicker">${instrument[1]} // REGISTRO DE PERFORMANCE</div><div class="profile-stats-grid">${profileInstrumentMarkup(profile, instrumentId)}</div>`;
+        panel.innerHTML = `<div class="profile-panel-kicker">${instrument[1]} · DESEMPENHO</div><div class="profile-stats-grid">${profileInstrumentMarkup(profile, instrumentId)}</div>`;
     };
     tabs.querySelectorAll(".profile-tab").forEach((tab) => {
         tab.addEventListener("click", () =>
@@ -173,7 +174,7 @@ function renderProfile(profile, isOwnProfile) {
                       `<div class="profile-song-row"><strong>${escapeHtml(record.musica || "SEM TÍTULO")}</strong><span>${formatScore(profileNumber(record.vezesJogada))}x</span><span>${formatScore(profileNumber(record.melhorPontuacao))}</span><span>${formatScore(profileNumber(record.melhorCombo))}</span><span>${profilePercent(record.melhorPrecisao)}</span></div>`,
               )
               .join("")
-        : '<p class="profile-empty">NENHUMA FREQUÊNCIA REGISTRADA.</p>';
+        : '<p class="profile-empty">Você ainda não tem músicas no histórico.</p>';
 
     const visibleAchievements = ORDERED_PROFILE_ACHIEVEMENTS.filter(({ id, rarityKey }) => rarityKey !== "hidden" || achievements.has(id));
     const achievementHighlights = visibleAchievements.slice(0, 6);
@@ -258,7 +259,7 @@ function renderProfileShop(profile, isOwnProfile) {
             renderProfileShop(inventoryDialog.profileData, inventoryDialog.profileIsOwn);
             status.textContent = "";
         } catch (error) {
-            status.textContent = `LOJA SEM SINAL // ${error.message}`;
+            status.textContent = `Não foi possível carregar a loja. ${error.message}`;
         }
     };
     if (closeInventory) closeInventory.onclick = () => inventoryDialog?.close();
@@ -289,11 +290,11 @@ function renderProfileShop(profile, isOwnProfile) {
         } else if (isOwnProfile) {
             action = `<button class="button button-primary shop-action" type="button" data-shop-action="buy" data-item="${item.id}">COMPRAR <b>◈ ${item.price}</b></button>`;
         } else {
-            action = '<span class="customization-status">LOJA DO OPERADOR</span>';
+            action = '<span class="customization-status">LOJA</span>';
         }
         const rarity = item.rarityKey || "common";
         const [rarityLabel, difficulty] = PROFILE_RARITY_LABEL[rarity];
-        return `<article class="customization-card shop-rarity-card rarity-${rarity}"><div class="customization-preview shop-preview shop-${item.slot} shop-item-${item.id}" aria-hidden="true">${item.preview}</div><div class="customization-copy"><span class="customization-type">${item.type} // ACESSÓRIO</span><span class="shop-rarity">${rarityLabel} <i>·</i> ${difficulty}</span><h3>${item.name}</h3><p>${item.description}</p>${action}</div></article>`;
+        return `<article class="customization-card shop-rarity-card rarity-${rarity}"><div class="customization-preview shop-preview shop-${item.slot} shop-item-${item.id}" aria-hidden="true">${item.preview}</div><div class="customization-copy"><span class="customization-type">${item.type}</span><span class="shop-rarity">${rarityLabel} <i>·</i> ${difficulty}</span><h3>${item.name}</h3><p>${item.description}</p>${action}</div></article>`;
     };
     const ownedItems = PROFILE_SHOP_ITEMS.filter(item => owned.has(item.id));
     const loadout = document.querySelector("#profile-loadout-slots");
@@ -341,7 +342,7 @@ function renderProfileShop(profile, isOwnProfile) {
             }).join("")
         : ownedItems.length
             ? '<p class="profile-empty shop-empty">NENHUM ITEM NO INVENTÁRIO PARA ESTE TIPO.</p>'
-        : '<p class="profile-empty shop-empty">INVENTÁRIO VAZIO // COMPRE UM ACESSÓRIO NO CATÁLOGO.</p>';
+        : '<p class="profile-empty shop-empty">Seu inventário está vazio. Conheça os acessórios na loja.</p>';
     else inventory.replaceChildren();
     const maxPrice = shopPriceFilter?.value || "todos";
     const selectedType = shopTypeFilter?.value || "todos";
@@ -356,8 +357,8 @@ function renderProfileShop(profile, isOwnProfile) {
     if (activeTab === "shop") grid.innerHTML = availableItems.length
         ? availableItems.map(item => card(item, "catalog")).join("")
         : PROFILE_SHOP_ITEMS.length > 0 && PROFILE_SHOP_ITEMS.every(item => owned.has(item.id))
-            ? '<p class="profile-empty shop-empty">CATÁLOGO COMPLETO // VOCÊ JÁ POSSUI TODOS OS ACESSÓRIOS.</p>'
-            : '<p class="profile-empty shop-empty">NENHUM ITEM ENCONTRADO // AJUSTE OS FILTROS.</p>';
+            ? '<p class="profile-empty shop-empty">Você já tem todos os acessórios do catálogo.</p>'
+            : '<p class="profile-empty shop-empty">Nenhum item encontrado. Experimente outros filtros.</p>';
     else grid.replaceChildren();
     if (inventoryDialog && !inventoryDialog.dataset.shopActionsBound) {
         inventoryDialog.dataset.shopActionsBound = "true";
@@ -492,7 +493,7 @@ function setupProfileAvatarPicker(profile, isOwnProfile) {
 async function loadProfile(username, isOwnProfile) {
     const status = document.querySelector("#profile-status");
     const searchError = document.querySelector("#profile-search-error");
-    status.textContent = "SINCRONIZANDO DADOS...";
+    status.textContent = "Carregando…";
     status.className = "profile-status is-loading";
     searchError.hidden = true;
     try {
@@ -502,7 +503,7 @@ async function loadProfile(username, isOwnProfile) {
         const payload = await response.json().catch(() => ({}));
         if (!response.ok || !payload.profile) {
             if (response.status === 404) {
-                searchError.textContent = "JOGADOR NÃO EXISTE NA REDE.";
+                searchError.textContent = "Jogador não encontrado.";
                 searchError.hidden = false;
             }
             throw new Error(
@@ -510,14 +511,14 @@ async function loadProfile(username, isOwnProfile) {
             );
         }
         renderProfile(payload.profile, isOwnProfile);
-        status.textContent = "SINAL ONLINE // PERFIL ATUALIZADO";
+        status.textContent = "Perfil atualizado";
         status.className = "profile-status is-online";
         return true;
     } catch (error) {
         status.textContent =
             error.message === "Operador não encontrado na rede."
-                ? "CONSULTA ENCERRADA // NENHUM OPERADOR CORRESPONDE AO SINAL."
-                : `SEM SINAL COM O SERVIDOR // ${error.message}`;
+                ? "Jogador não encontrado."
+                : `Não foi possível carregar o perfil. ${error.message}`;
         status.className = "profile-status is-error";
         return false;
     }
@@ -568,7 +569,7 @@ async function initializeProfile() {
 
     if (!username) {
         document.querySelector("#profile-status").textContent =
-            "IDENTIDADE AUSENTE // RETORNE AO LOGIN.";
+            "Entre na sua conta para ver o perfil.";
         return;
     }
 
@@ -627,61 +628,66 @@ function upsertPlayer(player) {
     setLobby(lobby);
 }
 
+function nomeParaExibir(username, apelidos = {}) {
+    const own = getPlayer();
+    const nickname = Object.hasOwn(apelidos, username) ? apelidos[username]
+        : own?.nome === username || own?.id === username ? own?.apelido : null;
+    const display = typeof nickname === 'string' && nickname.trim() ? nickname : username;
+    return typeof display === 'string' && !/^(?:jogador_[a-f0-9]{12}|OP-[a-z0-9]+)$/i.test(display) ? display : 'Jogador';
+}
+
+function dadosParticipante(participante, roomState = {}) {
+    const local = getPlayer();
+    const username = typeof participante === 'string' ? participante : participante.username;
+    const id = typeof participante === 'object' ? participante.id : null;
+    const instrumento = (typeof participante === 'object' && participante.instrumento) || Object.entries(roomState.instrumentos || {})
+        .find(([, dono]) => dono && (dono === username || dono === id || (username === local?.nome && dono === local?.id)))?.[0];
+    const instrumentos = {guitarra:'Guitarra',baixo:'Baixo',bateria:'Bateria',teclado:'Teclado'};
+    return { username, id, apelido: (typeof participante === 'object' && participante.apelido) || nomeParaExibir(username, roomState.apelidos),
+        instrumento: instrumentos[String(instrumento || '').toLowerCase()] || 'Escolhendo instrumento',
+        isMe: Boolean(local && (username === local.nome || username === local.id || (id && id === local.id))) };
+}
+
+function criarNomeParticipante(dados) {
+    const copy = document.createElement('div');
+    copy.className = 'roster-player-info';
+    const name = document.createElement('strong'); name.textContent = dados.apelido;
+    const instrument = document.createElement('small'); instrument.textContent = dados.instrumento;
+    copy.append(name, instrument);
+    return copy;
+}
+
 function formatInstrument(instrument) {
-    return instrument || "SEM LOADOUT";
+    return instrument || "Sem instrumento";
 }
 
 function initializeLogin() {
-    const idField = document.querySelector("#player-id");
-    const playerNameInput = document.querySelector("#player-name");
-    const loginForm = document.querySelector("#login-form");
-    const error = document.querySelector("#login-error");
-    const existing = getPlayer();
-
-    idField.value = existing?.id || makePlayerId();
-    playerNameInput.value = existing?.nome || "";
-
-    if (!loginForm) return;
-    loginForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const accountState = window.shredderAccount
-            ? window.shredderAccount.snapshot()
-            : { isLoggedIn: false };
-
-        if (!accountState.isLoggedIn) {
-            alert(
-                "Acesso restrito: faça login ou crie uma conta para iniciar o uplink.",
-            );
-            window.shredderUI?.openModal();
-            return;
-        }
-
-        playerNameInput.value = accountState.user;
-        const finalPlayerName = playerNameInput.value.trim();
+    const continueButton = document.querySelector('#login-continue');
+    const status = document.querySelector('#login-session-status');
+    if (!continueButton || !window.shredderAccount) return;
+    continueButton.addEventListener('click', () => {
+        const state = window.shredderAccount.snapshot();
+        if (!state.isLoggedIn) { window.shredderUI?.openModal(); return; }
+        if (state.needsNickname) { window.shredderUI?.googleUI?.showNickname(); return; }
         const previous = getPlayer();
         const player = {
-            id: idField.value.trim(),
-            nome: finalPlayerName,
+            id: previous?.id || makePlayerId(),
+            nome: state.user,
+            apelido: state.nickname || state.user,
             instrumento: previous?.instrumento || null,
         };
         writeJson(STORAGE.player, player);
         upsertPlayer(player);
-        localStorage.setItem("shredder_player_name", finalPlayerName);
+        localStorage.setItem('shredder_player_name', state.user);
         window.location.href = `lobby.html${window.location.search}`;
     });
-
-    if (window.shredderAccount) {
-        window.shredderAccount.onChange((state) => {
-            if (state.isLoggedIn && playerNameInput) {
-                playerNameInput.value = state.user;
-                playerNameInput.readOnly = true;
-                playerNameInput.style.opacity = "0.7";
-            } else if (playerNameInput) {
-                playerNameInput.readOnly = false;
-                playerNameInput.style.opacity = "";
-            }
-        });
-    }
+    window.shredderAccount.onChange(state => {
+        continueButton.hidden = !state.isLoggedIn || state.isRestoring || state.needsNickname;
+        status.textContent = state.isRestoring ? 'Conectando…'
+            : state.isLoggedIn && state.needsNickname ? 'Escolha seu apelido para continuar.'
+            : state.isLoggedIn ? `Bem-vindo, ${state.nickname || state.user}.`
+            : '';
+    });
 }
 
 function renderLobby(player) {
@@ -692,16 +698,16 @@ function renderLobby(player) {
         ? lobby
               .map(
                   (item) =>
-                      `<div class="roster-row ${item.id === player.id ? "current" : ""}"><span>${item.nome}${item.id === player.id ? " / VOCÊ" : ""}</span><strong>${formatInstrument(item.instrumento)}</strong></div>`,
+                      `<div class="roster-row ${item.id === player.id ? "current" : ""}"><span>${escapeHtml(item.apelido || item.nome)}${item.id === player.id ? " / VOCÊ" : ""}</span><strong>${formatInstrument(item.instrumento)}</strong></div>`,
               )
               .join("")
-        : '<div class="roster-row">Nenhum operador conectado.</div>';
+        : '<div class="roster-row">Nenhum jogador na sala.</div>';
 }
 
 window.kickPlayer = function (targetUsername, roomId) {
     if (
         confirm(
-            `Tem certeza de que deseja expulsar o operador ${targetUsername}?`,
+            `Tem certeza de que deseja remover o jogador ${targetUsername}?`,
         )
     ) {
         if (window.socket) {
@@ -732,18 +738,17 @@ window.renderLobbyPlayers = function (roomData, currentUsername) {
     );
     if (!container) return;
 
-    const players = roomData.players || roomData.operadores || [];
-    const isHost = roomData.host === currentUsername;
+    const players = roomData.participantes || roomData.players || roomData.operadores || [];
+    const local = getPlayer();
+    const isHost = Boolean(local && (roomData.donoId === local.id || roomData.host === local.id || roomData.host === currentUsername));
     container.replaceChildren();
 
     players.forEach((player) => {
+        const dados = dadosParticipante(player, roomData);
         const playerRow = document.createElement("div");
-        playerRow.className = "player-row roster-row";
-        const isMe = player === currentUsername;
-
-        const playerName = document.createElement("span");
-        playerName.textContent = `${player}${isMe ? " / VOCÊ" : ""}`;
-        playerRow.appendChild(playerName);
+        playerRow.className = `player-row roster-row${dados.isMe ? ' current' : ''}`;
+        const isMe = dados.isMe;
+        playerRow.appendChild(criarNomeParticipante(dados));
 
         if (isHost && !isMe) {
             const kickButton = document.createElement("button");
@@ -751,7 +756,7 @@ window.renderLobbyPlayers = function (roomData, currentUsername) {
             kickButton.className = "kick-player-button";
             kickButton.textContent = "EXPULSAR";
             kickButton.addEventListener("click", () => {
-                window.kickPlayer(player, roomData.id);
+                window.kickPlayer(dados.username, roomData.id);
             });
             playerRow.appendChild(kickButton);
         }
@@ -762,7 +767,7 @@ window.renderLobbyPlayers = function (roomData, currentUsername) {
     if (players.length === 0) {
         const emptyState = document.createElement("div");
         emptyState.className = "roster-row";
-        emptyState.textContent = "Nenhum operador conectado.";
+        emptyState.textContent = "Nenhum jogador na sala.";
         container.appendChild(emptyState);
     }
 };
@@ -774,8 +779,8 @@ function initializeInstruments() {
         window.location.href = "lobby.html";
         return;
     }
-    document.querySelector("#top-player").textContent = player.nome;
-    document.querySelector("#operator-name").textContent = player.nome;
+    document.querySelector("#top-player").textContent = player.apelido || player.nome;
+    document.querySelector("#operator-name").textContent = player.apelido || player.nome;
 }
 
 function saveRoom(room) {
@@ -827,19 +832,18 @@ function initializeRoomPresence(player) {
     socket.on("atualizar_estado", (roomState) => {
         window.shredderRoomState = roomState;
         window.updateOwnerControls(roomState);
-        const players = roomState.operadores || [];
+        const players = roomState.participantes || roomState.operadores || [];
         const roster = document.querySelector("#ticket-lobby");
         const count = document.querySelector("#ticket-count");
         if (!roster) return;
 
         if (count) count.textContent = players.length;
         roster.replaceChildren();
-        players.forEach((username) => {
+        players.forEach((participant) => {
+            const dados = dadosParticipante(participant, roomState);
             const row = document.createElement("div");
-            row.className = `roster-row${username === player.nome ? " current" : ""}`;
-            const name = document.createElement("span");
-            name.textContent = `${username}${username === player.nome ? " // VOCÊ" : ""}`;
-            row.appendChild(name);
+            row.className = `roster-row${dados.isMe ? " current" : ""}`;
+            row.appendChild(criarNomeParticipante(dados));
             roster.appendChild(row);
         });
     });
@@ -868,15 +872,6 @@ function initializeLobby() {
     const status = document.querySelector("#lobby-status");
     const emptyState = document.querySelector("#lobby-empty");
 
-    console.warn("[LOBBY] initializeLobby abortado:", {
-        player,
-        token: window.shredderAccount?.token,
-        socket,
-        roomList,
-        createForm,
-        roomNameInput,
-    });
-
     if (
         !player ||
         !window.shredderAccount?.token ||
@@ -887,13 +882,13 @@ function initializeLobby() {
     )
         return;
 
-    document.querySelector("#lobby-player").textContent = player.nome;
+    document.querySelector("#lobby-player").textContent = player.apelido || player.nome;
     const showError = (message) => {
         status.textContent = message;
         status.classList.add("is-error");
     };
     const clearError = () => {
-        status.textContent = "SINAL ONLINE // SALAS EM TEMPO REAL";
+        status.textContent = "Salas disponíveis";
         status.classList.remove("is-error");
     };
     const enterRoom = (room) => {
@@ -936,12 +931,12 @@ function initializeLobby() {
             card.type = "button";
             card.className = `room-card${full ? " is-full" : ""}`;
             card.disabled = full;
-            card.innerHTML = `<span class="room-card-kicker">${full ? "SALA CHEIA // BLOQUEADA" : "SALA DISPONÍVEL"}</span><strong></strong><small></small><b></b>`;
+            card.innerHTML = `<span class="room-card-kicker">${full ? "Sala cheia" : "Entrar na sala"}</span><strong></strong><small></small><b></b>`;
             card.querySelector("strong").textContent = room.roomName;
-        card.querySelector("small").textContent =
-                `CRIADOR // ${room.criadorUsername} · CÓDIGO ${room.roomId}${room.banda?.nome ? ` · BANDA // ${room.banda.nome}` : ""}`;
+            card.querySelector("small").textContent =
+                room.banda?.nome || `Criada por ${room.criadorApelido || nomeParaExibir(room.criadorUsername)}`;
             card.querySelector("b").textContent =
-                `${room.quantidadeJogadores}/${room.limiteJogadores} OPERADORES`;
+                `${room.quantidadeJogadores}/${room.limiteJogadores} jogadores`;
             if (!full) card.addEventListener("click", () => enterRoom(room));
             roomList.appendChild(card);
         });
@@ -953,7 +948,7 @@ function initializeLobby() {
         const roomName = roomNameInput.value.trim();
         const bandName = bandNameInput?.value.trim() || "";
         if (!roomName) {
-            showError("IDENTIFIQUE A SALA ANTES DE TRANSMITIR.");
+            showError("Dê um nome à sala para continuar.");
             roomNameInput.focus();
             return;
         }
@@ -994,19 +989,19 @@ function initializeLobby() {
             requestedRoomHandled = true;
             enterRoom(requestedRoom);
         } else if (
-            requestedRoom?.quantidadeJogadores >= requestedRoom.limiteJogadores
+            requestedRoom && requestedRoom.quantidadeJogadores >= requestedRoom.limiteJogadores
         ) {
-            showError("SALA CHEIA // escolha outra frequência.");
+            showError("Esta sala está cheia. Escolha outra.");
         }
     });
     const pedirSalas = () => socket.emit("pedir_salas");
     socket.on("connect", pedirSalas);
     if (socket.connected) pedirSalas();
     socket.on("connect_error", () =>
-        showError("SEM SINAL COM O SERVIDOR // tente novamente."),
+        showError("Não foi possível conectar. Tente novamente."),
     );
     socket.on("disconnect", () =>
-        showError("SEM SINAL COM O SERVIDOR // conexão interrompida."),
+        showError("Conexão interrompida. Tentando reconectar…"),
     );
 }
 
@@ -1033,7 +1028,6 @@ function fasesLocaisComoPerfil() {
 
 function renderStages(fases) {
     const desbloqueadas = new Set(fases.desbloqueadas || [1]);
-    const favoritas = new Set(fases.favoritas || []);
     const concluidas = new Set(fases.concluidas || []);
     const grid = document.querySelector("#stage-grid");
     document.querySelector("#progress-count").textContent =
@@ -1043,8 +1037,7 @@ function renderStages(fases) {
             const fase = index + 1;
             const isUnlocked = desbloqueadas.has(fase);
             const isComplete = concluidas.has(fase);
-            const isFavorite = favoritas.has(fase);
-            return `<div class="stage-option"><button type="button" class="stage-card ${isUnlocked ? "" : "locked"} ${isComplete ? "complete" : ""}" data-stage="${fase}" ${isUnlocked ? "" : "disabled"}><span class="stage-number">0${fase}</span><strong>${stage}</strong><small>${isFavorite ? "★ FAVORITA" : isComplete ? "BOSS DERROTADO" : isUnlocked ? "SINAL DISPONÍVEL" : "BLOQUEADA // DERROTE O BOSS ANTERIOR"}</small>${isComplete ? "<em>✓ VITÓRIA CONFIRMADA</em>" : ""}</button><button type="button" class="stage-favorite" data-favorite-stage="${fase}" aria-pressed="${isFavorite}" aria-label="${isFavorite ? 'Remover dos favoritos' : 'Favoritar'}: ${stage}" ${isUnlocked ? "" : "disabled"}>${isFavorite ? "★ FAVORITA" : "☆ FAVORITAR"}</button></div>`;
+            return `<div class="stage-option"><button type="button" class="stage-card ${isUnlocked ? "" : "locked"} ${isComplete ? "complete" : ""}" data-stage="${fase}" ${isUnlocked ? "" : "disabled"}><span class="stage-number">0${fase}</span><strong>${stage}</strong><small>${isComplete ? "Chefe derrotado" : isUnlocked ? "Disponível" : "Derrote o chefe anterior"}</small>${isComplete ? "<em>✓ Concluída</em>" : ""}</button></div>`;
         })
         .join("");
     grid.querySelectorAll(".stage-card:not(.locked)").forEach((card) =>
@@ -1052,23 +1045,6 @@ function renderStages(fases) {
             chooseMode("historia", Number(card.dataset.stage)),
         ),
     );
-    grid.querySelectorAll("[data-favorite-stage]").forEach(button => {
-        button.addEventListener("click", async () => {
-            button.disabled = true;
-            const status = document.querySelector("#mode-status");
-            try {
-                const data = await window.shredderAccount.request("/api/fases/favoritar", {
-                    method: "POST",
-                    body: { fase: Number(button.dataset.favoriteStage), favorita: button.getAttribute("aria-pressed") !== "true" },
-                });
-                renderStages(data.fases);
-                if (status) status.textContent = "FAVORITOS ATUALIZADOS.";
-            } catch (error) {
-                button.disabled = false;
-                if (status) status.textContent = error.message || "Não foi possível atualizar o favorito.";
-            }
-        });
-    });
     window.updateOwnerControls(window.shredderRoomState);
 }
 
@@ -1096,7 +1072,7 @@ function initializeModes() {
         return;
     }
     initializeRoomPresence(player);
-    document.querySelector("#mode-player").textContent = player.nome;
+    document.querySelector("#mode-player").textContent = player.apelido || player.nome;
     document.querySelector("#mode-instrument").textContent = player.instrumento;
     renderStages(fasesLocaisComoPerfil());
     carregarFasesDoPerfil(player).then(renderStages);
@@ -1487,48 +1463,40 @@ async function initializeRanking() {
     renderSelection();
     const socket = getGameSocket();
     const atualizar = (payload) => {
-        records = payload.records;
+        records = (Array.isArray(payload?.records) ? payload.records : []).filter(record => !window.shredderRankingPolicy || window.shredderRankingPolicy.permitir(record));
         dataAvailable = true;
-        status.textContent = `SINAL ONLINE // ${records.length} REGISTRO(S) SINCRONIZADO(S)`;
+        status.textContent = `${records.length} ${records.length === 1 ? "resultado registrado" : "resultados registrados"}`;
         updateSongs();
         selectTab(document.querySelector(".ranking-tab.active")?.dataset.rankingTab || "Guitarra");
     };
     socket.on("rankingAtualizado", atualizar);
     const entrar = () => {
-        status.textContent = "SINCRONIZANDO DADOS...";
+        status.textContent = "Carregando…";
         socket.timeout(10000).emit("entrarRanking", {}, (error, resposta) => {
             if (error || !resposta?.ok) {
-                status.textContent = "FALHA AO SINCRONIZAR RANKING // TENTE RECONECTAR";
+                status.textContent = "Não foi possível carregar o ranking. Tentando novamente…";
                 return;
             }
             atualizar(resposta);
         });
     };
     socket.on("connect", entrar);
-    socket.on("disconnect", () => { status.textContent = "SEM SINAL // AGUARDANDO RECONEXÃO"; });
-    socket.on("connect_error", () => { status.textContent = "FALHA AO CONECTAR // TENTANDO NOVAMENTE"; });
+    socket.on("disconnect", () => { status.textContent = "Conexão interrompida. Tentando reconectar…"; });
+    socket.on("connect_error", () => { status.textContent = "Reconectando…"; });
     if (socket.connected) entrar();
 }
 
 function renderTicketBattle(roomState) {
     const panel = document.querySelector("#ticket-boss-panel");
-    const status = document.querySelector("#ticket-boss-status");
     const button = document.querySelector("#ticket-boss-continue");
-    if (!panel || !status || !button) return;
+    if (!panel || !button) return;
     const mode = readJson(STORAGE.mode, { tipo: "freeplay", fase: null });
-    panel.hidden = mode.tipo !== "historia";
     const battle = roomState?.campanha;
-    button.hidden = !battle || battle.campanhaConcluida || roomState?.ticketPendente;
-    button.disabled = !window.socket?.connected || !battle || roomState?.ticketPendente;
-    if (!battle) {
-        status.textContent = "Aguardando o resultado do YARG e a confirmação do ticket. A próxima fase só será liberada se o boss for derrotado.";
-        return;
-    }
-    status.textContent = battle.campanhaConcluida ? "BOSS DERROTADO // CAMPANHA CONCLUÍDA!"
-        : battle.venceu ? `BOSS DERROTADO // FASE ${battle.proximaFase} LIBERADA!`
-        : battle.bossDerrotado === false ? `BOSS NÃO DERROTADO // JOGUEM A FASE ${battle.fase} NOVAMENTE.`
-        : "VITÓRIA CONTRA O BOSS NÃO CONFIRMADA // A PRÓXIMA FASE CONTINUA BLOQUEADA.";
-    button.textContent = battle.venceu ? `Jogar fase ${battle.proximaFase}` : `Repetir fase ${battle.fase}`;
+    const available = mode.tipo === "historia" && battle && !battle.campanhaConcluida && !roomState.ticketPendente;
+    panel.hidden = !available;
+    button.hidden = !available;
+    button.disabled = !available || !window.socket?.connected;
+    if (available) button.textContent = battle.venceu ? `Jogar fase ${battle.proximaFase}` : `Repetir fase ${battle.fase}`;
 }
 
 function initializeTicket() {
@@ -1547,13 +1515,13 @@ function initializeTicket() {
     const lobby = getLobby();
     document.querySelector("#ticket-date").textContent =
         new Intl.DateTimeFormat("pt-BR").format(new Date());
-    document.querySelector("#ticket-player").textContent = player.nome;
+    document.querySelector("#ticket-player").textContent = player.apelido || player.nome;
     document.querySelector("#ticket-id").textContent = player.id;
     document.querySelector("#ticket-instrument").textContent = formatInstrument(
         player.instrumento,
     );
     document.querySelector("#ticket-mode").textContent =
-        mode.tipo === "historia" ? "MODO HISTÓRIA" : "FREEPLAY";
+        mode.tipo === "historia" ? "MODO HISTÓRIA" : "TOQUE LIVRE";
     document.querySelector("#ticket-stage").textContent =
         mode.tipo === "historia" ? `FASE ${mode.fase}` : "LIVRE";
     document.querySelector("#ticket-band").textContent = readJson(STORAGE.roomBand, null)?.nome || "SEM BANDA";
@@ -1564,7 +1532,7 @@ function initializeTicket() {
     document.querySelector("#ticket-lobby").innerHTML = lobby
         .map(
             (item) =>
-                `<div class="roster-row ${item.id === player.id ? "current" : ""}"><span><strong>${item.nome}</strong> ${item.id === player.id ? "// VOCÊ" : ""}</span><span>${formatInstrument(item.instrumento)} · ${item.id}</span></div>`,
+                `<div class="roster-row ${item.id === player.id ? "current" : ""}"><span><strong>${escapeHtml(item.apelido || nomeParaExibir(item.nome))}</strong> ${item.id === player.id ? "// VOCÊ" : ""}</span><span>${formatInstrument(item.instrumento)}</span></div>`,
         )
         .join("");
 }
