@@ -86,7 +86,12 @@ namespace YARG.Input
             _defaultKeyboardMenuBindings = new DefaultKeyboardMenuBindings();
 
             // Notify of all current devices
+#if UNITY_WEBGL
+            // Unity's Microphone API is not available in WebGL.
+            ToastManager.ToastInformation("Devices found: " + InputSystem.devices.Count);
+#else
             ToastManager.ToastInformation("Devices found: " + (Microphone.devices.Length + InputSystem.devices.Count));
+#endif
             foreach (var device in InputSystem.devices)
             {
                 if (!device.enabled)

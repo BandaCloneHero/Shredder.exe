@@ -374,12 +374,6 @@
       "dependencies": {},
       "hash": "e24fa529103603043f6dad1b66192ff72954ef6e"
     },
-    "in.yarg.core": {
-      "version": "file:../YARG.Core/YARG.Core",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {}
-    },
     "jp.keijiro.minis": {
       "version": "https://github.com/TheNathannator/Minis.git?path=/Packages/jp.keijiro.minis#yarg",
       "depth": 0,
@@ -391,11 +385,10 @@
       "hash": "29dee9f786d99cfae145d1972a39fb79117c1b8f"
     },
     "jp.keijiro.rtmidi": {
-      "version": "1.0.4",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://registry.npmjs.com"
+      "version": "file:jp.keijiro.rtmidi",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
