@@ -91,6 +91,8 @@ namespace YARG.Menu.ScoreScreen
         private Tween _bandScoreReveal;
         private Tween _bossReveal;
         private bool _navigationReady;
+        private bool _evaluationShown;
+        private GameObject _evaluationPanel;
         private float _lastResultWidth = -1f;
         private int _lastResultCount = -1;
 
@@ -102,6 +104,8 @@ namespace YARG.Menu.ScoreScreen
 
         private void OnEnable()
         {
+            _evaluationShown = false;
+            if (_evaluationPanel != null) _evaluationPanel.SetActive(false);
             var song = GlobalVariables.State.CurrentSong;
 
             if (GlobalVariables.State.ScoreScreenStats is null)
@@ -585,10 +589,19 @@ namespace YARG.Menu.ScoreScreen
         {
             var song = GlobalVariables.State.CurrentSong;
 
-            _continueButtonEntry = new NavigationScheme.Entry(MenuAction.Green, "Menu.Common.Continue", () =>
+            System.Action continueAfterResults = null;
+            continueAfterResults = () =>
                 {
                     if (!_analyzingReplay)
                     {
+                        if (!_evaluationShown)
+                        {
+                            _evaluationShown = true;
+                            if (_evaluationPanel != null) Destroy(_evaluationPanel);
+                            _evaluationPanel = GameEvaluationView.Create(transform, _songTitle,
+                                () => continueAfterResults());
+                            if (_evaluationPanel != null) return;
+                        }
                         GlobalVariables.State.ShowIndex++;
                         if (GlobalVariables.State.PlayingAShow &&
                             GlobalVariables.State.ShowIndex < GlobalVariables.State.ShowSongs.Count)
@@ -604,7 +617,8 @@ namespace YARG.Menu.ScoreScreen
                             GlobalVariables.Instance.LoadScene(SceneIndex.Menu);
                         }
                     }
-                });
+                };
+            _continueButtonEntry = new NavigationScheme.Entry(MenuAction.Green, "Menu.Common.Continue", continueAfterResults);
 
             _endEarlyButtonEntry = new NavigationScheme.Entry(MenuAction.Red, "Menu.ScoreScreen.EndSetlistEarly", () =>
             {

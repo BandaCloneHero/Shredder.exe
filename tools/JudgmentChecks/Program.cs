@@ -166,7 +166,7 @@ Check(hud.Contains("_imageSize: {x: 220, y: 96}") && hud.Contains("_fitToLane: 0
 
 sources = sources.Concat(new[] { "Gameplay/TextureManager.cs", "Gameplay/Visuals/TrackMaterial.cs", "Helpers/CameraPreviewTexture.cs", "Gameplay/VenueCameraRenderer.cs", "Gameplay/Visuals/HighwayCameraRendering.cs", "Gameplay/GameManager.cs", "Gameplay/GameManager.Loading.cs", "BossHealthBar.cs",
     "GepetoBossReaction.cs", "GepetoVisualAnimator.cs", "GepetoHudLayout.cs", "Menu/ScoreScreen/ScoreCards/ScoreCard.cs", "Menu/ScoreScreen/ScoreScreenContainer.cs",
-    "Menu/ScoreScreen/ScoreScreenMenu.cs", "Menu/History/ViewTypes/ReplayViewType.cs", "Scores/PlayerScoreRecord.cs" }
+    "Menu/ScoreScreen/ScoreScreenMenu.cs", "Menu/ScoreScreen/GameEvaluationView.cs", "Menu/History/ViewTypes/ReplayViewType.cs", "Scores/PlayerScoreRecord.cs" }
     .Select(f => Path.Combine(root, "Assets/Script", f))).ToArray();
 foreach (string file in sources)
 {
