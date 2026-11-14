@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../Assets/Script/GepetoHudLayout.cs" Link="GepetoHudLayout.cs" />
+    <Compile Include="../../Assets/Script/BossTransformationPlayback.cs" Link="BossTransformationPlayback.cs" />
     <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgmentReplayMetadata.cs" Link="JudgmentReplayMetadata.cs" />
     <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgmentReplayAnalyzer.cs" Link="JudgmentReplayAnalyzer.cs" />
     <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgedEngines.cs" Link="JudgedEngines.cs" />

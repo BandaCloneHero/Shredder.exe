@@ -5,7 +5,7 @@ import struct
 import zlib
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-for name in ("Geminias", "Claudio"):
+for name in ("Gepeto", "Geminias", "Claudio"):
     path = ROOT / "Assets/Resources/Bosses" / (name + ".png")
     blob = path.read_bytes()
     assert blob[:8] == b'\x89PNG\r\n\x1a\n'

@@ -47,11 +47,13 @@ public class BossUIController : MonoBehaviour
 
     private void Start()
     {
+        if (BossRoster.Selected == BossRoster.Identity.Gepeto)
+            phase2Color = new Color(1f, .12f, .2f);
         if (BossRoster.Selected != BossRoster.Identity.Gepeto)
         {
             phase1Color = BossRoster.Accent;
             phase2Color = BossRoster.Selected == BossRoster.Identity.Geminias
-                ? new Color(.8f, .35f, 1f) : new Color(1f, .32f, .24f);
+                ? new Color(.8f, .35f, 1f) : new Color(1f, .8f, .4f);
         }
         if (bossHealthBar == null)
         {

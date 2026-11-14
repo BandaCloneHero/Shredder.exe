@@ -101,6 +101,7 @@ animation.Advance(13, -.5f);
 Check(animation.Age == 0, "Visual age cannot go backwards");
 
 string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../"));
+BossTransformationChecks.Run(Check);
 BossDockPortraitChecks.Run(Check);
 GepetoLayoutChecks.Run(root, Check);
 LaneMappingChecks.Run(root, Check);

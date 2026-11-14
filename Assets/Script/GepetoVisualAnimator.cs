@@ -130,16 +130,23 @@ public class GepetoVisualAnimator : MonoBehaviour
         SetAnimationRange(normalIdleStart, normalIdleEnd, true);
     }
 
+    [Header("Transição entre as formas")]
+    [Min(0.1f)] [SerializeField] private float phaseTransformationSeconds = 1.6f;
+    private readonly BossTransformationPlayback transformation = new BossTransformationPlayback();
+    private float activeTransformationEffectDuration = 1.2f;
     private bool usesPersonaSheet;
 
     private void ConfigurePersona()
     {
-        if (BossRoster.Selected == BossRoster.Identity.Gepeto) return;
+        bool originalGepeto = BossRoster.Selected == BossRoster.Identity.Gepeto;
+        var sheet = BossSpriteAtlas.Load();
+        // Existing scenes can still use their serialized Gepeto sheets as a fallback.
+        if (originalGepeto && sheet == null) return;
         bool twins = BossRoster.Selected == BossRoster.Identity.Geminias;
         spriteSizing = System.Array.Empty<CharacterSpriteSizing>();
         normalGlowColor = BossRoster.Accent;
-        phase2GlowColor = twins ? new Color(.8f, .35f, 1f, .55f) : new Color(1f, .32f, .24f, .55f);
-        var sheet = BossSpriteAtlas.Load();
+        phase2GlowColor = originalGepeto ? new Color(1f, .12f, .2f, .55f)
+            : twins ? new Color(.8f, .35f, 1f, .55f) : new Color(1f, .8f, .4f, .55f);
         if (sheet != null)
         {
             usesPersonaSheet = true;
@@ -200,6 +207,26 @@ public class GepetoVisualAnimator : MonoBehaviour
     {
         if (musicalGameManager != null && (musicalGameManager.Paused || musicalGameManager.IsSeekingReplay)) return;
         if (isDying || allSprites.Count == 0 || bossHealthBar == null) return;
+        if (transformation.IsPlaying)
+        {
+            transformation.Advance(Time.deltaTime);
+            if (transformation.IsPlaying)
+            {
+                if (robotImage != null) robotImage.sprite = allSprites[16 + transformation.FrameIndex];
+            }
+            else
+            {
+                // Combat events keep updating their pending action during the transition.
+                // Resume the latest action, rather than restoring a stale warning or attack.
+                if (combatFrames != null && combatFrames.Length > 0)
+                {
+                    if (robotImage != null) robotImage.sprite = combatFrames[combatIndex];
+                }
+                else SetAnimationRange(phase2IdleStart, phase2IdleEnd, true);
+                hitReactionRestRemaining = Mathf.Max(0f, hitReactionRestDuration);
+            }
+            return;
+        }
         if (combatFrames != null && combatFrames.Length > 0)
         {
             combatTimer += Time.deltaTime;
@@ -301,7 +328,7 @@ public class GepetoVisualAnimator : MonoBehaviour
         bool phase2 = bossHealthBar != null && bossHealthBar.CurrentPhase == 2;
         float intensity = phase2 ? 1.25f : 1f;
         float burst = transformationEffectRemaining > 0f
-            ? Mathf.Sin(Mathf.PI * (1f - transformationEffectRemaining / Mathf.Max(0.1f, transformationEffectDuration)))
+            ? Mathf.Sin(Mathf.PI * (1f - transformationEffectRemaining / activeTransformationEffectDuration))
             : 0f;
         transformationEffectRemaining = Mathf.Max(0f, transformationEffectRemaining - Time.deltaTime);
         musicalRect.localScale *= (1f + pulse * beatScaleAmount * intensity + burst * transformationScaleAmount);
@@ -408,7 +435,7 @@ public class GepetoVisualAnimator : MonoBehaviour
 
     public void SetAnimationRange(int start, int end, bool loop)
     {
-        if (isDying) return;
+        if (isDying || transformation.IsPlaying) return;
         currentAnimationStart = start;
         currentAnimationEnd = end;
         currentIndex = start;
@@ -421,6 +448,7 @@ public class GepetoVisualAnimator : MonoBehaviour
     private void OnDisable()
     {
         combatFrames = null;
+        transformation.Cancel();
         transformationEffectRemaining = 0f;
         RestoreMusicalPose();
         if (missFeedbackRoutine != null)
@@ -468,7 +496,7 @@ public class GepetoVisualAnimator : MonoBehaviour
 
     public void TriggerHitAnimation()
     {
-        if (combatFrames != null) return;
+        if (combatFrames != null || transformation.IsPlaying) return;
         if (isDying || isTransitioning || isPlayingHitAnimation || hitReactionRestRemaining > 0f) return;
 
         // A quarta linha contém a reação furiosa da forma vermelha.
@@ -482,8 +510,17 @@ public class GepetoVisualAnimator : MonoBehaviour
     public void TriggerPhase2Transformation()
     {
         if (isDying) return;
-        transformationEffectRemaining = Mathf.Max(0.1f, transformationEffectDuration);
-        // Preserve the charged orb if phase two begins during an attack warning.
+        if (transformation.IsPlaying) return;
+        activeTransformationEffectDuration = Mathf.Max(.1f,
+            usesPersonaSheet ? phaseTransformationSeconds : transformationEffectDuration);
+        transformationEffectRemaining = activeTransformationEffectDuration;
+        if (missFeedbackRoutine != null)
+        {
+            StopCoroutine(missFeedbackRoutine);
+            missFeedbackRoutine = null;
+        }
+        if (robotImage != null) robotImage.color = originalImageColor;
+        // Keep the combat clock intact. Its latest action is shown after the transformation.
         if (combatFrames != null)
         {
             var redFrames = holdingOrb ? holdRedFrames
@@ -494,18 +531,21 @@ public class GepetoVisualAnimator : MonoBehaviour
             {
                 combatFrames = redFrames;
                 combatIndex = Mathf.Clamp(combatIndex, 0, redFrames.Length - 1);
-                if (robotImage != null) robotImage.sprite = redFrames[combatIndex];
             }
-            return;
         }
-        SetAnimationRange(16, 23, false);
-        isTransitioning = true;
+        isTransitioning = false;
         isPlayingHitAnimation = false;
+        if (allSprites.Count >= 24)
+        {
+            transformation.Begin(8, phaseTransformationSeconds);
+            if (robotImage != null) robotImage.sprite = allSprites[16];
+        }
+        else if (combatFrames == null) SetAnimationRange(phase2IdleStart, phase2IdleEnd, true);
     }
 
     public void TriggerMissFeedback()
     {
-        if (combatFrames != null) return;
+        if (combatFrames != null || transformation.IsPlaying) return;
         if (isDying || !isActiveAndEnabled || robotImage == null || isTransitioning
             || missFeedbackRoutine != null || Time.unscaledTime < nextMissFeedbackTime) return;
         nextMissFeedbackTime = Time.unscaledTime + 0.18f + Mathf.Max(0f, missFeedbackRestDuration);
@@ -525,6 +565,7 @@ public class GepetoVisualAnimator : MonoBehaviour
     {
         if (isDying) return;
         isDying = true;
+        transformation.Cancel();
         combatFrames = null;
         transformationEffectRemaining = 0f;
         RestoreMusicalPose();
@@ -592,7 +633,7 @@ public class GepetoVisualAnimator : MonoBehaviour
         combatHoldFrame = holdFrame < 0 ? -1 : Mathf.Clamp(holdFrame, combatIndex, frames.Length - 1);
         combatTimer = 0f;
         isPlayingHitAnimation = false;
-        if (robotImage != null) robotImage.sprite = frames[combatIndex];
+        if (robotImage != null && !transformation.IsPlaying) robotImage.sprite = frames[combatIndex];
     }
 
     public void EndAttackSequence()
@@ -600,6 +641,7 @@ public class GepetoVisualAnimator : MonoBehaviour
         if (isDying || combatFrames == null) return;
         combatFrames = null;
         holdingOrb = false;
+        if (transformation.IsPlaying) return;
         bool red = bossHealthBar != null && bossHealthBar.CurrentPhase == 2;
         SetAnimationRange(red ? phase2IdleStart : normalIdleStart, red ? phase2IdleEnd : normalIdleEnd, true);
         hitReactionRestRemaining = hitReactionRestDuration;

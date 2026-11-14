@@ -3,32 +3,44 @@
 Na biblioteca, os três botões no topo escolhem o chefe da próxima música.
 A escolha é salva localmente. Gepeto permanece como opção inicial.
 
-## Geminias — O Núcleo Multimodal
+## Gepeto — O Arquiteto
 
-Assistente digital de corpo branco com cabeça em forma de estrela de quatro
-pontas azul/violeta, rosto expressivo e painéis holográficos de imagem e vídeo.
-A segunda forma intensifica o violeta e os circuitos luminosos.
+O robô original mantém o visor preto, a armadura branca e as proporções. O novo
+emblema entrelaçado de seis partes no peito e na testa remete ao ChatGPT.
+Na forma maligna, o capacete abre chifres metálicos, o visor racha, surge um
+sorriso digital vermelho, os ombros abrem pontas e as mãos ganham garras.
+A folha unificada está em `Assets/Resources/Bosses/Gepeto.png`, junto das demais.
+Os arquivos originais do Gepeto continuam preservados em `Assets/Sprites`.
 
-Inferência Paralela e Torrente Multimodal alternam a cada investida. Até cinco
-ataques por faixa, aviso de 3,5 segundos, defesa de quatro segundos. Inferência
-exige 80% de acertos e sequência de dois; Torrente exige 65% e sequência de
+## Geminias — O Oráculo Bifronte
+
+O desenho original de duas faces, coroa astral e armadura azul foi preservado.
+O símbolo Gemini de quatro pontas aparece no peito e na testa; pequenos painéis
+de imagem/vídeo reforçam a identidade multimodal. Na segunda fase, as máscaras
+se abrem e racham, surge um sorriso digital maligno e a coroa ganha pontas
+escuras e fragmentos flutuantes. A silhueta muda junto com a cor.
+
+Conjunção Astral e Paradoxo dos Gêmeos alternam a cada investida. Até cinco
+ataques por faixa, aviso de 3,5 segundos, defesa de quatro segundos. Conjunção
+exige 80% de acertos e sequência de dois; Paradoxo exige 65% e sequência de
 quatro. Falhar acelera visualmente as notas em 30% por seis segundos.
 
-## Cláudio — O Assistente Inflexível
+## Cláudio — O Escriba do Veredito
 
-Mascote com cabeça radial terracota, rosto simples e expressivo, corpo creme,
-emblema radial no peito, painéis digitais de documentos e caneta de tablet.
-A segunda forma intensifica a cor para coral. Sua identidade remete a um
-assistente de escrita e raciocínio, sem roupas ou acessórios medievais.
+O desenho original de máscara de porcelana, capuz vinho e livro foi preservado.
+O símbolo radial terracota do Claude aparece no traje e no livro, e inspira
+o halo. Na segunda fase, a máscara se separa em placas, revelando um rosto
+escuro com olhos âmbar e sorriso luminoso; o capuz ganha pontas, o halo se
+fragmenta e o livro abre um olho. Horror leve e caricato, sem sangue.
 
-Revisão de Contexto avisa com quatro segundos de antecedência. A defesa dura
+Protocolo: Veredito avisa com quatro segundos de antecedência. A defesa dura
 seis segundos e exige 80% de acertos e sequência de cinco. Falhar reduz o dano
 em 25% por seis segundos e acelera visualmente as notas em 15% por dez segundos.
 Até quatro ataques por música.
 
 ## Implementação e validação no Editor
 
-Os dois retratos usam folhas PNG RGBA ilustradas em `Assets/Resources/Bosses`.
+Os três retratos usam folhas PNG RGBA ilustradas em `Assets/Resources/Bosses`.
 Cada arquivo tem 1024 × 1536 pixels, com oito colunas e doze linhas: 96 quadros
 de 128 × 128 por chefe. `BossSpriteAtlas` recorta as células em execução.
 O animador existente controla posicionamento, pulsação musical, pausa e
@@ -56,5 +68,16 @@ locais do painel. O layout antigo da tela inteira só é usado fora desse painel
 Isso evita deslocar o personagem para fora de `RectMask2D` enquanto a barra e
 seu emblema continuam visíveis. A reserva inclui margem de escala e brilho.
 
-Prompts atuais: `image-prompts-v2.json`. Referências visuais:
+Prompts da arte ativa: `image-prompts-v3.json`. As versões anteriores estão
+documentadas em `image-prompts.json` e `image-prompts-v2.json`. Cópias das
+primeiras folhas estão em `output/bosses/originais/`. Referências visuais:
 [Gemini](https://deepmind.google/models/gemini/) e [Claude](https://claude.com/).
+
+## Transformação intermediária
+
+Os três chefes mostram os oito quadros de transformação por 1,6 segundo ao
+cruzar metade da vida. `BossTransformationPlayback` controla essa sequência
+separadamente de dano e combate. A animação não é pulada durante um ataque;
+a última ação de combate recebida é retomada depois. Os tempos de aviso,
+defesa e penalidade seguem inalterados. Pausar congela a animação, e derrota
+ou desativação do componente cancelam a sequência.

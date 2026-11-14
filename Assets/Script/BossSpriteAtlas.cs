@@ -7,7 +7,8 @@ public static class BossSpriteAtlas
     public const int Rows = 12;
     public static Texture2D Load()
     {
-        string name = BossRoster.Selected == BossRoster.Identity.Geminias ? "Geminias" : "Claudio";
+        string name = BossRoster.Selected == BossRoster.Identity.Geminias ? "Geminias"
+            : BossRoster.Selected == BossRoster.Identity.Claudio ? "Claudio" : "Gepeto";
         var texture = Resources.Load<Texture2D>("Bosses/" + name);
         if (texture == null || texture.width % Columns != 0 || texture.height % Rows != 0
             || texture.width / Columns != texture.height / Rows)

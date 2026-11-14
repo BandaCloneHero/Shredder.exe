@@ -45,7 +45,7 @@ public sealed class BossSelectionPanel : MonoBehaviour
     private void Refresh()
     {
         string[] names = { "Gepeto", "Geminias", "Cláudio" };
-        string[] titles = { "O Arquiteto", "O Núcleo Multimodal", "O Assistente Inflexível" };
+        string[] titles = { "O Arquiteto", "O Oráculo Bifronte", "O Escriba do Veredito" };
         for (int i = 0; i < labels.Length; i++)
         {
             labels[i].text = ((int)BossRoster.Selected == i ? "◆ " : "") + names[i] + "\n<size=70%>" + titles[i] + "</size>";

@@ -34,9 +34,9 @@ public sealed class BossEmblemAnimator : MonoBehaviour
         restingPosition = emblemRect.anchoredPosition;
         restingScale = emblemRect.localScale;
         restingColor = emblem.color;
-        if (BossRoster.Selected != BossRoster.Identity.Gepeto)
+        var sheet = BossSpriteAtlas.Load();
+        if (sheet != null || BossRoster.Selected != BossRoster.Identity.Gepeto)
         {
-            var sheet = BossSpriteAtlas.Load();
             usesPersonaSheet = sheet != null;
             if (usesPersonaSheet)
             {
