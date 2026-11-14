@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Shredder.exe // Músicas</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&family=Share+Tech+Mono&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body data-page="musicas">
+        <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
+        <header class="topbar">
+            <a class="brand-lockup" href="index.html">
+                <span class="brand-mark">//</span> SHREDDER<span
+                    class="brand-accent"
+                    >.exe</span
+                >
+            </a>
+            <div class="top-status legacy-page-context" aria-hidden="true">
+                <span class="status-dot"></span>
+                <span id="mode-player">OPERADOR</span>
+                <span class="top-divider"></span>
+                <span id="mode-instrument">SEM LOADOUT</span>
+            </div>
+        <nav class="page-nav" aria-label="Navegação principal"><a href="lobby.html" aria-current="page">Jogar</a><a href="ranking.html">Ranking</a><a href="perfil.html">Meu perfil</a></nav>
+        </header>
+
+        <main id="main-content" tabindex="-1" class="page-shell songs-shell">
+            <a class="music-back" href="modos.html">← Voltar aos modos</a>
+            <section class="section-heading">
+                <div><p class="eyebrow">TOQUE LIVRE</p><h1>Escolha a próxima <span>música.</span></h1></div>
+                <span id="music-count" class="operator-chip">Carregando…</span>
+            </section>
+            <p id="music-room" class="section-intro" aria-live="polite">Conectando à sala…</p>
+            <div class="music-toolbar">
+                <label for="music-search">Buscar música ou artista
+                    <input id="music-search" type="search" placeholder="O que a banda quer tocar?" maxlength="200" autocomplete="off" />
+                </label>
+                <label for="music-instrument">Instrumento
+                    <select id="music-instrument"><option value="">Todos</option><option value="guitarra">Guitarra</option><option value="baixo">Baixo</option><option value="bateria">Bateria</option><option value="teclado">Teclado</option></select>
+                </label>
+                <a href="instrumentos.html">Trocar instrumentos</a>
+            </div>
+            <p id="music-status" role="status" aria-live="polite"></p>
+            <button id="music-retry" type="button" hidden>Tentar novamente</button>
+            <section id="music-grid" class="music-grid" aria-label="Músicas disponíveis"></section>
+        </main>
+
+        <script src="google-config.js"></script>
+        <script src="js/account.js"></script>
+        <script src="js/account-ui.js"></script>
+        <script>
+            window.shredderAccount = new ShredderAccount();
+            window.shredderUI = new ShredderAccountUI(window.shredderAccount);
+            let sessionWasActive = false;
+            window.shredderAccount.onChange((state) => {
+                if (state.isLoggedIn) {
+                    sessionWasActive = true;
+                } else if (sessionWasActive) {
+                    const currentPage = window.location.pathname
+                        .split("/")
+                        .pop();
+                    if (currentPage !== "index.html" && currentPage !== "") {
+                        window.location.href = "index.html";
+                    }
+                }
+            });
+        </script>
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+        <script>
+            window.socket = io();
+        </script>
+        <script src="js/achievement-catalog.js"></script>
+        <script src="js/achievement-notifications.js"></script>
+        <script src="js/music-policy.js"></script>
+        <script src="js/catalogo-musicas.js"></script>
+        <script src="app.js"></script>
+        <script src="js/achievement-live.js"></script>
+    </body>
+</html>

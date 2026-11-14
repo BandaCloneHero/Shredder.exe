@@ -1136,7 +1136,7 @@
       "gamesPlayed": 0,
       "currentTitle": "Novato do Rock",
       "createdAt": "2026-11-12T11:30:52.036Z",
-      "updatedAt": "2026-11-13T00:12:27.306Z",
+      "updatedAt": "2026-11-14T14:09:41.806Z",
       "lifetimeStats": {
         "totalNotesHit": 0,
         "totalMisses": 0
@@ -1222,6 +1222,22 @@
           {
             "fase": 1,
             "selecionadaEm": "2026-11-13T00:12:27.306Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-11-14T14:09:37.327Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-11-14T14:09:39.951Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-11-14T14:09:41.052Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-11-14T14:09:41.806Z"
           }
         ]
       },
@@ -1297,6 +1313,77 @@
         "historicoSelecionadas": []
       },
       "nicknameChosenAt": "2026-11-12T20:16:29.182Z"
+    },
+    "jogador_74cacc1ff8fd": {
+      "username": "jogador_74cacc1ff8fd",
+      "accountId": "f80d7595-25b3-4daa-811b-73acb18d695c",
+      "authProviders": {
+        "google": {
+          "provider": "google",
+          "sub": "110827912910200785841",
+          "linkedAt": "2026-11-14T14:02:19.347Z"
+        }
+      },
+      "nickname": "DAVIJOJO",
+      "avatar": "",
+      "customAvatar": "",
+      "currency": 0,
+      "gamesPlayed": 0,
+      "currentTitle": "Novato do Rock",
+      "createdAt": "2026-11-14T14:02:19.347Z",
+      "updatedAt": "2026-11-14T14:02:31.483Z",
+      "lifetimeStats": {
+        "totalNotesHit": 0,
+        "totalMisses": 0
+      },
+      "instrumentStats": {
+        "guitarra": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "baixo": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "bateria": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "teclado": {
+          "maxScore": 0,
+          "maxCombo": 0,
+          "bestAccuracy": 0,
+          "songsCompleted": 0,
+          "fullCombos": 0
+        },
+        "favoriteInstrument": "nenhum"
+      },
+      "songRecords": {},
+      "resultadosPartidas": {},
+      "achievements": [],
+      "achievementNotifications": [],
+      "achievementProgress": {
+        "gamesByDay": {}
+      },
+      "fases": {
+        "desbloqueadas": [
+          1
+        ],
+        "favoritas": [],
+        "concluidas": [],
+        "selecionada": null,
+        "historicoSelecionadas": []
+      },
+      "nicknameChosenAt": "2026-11-14T14:02:31.483Z"
     }
   },
   "bandRecords": {

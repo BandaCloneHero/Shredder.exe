@@ -47,6 +47,12 @@ public class BossUIController : MonoBehaviour
 
     private void Start()
     {
+        if (BossRoster.Selected != BossRoster.Identity.Gepeto)
+        {
+            phase1Color = BossRoster.Accent;
+            phase2Color = BossRoster.Selected == BossRoster.Identity.Geminias
+                ? new Color(.8f, .35f, 1f) : new Color(1f, .8f, .4f);
+        }
         if (bossHealthBar == null)
         {
             bossHealthBar = GetComponent<BossHealthBar>();
@@ -102,7 +108,7 @@ public class BossUIController : MonoBehaviour
         rect.sizeDelta = new Vector2(600f, 80f);
         rect.SetAsLastSibling();
         phaseNotificationText.alignment = TextAlignmentOptions.Center;
-        SetNotification("GEPETO DERROTADO!");
+        SetNotification($"{BossRoster.Name.ToUpperInvariant()} DERROTADO!");
         if (notificationRoutine != null) StopCoroutine(notificationRoutine);
         notificationRoutine = StartCoroutine(ClearDefeatNotification());
     }
@@ -123,7 +129,7 @@ public class BossUIController : MonoBehaviour
     {
         if (phase == 2)
         {
-            SetNotification("GEPETO MUDOU DE FORMA!");
+            SetNotification($"{BossRoster.Name.ToUpperInvariant()} MUDOU DE FORMA!");
         }
     }
 

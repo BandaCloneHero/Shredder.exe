@@ -1,7 +1,7 @@
 const path = require('path');
 
 const paginas = new Set(['/', '/index.html', '/lobby.html', '/perfil.html',
-    '/ranking.html', '/instrumentos.html', '/modos.html', '/ticket.html',
+    '/ranking.html', '/instrumentos.html', '/modos.html', '/musicas.html', '/ticket.html',
     '/jogo.html', '/operador.html']);
 
 // O documento externo permanece aberto; somente o conteúdo do iframe navega.

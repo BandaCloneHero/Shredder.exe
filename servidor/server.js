@@ -16,6 +16,8 @@ const { nomePublicoJogador } = require("./nomes-publicos");
 const { validarNomeConta } = require("./operadores");
 const { criarGoogleIdentity } = require("./google-identity");
 const { criarCreditosFeira } = require("./feira-creditos");
+const { criarCatalogoMusicas, normalizarNomeMusica, registrarRotaCapas } = require("./catalogo-musicas");
+const catalogoMusicas = criarCatalogoMusicas();
 const { registrarRotasGoogle } = require("./google-auth-routes");
 const { criarPoliticaAutenticacao, registrarOpcoesAutenticacao } = require("./auth-policy");
 const { configurarCodespaces, criarProxyCodespaces } = require("./codespaces-auth");
@@ -38,6 +40,13 @@ app.use(express.static(path.join(__dirname, "../docs"), {
         if (filePath.endsWith(".webp")) res.setHeader("Cache-Control", "public, max-age=604800");
     },
 }));
+
+registrarRotaCapas(app, catalogoMusicas);
+app.get("/api/musicas", (_req, res) => {
+    res.set("Cache-Control", "no-store");
+    try { return res.json({ ok: true, ...catalogoMusicas.listar() }); }
+    catch { return res.status(503).json({ ok: false, erro: "Catálogo de músicas indisponível. Tente novamente." }); }
+});
 
 const ACCOUNTS_FILE = path.join(__dirname, "accounts.json");
 const SESSIONS_FILE = path.join(__dirname, "sessions.json");
@@ -848,6 +857,9 @@ app.post("/api/operador/resultados-executavel", (req, res) => {
         return res.status(409).json({ ok: false, erro: "Nenhum ticket aguardando resultados. Os resultados não foram registrados; emita um ticket antes da próxima música." });
     }
     const jogadores = (ticket.jogadores || []).filter((jogador) => normalizarInstrumentoExecutavel(jogador.instrumento));
+    if (ticket.modo?.musica?.nome && normalizarNomeMusica(dados.musica) !== normalizarNomeMusica(ticket.modo.musica.nome)) {
+        return res.status(409).json({ ok: false, erro: "A música executada não corresponde à música escolhida no ticket mais antigo. Confira a fila." });
+    }
     const instrumentosTicket = jogadores.map((jogador) => normalizarInstrumentoExecutavel(jogador.instrumento));
     const instrumentosResultado = recebidos.map((resultado) => resultado.instrumentoNormalizado);
     if (jogadores.length !== recebidos.length || instrumentosTicket.length !== instrumentosResultado.length ||
@@ -1443,10 +1455,17 @@ io.on("connection", (socket) => {
             // Compatibilidade com salas criadas antes da fila de tickets existir.
             if (!Array.isArray(sala.ticketsPendentes)) sala.ticketsPendentes = [];
 
+            let modoTicket;
             try {
                 if (sala.ticketsPendentes.length) throw new Error("Esta sala já tem um ticket aguardando resultado ou confirmação.");
                 if (!modo || !["historia", "freeplay"].includes(modo.tipo)) throw new Error("Modo de jogo inválido.");
-                if (modo.tipo === "historia") validarFaseDosJogadores(sala.jogadores, modo.fase);
+                if (modo.tipo === "historia") {
+                    validarFaseDosJogadores(sala.jogadores, modo.fase);
+                    modoTicket = { tipo: "historia", fase: modo.fase };
+                } else {
+                    const musica = catalogoMusicas.selecionar(modo.musicaId, sala);
+                    modoTicket = { tipo: "freeplay", fase: null, musicaId: musica.id, musica };
+                }
             } catch (error) {
                 if (typeof callback === "function") callback({ ok: false, erro: error.message });
                 else socket.emit("erro", error.message);
@@ -1454,14 +1473,15 @@ io.on("connection", (socket) => {
             }
             sala.campanha = null;
 
-            io.to(roomId).emit("sala_emitiu_ticket", { roomId, modo });
+            io.to(roomId).emit("sala_emitiu_ticket", { roomId, modo: modoTicket });
             const ticket = {
                 ticketId: randomUUID(),
                 ordemFila: ++proximaOrdemTicket,
                 roomId,
                 roomName: sala.roomName,
                 banda: sala.banda,
-                modo: modo || { tipo: "freeplay", fase: null },
+                modo: modoTicket,
+                ...(modoTicket.musica ? { musica: modoTicket.musica.nome, artista: modoTicket.musica.artista } : {}),
                 emitidoEm: new Date().toISOString(),
                 jogadores: sala.jogadores.map((jogador) => ({
                     id: jogador.id,
@@ -1474,7 +1494,7 @@ io.on("connection", (socket) => {
             sala.ultimoTicket = ticket;
             enviarEstadoSala(roomId);
             io.to("operador-resultados-global").emit("ticket_sessao_recebido", ticket);
-            if (typeof callback === "function") callback({ ok: true });
+            if (typeof callback === "function") callback({ ok: true, modo: modoTicket });
         },
     );
 

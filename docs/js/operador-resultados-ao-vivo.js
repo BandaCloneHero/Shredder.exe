@@ -35,6 +35,7 @@
         const facts = document.createElement('dl');
         for (const [label, value] of [
             ['CÓDIGO DA SALA', ticket.roomId],
+            ['MÚSICA ESCOLHIDA', mode.musica ? `${mode.musica.nome} · ${mode.musica.artista}` : 'Definida pela campanha'],
             ['MODO', mode.tipo === 'historia' ? `HISTÓRIA · FASE ${mode.fase}` : 'FREEPLAY'],
             ['STATUS', ticket.resultadosExecutavel ? 'AGUARDANDO CONFIRMAÇÃO' : 'AGUARDANDO RESULTADO'],
             ['MÚSICA', ticket.musica || '—'],

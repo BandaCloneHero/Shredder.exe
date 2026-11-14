@@ -51,6 +51,17 @@ public sealed class BossAttackController : MonoBehaviour
         health = boss;
         bossAnimator = FindAnyObjectByType<GepetoVisualAnimator>();
         grantBlockBonus = onBlockBonus;
+        if (BossRoster.Selected == BossRoster.Identity.Geminias)
+        {
+            warningSeconds = 3.5f; defenseSeconds = 4f; maxAttacks = 5;
+            visualSpeedIncrease = .3f; visualSpeedSeconds = 6f; requiredHitRate = .7f;
+        }
+        else if (BossRoster.Selected == BossRoster.Identity.Claudio)
+        {
+            warningSeconds = 4f; defenseSeconds = 6f; requiredStreak = 5;
+            requiredHitRate = .8f; visualSpeedIncrease = .15f;
+            penaltySeconds = 6f; failedDamageMultiplier = .75f;
+        }
     }
 
     public void Tick(GameManager game, List<TrackPlayer> players)
@@ -86,6 +97,12 @@ public sealed class BossAttackController : MonoBehaviour
             state = AttackState.Warning;
             deadline = now + warningSeconds;
             attackCount++;
+            if (BossRoster.Selected == BossRoster.Identity.Geminias)
+            {
+                // One face tests accuracy; the other tests sustained sequences.
+                requiredHitRate = attackCount % 2 == 1 ? .8f : .65f;
+                requiredStreak = attackCount % 2 == 1 ? 2 : 4;
+            }
             foreach (var defense in defenses.Values)
             {
                 defense.Hits = defense.Misses = defense.Streak = defense.BestStreak = 0;
@@ -184,7 +201,7 @@ public sealed class BossAttackController : MonoBehaviour
         if (portrait == null) return;
         var canvas = portrait.GetComponentInParent<Canvas>();
         if (canvas == null) return;
-        labelObject = new GameObject("Gepeto Attack Warning", typeof(RectTransform), typeof(Image));
+        labelObject = new GameObject("Boss Attack Warning", typeof(RectTransform), typeof(Image));
         labelObject.layer = portrait.gameObject.layer;
         labelObject.transform.SetParent(canvas.rootCanvas.transform, false);
         var rect = (RectTransform)labelObject.transform;
@@ -223,7 +240,7 @@ public sealed class BossAttackController : MonoBehaviour
         text.Clear();
         int seconds = Mathf.CeilToInt((float)(deadline - now));
         label.color = state == AttackState.Warning ? new Color(1f, 0.7f, 0.25f) : new Color(0.35f, 1f, 0.9f);
-        if (state == AttackState.Warning) text.Append($"<b><size=135%>GEPETO ATACA EM {seconds}s!</size></b>\n"
+        if (state == AttackState.Warning) text.Append($"<b><size=135%>{BossRoster.Name.ToUpperInvariant()} · {BossRoster.Attack(attackCount)} EM {seconds}s!</size></b>\n"
             + $"Faça {requiredStreak} acertos seguidos e acerte pelo menos {requiredHitRate * 100f:0}% na defesa.\n"
             + $"<b>Se falhar: notas {visualSpeedIncrease * 100f:0}% mais rápidas por {visualSpeedSeconds:0}s!</b>");
         else
@@ -235,7 +252,7 @@ public sealed class BossAttackController : MonoBehaviour
                 : accelerated ? $"<b><size=135%>NOTAS +{visualSpeedIncrease * 100f:0}% · {seconds}s</size></b>\n"
                 : "<b><size=135%>DEFESA ENCERRADA</size></b>\n");
             if (state == AttackState.Result && lastRecovery > 0f)
-                text.Append($"<size=80%>Gepeto recuperou {lastRecovery:0.#} de vida.</size>\n");
+                text.Append($"<size=80%>{BossRoster.Name} recuperou {lastRecovery:0.#} de vida.</size>\n");
             foreach (var entry in defenses)
             {
                 string name = entry.Key.Player.Profile.Name;

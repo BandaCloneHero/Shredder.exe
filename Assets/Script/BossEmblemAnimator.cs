@@ -14,6 +14,9 @@ public sealed class BossEmblemAnimator : MonoBehaviour
     [Min(0f)] [SerializeField] private float minimumHitInterval = 0.28f;
     [Min(0.01f)] [SerializeField] private float transformationDuration = 0.45f;
 
+    private Sprite personaEmblem;
+    private bool usesPersonaSheet;
+    private Sprite personaHit, personaPhase;
     private Image emblem;
     private RectTransform emblemRect;
     private Vector2 restingPosition;
@@ -31,8 +34,33 @@ public sealed class BossEmblemAnimator : MonoBehaviour
         restingPosition = emblemRect.anchoredPosition;
         restingScale = emblemRect.localScale;
         restingColor = emblem.color;
+        if (BossRoster.Selected != BossRoster.Identity.Gepeto)
+        {
+            var sheet = BossSpriteAtlas.Load();
+            usesPersonaSheet = sheet != null;
+            if (usesPersonaSheet)
+            {
+                personaEmblem = BossSpriteAtlas.Cell(sheet, 0, 0);
+                personaHit = BossSpriteAtlas.Cell(sheet, 1, 2);
+                personaPhase = BossSpriteAtlas.Cell(sheet, 3, 0);
+            }
+            else personaEmblem = BossPersonaArt.Frame(BossRoster.Selected == BossRoster.Identity.Geminias, false, 0, 0);
+            normalSprite = personaEmblem;
+            hitSprite = personaHit != null ? personaHit : personaEmblem;
+            phase2Sprite = personaPhase != null ? personaPhase : personaEmblem;
+            emblem.sprite = personaEmblem;
+        }
         if (normalSprite == null) normalSprite = emblem.sprite;
         if (bossHealthBar == null) bossHealthBar = GetComponentInParent<BossHealthBar>();
+    }
+
+    private void OnDestroy()
+    {
+        if (personaEmblem == null) return;
+        if (!usesPersonaSheet) Destroy(personaEmblem.texture);
+        Destroy(personaEmblem);
+        if (personaHit != null) Destroy(personaHit);
+        if (personaPhase != null) Destroy(personaPhase);
     }
 
     private void OnEnable()

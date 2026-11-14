@@ -1,79 +1,52 @@
-Preciso comparar a implementação de login Google deste jogo da Feira de Jogos com a homologação do projeto Shredder.exe. Analise a implementação que funciona e entregue um relatório técnico com trechos relevantes de código, caminhos dos arquivos e nomes das funções. Não modifique arquivos, não execute login, não consulte usuários e não faça deploy.
+Analise este repositório para descobrir como um jogo externo pode cobrar tijolinhos de um jogador antes de liberar uma partida.
 
-IMPORTANTE: não inclua chaves privadas, arquivos ADC, contas de serviço em JSON, client secrets OAuth, tokens, cookies, senhas, arquivos .env completos, dados pessoais, UID de usuários ou registros brutos de autenticação. Não envie o repositório inteiro. Configuração pública Firebase pode ser apresentada com apiKey e appId substituídos por marcadores; indique os nomes dos campos e de onde são obtidos. Não presuma que Firebase UID seja o userId da Feira.
+Contexto:
+- Jogo: Shredder.exe.
+- Produto cadastrado na Feira: 87.
+- Frontend: HTML e JavaScript.
+- Backend: Node.js, Express e Socket.IO.
+- Login com Google Identity Services (GIS), usando um cliente OAuth próprio.
+- O backend valida o Google ID Token e cria uma sessão local.
+- Quem escolhe a música paga uma única entrada pela sala inteira.
 
-CONTEXTO DO SHREDDER.EXE
-- Frontend HTML/JavaScript sem bundler; backend Node.js/Express/Socket.IO.
-- Homologação isolada no GitHub Codespaces, com porta 3001 privada e acesso HTTPS pelo encaminhamento app.github.dev.
-- Firebase projectId: shredder-d22a2; authDomain: shredder-d22a2.firebaseapp.com.
-- O domínio temporário foi adicionado aos domínios autorizados. Google foi habilitado no Firebase Console, conforme informado pelo responsável.
-- Web SDK oficial via CDN www.gstatic.com/firebasejs, versão configurada 12.19.0.
-- initializeAuth com inMemoryPersistence e browserPopupRedirectResolver; GoogleAuthProvider com prompt: select_account; signInWithPopup disparado diretamente pelo clique.
-- A preparação do SDK termina com sucesso. O popup efetivamente abre, conforme observado pelo responsável. Ainda não sabemos em qual ponto dentro do fluxo Google a operação é rejeitada.
-- A promessa de signInWithPopup é rejeitada como FirebaseError com código textual fora da lista estática local. O diagnóstico mostra AUTHENTICATION_FAILED CODE_NOT_ALLOWLISTED TYPE_FirebaseError.
-- Não se chega ao getIdToken(true) nem ao POST /validate do receptor nesta sequência. O código original foi descartado pela filtragem, portanto não está disponível para comparação.
-- Não há vínculo automático por e-mail, cadastro local ou emissão de sessão Shredder nesse teste.
-- O receptor independente utilizará Firebase Admin SDK, ADC por representação de conta de serviço e verifyIdToken(token, true), com checagens adicionais de projeto, provedor e autenticação recente. A leitura ADC já foi comprovada em um teste anterior. Isso não comprova o fluxo Web.
-- Não queremos substituir a sessão local existente por uma sessão Firebase nem implementar créditos/pagamentos nesta etapa.
+Fluxo desejado:
+1. O jogador escolhe uma música.
+2. A interface mostra o preço e pede confirmação.
+3. O backend do Shredder solicita a cobrança à Feira.
+4. A Feira identifica o jogador, verifica o saldo e realiza o débito.
+5. Somente após confirmação inequívoca do pagamento, o Shredder libera o ticket da partida.
+6. Saldo insuficiente, falhas e cliques repetidos não podem liberar uma partida indevidamente nem gerar cobranças duplicadas.
 
-O QUE PRECISO DA IMPLEMENTAÇÃO DESTE JOGO
+Já encontramos:
+- /credit: credita tijolinhos usando Google ID Token.
+- /gameCredit: credita tijolinhos usando segredo do jogo e userId.
+- /debit: no trecho examinado, aceita apenas produtos foods/arcade, depende de máquina/estoque e pode registrar uma operação antes de retornar um erro posterior.
 
-1. Arquitetura e tecnologia realmente utilizadas
-Identifique se o login é Firebase Authentication com Google ou outro fluxo, como Google Identity Services, OAuth/OIDC próprio ou um serviço central de identidade da Feira. Diferencie o que estiver comprovado em código do que depender de configuração externa. Informe frontend, backend, bundler, SDKs e versões exatas encontradas nos manifestos/lockfiles ou imports.
+Precisamos de COBRANÇA, não de recompensa.
 
-2. Fluxo frontend completo, com trechos de código
-Forneça caminhos e funções de:
-- Carregamento e inicialização do Firebase/SDK equivalente.
-- Obtenção da configuração pública, sem credenciais privadas.
-- Configuração de persistência e popupRedirectResolver.
-- Criação do provedor e seus customParameters/scopes.
-- Handler do botão que chama signInWithPopup ou equivalente.
-- Tratamento de sucesso, obtenção do Firebase ID Token e envio ao backend.
-- Tratamento de erros e encerramento da sessão Firebase.
-Indique se initializeApp/getAuth/initializeAuth são usados e se há instâncias duplicadas, componentes intermediários ou utilitários que alteram o comportamento.
+Investigue e informe:
 
-3. Hospedagem e restrições do navegador
-Informe, com evidências locais ou configuração pública disponível:
-- Onde frontend e backend são hospedados e como compartilham ou diferenciam origens.
-- Se o fluxo já foi testado em Codespaces, preview privado, proxy autenticado ou somente domínio público.
-- Se funciona em iframe ou exige navegação no documento principal.
-- Tratamentos para cookies entre sites, armazenamento bloqueado, popup, COOP/COEP e Content-Security-Policy.
-- Regras públicas relevantes de CSP, Referrer-Policy, proxy, CORS e credentials do fetch, sem cookies/cabeçalhos de autenticação.
-- Existência de proxy próprio para /__/auth/* ou configuração especial de authDomain. Não assumir que exista se não estiver comprovado.
+1. Existe uma rota apropriada para debitar produtos do tipo games?
+2. Qual é a URL completa, método, autenticação, corpo e resposta?
+3. Aceita o Google ID Token emitido para o cliente OAuth do Shredder? Qual configuração autoriza esse cliente?
+4. Como a identidade autenticada é associada ao cadastro da pessoa na Feira? Existe uma consulta segura do próprio usuário, sem confiar em email ou userId enviados livremente pelo navegador?
+5. Como consultar o preço atual do produto 87 antes da confirmação? O preço pode ser obtido sem realizar uma cobrança?
+6. Existe consulta autenticada do próprio saldo? Caso não exista, a rota de débito verifica o saldo e desconta atomicamente?
+7. Quais códigos e respostas representam saldo insuficiente, usuário não cadastrado, produto inválido e pagamento confirmado?
+8. A cobrança possui transação de banco e proteção contra concorrência?
+9. Existe suporte a chave de idempotência e consulta posterior da operação, para lidar com timeout sem cobrar novamente?
+10. Há estorno ou cancelamento caso a cobrança seja confirmada, mas a partida não possa ser liberada?
+11. É possível utilizar a cobrança de games sem máquina, estoque, MQTT ou coinInsert?
+12. Se não existir uma rota adequada, qual seria a alteração mínima necessária no backend da Feira?
 
-4. Configuração externa necessária
-Se essas informações já forem conhecidas pelo responsável ou estiverem documentadas, descreva sem alterar nada:
-- Provedor Google e domínios autorizados no Firebase Authentication.
-- authDomain e URI de redirecionamento OAuth utilizados.
-- Tipo/modo da tela de consentimento e exigência de usuários de teste.
-- Restrições da API key por HTTP referrer e por APIs permitidas, sem revelar o valor da chave.
-- APIs necessárias ao fluxo e como o responsável verificou sua configuração.
-- Possíveis restrições para contas institucionais do IFSC.
-Se não houver acesso ou evidência, marque como NÃO VERIFICADO. Não habilite APIs, altere IAM ou peça novas credenciais para elaborar o relatório.
+Apresente arquivos e funções envolvidos, exemplos de contrato com valores fictícios e configurações necessárias. Diferencie claramente o comportamento comprovado no código de hipóteses ou configurações não verificadas.
 
-5. Erros do SDK e observabilidade segura
-Mostre como a aplicação preserva error.code sem expor message, stack, customData, tokens ou dados pessoais. Identifique se códigos de erro podem ser produzidos dinamicamente pelas respostas da API e ficar fora do enum AuthErrorCode.
-Se já existirem registros comprovadamente sanitizados, apresente somente códigos estáticos de erro, etapa e status HTTP. Não leia ou copie logs brutos, corpos de requisição, URLs com parâmetros, e-mails ou informações de conta. Não execute uma nova autenticação para coletar erros.
+RESTRIÇÕES:
+- Somente análise; não modificar arquivos.
+- Não realizar cobranças, créditos, estornos ou autenticação real.
+- Não consultar dados de jogadores nem o banco de produção.
+- Não abrir arquivos de segredos, credenciais ou logs com dados pessoais.
+- Não revelar tokens, senhas ou valores privados de variáveis de ambiente.
+- Não fazer commit, push, deploy ou alterações de configuração.
 
-6. Backend, somente para comparação
-Forneça pequenos trechos com os caminhos/funções que:
-- Recebem e validam o Firebase ID Token.
-- Configuram projeto e credenciais sem mostrar seus valores privados.
-- Aplicam verifyIdToken e eventual checkRevoked.
-- Criam/reutilizam a sessão própria do jogo.
-- Distinguem identidade Google/Firebase de conta local e do userId da Feira.
-Não envie código de pagamentos nem dados reais de jogadores.
-
-7. Comparação e recomendação
-Com base no código encontrado, liste as diferenças concretas em relação ao contexto do Shredder e quais podem explicar uma rejeição depois de abrir o popup, antes de obter o ID Token. Separe fatos, hipóteses e configurações não verificadas.
-Priorize uma correção mínima e um diagnóstico seguro, preservando inMemoryPersistence, sessão local e isolamento da homologação. Não recomende tornar a porta pública, remover verificações de segurança ou copiar credenciais como atalho.
-
-FORMATO DE ENTREGA
-- Resumo do fluxo que realmente funciona.
-- Arquivos e funções envolvidos.
-- Trechos mínimos de código relevantes, com segredos removidos.
-- Configurações externas comprovadas e pendências.
-- Diferenças em relação ao Shredder e hipóteses priorizadas.
-- Próximo passo de diagnóstico que não exija repetir login ou consultar usuários.
-
-Não envie tudo indiscriminadamente: preciso das evidências e dos trechos relacionados ao login, não de uma cópia integral do projeto.
+Entregue um relatório que eu possa enviar ao responsável pelo Shredder para implementar a integração corretamente.

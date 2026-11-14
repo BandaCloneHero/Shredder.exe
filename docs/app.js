@@ -801,6 +801,7 @@ window.updateOwnerControls = function (roomState) {
             control.setAttribute("aria-disabled", String(control.disabled));
         });
     }
+    if (currentPage === "musicas") window.shredderSongCatalog?.atualizarSala(roomState);
     if (currentPage === "ticket") renderTicketBattle(roomState);
 };
 
@@ -852,7 +853,7 @@ function initializeRoomPresence(player) {
         if (modo) writeJson(STORAGE.mode, modo);
         if (currentPage === "ticket") {
             const stage = document.querySelector("#ticket-stage");
-            if (stage) stage.textContent = modo?.tipo === "historia" ? `FASE ${modo.fase}` : "LIVRE";
+            if (stage) stage.textContent = modo?.tipo === "historia" ? `FASE ${modo.fase}` : (modo?.musica?.nome || "LIVRE");
             const type = document.querySelector("#ticket-mode");
             if (type) type.textContent = modo?.tipo === "historia" ? "MODO HISTÓRIA" : "FREEPLAY";
             renderTicketBattle(null);
@@ -1061,6 +1062,20 @@ async function carregarFasesDoPerfil(player) {
     }
 }
 
+function initializeSongs() {
+    const player = ensurePlayer();
+    if (!player || !player.instrumento || !localStorage.getItem(STORAGE.roomId)) {
+        window.location.href = "instrumentos.html";
+        return;
+    }
+    window.shredderSongCatalog = window.ShredderSongCatalog.mount({
+        document, fetch: window.fetch.bind(window),
+        isOwner: (state) => Boolean(window.socket?.connected && state?.donoId === player.id && state?.socketDonoId === window.socket.id),
+        select: (musica) => chooseMode("freeplay", null, musica),
+    });
+    initializeRoomPresence(player);
+}
+
 function initializeModes() {
     const player = ensurePlayer();
     if (
@@ -1078,10 +1093,10 @@ function initializeModes() {
     carregarFasesDoPerfil(player).then(renderStages);
     document
         .querySelector("#freeplay-card")
-        .addEventListener("click", () => chooseMode("freeplay", null));
+        .addEventListener("click", () => { window.location.href = "musicas.html"; });
 }
 
-async function chooseMode(tipo, fase) {
+async function chooseMode(tipo, fase, musica = null) {
     const player = getPlayer();
     const roomId = localStorage.getItem(STORAGE.roomId);
     const roomState = window.shredderRoomState;
@@ -1089,7 +1104,7 @@ async function chooseMode(tipo, fase) {
         return;
     }
 
-    const status = document.querySelector("#mode-status") || document.querySelector("#ticket-boss-status");
+    const status = document.querySelector("#mode-status") || document.querySelector("#music-status") || document.querySelector("#ticket-boss-status");
     if (tipo === "historia") {
         if (status) status.textContent = "REGISTRANDO FASE...";
         try {
@@ -1103,24 +1118,35 @@ async function chooseMode(tipo, fase) {
             return;
         }
     }
-    const modo = { tipo, fase };
-    window.socket.emit(
-        "owner_emitir_ticket",
-        { roomId, operadorId: player.id, modo },
-        (response) => {
-            if (!response?.ok) {
-                console.error(
-                    "Não foi possível emitir o ticket:",
-                    response?.erro,
-                );
-                if (status) status.textContent = response?.erro || "SEM SINAL // não foi possível emitir o ticket.";
-            } else {
-                writeJson(STORAGE.mode, modo);
-                if (currentPage === "ticket") renderTicketBattle(window.shredderRoomState);
-                else if (status) status.textContent = "";
-            }
-        },
-    );
+    const modo = { tipo, fase, ...(tipo === "freeplay" && musica ? { musicaId: musica.id, musica } : {}) };
+    return new Promise((resolve) => {
+        let finished = false;
+        const timeout = setTimeout(() => {
+            finished = true;
+            if (status) status.textContent = "Sem resposta do servidor. Confira se o ticket foi emitido antes de tentar novamente.";
+            resolve(false);
+        }, 10000);
+        window.socket.emit(
+            "owner_emitir_ticket",
+            { roomId, operadorId: player.id, modo },
+            (response) => {
+                clearTimeout(timeout);
+                if (finished) return;
+                if (!response?.ok) {
+                    console.error(
+                        "Não foi possível emitir o ticket:",
+                        response?.erro,
+                    );
+                    if (status) status.textContent = response?.erro || "SEM SINAL // não foi possível emitir o ticket.";
+                } else {
+                    writeJson(STORAGE.mode, response.modo || modo);
+                    if (currentPage === "ticket") renderTicketBattle(window.shredderRoomState);
+                    else if (status) status.textContent = "";
+                }
+                resolve(response?.ok === true);
+            },
+        );
+    });
 }
 
 // Uma conexão por página; reutiliza window.socket quando já foi inicializado.
@@ -1523,7 +1549,7 @@ function initializeTicket() {
     document.querySelector("#ticket-mode").textContent =
         mode.tipo === "historia" ? "MODO HISTÓRIA" : "TOQUE LIVRE";
     document.querySelector("#ticket-stage").textContent =
-        mode.tipo === "historia" ? `FASE ${mode.fase}` : "LIVRE";
+        mode.tipo === "historia" ? `FASE ${mode.fase}` : (mode.musica?.nome || "LIVRE");
     document.querySelector("#ticket-band").textContent = readJson(STORAGE.roomBand, null)?.nome || "SEM BANDA";
     document.querySelector("#ticket-count").textContent = lobby.length;
     document.querySelector("#ticket-code").textContent = player.id
@@ -1549,6 +1575,7 @@ if (currentPage === "lobby") {
 }
 if (currentPage === "instrumentos") initializeInstruments();
 if (currentPage === "modos") initializeModes();
+if (currentPage === "musicas") initializeSongs();
 if (currentPage === "ticket") initializeTicket();
 if (currentPage === "ranking") initializeRanking();
 if (currentPage === "perfil") initializeProfile();

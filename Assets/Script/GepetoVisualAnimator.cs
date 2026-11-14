@@ -106,6 +106,7 @@ public class GepetoVisualAnimator : MonoBehaviour
     {
         if (robotImage == null) robotImage = GetComponent<Image>();
         if (bossHealthBar == null) bossHealthBar = GetComponent<BossHealthBar>();
+        ConfigurePersona();
         if (robotImage != null) originalImageColor = robotImage.color;
         if (robotImage != null)
         {
@@ -125,6 +126,72 @@ public class GepetoVisualAnimator : MonoBehaviour
             BuildSpritesFromSheet();
 
         SetAnimationRange(normalIdleStart, normalIdleEnd, true);
+    }
+
+    private bool usesPersonaSheet;
+
+    private void ConfigurePersona()
+    {
+        if (BossRoster.Selected == BossRoster.Identity.Gepeto) return;
+        bool twins = BossRoster.Selected == BossRoster.Identity.Geminias;
+        spriteSizing = System.Array.Empty<CharacterSpriteSizing>();
+        normalGlowColor = BossRoster.Accent;
+        phase2GlowColor = twins ? new Color(.8f, .35f, 1f, .55f) : new Color(1f, .8f, .4f, .55f);
+        var sheet = BossSpriteAtlas.Load();
+        if (sheet != null)
+        {
+            usesPersonaSheet = true;
+            allSprites = new List<Sprite>();
+            // Rows 0..4: idle, hurt, transformation, ascended idle, ascended hurt.
+            for (int row = 0; row < 5; row++) allSprites.AddRange(SheetRow(sheet, row));
+            normalIdleStart = 0; normalIdleEnd = 7;
+            phase2IdleStart = 24; phase2IdleEnd = 31;
+            prepareBlueFrames = SheetRow(sheet, 5);
+            attackBlueFrames = SheetRow(sheet, 6);
+            blockedBlueFrames = SheetRow(sheet, 7);
+            prepareRedFrames = SheetRow(sheet, 8);
+            attackRedFrames = SheetRow(sheet, 9);
+            blockedRedFrames = SheetRow(sheet, 10);
+            // Hold only the charged poses; never replay the charging sequence.
+            holdBlueFrames = new[] { prepareBlueFrames[6], prepareBlueFrames[7] };
+            holdRedFrames = new[] { prepareRedFrames[6], prepareRedFrames[7] };
+            deathSprites = new List<Sprite>(SheetRow(sheet, 11));
+            return;
+        }
+        allSprites = new List<Sprite>();
+        for (int i = 0; i < 32; i++)
+        {
+            var frame = BossPersonaArt.Frame(twins, i >= 16, (i % 8) / 7f, 0);
+            allSprites.Add(frame); generatedSprites.Add(frame);
+        }
+        normalIdleStart = 0; normalIdleEnd = 7;
+        phase2IdleStart = 16; phase2IdleEnd = 23;
+        prepareBlueFrames = PersonaFrames(twins, false, 1);
+        prepareRedFrames = PersonaFrames(twins, true, 1);
+        holdBlueFrames = prepareBlueFrames; holdRedFrames = prepareRedFrames;
+        attackBlueFrames = PersonaFrames(twins, false, 2);
+        attackRedFrames = PersonaFrames(twins, true, 2);
+        blockedBlueFrames = PersonaFrames(twins, false, 3);
+        blockedRedFrames = PersonaFrames(twins, true, 3);
+        deathSprites = new List<Sprite>(PersonaFrames(twins, true, 4));
+    }
+
+    private Sprite[] SheetRow(Texture2D texture, int row)
+    {
+        var frames = BossSpriteAtlas.Row(texture, row);
+        generatedSprites.AddRange(frames);
+        return frames;
+    }
+
+    private Sprite[] PersonaFrames(bool twins, bool phase, int action)
+    {
+        var frames = new Sprite[12];
+        for (int i = 0; i < frames.Length; i++)
+        {
+            frames[i] = BossPersonaArt.Frame(twins, phase, i / 11f, action);
+            generatedSprites.Add(frames[i]);
+        }
+        return frames;
     }
 
     private void Update()
@@ -390,7 +457,7 @@ public class GepetoVisualAnimator : MonoBehaviour
         if (isDying || isTransitioning || isPlayingHitAnimation || hitReactionRestRemaining > 0f) return;
 
         // A quarta linha contém a reação furiosa da forma vermelha.
-        int hitStart = bossHealthBar != null && bossHealthBar.CurrentPhase == 2 ? 24 : 8;
+        int hitStart = bossHealthBar != null && bossHealthBar.CurrentPhase == 2 ? (usesPersonaSheet ? 32 : 24) : 8;
         SetAnimationRange(hitStart, hitStart + 7, false);
         isTransitioning = true;
         isPlayingHitAnimation = true;
@@ -488,8 +555,8 @@ public class GepetoVisualAnimator : MonoBehaviour
         bossHealthBar?.HideDefeatedHealthBar();
     }
 
-    public void TriggerPrepareAttack() => PlayCombatAction(prepareBlueFrames, prepareRedFrames, false, 10);
-    public void TriggerAttack() => PlayCombatAction(attackBlueFrames, attackRedFrames, false, -1, 4);
+    public void TriggerPrepareAttack() => PlayCombatAction(prepareBlueFrames, prepareRedFrames, false, usesPersonaSheet ? 7 : 10);
+    public void TriggerAttack() => PlayCombatAction(attackBlueFrames, attackRedFrames, false, -1, usesPersonaSheet ? 0 : 4);
     public void TriggerBlockedAttack() => PlayCombatAction(blockedBlueFrames, blockedRedFrames, false);
 
     private void PlayCombatAction(Sprite[] blue, Sprite[] red, bool loop, int holdFrame = -1, int startFrame = 0)
@@ -529,7 +596,10 @@ public class GepetoVisualAnimator : MonoBehaviour
         foreach (var sprite in generatedSprites)
         {
             if (sprite != null)
+            {
+                if (!usesPersonaSheet && BossRoster.Selected != BossRoster.Identity.Gepeto) Destroy(sprite.texture);
                 Destroy(sprite);
+            }
         }
     }
 }

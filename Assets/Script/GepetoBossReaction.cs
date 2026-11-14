@@ -119,7 +119,7 @@ public class GepetoBossReaction : MonoBehaviour
         }
         return new BossBattleResult
         {
-            BossName = "Gepeto",
+            BossName = BossRoster.Name,
             Defeated = bossHealthBar.IsDefeated,
             RemainingHealth = bossHealthBar.CurrentHealth,
             MaxHealth = bossHealthBar.MaxHealth,

@@ -3240,3 +3240,30 @@ main:focus { outline: none; }
 .roster-player-info small { color: var(--muted); font-size: .8rem; }
 .roster-row.current .roster-player-info strong { color: var(--cyan); }
 .ticket-actions { margin-top: 24px; }
+
+/* Catálogo do toque livre: os instrumentos vêm das notas de cada música. */
+.songs-shell { max-width: 1320px; }
+.music-back { display: inline-block; margin-bottom: 1.5rem; color: var(--cyan, #73e7f1); }
+.music-toolbar { display: flex; align-items: end; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0; }
+.music-toolbar label { display: grid; gap: .55rem; flex: 1 1 220px; font-size: .9rem; }
+.music-toolbar input, .music-toolbar select { width: 100%; padding: .85rem 1rem; border: 1px solid #37505b; border-radius: 8px; background: #101722; color: #f2f7fa; font: inherit; }
+.music-toolbar a { padding: .85rem 0; color: #73e7f1; }
+.music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.music-card { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; gap: .8rem; min-width: 0; padding: 1.4rem; border: 1px solid #33515c; border-radius: 12px; background: linear-gradient(140deg, #172331, #10151e); }
+.music-card h2 { font: 600 1.2rem/1.4 Inter, sans-serif; margin: 0; overflow-wrap: anywhere; }
+.music-card .eyebrow { margin: 0; color: #8de4ed; overflow-wrap: anywhere; }
+.music-detail { min-height: 1.4em; margin: 0; color: #a9b6c7; font-size: .85rem; }
+.music-instruments { display: flex; flex-wrap: wrap; gap: .4rem; }
+.music-instrument { display: inline-flex; align-items: center; justify-content: center; min-width: 46px; min-height: 46px; padding: .3rem; border: 1px solid #3a6268; border-radius: 10px; background: rgb(8 18 28 / 80%); color: #bce8eb; font-size: .8rem; }
+.music-availability { margin: auto 0 0; color: #bccad6; font-size: .85rem; min-height: 2.6em; }
+.music-card button { padding: .85rem; border: 1px solid #79dde2; border-radius: 7px; background: #20434e; color: #edffff; font: 600 .9rem Inter, sans-serif; cursor: pointer; }
+.music-card button:disabled { background: #202630; color: #9da8b5; border-color: #45505b; cursor: not-allowed; }
+.music-card.locked { border-color: #353d48; background: #141b25; }
+.music-card.locked .music-availability { color: #dcc7a4; }
+.music-toolbar :focus-visible, .music-card button:focus-visible { outline: 3px solid #a4f8ff; outline-offset: 4px; }
+@media (max-width: 600px) { .music-toolbar { align-items: stretch; } .music-toolbar label { flex-basis: 100%; } .music-card { padding: 1.1rem; } }
+
+.music-cover { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; opacity: .28; pointer-events: none; }
+.music-card::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgb(8 15 24 / 20%), rgb(8 15 24 / 75%)); pointer-events: none; }
+.music-card > :not(.music-cover) { position: relative; z-index: 2; }
+.music-instrument img { display: block; width: 34px; height: 34px; object-fit: contain; }
