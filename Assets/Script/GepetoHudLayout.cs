@@ -19,6 +19,17 @@ public static class GepetoHudLayout
         public Placement(float x, float y, float size, Area reserved)
         { X = x; Y = y; Size = size; Reserved = reserved; }
     }
+    /// <summary>Portrait coordinates relative to the masked boss dock, never the root canvas.</summary>
+    public static Placement CalculateWithinDock(float width, float height)
+    {
+        if (width <= 0 || height <= 0) return default;
+        float y = height * .075f;
+        // Reserve 12% on either side for calibrated sprite scaling and glow.
+        float size = Math.Min(width * .88f, height * .74f);
+        float half = size * .56f;
+        return new Placement(0f, y, size, new Area(-half, y - half, half * 2f, half * 2f));
+    }
+
     public static Placement Calculate(float width, float height, int players, IReadOnlyList<Area> obstacles)
     {
         if (width <= 0 || height <= 0) return default;

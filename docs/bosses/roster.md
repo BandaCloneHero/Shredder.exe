@@ -3,29 +3,28 @@
 Na biblioteca, os três botões no topo escolhem o chefe da próxima música.
 A escolha é salva localmente. Gepeto permanece como opção inicial.
 
-## Geminias — O Oráculo Bifronte
+## Geminias — O Núcleo Multimodal
 
-Personificação fictícia inspirada na dualidade e no imaginário astral do Gemini:
-duas máscaras de autômato dividem um mesmo corpo, com coroas assimétricas,
-órbitas e uma estrela de quatro pontas. Azul glacial e violeta alternam a
-predominância quando a vida cruza a metade. As duas faces flutuam em oposição.
+Assistente digital de corpo branco com cabeça em forma de estrela de quatro
+pontas azul/violeta, rosto expressivo e painéis holográficos de imagem e vídeo.
+A segunda forma intensifica o violeta e os circuitos luminosos.
 
-Conjunção Astral e Paradoxo dos Gêmeos alternam a cada investida. Até cinco
-ataques por faixa, aviso de 3,5 segundos, defesa de 4 segundos. Conjunção exige 80% de
-acertos e sequência de dois; Paradoxo exige 65% e sequência de quatro. Falhar acelera visualmente as notas em 30% por
-6 segundos. É um confronto de ritmo curto e recorrente.
+Inferência Paralela e Torrente Multimodal alternam a cada investida. Até cinco
+ataques por faixa, aviso de 3,5 segundos, defesa de quatro segundos. Inferência
+exige 80% de acertos e sequência de dois; Torrente exige 65% e sequência de
+quatro. Falhar acelera visualmente as notas em 30% por seis segundos.
 
-## Cláudio — O Escriba do Veredito
+## Cláudio — O Assistente Inflexível
 
-Personificação fictícia inspirada na escrita, na ponderação e no raciocínio:
-um juiz de máscara de porcelana, capuz vinho, inscrições em cobre, livro aberto
-e pena flutuante. O halo lembra marcas de revisão de um manuscrito. Na segunda
-forma, o cobre se torna dourado e a máscara mantém a expressão impassível.
+Mascote com cabeça radial terracota, rosto simples e expressivo, corpo creme,
+emblema radial no peito, painéis digitais de documentos e caneta de tablet.
+A segunda forma intensifica a cor para coral. Sua identidade remete a um
+assistente de escrita e raciocínio, sem roupas ou acessórios medievais.
 
-Protocolo: Veredito anuncia a revisão com quatro segundos de antecedência.
-A defesa dura seis segundos e exige 80% de acertos e sequência de cinco.
-Falhar reduz o dano em 25% por seis segundos e acelera visualmente as notas em
-15% por dez segundos. Até quatro ataques por música.
+Revisão de Contexto avisa com quatro segundos de antecedência. A defesa dura
+seis segundos e exige 80% de acertos e sequência de cinco. Falhar reduz o dano
+em 25% por seis segundos e acelera visualmente as notas em 15% por dez segundos.
+Até quatro ataques por música.
 
 ## Implementação e validação no Editor
 
@@ -48,3 +47,14 @@ dois jogadores. Prática e busca de replay mantêm os ataques desativados.
 O ambiente de desenvolvimento sem Unity não permite confirmar a composição
 visual da biblioteca nem executar o combate; os botões superiores precisam de
 uma revisão visual em diferentes resoluções no Editor.
+
+## Retrato dentro do painel com recorte
+
+Quando o retrato está dentro de `BossResponsiveLayout`, esse componente move o
+painel na tela e `CalculateWithinDock` posiciona o personagem nas coordenadas
+locais do painel. O layout antigo da tela inteira só é usado fora desse painel.
+Isso evita deslocar o personagem para fora de `RectMask2D` enquanto a barra e
+seu emblema continuam visíveis. A reserva inclui margem de escala e brilho.
+
+Prompts atuais: `image-prompts-v2.json`. Referências visuais:
+[Gemini](https://deepmind.google/models/gemini/) e [Claude](https://claude.com/).

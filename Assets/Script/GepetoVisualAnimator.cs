@@ -111,6 +111,8 @@ public class GepetoVisualAnimator : MonoBehaviour
         if (robotImage != null)
         {
             robotImage.raycastTarget = false;
+            robotImage.enabled = true;
+            robotImage.preserveAspect = true;
             musicalRect = robotImage.rectTransform;
             var canvas = robotImage.GetComponentInParent<Canvas>();
             layoutCanvas = canvas != null ? canvas.rootCanvas.transform as RectTransform : null;
@@ -136,7 +138,7 @@ public class GepetoVisualAnimator : MonoBehaviour
         bool twins = BossRoster.Selected == BossRoster.Identity.Geminias;
         spriteSizing = System.Array.Empty<CharacterSpriteSizing>();
         normalGlowColor = BossRoster.Accent;
-        phase2GlowColor = twins ? new Color(.8f, .35f, 1f, .55f) : new Color(1f, .8f, .4f, .55f);
+        phase2GlowColor = twins ? new Color(.8f, .35f, 1f, .55f) : new Color(1f, .32f, .24f, .55f);
         var sheet = BossSpriteAtlas.Load();
         if (sheet != null)
         {
@@ -330,6 +332,19 @@ public class GepetoVisualAnimator : MonoBehaviour
     private void UpdatePortraitLayout()
     {
         if (!responsiveLayout || layoutCanvas == null || musicalRect == null) return;
+        // The dock owns screen-space placement and clips its children. Moving this
+        // child with root-canvas coordinates would push the portrait outside its mask.
+        var dock = musicalRect.GetComponentInParent<BossResponsiveLayout>();
+        if (dock != null && dock.isActiveAndEnabled)
+        {
+            musicalRect.anchorMin = musicalRect.anchorMax = new Vector2(.5f, .5f);
+            musicalRect.pivot = new Vector2(.5f, .5f);
+            var dockRect = (RectTransform)dock.transform;
+            var portrait = GepetoHudLayout.CalculateWithinDock(dockRect.rect.width, dockRect.rect.height);
+            musicalRect.sizeDelta = Vector2.one * portrait.Size;
+            restingPosition = new Vector3(portrait.X, portrait.Y, 0f);
+            return;
+        }
         if (musicalGameManager == null) musicalGameManager = FindAnyObjectByType<GameManager>();
         int players = Mathf.Max(1, musicalGameManager != null ? musicalGameManager.Players.Count : 1);
         if (players != layoutPlayerCount) layoutDiscoveryUntil = Time.unscaledTime + 8f;
