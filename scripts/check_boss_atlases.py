@@ -1,9 +1,13 @@
 """Validate PNG sprite atlas layout and alpha without third-party dependencies."""
+import argparse
 import collections
 import pathlib
 import struct
 import zlib
 
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--export-rgba', type=pathlib.Path, help='Export decoded pixels for the C# isolation checks')
+args = parser.parse_args()
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 for name in ("Gepeto", "Geminias", "Claudio"):
     path = ROOT / "Assets/Resources/Bosses" / (name + ".png")
@@ -23,6 +27,7 @@ for name in ("Gepeto", "Geminias", "Claudio"):
     raw = zlib.decompress(b''.join(chunks))
     stride = width * 4
     previous = bytearray(stride)
+    decoded = bytearray() if args.export_rgba else None
     alpha_histogram = collections.Counter()
     occupied = [0] * 96
     for y in range(height):
@@ -46,6 +51,8 @@ for name in ("Gepeto", "Geminias", "Claudio"):
                 pa, pb, pc = abs(p-a), abs(p-b), abs(p-c)
                 predictor = a if pa <= pb and pa <= pc else b if pb <= pc else c
             row[x] = (row[x] + predictor) & 255
+        if decoded is not None:
+            decoded.extend(row)
         alphas = row[3::4]
         alpha_histogram.update(alphas)
         for x, alpha in enumerate(alphas):
@@ -55,4 +62,7 @@ for name in ("Gepeto", "Geminias", "Claudio"):
     assert alpha_histogram[0] > width * height * .1, 'Missing transparent background'
     assert min(occupied[:88]) > 100, 'Empty combat frame'
     assert sum(occupied[88:]) > 100, 'Missing defeat sequence'
+    if args.export_rgba:
+        args.export_rgba.mkdir(parents=True, exist_ok=True)
+        (args.export_rgba / (name + '.rgba')).write_bytes(struct.pack('>II', width, height) + decoded)
     print(f'{name}: RGBA 1024x1536; 96 cells of 128x128; transparent alpha; all combat frames populated')

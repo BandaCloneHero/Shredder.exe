@@ -1,5 +1,10 @@
 # Roland: folha única e botões por comando
 
+Atualização 2026-11-16: arte substituída pelos desenhos de `personagens novos`.
+As combinações, GUIDs e recortes continuam iguais. O exportador atual e sua
+validação estão em [Novos2026/README.md](Novos2026/README.md). A descrição de
+fontes e ferramentas antigas abaixo fica como histórico do pipeline anterior.
+
 Imagem usada na partida: Assets/Sprites/Personagens/Comandos/Roland_Combinacoes64.png. Uma folha de 2048 × 2048, com 8 colunas × 8 linhas e 64 recortes de 256 × 256. A mão da palhetada fica sobre o corpo da guitarra e alterna entre cima/baixo; rosto, instrumento e braço mantêm o mesmo enquadramento.
 
 Os cinco botões estão sempre desenhados, com cores escuras, na ordem verde, vermelho, amarelo, azul, laranja, do corpo para a ponta da guitarra. As luzes já estão gravadas nos pixels de cada sprite. As 32 combinações dos botões são repetidas nas duas posições de palhetada, totalizando 64 quadros. A mão do braço da guitarra acompanha a mediana dos botões pressionados: com um botão, vai até ele; com quantidade ímpar, ao botão central; com quantidade par, ao ponto entre os dois centrais. Sem botões, usa a pose de repouso aprovada. O overlay GuitarButtonLights é desativado nessa configuração de 64 sprites.

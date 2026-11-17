@@ -13,9 +13,9 @@ namespace YARG
         [SerializeField] private float maxHealth = 100f;
 
         [Header("Combate baseado nas notas da faixa")]
-        [Tooltip("Proporção de notas que um jogador solo precisa acertar para derrotar Gepeto.")]
+        [Tooltip("Meta de dano da banda em relação ao total de eventos da faixa; os julgamentos ainda ponderam cada acerto.")]
         [Range(0.5f, 1f)]
-        [SerializeField] private float soloTargetHitRate = 0.72f;
+        [SerializeField] private float soloTargetHitRate = 0.50f;
         [Header("Velocidade de Suavização")]
         [SerializeField] private float healthBarSmoothSpeed = 250f;
 

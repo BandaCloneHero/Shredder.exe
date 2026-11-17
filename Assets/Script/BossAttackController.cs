@@ -10,18 +10,18 @@ using YARG.Gameplay.Player;
 /// <summary>Timed defense challenges use existing chart notes and never change hit timing.</summary>
 public sealed class BossAttackController : MonoBehaviour
 {
-    [Min(0.1f)] [SerializeField] private float warningSeconds = 3f;
-    [Min(0.1f)] [SerializeField] private float defenseSeconds = 5f;
-    [Min(0f)] [SerializeField] private float penaltySeconds = 4f;
-    [Range(0f, 0.6f)] [SerializeField] private float visualSpeedIncrease = 0.25f;
-    [Min(0f)] [SerializeField] private float visualSpeedSeconds = 10f;
-    [Range(0f, 1f)] [SerializeField] private float failedDamageMultiplier = 0.85f;
-    [Range(0f, 1f)] [SerializeField] private float requiredHitRate = 0.7f;
-    [Min(1)] [SerializeField] private int requiredStreak = 3;
-    [Range(0f, 0.05f)] [SerializeField] private float healPerAttackFraction = 0.01f;
+    [Min(0.1f)] [SerializeField] private float warningSeconds = 4f;
+    [Min(0.1f)] [SerializeField] private float defenseSeconds = 6f;
+    [Min(0f)] [SerializeField] private float penaltySeconds = 3f;
+    [Range(0f, 0.6f)] [SerializeField] private float visualSpeedIncrease = 0.15f;
+    [Min(0f)] [SerializeField] private float visualSpeedSeconds = 4f;
+    [Range(0f, 1f)] [SerializeField] private float failedDamageMultiplier = 0.90f;
+    [Range(0f, 1f)] [SerializeField] private float requiredHitRate = 0.60f;
+    [Min(1)] [SerializeField] private int requiredStreak = 2;
+    [Range(0f, 0.05f)] [SerializeField] private float healPerAttackFraction = 0.005f;
     [Range(0f, 0.02f)] [SerializeField] private float blockBonusFraction = 0.005f;
-    [Range(0f, 0.1f)] [SerializeField] private float totalHealLimitFraction = 0.05f;
-    [Min(1)] [SerializeField] private int maxAttacks = 4;
+    [Range(0f, 0.1f)] [SerializeField] private float totalHealLimitFraction = 0.02f;
+    [Min(1)] [SerializeField] private int maxAttacks = 3;
 
     private sealed class Defense
     {
@@ -53,14 +53,14 @@ public sealed class BossAttackController : MonoBehaviour
         grantBlockBonus = onBlockBonus;
         if (BossRoster.Selected == BossRoster.Identity.Geminias)
         {
-            warningSeconds = 3.5f; defenseSeconds = 4f; maxAttacks = 5;
-            visualSpeedIncrease = .3f; visualSpeedSeconds = 6f; requiredHitRate = .7f;
+            warningSeconds = 4f; defenseSeconds = 5f; maxAttacks = 4;
+            visualSpeedIncrease = .2f; visualSpeedSeconds = 4f; requiredHitRate = .6f;
         }
         else if (BossRoster.Selected == BossRoster.Identity.Claudio)
         {
-            warningSeconds = 4f; defenseSeconds = 6f; requiredStreak = 5;
-            requiredHitRate = .8f; visualSpeedIncrease = .15f;
-            penaltySeconds = 6f; failedDamageMultiplier = .75f;
+            warningSeconds = 4.5f; defenseSeconds = 6f; requiredStreak = 3;
+            requiredHitRate = .7f; visualSpeedIncrease = .15f;
+            penaltySeconds = 4f; failedDamageMultiplier = .85f;
         }
     }
 
@@ -100,8 +100,8 @@ public sealed class BossAttackController : MonoBehaviour
             if (BossRoster.Selected == BossRoster.Identity.Geminias)
             {
                 // One face tests accuracy; the other tests sustained sequences.
-                requiredHitRate = attackCount % 2 == 1 ? .8f : .65f;
-                requiredStreak = attackCount % 2 == 1 ? 2 : 4;
+                requiredHitRate = attackCount % 2 == 1 ? .65f : .55f;
+                requiredStreak = attackCount % 2 == 1 ? 2 : 3;
             }
             foreach (var defense in defenses.Values)
             {
@@ -128,7 +128,7 @@ public sealed class BossAttackController : MonoBehaviour
         UpdateLabel(now);
     }
 
-    private double Interval() => Mathf.Max(12f, (float)manager.SongLength * (health.CurrentPhase == 2 ? 0.16f : 0.22f));
+    private double Interval() => Mathf.Max(12f, (float)manager.SongLength * (health.CurrentPhase == 2 ? 0.20f : 0.26f));
 
     public float DamageMultiplier(TrackPlayer player)
     {

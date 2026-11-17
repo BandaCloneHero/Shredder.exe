@@ -43,7 +43,7 @@ function criarCreditosFeira({arquivo, resolverConta, env = process.env, fetch:re
             if(resultado.tipo==='banda')continue;
             const conta=resolverConta({username:resultado.username});
             const saved=conta?.resultadosPartidas?.[resultado.partidaId];
-            if(!conta?.accountId || !conta.authProviders?.google || !saved || saved.concluida===false)continue;
+            if(!conta?.accountId || !conta.authProviders?.google || !saved || saved.modo !== 'historia' || saved.bossDerrotado !== true || saved.concluida !== true)continue;
             const id=key(conta.accountId,resultado.partidaId);
             if(data.entries[id])continue;
             data.entries[id]={id,accountId:conta.accountId,partidaId:resultado.partidaId,product:PRODUCT,value:config().value,status:'pending',createdAt:new Date(agora()).toISOString()};registered++;

@@ -1,6 +1,11 @@
 # Personagens por comandos
 
-Atualização da bateria: usa Baterista_Combinacoes22.png, com repouso, quatro pads individuais e seis pares, todos com e sem bumbo. A pose usa no máximo duas baquetas. Consulte Baterista-22-poses.md.
+Atualização 2026-11-16: arte substituída pelos desenhos de `personagens novos`.
+As combinações, GUIDs e recortes continuam iguais. O exportador atual e sua
+validação estão em [Novos2026/README.md](Novos2026/README.md). A descrição de
+fontes e ferramentas antigas abaixo fica como histórico do pipeline anterior.
+
+Atualização da bateria: usa Baterista_Combinacoes22.png, com corpo alinhado, dois pads no máximo e bumbo independente. As duas baquetas mostram os dois hits mais recentes. Consulte Novos2026/README.md.
 
 Atualização do baixo: usa Baixista_Combinacoes64.png, uma folha com 64 recortes, luzes gravadas e mão acompanhando a mediana dos botões. Consulte Baixista-folha-unica.md. As quatro folhas anteriores estão arquivadas em BaixistaAnterior.
 

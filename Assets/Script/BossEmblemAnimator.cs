@@ -30,9 +30,10 @@ public sealed class BossEmblemAnimator : MonoBehaviour
     private void Awake()
     {
         emblem = GetComponent<Image>();
+        emblem.preserveAspect = true;
         emblemRect = emblem.rectTransform;
         restingPosition = emblemRect.anchoredPosition;
-        restingScale = emblemRect.localScale;
+        restingScale = CharacterSpriteSizing.UniformScale(emblemRect.localScale);
         restingColor = emblem.color;
         var sheet = BossSpriteAtlas.Load();
         if (sheet != null || BossRoster.Selected != BossRoster.Identity.Gepeto)
@@ -57,10 +58,10 @@ public sealed class BossEmblemAnimator : MonoBehaviour
     private void OnDestroy()
     {
         if (personaEmblem == null) return;
-        if (!usesPersonaSheet) Destroy(personaEmblem.texture);
+        Destroy(personaEmblem.texture);
         Destroy(personaEmblem);
-        if (personaHit != null) Destroy(personaHit);
-        if (personaPhase != null) Destroy(personaPhase);
+        if (personaHit != null) { Destroy(personaHit.texture); Destroy(personaHit); }
+        if (personaPhase != null) { Destroy(personaPhase.texture); Destroy(personaPhase); }
     }
 
     private void OnEnable()
@@ -131,9 +132,8 @@ public sealed class BossEmblemAnimator : MonoBehaviour
             float envelope = 1f - progress;
             emblemRect.anchoredPosition = restingPosition +
                 new Vector2(Mathf.Sin(progress * Mathf.PI * 6f) * 3f * envelope, 0f);
-            emblemRect.localScale = Vector3.Scale(restingScale,
-                new Vector3(1f + envelope * 0.06f, 1f - envelope * 0.06f, 1f));
-            // Phase two keeps its red face; hits still get the shake, squash and flash.
+            emblemRect.localScale = restingScale * (1f + envelope * 0.06f);
+            // Phase two keeps its face; hits use uniform scale, shake and flash.
             emblem.color = Color.Lerp(restingColor, new Color(1f, 0.68f, 0.68f, restingColor.a),
                 envelope * 0.35f);
         }

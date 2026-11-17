@@ -116,7 +116,7 @@ public class GepetoVisualAnimator : MonoBehaviour
             musicalRect = robotImage.rectTransform;
             var canvas = robotImage.GetComponentInParent<Canvas>();
             layoutCanvas = canvas != null ? canvas.rootCanvas.transform as RectTransform : null;
-            restingScale = musicalRect.localScale;
+            restingScale = CharacterSpriteSizing.UniformScale(musicalRect.localScale);
             restingPosition = musicalRect.anchoredPosition3D;
             restingRotation = musicalRect.localRotation;
             musicalOutline = robotImage.gameObject.AddComponent<Outline>();
@@ -146,7 +146,7 @@ public class GepetoVisualAnimator : MonoBehaviour
         spriteSizing = System.Array.Empty<CharacterSpriteSizing>();
         normalGlowColor = BossRoster.Accent;
         phase2GlowColor = originalGepeto ? new Color(1f, .12f, .2f, .55f)
-            : twins ? new Color(.8f, .35f, 1f, .55f) : new Color(1f, .8f, .4f, .55f);
+            : twins ? new Color(.8f, .35f, 1f, .55f) : new Color(1f, .35f, .12f, .55f);
         if (sheet != null)
         {
             usesPersonaSheet = true;
@@ -654,7 +654,7 @@ public class GepetoVisualAnimator : MonoBehaviour
         {
             if (sprite != null)
             {
-                if (!usesPersonaSheet && BossRoster.Selected != BossRoster.Identity.Gepeto) Destroy(sprite.texture);
+                if (usesPersonaSheet || BossRoster.Selected != BossRoster.Identity.Gepeto) Destroy(sprite.texture);
                 Destroy(sprite);
             }
         }

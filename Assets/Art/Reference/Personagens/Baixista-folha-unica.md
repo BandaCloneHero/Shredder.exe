@@ -1,5 +1,10 @@
 # Baixista: 64 poses por comando
 
+Atualização 2026-11-16: arte substituída pelos desenhos de `personagens novos`.
+As combinações, GUIDs e recortes continuam iguais. O exportador atual e sua
+validação estão em [Novos2026/README.md](Novos2026/README.md). A descrição de
+fontes e ferramentas antigas abaixo fica como histórico do pipeline anterior.
+
 O prefab também referencia a textura completa em `bassCommandTexture`. O ReactionController monta os 64 sprites diretamente dessa textura ao carregar, mantendo a ordem binária e evitando depender dos IDs dos subassets importados. Os botões do jogador acompanham o estado reconhecido pelo motor da highway; bots usam os eventos de acerto. Não é necessário um chart especial para as poses responderem.
 
 O baixo também pode ser jogado pelo `FiveLaneKeysPlayer`, cujo perfil usa `GameMode.ProKeys` mesmo ao tocar uma faixa `FiveFretBass`. Esse caminho usa a folha de cinco botões da baixista, mapeia os comandos `ProKeysAction.GreenKey` até `OrangeKey` (28–32) para bits 0–4 e sincroniza a pose com `Engine.IsKeyHeld`. Nos bots desse modo, cada membro do acorde chega separadamente e é acumulado sem apagar os outros membros. O ProKeys real de sete teclas continua com seu mapeamento próprio.

@@ -90,20 +90,25 @@ public partial class ReactionController
     private void CreateDrumCommandPoses()
     {
         if (runtimeDrumsCommandPoses != null || drumsCommandTexture == null) return;
-        if (drumsCommandTexture.width % 6 != 0 || drumsCommandTexture.height % 4 != 0)
+        bool complete = drumsCommandTexture.width % 8 == 0 && drumsCommandTexture.height % 4 == 0
+            && drumsCommandTexture.width / 8 == drumsCommandTexture.height / 4;
+        int columns = complete ? 8 : 6;
+        if (drumsCommandTexture.width % columns != 0 || drumsCommandTexture.height % 4 != 0
+            || drumsCommandTexture.width / columns != drumsCommandTexture.height / 4)
         {
-            Debug.LogError("A folha da bateria precisa ter 6 colunas e 4 linhas.", this);
+            Debug.LogError("A folha da bateria precisa ter células quadradas em 8x4 (32 estados) ou 6x4 (legado).", this);
             return;
         }
-        int width = drumsCommandTexture.width / 6;
+        int width = drumsCommandTexture.width / columns;
         int height = drumsCommandTexture.height / 4;
-        runtimeDrumsCommandPoses = new Sprite[22];
+        runtimeDrumsCommandPoses = new Sprite[complete ? 32 : 22];
         for (int i = 0; i < runtimeDrumsCommandPoses.Length; i++)
         {
-            var rect = new Rect(i % 6 * width, (3 - i / 6) * height, width, height);
+            var rect = new Rect(i % columns * width, (3 - i / columns) * height, width, height);
             var sprite = Sprite.Create(drumsCommandTexture, rect, new Vector2(0.5f, 0.5f),
                 100f, 0, SpriteMeshType.FullRect);
-            sprite.name = $"Baterista_Mascara_{DrumPadMasks[i % 11] + (i >= 11 ? 16 : 0):D2}";
+            int mask = complete ? i : DrumPadMasks[i % 11] + (i >= 11 ? 16 : 0);
+            sprite.name = $"Baterista_Mascara_{mask:D2}";
             runtimeDrumsCommandPoses[i] = sprite;
         }
         drumsCommandPoses = runtimeDrumsCommandPoses;
@@ -371,7 +376,7 @@ public partial class ReactionController
 
     private int GetDrumCommandMask(double now)
     {
-        // Two sticks: pick the two newest active pad strikes; kick uses the foot.
+        // Two physical sticks: retain only the two newest active pads. Kick is independent.
         int first = -1, second = -1;
         for (int pad = 0; pad < 4; pad++)
         {

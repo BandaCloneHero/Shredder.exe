@@ -1,0 +1,5 @@
+{
+  "tool": "image_gen__imagegen (built-in)",
+  "target": "Assets/Resources/Bosses/Geminias.png",
+  "prompt": "Background extraction only. Remove ALL pale blue, white and purple backdrop gradients from this robot sprite sheet, making all surrounding empty space fully transparent alpha ZERO. Preserve ALL96 blue-and-white robot sprites, exact poses, locations, scales, colors, details, chest stars and effects. Output exactly 1024x1536, same 8x12 grid of128x128 cells. Every pixel not belonging to a robot or actual small hologram/attack effect MUST have alpha0, including all image borders and inter-sprite gutters. NO backdrop color, NO floor. Keep soft alpha only at sprite edges and compact electrical effects. Do not redesign or rearrange any sprite, this is a clean production cutout pass. The normal form has rounded blue robot helmet with two LED eyes, evil form narrow visor and violet emitters; preserve both exactly."
+}

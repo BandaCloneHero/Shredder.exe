@@ -7045,7 +7045,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::YARG.BossHealthBar
   healthSlider: {fileID: 1376673711}
   maxHealth: 100
-  soloTargetHitRate: 0.72
+  soloTargetHitRate: 0.5
   preciseHitWindow: 0.05
   goodHitWindow: 0.12
   preciseDamageMultiplier: 1.15

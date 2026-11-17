@@ -1,3 +1,11 @@
+# Current character pack uses the supplied Novos2026 identities; keep the legacy exporter below as fallback.
+if (Test-Path 'Assets/Art/Reference/Personagens/Novos2026/Guitarrista_Poses20.png') {
+ $python = Get-Command python3 -ErrorAction SilentlyContinue
+ if (-not $python) { $python = Get-Command python -ErrorAction Stop }
+ & $python.Source scripts/export_new_characters.py --only keys
+ if ($LASTEXITCODE -ne 0) { throw 'Character export failed. Install scripts/requirements-character-art.txt in the selected Python environment.' }
+ return
+}
 $ErrorActionPreference='Stop'
 $utf8=[Text.UTF8Encoding]::new($false)
 Add-Type -AssemblyName System.Drawing

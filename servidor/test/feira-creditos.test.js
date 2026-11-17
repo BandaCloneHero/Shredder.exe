@@ -7,7 +7,7 @@ function fixture(t,{env={SHREDDER_FEIRA_CREDITS_ENABLED:'true',SHREDDER_FEIRA_CR
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'shredder-credits-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
  const file=path.join(dir,'ledger.json'),calls=[];
  let now=Date.now();
- const account={accountId:'fake-account',username:'fake_player',authProviders:{google:{provider:'google',sub:'synthetic-sub'}},resultadosPartidas:{'result-1':{concluida:true},'result-2':{concluida:true},'incomplete':{concluida:false}}};
+ const account={accountId:'fake-account',username:'fake_player',authProviders:{google:{provider:'google',sub:'synthetic-sub'}},resultadosPartidas:{'result-1':{concluida:true,modo:'historia',bossDerrotado:true},'result-2':{concluida:true,modo:'historia',bossDerrotado:true},'incomplete':{concluida:false}}};
  const make=()=>criarCreditosFeira({arquivo:file,env,agora:()=>now,resolverConta:({username,accountId})=>username===account.username||accountId===account.accountId?account:null,fetch:async(...args)=>{calls.push(args);return request?request(...args):{status:201,json:async()=>({operation:42})};}});
  const service=make(),proof=()=>service.guardarCredencial({identidade:{provider:'google',sub:'synthetic-sub'},token:TOKEN,expiresAt:now+60000});
  return {service,make,proof,calls,file,account,env,read:()=>JSON.parse(fs.readFileSync(file,'utf8')),advance:ms=>{now+=ms;},result:{username:account.username,partidaId:'result-1'}};
@@ -73,4 +73,10 @@ test('disk failure after remote success never retries the already sent job',asyn
 test('status only exposes entries of the authenticated internal account',async t=>{
  const f=fixture(t);f.proof();f.service.registrarConfirmados([f.result]);await f.service.processarPendentes();assert.equal(f.service.consultar('other-account').entries.length,0);
  const status=f.service.consultar(f.account.accountId);assert.equal(status.entries.length,1);assert.equal(JSON.stringify(status).includes(TOKEN),false);assert.equal(JSON.stringify(status).includes('synthetic-sub'),false);
+});
+test('freeplay, boss defeat absent/false and incomplete songs never queue a reward',async t=>{
+ for(const patch of [{modo:'freeplay'},{bossDerrotado:false},{bossDerrotado:undefined},{concluida:false},{concluida:undefined}]){
+  const f=fixture(t);Object.assign(f.account.resultadosPartidas['result-1'],patch);
+  assert.equal(f.service.registrarConfirmados([f.result]).registered,0);await f.service.processarPendentes();assert.equal(f.calls.length,0);assert.equal(fs.existsSync(f.file),false);
+ }
 });

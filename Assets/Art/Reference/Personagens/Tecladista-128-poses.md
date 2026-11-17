@@ -1,5 +1,10 @@
 # Tecladista: sete teclas, duas mãos
 
+Atualização 2026-11-16: arte substituída pelos desenhos de `personagens novos`.
+As combinações, GUIDs e recortes continuam iguais. O exportador atual e sua
+validação estão em [Novos2026/README.md](Novos2026/README.md). A descrição de
+fontes e ferramentas antigas abaixo fica como histórico do pipeline anterior.
+
 128 máscaras binárias (incluindo repouso), divididas em duas folhas de 64 poses, 2048 × 2048 pixels, com recortes de 256 × 256.
 
 Folhas ativas em `Assets/Sprites/Personagens/Comandos/Tecladista_Combinacoes_000_063.png` e `Tecladista_Combinacoes_064_127.png`. Já vinculadas ao `TrackView.prefab`, junto com a pose de repouso.

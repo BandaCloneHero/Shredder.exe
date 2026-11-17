@@ -1,5 +1,13 @@
 # Créditos da Feira — preparação desativada
 
+> Atualização de 17/11/2026: a regra aprovada é uma reserva por música de campanha
+> (400/600/800), dividida entre a banda. O valor fixo descrito abaixo é legado e
+> **não deve ser ativado** como implementação dessa regra. O cálculo novo está em
+> `recompensa-boss.js`, ainda sem associação às três músicas nem conexão à fila.
+> Consulte `docs/balanceamento-boss.md` para as pendências. A fila já recusa modo
+> livre, ausência de vitória e resultados não concluídos.
+
+
 Produto do Shredder: **87**. Contrato fornecido pelo responsável: `POST https://feira-de-jogos.dev.br/api/v2/credit`, `Authorization: Bearer <Google ID Token>`, JSON `{product:87,value:<inteiro>}`. A rota fornecida valida o Google ID Token contra os client IDs de jogos cadastrados e identifica a pessoa pelo email no cadastro da Feira. Não há troca por JWT próprio da Feira nesse código.
 
 Esta implementação não usa `/adminCredit`, não usa token administrativo, não pede userId ao jogador, não implementa `/debit` e não executou chamadas reais. O login existente Google Identity Services foi preservado.

@@ -53,7 +53,7 @@ public class BossUIController : MonoBehaviour
         {
             phase1Color = BossRoster.Accent;
             phase2Color = BossRoster.Selected == BossRoster.Identity.Geminias
-                ? new Color(.8f, .35f, 1f) : new Color(1f, .8f, .4f);
+                ? new Color(.8f, .35f, 1f) : new Color(1f, .35f, .12f);
         }
         if (bossHealthBar == null)
         {

@@ -1,5 +1,21 @@
 # Baterista: duas baquetas e bumbo
 
+Estado atual: folha ativa `Baterista_Combinacoes22.png`, postura frontal corrigida,
+no máximo dois pads + bumbo. A revisão 32 abaixo foi substituída a pedido do
+usuário. Consulte `Novos2026/README.md` para a configuração em uso.
+
+Atualização de cobertura: a folha ativa agora é
+`Assets/Sprites/Personagens/Comandos/Baterista_Combinacoes32.png`, 2048 × 1024,
+8 × 4 células de 256 × 256, máscaras 0–31. O controlador preserva todos os
+pads ativos na janela de hit, inclusive três/quatro pads com bumbo. A ilustração
+continua com duas baquetas. A folha de 22 poses descrita abaixo é legado e
+continua compatível. A nova folha está na mesma pasta `Comandos`.
+
+Atualização 2026-11-16: arte substituída pelos desenhos de `personagens novos`.
+As combinações, GUIDs e recortes continuam iguais. O exportador atual e sua
+validação estão em [Novos2026/README.md](Novos2026/README.md). A descrição de
+fontes e ferramentas antigas abaixo fica como histórico do pipeline anterior.
+
 Folha ativa: `Assets/Sprites/Personagens/Comandos/Baterista_Combinacoes22.png`.
 1536 × 1024 pixels, 6 colunas × 4 linhas, 22 recortes de 256 × 256; as duas células restantes ficam transparentes.
 

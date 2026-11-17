@@ -11,10 +11,10 @@ public static class BossRoster
         set { PlayerPrefs.SetInt(Preference, (int)value); PlayerPrefs.Save(); }
     }
     public static string Name => Selected == Identity.Geminias ? "Geminias" : Selected == Identity.Claudio ? "Cláudio" : "Gepeto";
-    public static string Title => Selected == Identity.Geminias ? "O Oráculo Bifronte" : Selected == Identity.Claudio ? "O Escriba do Veredito" : "O Arquiteto";
+    public static string Title => Selected == Identity.Geminias ? "O Processador Duplo" : Selected == Identity.Claudio ? "O Auditor de Circuitos" : "O Arquiteto";
     public static string Attack(int number) => Selected == Identity.Geminias
-        ? (number % 2 == 1 ? "CONJUNÇÃO ASTRAL" : "PARADOXO DOS GÊMEOS")
-        : Selected == Identity.Claudio ? "PROTOCOLO: VEREDITO" : "SOBRECARGA";
+        ? (number % 2 == 1 ? "INFERÊNCIA PARALELA" : "SOBRECARGA MULTIMODAL")
+        : Selected == Identity.Claudio ? "PROTOCOLO: REVISÃO" : "SOBRECARGA";
     public static Color Accent => Selected == Identity.Geminias ? new Color(.4f, .65f, 1f)
         : Selected == Identity.Claudio ? new Color(1f, .58f, .35f) : new Color(.15f, .9f, 1f);
 }
