@@ -6,9 +6,10 @@ Contém `song.ini`, `notes.mid` e `song.wav`, com 30 segundos e 49 notas
 em todas as quatro dificuldades. O MIDI tem tempo 120 BPM, resolução 480 PPQ,
 eventos de seção e pistas `PART REAL_KEYS_E/M/H/X`.
 
-Na Unity, a pasta TestSongs é incluída na busca de músicas do projeto.
-Recarregue a biblioteca/execute uma busca completa e selecione **Pro Keys**.
-Em um executável, adicione a pasta TestSongs nas pastas de músicas e faça a busca.
+A pasta TestSongs não é mais incluída automaticamente na biblioteca do Unity.
+Para um teste técnico, adicione explicitamente TestSongs nas pastas de músicas,
+faça uma busca completa e selecione **Pro Keys**. Remova essa pasta das
+configurações antes de usar o jogo na Feira.
 O teclado usa os modelos, shaders, geometria e animações existentes do YARG.
 
 ## Sete posições fixas
