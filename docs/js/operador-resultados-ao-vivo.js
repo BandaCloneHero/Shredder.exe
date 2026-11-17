@@ -103,7 +103,11 @@
                     if (response.creditosFeira?.enabled) {
                         status.textContent += response.creditosFeira.status === 'registration_failed'
                             ? ' Tijolinhos: registro pendente de revisão.'
-                            : ' Tijolinhos: solicitação registrada; o pagamento será verificado separadamente.';
+                            : response.creditosFeira.registered > 0
+                                ? ` Tijolinhos: ${response.creditosFeira.total} divididos entre os jogadores; envio será confirmado separadamente.`
+                                : response.creditosFeira.status === 'song_not_configured'
+                                    ? ' Tijolinhos: esta música não está configurada para a recompensa da fase.'
+                                    : ' Tijolinhos: esta partida não gerou uma nova recompensa.';
                     }
                     for (const result of response.resultados || []) if (result.tipo !== 'banda') renderMatch(result);
                     ticketCards.delete(ticket.ticketId);

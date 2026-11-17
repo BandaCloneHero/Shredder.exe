@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -21,7 +22,37 @@ namespace YARG.Integration
     /// </summary>
     public static class OperatorScoreReporter
     {
-        private const string Endpoint = "https://shredder.feira-de-jogos.dev.br/api/operador/resultados-executavel";
+        private const string DefaultEndpoint = "https://shredder.feira-de-jogos.dev.br/api/operador/resultados-executavel";
+
+        [Serializable]
+        private sealed class ServerConfig
+        {
+            public string resultsUrl;
+        }
+
+        private static bool TryGetEndpoint(out string endpoint)
+        {
+            endpoint = null;
+            try
+            {
+                string configured = Environment.GetEnvironmentVariable("SHREDDER_RESULTS_URL");
+                string configFile = Path.Combine(Path.GetDirectoryName(Application.dataPath) ?? string.Empty, "shredder-server.json");
+                if (string.IsNullOrWhiteSpace(configured) && File.Exists(configFile))
+                {
+                    if (new FileInfo(configFile).Length > 4096) return false;
+                    configured = JsonConvert.DeserializeObject<ServerConfig>(File.ReadAllText(configFile))?.resultsUrl;
+                    if (string.IsNullOrWhiteSpace(configured)) return false;
+                }
+                configured = string.IsNullOrWhiteSpace(configured) ? DefaultEndpoint : configured.Trim();
+                if (!Uri.TryCreate(configured, UriKind.Absolute, out var url) ||
+                    !(url.Scheme == "https" || (url.Scheme == "http" && url.IsLoopback)) ||
+                    !string.IsNullOrEmpty(url.UserInfo) || !string.IsNullOrEmpty(url.Query) || !string.IsNullOrEmpty(url.Fragment) ||
+                    url.AbsolutePath != "/api/operador/resultados-executavel") return false;
+                endpoint = url.AbsoluteUri;
+                return true;
+            }
+            catch { return false; }
+        }
 
         [Serializable]
         private sealed class ResultBatch
@@ -56,6 +87,11 @@ namespace YARG.Integration
         {
             if (song == null || !scoreScreenStats.IsLiveGame)
                 yield break;
+            if (!TryGetEndpoint(out var endpoint))
+            {
+                Debug.LogWarning("Servidor de resultados não configurado corretamente. Nenhum resultado foi enviado.");
+                yield break;
+            }
 
             var batch = new ResultBatch
             {
@@ -101,7 +137,7 @@ namespace YARG.Integration
             byte[] body = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(batch));
             for (int attempt = 0; attempt < 3; attempt++)
             {
-                using var request = new UnityWebRequest(Endpoint, UnityWebRequest.kHttpVerbPOST);
+                using var request = new UnityWebRequest(endpoint, UnityWebRequest.kHttpVerbPOST);
                 request.uploadHandler = new UploadHandlerRaw(body);
                 request.downloadHandler = new DownloadHandlerBuffer();
                 request.SetRequestHeader("Content-Type", "application/json");

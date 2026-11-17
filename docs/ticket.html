@@ -97,6 +97,17 @@
             <section id="ticket-boss-panel" class="ticket-actions" aria-label="Ações da campanha" hidden>
                 <button id="ticket-boss-continue" class="button button-primary" type="button" data-owner-control hidden disabled>Continuar campanha</button>
             </section>
+            <section id="feira-creditos" class="feira-credit-panel" aria-labelledby="feira-credit-heading">
+                <h2 id="feira-credit-heading">Seus tijolinhos</h2>
+                <p id="feira-credit-status" role="status" aria-live="polite">Consultando recompensas…</p>
+                <ul id="feira-credit-list"></ul>
+                <label id="feira-consent-label" hidden><input id="feira-consent" type="checkbox" /> Autorizo conectar meu Google à Feira para receber. Se não existir cadastro na Feira, ele poderá ser criado.</label>
+                <div class="feira-credit-actions">
+                    <button id="feira-connect" type="button" class="button button-primary" hidden disabled>Conectar cadastro da Feira</button>
+                    <button id="feira-refresh" type="button" class="button">Atualizar créditos</button>
+                    <button id="feira-balance" type="button" class="button" hidden>Consultar saldo da Feira</button>
+                </div>
+            </section>
         </main>
         <script src="google-config.js"></script>
         <script src="js/account.js"></script>
@@ -125,6 +136,7 @@
         <script src="js/achievement-catalog.js"></script>
         <script src="js/achievement-notifications.js"></script>
         <script src="app.js"></script>
+        <script src="js/feira-creditos.js"></script>
         <script src="js/achievement-live.js"></script>
     </body>
 </html>

@@ -3,12 +3,12 @@ const {test}=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os');
 const {criarCreditosFeira,configuracaoCreditos,URL_CREDIT}=require('../feira-creditos');
 const TOKEN='synthetic-google-credit-proof';
-function fixture(t,{env={SHREDDER_FEIRA_CREDITS_ENABLED:'true',SHREDDER_FEIRA_CREDIT_VALUE:'12'},request}={}){
+function fixture(t,{env={SHREDDER_FEIRA_CREDITS_ENABLED:'true',SHREDDER_FEIRA_CREDIT_AUTH:'google',SHREDDER_FEIRA_CUSTOM_VALUES_CONFIRMED:'true'},request}={}){
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'shredder-credits-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
  const file=path.join(dir,'ledger.json'),calls=[];
  let now=Date.now();
- const account={accountId:'fake-account',username:'fake_player',authProviders:{google:{provider:'google',sub:'synthetic-sub'}},resultadosPartidas:{'result-1':{concluida:true,modo:'historia',bossDerrotado:true},'result-2':{concluida:true,modo:'historia',bossDerrotado:true},'incomplete':{concluida:false}}};
- const make=()=>criarCreditosFeira({arquivo:file,env,agora:()=>now,resolverConta:({username,accountId})=>username===account.username||accountId===account.accountId?account:null,fetch:async(...args)=>{calls.push(args);return request?request(...args):{status:201,json:async()=>({operation:42})};}});
+ const account={accountId:'fake-account',username:'fake_player',authProviders:{google:{provider:'google',sub:'synthetic-sub'}},resultadosPartidas:{'result-1':{concluida:true,modo:'historia',bossDerrotado:true,fase:1,musica:'Fake song',precisao:100},'result-2':{concluida:true,modo:'historia',bossDerrotado:true,fase:1,musica:'Fake song',precisao:100},'incomplete':{concluida:false}}};
+ const make=()=>criarCreditosFeira({arquivo:file,env,regras:{fases:[{fase:1,dificuldade:'facil',musicas:['Fake song']}]},agora:()=>now,resolverConta:({username,accountId})=>username===account.username||accountId===account.accountId?account:null,fetch:async(...args)=>{calls.push(args);return request?request(...args):{status:201,json:async()=>({operation:42})};}});
  const service=make(),proof=()=>service.guardarCredencial({identidade:{provider:'google',sub:'synthetic-sub'},token:TOKEN,expiresAt:now+60000});
  return {service,make,proof,calls,file,account,env,read:()=>JSON.parse(fs.readFileSync(file,'utf8')),advance:ms=>{now+=ms;},result:{username:account.username,partidaId:'result-1'}};
 }
@@ -17,9 +17,9 @@ test('credits remain disabled with missing value or activation flag',async t=>{
   const f=fixture(t,{env});f.proof();assert.equal(f.service.registrarConfirmados([f.result]).enabled,false);await f.service.processarPendentes();assert.equal(f.calls.length,0);assert.equal(fs.existsSync(f.file),false);
  }
 });
-test('invalid amount never silently defaults to a payment',()=>{
- for(const value of ['','0','-1','3001','1.5','12abc',12,' 12'])assert.equal(configuracaoCreditos({SHREDDER_FEIRA_CREDITS_ENABLED:'true',SHREDDER_FEIRA_CREDIT_VALUE:value}).enabled,false);
- assert.equal(configuracaoCreditos({SHREDDER_FEIRA_CREDITS_ENABLED:'true',SHREDDER_FEIRA_CREDIT_VALUE:'3000'}).enabled,true);
+test('fixed legacy amount cannot enable payments; explicit transport and value semantics are required',()=>{
+ assert.equal(configuracaoCreditos({SHREDDER_FEIRA_CREDITS_ENABLED:'true',SHREDDER_FEIRA_CREDIT_VALUE:'3000'}).enabled,false);
+ assert.equal(configuracaoCreditos({SHREDDER_FEIRA_CREDITS_ENABLED:'true',SHREDDER_FEIRA_CREDIT_AUTH:'google',SHREDDER_FEIRA_CUSTOM_VALUES_CONFIRMED:'true'}).enabled,true);
 });
 test('saving verified Google proof alone never pays or creates ledger',t=>{
  const f=fixture(t);f.proof();assert.equal(f.calls.length,0);assert.equal(fs.existsSync(f.file),false);
@@ -27,7 +27,7 @@ test('saving verified Google proof alone never pays or creates ledger',t=>{
 test('confirmed persisted result sends fixed product and backend amount only once',async t=>{
  const f=fixture(t);f.proof();f.service.registrarConfirmados([{...f.result,value:2999,product:999}]);assert.equal(f.calls.length,0);
  await f.service.processarPendentes();assert.equal(f.calls.length,1);const [url,options]=f.calls[0];
- assert.equal(url,URL_CREDIT);assert.equal(options.method,'POST');assert.equal(options.headers.Authorization,'Bearer '+TOKEN);assert.deepEqual(JSON.parse(options.body),{product:87,value:12});assert.equal(options.redirect,'error');
+ assert.equal(url,URL_CREDIT);assert.equal(options.method,'POST');assert.equal(options.headers.Authorization,'Bearer '+TOKEN);assert.deepEqual(JSON.parse(options.body),{product:87,value:400});assert.equal(options.redirect,'error');
  const entry=Object.values(f.read().entries)[0];assert.equal(entry.status,'paid');assert.equal(entry.operation,42);
  f.service.registrarConfirmados([f.result]);await f.service.processarPendentes();assert.equal(f.calls.length,1);
  assert.equal(fs.readFileSync(f.file,'utf8').includes(TOKEN),false);

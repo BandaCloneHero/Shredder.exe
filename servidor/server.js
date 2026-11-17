@@ -16,6 +16,7 @@ const { nomePublicoJogador } = require("./nomes-publicos");
 const { validarNomeConta } = require("./operadores");
 const { criarGoogleIdentity } = require("./google-identity");
 const { criarCreditosFeira } = require("./feira-creditos");
+const { registrarRotasFeira } = require("./feira-creditos-routes");
 const { criarCatalogoMusicas, normalizarNomeMusica, registrarRotaCapas } = require("./catalogo-musicas");
 const catalogoMusicas = criarCatalogoMusicas();
 const { registrarRotasGoogle } = require("./google-auth-routes");
@@ -69,6 +70,7 @@ const { verificarIdTokenGoogle } = criarGoogleIdentity({aoValidar: prova => {
     feiraCreditos.guardarCredencial(prova);
     feiraCreditos.agendar();
 }});
+registrarRotasFeira(app, { feiraCreditos, getAuthenticatedSession });
 app.get("/api/feira/creditos", (req, res) => {
     res.set("Cache-Control", "no-store");
     const session = getAuthenticatedSession(req);
@@ -1242,7 +1244,7 @@ io.on("connection", (socket) => {
 
         let creditosFeira = {enabled:false};
         try {
-            creditosFeira = feiraCreditos.registrarConfirmados(resultadosSalvos);
+            creditosFeira = feiraCreditos.registrarConfirmados(resultadosSalvos, { ticket });
             feiraCreditos.agendar();
         } catch {
             // Results stay saved. Never retry a payment whose outcome is unknown.

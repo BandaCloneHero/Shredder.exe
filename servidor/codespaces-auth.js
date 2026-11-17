@@ -20,7 +20,7 @@ function criarProxyCodespaces({origin,port}) {
     return(req,res,next)=>{
         const path=req.path.toLowerCase().replace(/\/+$/,'')||'/';
         const bootstrap=req.method==='GET'&&path==='/api/dev/codespaces';
-        const protectedPost=req.method==='POST'&&(/^\/api\/auth\/google(?:\/(?:start|register|link))?$/.test(path)||path==='/api/perfil/apelido');
+        const protectedPost=req.method==='POST'&&(/^\/api\/auth\/google(?:\/(?:start|register|link))?$/.test(path)||path==='/api/perfil/apelido'||path==='/api/feira/vincular');
         if(!bootstrap&&!protectedPost)return next();
         res.set('Cache-Control','no-store');
         const deny=()=>res.status(403).json({ok:false,code:'CODESPACES_PROOF_REQUIRED',error:'Abra o jogo pelo endereço privado correto do Codespaces.'});

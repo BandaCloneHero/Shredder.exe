@@ -53,7 +53,7 @@ class ShredderAccount {
 
     const dev = this.codespacesProof;
     if (dev && dev.origin === window.location.origin && method === 'POST' &&
-        (/^\/api\/auth\/google(?:\/(?:start|register|link))?$/.test(path) || path === '/api/perfil/apelido')) {
+        (/^\/api\/auth\/google(?:\/(?:start|register|link))?$/.test(path) || path === '/api/perfil/apelido' || path === '/api/feira/vincular')) {
       headers['X-Shredder-Origin'] = dev.origin;
       headers['X-Shredder-Nonce'] = dev.nonce;
     }

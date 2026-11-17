@@ -3267,3 +3267,11 @@ main:focus { outline: none; }
 .music-card::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgb(8 15 24 / 20%), rgb(8 15 24 / 75%)); pointer-events: none; }
 .music-card > :not(.music-cover) { position: relative; z-index: 2; }
 .music-instrument img { display: block; width: 34px; height: 34px; object-fit: contain; }
+
+.feira-credit-panel { margin-top: 24px; padding: 24px; border: 1px solid #34535e; border-radius: 12px; background: #121c29; }
+.feira-credit-panel h2 { font: 600 1.2rem Inter, sans-serif; }
+.feira-credit-panel p, .feira-credit-panel li, .feira-credit-panel label { line-height: 1.6; }
+.feira-credit-panel li { margin: .6rem 0; overflow-wrap: anywhere; }
+.feira-credit-panel label { display: block; margin: 1rem 0; }
+.feira-credit-panel [hidden] { display: none; }
+.feira-credit-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }

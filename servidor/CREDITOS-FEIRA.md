@@ -1,70 +1,140 @@
-# Créditos da Feira — preparação desativada
+# Recompensas da Feira — teste completo, ativação manual
 
-> Atualização de 17/11/2026: a regra aprovada é uma reserva por música de campanha
-> (400/600/800), dividida entre a banda. O valor fixo descrito abaixo é legado e
-> **não deve ser ativado** como implementação dessa regra. O cálculo novo está em
-> `recompensa-boss.js`, ainda sem associação às três músicas nem conexão à fila.
-> Consulte `docs/balanceamento-boss.md` para as pendências. A fila já recusa modo
-> livre, ausência de vitória e resultados não concluídos.
+## O que está ligado
 
+A confirmação do operador chama `registrarConfirmados(resultados, {ticket})` somente
+após persistir os resultados de toda a banda. O serviço relê esses resultados; não
+usa um valor, dificuldade ou precisão fornecidos separadamente pelo navegador.
 
-Produto do Shredder: **87**. Contrato fornecido pelo responsável: `POST https://feira-de-jogos.dev.br/api/v2/credit`, `Authorization: Bearer <Google ID Token>`, JSON `{product:87,value:<inteiro>}`. A rota fornecida valida o Google ID Token contra os client IDs de jogos cadastrados e identifica a pessoa pelo email no cadastro da Feira. Não há troca por JWT próprio da Feira nesse código.
+Requisitos: modo história, boss derrotado explicitamente, resultados concluídos,
+contas Google identificadas e mesma música/fase para toda a banda. Resultado parcial,
+modo livre, derrota, ausência de vitória e música não configurada não geram crédito.
 
-Esta implementação não usa `/adminCredit`, não usa token administrativo, não pede userId ao jogador, não implementa `/debit` e não executou chamadas reais. O login existente Google Identity Services foi preservado.
+`recompensas-campanha.json` associa cada fase às músicas autorizadas e ao teto:
 
-## Estado e ativação futura
+- Fácil: 400 tijolinhos por partida da sala.
+- Média: 600.
+- Difícil: 800.
 
-A integração está desativada. O valor oficial ainda não foi informado. Não há quantidade padrão, nem inferência a partir da pontuação.
+Metade é dividida igualmente; metade é proporcional à precisão percentual de cada
+jogador. O maior resto distribui arredondamentos inteiros, com desempate estável por
+accountId. O total nunca aumenta: 100/60/40/10% na fácil produz 145/107/88/60. Quatro
+iguais recebem 100; um único vencedor recebe 400. Todos com 0% não recebem.
 
-Somente depois de definir a regra oficial e autorizar o teste real, configurar no backend:
+A faixa original **Teste de creditos - Shredder**, de 40 segundos, está autorizada
+nas fases 1/2/3 exclusivamente para homologar os três valores sem as músicas finais.
+As fases 4/5 não geram recompensa. Antes do evento, substituir as músicas de teste no
+JSON pelas três músicas definitivas. A dificuldade individual não determina o teto.
+Cada novo ticket confirmado é uma nova partida; a regra atual não limita partidas
+premiadas por pessoa/dia. Repetir o mesmo resultado/ticket não gera outro crédito.
 
-- `SHREDDER_FEIRA_CREDITS_ENABLED=true`.
-- `SHREDDER_FEIRA_CREDIT_VALUE`: inteiro fixo entre 1 e 3000, sem espaços. Ausente/inválido mantém tudo desativado, mesmo com a flag true.
+## Dois contratos; nunca há fallback entre eles
 
-O valor vem exclusivamente do ambiente do servidor. Produto 87 e URL são fixos; o navegador/operador não escolhem quantidade ou destino. A preparação atual é por resultado individual concluído e confirmado, não por pontuação, banda ou edição manual. Se a regra oficial for diferente, adaptá-la antes de ativar. Não há pagamento retroativo automático de testes antigos.
+### Segredo do jogo (modo `secret`)
 
-A API fornecida ignora `value` e usa o preço do produto quando o cadastro do produto tem preço positivo. Confirmar esse cadastro para evitar anunciar uma quantidade incorreta. O jogador precisa estar cadastrado na Feira com o email do Google utilizado. O código não consulta nem modifica esse cadastro.
+O código de `/gameCredit` fornecido aceita Bearer com segredo de jogo, `{userId,price}`
+e devolve `201 {operationId}`. Ele respeita `price` explícito. Esse é o modo padrão.
 
-## Fluxo implementado
+O professor também indicou `/adminCredit`. Se essa for a URL autorizada para o segredo
+entregue, configurá-la explicitamente. A implementação aceita `operationId` ou
+`operation` inteiro positivo nesse modo. A compatibilidade do segredo com essa rota
+precisa ser confirmada no teste; não foi feita chamada para descobrir isso. Não há
+segunda tentativa automática em outra rota se ocorrer 401, 403, timeout ou erro.
 
-1. Após validação completa do login Google pelo backend, uma cópia temporária da prova pode ser guardada em memória, somente se créditos estiverem habilitados e configurados. A prova tem a expiração verificada do token e é descartada automaticamente. Não vai para arquivos, logs, sessões ou respostas.
-2. O operador oficial confirma o ticket pelo fluxo existente. Os resultados continuam sendo persistidos como antes.
-3. Depois de todos os resultados serem salvos, o backend registra os pedidos de crédito dos jogadores com identidade Google direta e resultado individual concluído. Não credita resultados não salvos, banda, jogador desconhecido ou partida incompleta.
-4. O serviço processa os pedidos fora da confirmação do operador, usando `{product:87,value}`. A identidade vem do vínculo imutável da conta, não do payload do navegador.
-5. O token precisa continuar válido. Se não houver prova em memória (por exemplo, após reinício ou com sessão local antiga), o pedido aguarda o jogador entrar novamente com Google. Não basta restaurar a sessão local: sair e entrar com Google fornece uma nova prova.
-6. O sucesso exige HTTP 201 e `operation` inteiro positivo. A operação da Feira é registrada no controle privado. Nenhum erro bruto remoto é exposto.
+Configurações do processo Node, sem colocá-las no frontend:
 
-Os perfis, sessões, permissões, ranking e moedas locais não são substituídos pelo controle de créditos da Feira. Um erro de crédito não apaga nem desfaz o resultado confirmado. Falha ao registrar o pedido local é indicada como pendência de revisão ao operador, sem enviar transferência.
+```
+SHREDDER_FEIRA_CREDITS_ENABLED=true
+SHREDDER_FEIRA_CREDIT_AUTH=secret
+SHREDDER_FEIRA_GAME_SECRET=<segredo fornecido pelo responsável>
+SHREDDER_FEIRA_GAME_CREDIT_URL=https://feira-de-jogos.dev.br/api/v2/gameCredit
+```
 
-## Persistência e duplicação
+Para usar a orientação original do professor, o último valor será
+`https://feira-de-jogos.dev.br/api/v2/adminCredit`. Nunca use um JWT Google no campo
+GAME_SECRET. Nunca copie o segredo para a Unity, `docs/`, Git ou mensagens de suporte.
 
-`feira-creditos.js` grava `servidor/creditos-feira.json` atomicamente, com permissão 0600. O arquivo fica fora de docs e está ignorado no Git. Contém accountId interno, partidaId, quantidade solicitada, estado e operação retornada; não contém tokens, emails ou credenciais. O identificador local deriva de accountId + partidaId.
+O ID da Feira não é o accountId do Shredder, Google sub ou email. O jogador clica em
+**Conectar cadastro da Feira** no ticket e autoriza explicitamente a conexão. O
+backend encaminha sua prova Google verificada a `POST /api/v2/login` da Feira, recebe
+`user` e guarda o vínculo privado por accountId. Essa rota da Feira pode criar cadastro
+se ele não existir — o consentimento informa isso. Não há input de userId/email livre.
+O mesmo ID da Feira não pode ser vinculado a duas contas locais, e mudar username não
+remove o vínculo. A permissão `operator` da resposta externa é ignorada.
 
-Estados:
+O cliente OAuth do Shredder precisa ser aceito em `GOOGLE_CLIENT_ID` da Feira para
+/login e /balance. Estar apenas em `GOOGLE_CLIENT_ID_GAMES` não basta. Conectar exige
+um login Google recente no Shredder; saia e entre novamente se necessário. O vínculo
+é durável, mas o JWT permanece somente em memória até expirar.
 
-- `pending`: pedido registrado, sem envio.
-- `awaiting_login`: aguarda nova prova Google válida.
-- `sending`: estado persistido **antes** de iniciar a chamada.
-- `paid`: HTTP 201 e operação válida, sem novos envios.
-- `rejected`: HTTP 4xx, incluindo 401/403/429; revisão necessária.
-- `unknown`: timeout, falha de rede, resposta ambígua ou envio interrompido; revisão necessária.
+### Google direto (modo `google`, opcional)
 
-Repetir a confirmação não duplica o pedido. Envios concorrentes no mesmo processo são coordenados. O controle foi projetado para o mesmo modelo de **um processo Node** usado pelas contas JSON do projeto. Não executar duas instâncias compartilhando o arquivo; para múltiplas instâncias é necessário armazenamento transacional com unicidade e locks.
+`POST /api/v2/credit`, Google ID Token no Bearer, `{product:87,value}` e
+`201 {operation}`. Só é habilitado com:
 
-O contrato da Feira fornecido não aceita chave de idempotência. Logo, não é possível garantir automaticamente “exatamente uma vez” entre os dois servidores. Em dúvida sobre o resultado remoto, o serviço **não reenvia**. Se o envio foi registrado como `sending` e o servidor reiniciou, ele vira `unknown`; não se presume falha para tentar de novo. Uma falha de disco depois de HTTP 201 também não ocasiona reenvio automático.
+```
+SHREDDER_FEIRA_CREDITS_ENABLED=true
+SHREDDER_FEIRA_CREDIT_AUTH=google
+SHREDDER_FEIRA_CUSTOM_VALUES_CONFIRMED=true
+```
 
-Antes de reprocessar manualmente um caso desconhecido, verificar a operação na Feira com o responsável. Não apagar o registro para forçar uma nova chamada.
+A última flag exige confirmação do responsável de que /credit respeitará `value`.
+O código recebido pode substituir value pelo preço positivo do produto 87, o que
+invalidaria a divisão. Não usar esse modo sem confirmar a semântica do cadastro.
+O servidor guarda somente provas Google já validadas, em memória. Sessão local
+restaurada sem login Google novo não fornece JWT para esse envio. Sem prova válida,
+a recompensa aguarda novo login, sem enviar transferência. O segredo do jogo não é
+usado neste modo. `SHREDDER_FEIRA_CREDIT_VALUE` deixou de ser usado.
 
-O exemplo de API consulta operações apenas no último minuto, mas calcula Retry-After com quatro horas; não se assume uma frequência oficial a partir dessa inconsistência. Respostas 429 são preservadas para revisão, não agendadas automaticamente.
+## Registro privado e proteção contra duplicação
 
-## Consulta de estado
+`creditos-feira.json` permanece fora de docs, ignorado no Git e gravado atomicamente
+com permissão 0600. Não contém tokens nem emails. A mesma escrita registra a divisão
+inteira da banda e seus pedidos. Cada pedido deriva de accountId + partidaId; o grupo
+deriva do conjunto de partidas. Os valores ficam congelados depois de registrados.
 
-`GET /api/feira/creditos` exige a sessão local e devolve somente os estados e operações da própria conta. Não aceita accountId do navegador para consultar outro jogador e nunca devolve prova Google. Com a integração desligada, responde desabilitada sem criar arquivo ou consultar a Feira.
+Estados: pending, awaiting_login, awaiting_feira, sending, paid, rejected e unknown.
+`paid` exige HTTP 201 e ID de operação válido. Esse ID e o valor solicitado ficam no
+registro. A API da Feira não devolve o saldo ou o valor efetivamente lançado nessa
+resposta; a consulta de saldo é independente. Não se apresenta uma fila como pagamento.
 
-A confirmação do operador informa separadamente que o pedido foi registrado; isso não é tratado como confirmação de pagamento. A mensagem só aparece quando a integração estiver habilitada.
+O estado sending é persistido antes da chamada. Timeout, erro de rede, 5xx, resposta
+inválida e envio interrompido ficam unknown, sem reenvio automático. Rejeições 4xx,
+inclusive 429, também não são repetidas automaticamente. Um ID de operação já usado
+em outro pagamento fica em revisão. Mudança de transporte e pedidos pendentes antigos
+da regra de valor fixo são bloqueados para revisão, não pagos retroativamente.
 
-## Validação realizada
+A fila foi feita para **um processo Node**, como o armazenamento JSON das contas.
+Não executar múltiplos processos compartilhando esses arquivos. A Feira não oferece
+idempotência externa neste contrato: não é possível garantir exatamente uma vez entre
+os dois servidores. Uma falha depois de o dinheiro ser lançado exige conciliação com
+a Feira; não apagar registros nem criar outro pedido para "tentar de novo".
+Uma falha em um jogador não desfaz automaticamente os créditos já confirmados dos
+outros. Erros financeiros nunca apagam resultados, ranking ou progresso.
 
-Testes offline com HTTP simulado cobrem produto/quantidade, ausência de valor, repetição, autorização do operador, confirmação antes do pagamento, proteção do estado privado, expiração do token, HTTP 400/401/403/429/500, respostas inválidas, timeout/rede, reinício e falha de disco antes/depois da resposta remota. Nenhum teste inicia servidor, consulta usuários ou executa crédito real.
+## Interface e consultas
 
-Antes de ativar: receber a regra oficial de quantidade/frequência, confirmar o cadastro do produto 87 e da pessoa de teste na Feira, revisar pendências e autorizar explicitamente um teste real. Não usar essa ativação como parte automática de deploy ou reinício do servidor.
+O ticket mostra as próprias recompensas, valores, operações e estados. O navegador
+consulta somente o backend local; nunca recebe o segredo nem o JWT guardado.
+
+- GET /api/feira/creditos: sessão local, somente a própria conta.
+- POST /api/feira/vincular: sessão local, JSON `{consent:true}`, origem protegida,
+  limite de frequência e Google recente; não aceita userId/email do navegador.
+- GET /api/feira/saldo: somente após clique, sessão local e prova Google válida;
+  encaminha GET /api/v2/balance. Não cria créditos nem cadastros.
+- GET /api/feira/recompensas: configuração pública de fases e músicas, sem segredos.
+
+Vincular cadastro e consultar saldo não acontecem automaticamente ao abrir o ticket.
+A página atualiza o estado local da fila a cada 10 segundos. As moedas locais do jogo
+continuam independentes do saldo da Feira. Nenhum /debit foi implementado aqui.
+
+## Verificação e homologação
+
+Os testes automatizados usam provas, contas, arquivos e HTTP fictícios, sem abrir
+servidores nem chamar a Feira. Exercitam a persistência real de partidas e a divisão
+por banda; falta/expiração de prova; vínculo verificado; isolamento de conta;
+consentimento; rede/HTTP/disco; duplicação; transporte e interface.
+
+A implementação não ativa flags, modifica dados reais, executa transferência,
+consulta usuários, faz deploy, commit ou push. Veja **TESTE-CREDITOS.md** para o
+roteiro manual da build. Atualizar apenas o executável não atualiza o backend.

@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "fases": [
+    {
+      "fase": 1,
+      "dificuldade": "facil",
+      "musicas": [
+        "Teste de creditos - Shredder"
+      ]
+    },
+    {
+      "fase": 2,
+      "dificuldade": "media",
+      "musicas": [
+        "Teste de creditos - Shredder"
+      ]
+    },
+    {
+      "fase": 3,
+      "dificuldade": "dificil",
+      "musicas": [
+        "Teste de creditos - Shredder"
+      ]
+    }
+  ]
+}

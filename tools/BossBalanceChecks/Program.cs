@@ -19,7 +19,7 @@ for(int players=1;players<=4;players++){
 }
 Check(File.ReadAllText(Path.Combine(root,"Assets/Scenes/Gameplay.unity")).Contains("  soloTargetHitRate: 0.5\n"), "The actual scene uses the accessible target, not an old serialized value");
 var uninitialized=Start(0);uninitialized.RegisterNoteHit(new RhythmJudgmentResult(1));Check(!uninitialized.IsDefeated,"Waits for a valid note count");
-foreach (var file in new[] { "BossHealthBar.cs", "BossAttackController.cs" }) {
+foreach (var file in new[] { "BossHealthBar.cs", "BossAttackController.cs", "Integration/OperatorScoreReporter.cs" }) {
  var syntax = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(root,"Assets/Script",file)), new Microsoft.CodeAnalysis.CSharp.CSharpParseOptions(Microsoft.CodeAnalysis.CSharp.LanguageVersion.CSharp9));
  Check(!syntax.GetDiagnostics().Any(d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error), "C#9 syntax: " + file);
 }

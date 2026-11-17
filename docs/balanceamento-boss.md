@@ -36,18 +36,19 @@ precisão. Usa inteiros e maior resto para conservar exatamente o total aprovado
 com desempate estável por ID. Só calcula prêmio com vitória explícita no modo
 história e todos os resultados concluídos. Todos com precisão zero não recebem.
 
-O módulo é somente cálculo: não grava moedas, não faz chamadas à Feira e não foi
-ligado à emissão de pagamentos. A associação das três músicas às faixas de prêmio
-continua pendente; nenhum nome de música ou classificação foi presumido.
-Não foi alterada a campanha atual de cinco fases para três nesta etapa.
+O módulo continua sendo cálculo puro, mas agora a fila de `servidor/feira-creditos.js`
+o utiliza depois da confirmação do operador e da releitura dos resultados persistidos.
+A configuração pública de músicas/fases fica em `servidor/recompensas-campanha.json`.
+A faixa original **Teste de creditos - Shredder** foi autorizada pelo responsável e
+cadastrada nas fases 1/2/3 para homologar os tetos sem as músicas definitivas.
+A campanha de cinco fases não foi reduzida; fases 4/5 não têm prêmio configurado.
 
-Na fila existente de créditos foi acrescentada uma proteção independente: o
-resultado persistido precisa ter modo história, bossDerrotado=true e concluida=true.
-Modo livre, derrota, vitória ausente e partida incompleta não entram na fila.
+A fila exige modo história, bossDerrotado=true e concluida=true em todos os resultados.
+Não aceita uma banda parcialmente salva nem redistribui a parte de alguém ausente.
+Todos os valores individuais e o grupo ficam registrados atomicamente antes do envio.
+O modo livre não gera recompensa. Nenhuma moeda local é alterada pelo cálculo.
 
-**A integração financeira continua desativada.** A configuração antiga de valor
-fixo não implementa a nova divisão. Antes de ativar qualquer flag, é necessário
-ligar o cálculo aos resultados persistidos de toda a banda, configurar as três
-músicas e adaptar a fila para os valores individuais; o cadastro da Feira também
-precisa respeitar esses valores (a rota /credit pode usar o preço do produto em vez
-de `value`, conforme o contrato recebido). Não foi feita chamada real à Feira.
+**A integração financeira depende de ativação manual no servidor.** Não foi ativada
+nesta implementação nem houve chamada real. Os contratos Google/segredo, proteção
+contra duplicação e o roteiro da build estão em `servidor/CREDITOS-FEIRA.md` e
+`servidor/TESTE-CREDITOS.md`. O valor fixo antigo do `.env` deixou de ser utilizado.

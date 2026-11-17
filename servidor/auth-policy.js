@@ -16,7 +16,7 @@ function criarPoliticaAutenticacao({ googleOnly = true, origemPublica = DEFAULT_
         if (googleOnly && path === '/api/auth/google/register') {
             return res.status(410).json({ok:false, code:'PROFILE_CREATION_AUTOMATIC', error:'Seu perfil é preparado automaticamente ao entrar com Google.'});
         }
-        const protectedPost = /^\/api\/auth\/google(?:\/(?:start|link|register))?$/.test(path) || path === '/api/perfil/apelido';
+        const protectedPost = /^\/api\/auth\/google(?:\/(?:start|link|register))?$/.test(path) || path === '/api/perfil/apelido' || path === '/api/feira/vincular';
         if (!protectedPost) return next();
         if (!origem) return res.status(503).json({ok:false, code:'GOOGLE_AUTH_UNAVAILABLE', error:'Entrada indisponível no momento.'});
         // Production accepts the exact public origin, never Codespaces loopback rewrites.
