@@ -14,6 +14,10 @@ namespace YARG.Gameplay.Judgments
         public string ReplayChecksum;
         public Guid[] Players;
         public RhythmJudgmentSettings[] Policies;
+        public bool[] AdaptedProKeys;
+
+        public bool UsesAdaptedProKeys(int frame) => AdaptedProKeys != null &&
+            frame >= 0 && frame < AdaptedProKeys.Length && AdaptedProKeys[frame];
 
         public RhythmJudgmentSettings GetPolicy(int frame) => Policies != null && frame >= 0 && frame < Policies.Length
             ? Policies[frame]?.Copy() : null;
@@ -33,7 +37,8 @@ namespace YARG.Gameplay.Judgments
                 var metadata = JsonConvert.DeserializeObject<JudgmentReplayMetadata>(File.ReadAllText(path));
                 if (metadata == null || metadata.Version != 1 || metadata.ReplayChecksum != replay.ReplayChecksum.ToString() ||
                     metadata.Players == null || metadata.Policies == null || metadata.Players.Length != data.Frames.Length ||
-                    metadata.Policies.Length != data.Frames.Length)
+                    metadata.Policies.Length != data.Frames.Length ||
+                    (metadata.AdaptedProKeys != null && metadata.AdaptedProKeys.Length != data.Frames.Length))
                     throw new InvalidDataException("Metadados de julgamento incompatíveis com o replay.");
                 for (int i = 0; i < data.Frames.Length; i++)
                 {

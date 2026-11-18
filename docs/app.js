@@ -853,7 +853,7 @@ function initializeRoomPresence(player) {
         if (modo) writeJson(STORAGE.mode, modo);
         if (currentPage === "ticket") {
             const stage = document.querySelector("#ticket-stage");
-            if (stage) stage.textContent = modo?.tipo === "historia" ? `FASE ${modo.fase}` : (modo?.musica?.nome || "LIVRE");
+            if (stage) stage.textContent = modo?.tipo === "historia" ? (modo.musica?.nome || `FASE ${modo.fase}`) : (modo?.musica?.nome || "LIVRE");
             const type = document.querySelector("#ticket-mode");
             if (type) type.textContent = modo?.tipo === "historia" ? "MODO HISTÓRIA" : "FREEPLAY";
             renderTicketBattle(null);
@@ -1014,31 +1014,33 @@ function getProgress() {
     return initial;
 }
 
-const STAGES = [
-    "PULSO ZERO",
-    "CIDADE DE VIDRO",
-    "SINAL FANTASMA",
-    "SOBRECARGA",
-    "ÚLTIMA TRANSMISSÃO",
-];
+const DIFICULDADES_CAMPANHA = { facil: "Fácil", media: "Média", dificil: "Difícil" };
+
+async function carregarMusicasDaCampanha() {
+    const response = await fetch("/api/feira/recompensas", { cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok || !data.ok || !Array.isArray(data.fases) || !data.fases.length) {
+        throw new Error("Campanha indisponível.");
+    }
+    return data.fases;
+}
 
 function fasesLocaisComoPerfil() {
     // O armazenamento local não comprova vitórias; só o servidor libera fases.
     return { desbloqueadas: [1], favoritas: [], concluidas: [], selecionada: null, historicoSelecionadas: [] };
 }
 
-function renderStages(fases) {
+function renderStages(fases, stages) {
     const desbloqueadas = new Set(fases.desbloqueadas || [1]);
     const concluidas = new Set(fases.concluidas || []);
     const grid = document.querySelector("#stage-grid");
-    document.querySelector("#progress-count").textContent =
-        `${String([...desbloqueadas].filter(fase => fase <= STAGES.length).length).padStart(2, "0")} / ${String(STAGES.length).padStart(2, "0")}`;
-    grid.innerHTML = STAGES
-        .map((stage, index) => {
-            const fase = index + 1;
+    const liberadas = stages.filter(stage => desbloqueadas.has(stage.fase)).length;
+    document.querySelector("#progress-count").textContent = `${liberadas} / ${stages.length}`;
+    grid.innerHTML = stages
+        .map(({ fase, dificuldade, musicas }) => {
             const isUnlocked = desbloqueadas.has(fase);
             const isComplete = concluidas.has(fase);
-            return `<div class="stage-option"><button type="button" class="stage-card ${isUnlocked ? "" : "locked"} ${isComplete ? "complete" : ""}" data-stage="${fase}" ${isUnlocked ? "" : "disabled"}><span class="stage-number">0${fase}</span><strong>${stage}</strong><small>${isComplete ? "Chefe derrotado" : isUnlocked ? "Disponível" : "Derrote o chefe anterior"}</small>${isComplete ? "<em>✓ Concluída</em>" : ""}</button></div>`;
+            return `<div class="stage-option"><button type="button" class="stage-card ${isUnlocked ? "" : "locked"} ${isComplete ? "complete" : ""}" data-stage="${fase}" ${isUnlocked ? "" : "disabled"}><span class="stage-number">0${fase}</span><strong>${escapeHtml(musicas[0])}</strong><small>${escapeHtml(DIFICULDADES_CAMPANHA[dificuldade] || "")}</small><small>${isComplete ? "Chefe derrotado" : isUnlocked ? "Disponível" : "Derrote o chefe anterior"}</small>${isComplete ? "<em>✓ Concluída</em>" : ""}</button></div>`;
         })
         .join("");
     grid.querySelectorAll(".stage-card:not(.locked)").forEach((card) =>
@@ -1089,8 +1091,11 @@ function initializeModes() {
     initializeRoomPresence(player);
     document.querySelector("#mode-player").textContent = player.apelido || player.nome;
     document.querySelector("#mode-instrument").textContent = player.instrumento;
-    renderStages(fasesLocaisComoPerfil());
-    carregarFasesDoPerfil(player).then(renderStages);
+    Promise.all([carregarFasesDoPerfil(player), carregarMusicasDaCampanha()])
+        .then(([fases, stages]) => renderStages(fases, stages))
+        .catch(() => {
+            document.querySelector("#mode-status").textContent = "Não foi possível carregar as músicas da campanha. Atualize a página para tentar novamente.";
+        });
     document
         .querySelector("#freeplay-card")
         .addEventListener("click", () => { window.location.href = "musicas.html"; });
@@ -1549,7 +1554,7 @@ function initializeTicket() {
     document.querySelector("#ticket-mode").textContent =
         mode.tipo === "historia" ? "MODO HISTÓRIA" : "TOQUE LIVRE";
     document.querySelector("#ticket-stage").textContent =
-        mode.tipo === "historia" ? `FASE ${mode.fase}` : (mode.musica?.nome || "LIVRE");
+        mode.tipo === "historia" ? (mode.musica?.nome || `FASE ${mode.fase}`) : (mode.musica?.nome || "LIVRE");
     document.querySelector("#ticket-band").textContent = readJson(STORAGE.roomBand, null)?.nome || "SEM BANDA";
     document.querySelector("#ticket-count").textContent = lobby.length;
     document.querySelector("#ticket-code").textContent = player.id

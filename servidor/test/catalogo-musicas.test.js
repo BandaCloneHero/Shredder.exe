@@ -65,7 +65,8 @@ test('selection ignores submitted names and checks authoritative room instrument
 function ticketHandler({owner=true,pending=false,players=1}={}) {
  const server=fs.readFileSync(path.join(__dirname,'../server.js'),'utf8');let handler;const emitted=[];
  const room={donoId:'owner',socketDonoId:'socket',jogadores:Array.from({length:players},(_,i)=>({id:'p'+i,username:'test'+i})),instrumentos:{guitarra:'p0',baixo:players>1?'p1':null},ticketsPendentes:pending?[{}]:[]};
- const ctx=vm.createContext({socket:{id:'socket',data:{operadorId:owner?'owner':'other',salaId:'r'},on:(_name,fn)=>handler=fn,emit:()=>{}},salas:{r:room},randomUUID:()=> 'test-ticket',proximaOrdemTicket:0,ticketsSessaoPendentes:[],io:{to:()=>({emit:(event,payload)=>emitted.push({event,payload})})},enviarEstadoSala(){},validarFaseDosJogadores(){},catalogoMusicas:{selecionar(id,sala){if(id!=='valid')throw Error('Escolha uma música do catálogo.');if(sala.jogadores.length>1)throw Error('Música incompatível.');return{id:'valid',nome:'Do catálogo',artista:'Banda',instrumentos:['guitarra']};}}});
+ const biblioteca = criarCatalogoMusicas();
+ const ctx=vm.createContext({normalizarNomeMusica,socket:{id:'socket',data:{operadorId:owner?'owner':'other',salaId:'r'},on:(_name,fn)=>handler=fn,emit:()=>{}},salas:{r:room},randomUUID:()=> 'test-ticket',proximaOrdemTicket:0,ticketsSessaoPendentes:[],io:{to:()=>({emit:(event,payload)=>emitted.push({event,payload})})},enviarEstadoSala(){},validarFaseDosJogadores(){},campanhaWeb:require("../recompensas-campanha.json").fases,catalogoMusicas:{listar: biblioteca.listar, selecionar(id,sala){if(id!=='valid')return biblioteca.selecionar(id,sala);if(sala.jogadores.length>1)throw Error('Música incompatível.');return{id:'valid',nome:'Do catálogo',artista:'Banda',instrumentos:['guitarra']};}}});
  vm.runInContext(server.slice(server.indexOf('    socket.on(\n        "owner_emitir_ticket"'),server.indexOf('    function entrarNaSala(')),ctx);
  return{room,emitted,run(modo){let result;handler({roomId:'r',modo},r=>result=r);return result;}};
 }
@@ -78,6 +79,10 @@ test('ticket and room broadcast carry canonical song; story still follows its ex
  assert.equal(f.room.ultimoTicket.musica,'Do catálogo');assert.equal(f.room.ultimoTicket.modo.fase,null);
  assert.equal(f.emitted[0].payload.modo.musica.nome,'Do catálogo');
  const story=ticketHandler();assert.equal(story.run({tipo:'historia',fase:1}).ok,true);assert.equal(story.room.ultimoTicket.modo.fase,1);
+ assert.equal(story.room.ultimoTicket.musica,'Kairós');
+ assert.equal(story.room.ultimoTicket.modo.musica.instrumentos.length,4);
+ assert.ok(story.room.ultimoTicket.modo.musicaId);
+ assert.equal(ticketHandler().run({tipo:'historia',fase:4}).ok,false);
 });
 test('current library is entirely indexed, with stable unique IDs and known multi-instrument arrangements',()=>{
  const result=criarCatalogoMusicas().listar();assert.ok(result.musicas.length>100);assert.equal(result.indisponiveis,0);

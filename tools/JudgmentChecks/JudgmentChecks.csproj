@@ -10,6 +10,7 @@
     <Compile Include="../../Assets/Script/BossTransformationPlayback.cs" Link="BossTransformationPlayback.cs" />
     <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgmentReplayMetadata.cs" Link="JudgmentReplayMetadata.cs" />
     <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgmentReplayAnalyzer.cs" Link="JudgmentReplayAnalyzer.cs" />
+    <Compile Include="../../Assets/Script/Gameplay/Player/SevenKeyProKeysChart.cs" Link="SevenKeyProKeysChart.cs" />
     <Compile Include="../../Assets/Script/Gameplay/Judgments/JudgedEngines.cs" Link="JudgedEngines.cs" />
     <Compile Include="../../Assets/Script/Gameplay/Judgments/RhythmJudgmentSession.cs" Link="RhythmJudgmentSession.cs" />
     <ProjectReference Include="../../YARG.Core/YARG.Core/YARG.Core.csproj" />

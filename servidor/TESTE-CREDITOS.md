@@ -56,17 +56,14 @@ Shredder. O painel do operador e o executável precisam usar a mesma fila.
 
 ## Uma partida autorizada
 
-1. Copie a pasta `musicas/Shredder - Teste de creditos` para uma pasta de músicas
-   configurada no jogo. Faça uma busca completa. Arquivos na raiz `musicas/` não são
-   incorporados automaticamente pelo processo de build do Unity.
+1. Adicione `musicas/musicas_autorais/` às pastas de músicas do jogo e faça
+   uma busca completa. A biblioteca externa de músicas fica separada da build.
 2. No site, crie sua sala, escolha um instrumento e selecione história/fase 1.
 3. No ticket, marque o consentimento e clique **Conectar cadastro da Feira**. A Feira
    pode criar seu cadastro se ele ainda não existir; o site avisa isso. Essa conexão
    não é concessão de operador nem transferência de créditos.
 4. Se quiser comparar, clique **Consultar saldo da Feira** antes de jogar.
-5. No executável, escolha Gepeto e **Teste de creditos - Shredder**. São 40 segundos,
-   com quatro instrumentos e charts simples em todas as dificuldades. A música é
-   original e feita para teste; seus sons são sintetizados.
+5. No executável, escolha Gepeto e **Kairós**, a faixa oficial da fase 1.
 6. Termine a música e derrote o boss. Se ele sobreviver, não há recompensa.
 7. No painel de operador oficial, confira a música, os jogadores e a vitória; confirme
    o resultado do ticket correto. Essa ação autoriza o crédito real com a flag ligada.
@@ -75,7 +72,7 @@ Shredder. O painel do operador e o executável precisam usar a mesma fila.
 9. Sozinho, a fase 1 solicita 400 tijolinhos. Quatro pessoas com precisão igual solicitam
    100 para cada uma. Depois consulte o saldo na Feira para verificar o lançamento real.
 
-A mesma faixa está liberada temporariamente na fase 2 (600) e 3 (800). A fase precisa
+Use **Música Média** na fase 2 (600) e **Música Difícil** na fase 3 (800). A fase precisa
 estar desbloqueada pela vitória anterior; não é necessário alterar contas reais para
 isso. A dificuldade escolhida no perfil não altera o prêmio. Repetir uma nova partida
 com outro ticket pode gerar outra recompensa; não faça isso como diagnóstico de um

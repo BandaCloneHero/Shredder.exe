@@ -5,7 +5,7 @@ const {randomUUID}=require('node:crypto');
 const {criarPersistenciaPartidas,validarResultado}=require('../partidas');
 const {criarCreditosFeira,URL_LOGIN,URL_GAME_CREDIT,URL_BALANCE}=require('../feira-creditos');
 const names=['ana','bia','caio','duda'],instruments=['guitarra','baixo','bateria','teclado'];
-function setup(t,{precisoes=[100,60,40,10],mode='google',fase=1,musica='Fake band song',request}={}){
+function setup(t,{precisoes=[100,60,40,10],mode='google',fase=1,musica='Fake band song',request, usarRegrasOficiais=false}={}){
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'shredder-band-rewards-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
  const accountsFile=path.join(dir,'accounts.json'),ledger=path.join(dir,'ledger.json');
  fs.writeFileSync(accountsFile,JSON.stringify({accounts:Object.fromEntries(names.slice(0,precisoes.length).map((name,i)=>[name,{username:name,accountId:randomUUID(),authProviders:{google:{provider:'google',sub:'sub-'+name,linkedAt:new Date().toISOString()}},fases:{desbloqueadas:[1,2,3]}}]))}));
@@ -16,7 +16,7 @@ function setup(t,{precisoes=[100,60,40,10],mode='google',fase=1,musica='Fake ban
  }
  const env={SHREDDER_FEIRA_CREDITS_ENABLED:'true',SHREDDER_FEIRA_CREDIT_AUTH:mode,SHREDDER_FEIRA_CUSTOM_VALUES_CONFIRMED:'true',SHREDDER_FEIRA_GAME_SECRET:'synthetic-game-secret'};
  const contas=()=>JSON.parse(fs.readFileSync(accountsFile,'utf8')).accounts;
- const service=criarCreditosFeira({arquivo:ledger,env,regras:{fases:[{fase:1,dificuldade:'facil',musicas:['Fake band song']},{fase:2,dificuldade:'media',musicas:['Fake band song']},{fase:3,dificuldade:'dificil',musicas:['Fake band song']}]},resolverConta:({username,accountId})=>username?contas()[username]:Object.values(contas()).find(a=>a.accountId===accountId),fetch:async(url,options)=>{calls.push({url,options});if(request)return request(url,options);if(url===URL_LOGIN){const who=names.indexOf(options.headers.Authorization.slice('Bearer proof-'.length));return{status:200,json:async()=>({user:101+who,operator:true})};}if(url===URL_BALANCE)return{status:200,json:async()=>({balance:1234})};return{status:201,json:async()=>mode==='google'?{operation:1000+calls.length}:{operationId:1000+calls.length}};}});
+ const service=criarCreditosFeira({arquivo:ledger,env,...(!usarRegrasOficiais && {regras:{fases:[{fase:1,dificuldade:'facil',musicas:['Fake band song']},{fase:2,dificuldade:'media',musicas:['Fake band song']},{fase:3,dificuldade:'dificil',musicas:['Fake band song']}]} }),resolverConta:({username,accountId})=>username?contas()[username]:Object.values(contas()).find(a=>a.accountId===accountId),fetch:async(url,options)=>{calls.push({url,options});if(request)return request(url,options);if(url===URL_LOGIN){const who=names.indexOf(options.headers.Authorization.slice('Bearer proof-'.length));return{status:200,json:async()=>({user:101+who,operator:true})};}if(url===URL_BALANCE)return{status:200,json:async()=>({balance:1234})};return{status:201,json:async()=>mode==='google'?{operation:1000+calls.length}:{operationId:1000+calls.length}};}});
  for(const name of names.slice(0,precisoes.length))service.guardarCredencial({identidade:{provider:'google',sub:'sub-'+name},token:'proof-'+name,expiresAt:Date.now()+60000});
  return{service,results,calls,env,ledger,accountsFile,contas,ticket:{jogadores:results.map(r=>({nome:r.username}))},read:()=>JSON.parse(fs.readFileSync(ledger,'utf8'))};
 }
@@ -26,8 +26,28 @@ test('real persisted results produce the approved 145/107/88/60 split and one im
  assert.equal(Object.keys(f.read().groups).length,1);assert.equal(Object.values(f.read().entries).reduce((s,e)=>s+e.value,0),400);
  assert.equal(f.service.registrarConfirmados([...f.results].reverse(),{ticket:f.ticket}).registered,0);await f.service.processarPendentes();assert.equal(f.calls.length,4);
 });
-for(const [fase,amount]of [[1,400],[2,600],[3,800]])test('one winner receives the entire phase '+fase+' pool',async t=>{
- const f=setup(t,{precisoes:[75],fase});assert.equal(f.service.registrarConfirmados(f.results).total,amount);await f.service.processarPendentes();assert.equal(JSON.parse(f.calls[0].options.body).value,amount);
+for (const [fase, pasta, total] of [
+    [1, 'Música Fácil/Kairós', 400],
+    [2, 'Música Médio/Música Média', 600],
+    [3, 'Música Difícil', 800],
+]) {
+    test(`a vitória na música oficial da fase ${fase} envia ${total} tijolinhos ao vencedor solo`, async t => {
+        const ini = fs.readFileSync(path.join(__dirname, '../../musicas/musicas_autorais', pasta, 'song.ini'), 'utf8');
+        const musica = /^name\s*=\s*(.+)$/mi.exec(ini)[1].trim();
+        const f = setup(t, { precisoes: [75], fase, musica, usarRegrasOficiais: true });
+        assert.equal(f.service.registrarConfirmados(f.results, { ticket: f.ticket }).total, total);
+        await f.service.processarPendentes();
+        assert.equal(f.calls.length, 1);
+        assert.equal(JSON.parse(f.calls[0].options.body).value, total);
+    });
+}
+test('a faixa de teste e a música na fase trocada ficam fora das recompensas oficiais', async t => {
+    for (const musica of ['Teste de creditos - Shredder', 'Música Difícil']) {
+        const f = setup(t, { precisoes: [75], fase: 1, musica, usarRegrasOficiais: true });
+        assert.equal(f.service.registrarConfirmados(f.results, { ticket: f.ticket }).status, 'song_not_configured');
+        await f.service.processarPendentes();
+        assert.equal(f.calls.length, 0);
+    }
 });
 test('equal four-player accuracy yields 100 each on easy',async t=>{
  const f=setup(t,{precisoes:[100,100,100,100]});f.service.registrarConfirmados(f.results);await f.service.processarPendentes();assert.deepEqual(f.calls.map(c=>JSON.parse(c.options.body).value),[100,100,100,100]);

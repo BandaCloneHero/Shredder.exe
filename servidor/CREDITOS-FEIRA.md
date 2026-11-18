@@ -21,10 +21,9 @@ jogador. O maior resto distribui arredondamentos inteiros, com desempate estáve
 accountId. O total nunca aumenta: 100/60/40/10% na fácil produz 145/107/88/60. Quatro
 iguais recebem 100; um único vencedor recebe 400. Todos com 0% não recebem.
 
-A faixa original **Teste de creditos - Shredder**, de 40 segundos, está autorizada
-nas fases 1/2/3 exclusivamente para homologar os três valores sem as músicas finais.
-As fases 4/5 não geram recompensa. Antes do evento, substituir as músicas de teste no
-JSON pelas três músicas definitivas. A dificuldade individual não determina o teto.
+**Kairós** está vinculada à fase 1, **Música Média** à fase 2 e **Música Difícil**
+à fase 3. As fases 4 e 5 ficam fora das recompensas. A dificuldade individual
+não determina o teto.
 Cada novo ticket confirmado é uma nova partida; a regra atual não limita partidas
 premiadas por pessoa/dia. Repetir o mesmo resultado/ticket não gera outro crédito.
 

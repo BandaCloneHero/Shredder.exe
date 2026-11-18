@@ -72,9 +72,10 @@ namespace YARG.Gameplay.Player
         public float RangeShiftOffset => _currentOffset;
 
         [Header("Teclado de sete teclas brancas")]
-        [Tooltip("Usa cores individuais e posições fixas apenas em charts que contêm somente dó a si da primeira oitava. Outros charts mantêm o Pro Keys original.")]
+        [Tooltip("Adapta os charts de Pro Keys para as sete teclas brancas de dó a si.")]
         [SerializeField] private bool _enableSevenWhiteKeys = true;
         public bool SevenWhiteKeysMode { get; private set; }
+        public bool AdaptedToSevenKeys { get; private set; }
 
         [Header("Pro Keys Specific")]
         [SerializeField]
@@ -131,21 +132,16 @@ namespace YARG.Gameplay.Player
 
         protected override InstrumentDifficulty<ProKeysNote> GetNotes(SongChart chart)
         {
-            var track = chart.ProKeys.Clone();
-            var difficulty = track.GetDifficulty(Player.Profile.CurrentDifficulty);
-            SevenWhiteKeysMode = _enableSevenWhiteKeys && difficulty.Notes.Count > 0;
-            foreach (var parent in difficulty.Notes)
-            {
-                foreach (var note in parent.AllNotes)
-                {
-                    if (!SevenKeyProKeysLayout.IsPlayable(note.Key))
-                    {
-                        SevenWhiteKeysMode = false;
-                        break;
-                    }
-                }
-                if (!SevenWhiteKeysMode) break;
-            }
+            var difficulty = chart.ProKeys.GetDifficulty(Player.Profile.CurrentDifficulty).Clone();
+            bool needsAdaptation = SevenKeyProKeysChart.NeedsAdaptation(difficulty);
+            AdaptedToSevenKeys = needsAdaptation && (Player.IsReplay
+                ? GameManager.ReplayJudgments?.UsesAdaptedProKeys(Player.ReplayIndex) == true
+                : _enableSevenWhiteKeys);
+            if (AdaptedToSevenKeys)
+                SevenKeyProKeysChart.Adapt(difficulty);
+
+            SevenWhiteKeysMode = difficulty.Notes.Count > 0 &&
+                (AdaptedToSevenKeys || (_enableSevenWhiteKeys && !needsAdaptation));
             return difficulty;
         }
 
