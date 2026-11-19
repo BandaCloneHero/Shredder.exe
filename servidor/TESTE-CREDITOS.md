@@ -75,7 +75,7 @@ Shredder. O painel do operador e o executável precisam usar a mesma fila.
 9. Sozinho, a fase 1 solicita 400 tijolinhos. Quatro pessoas com precisão igual solicitam
    100 para cada uma. Depois consulte o saldo na Feira para verificar o lançamento real.
 
-A mesma faixa está liberada temporariamente na fase 2 (600) e 3 (800). A fase precisa
+Use **Música Média** na fase 2 (600) e **Música Difícil** na fase 3 (800). A fase precisa
 estar desbloqueada pela vitória anterior; não é necessário alterar contas reais para
 isso. A dificuldade escolhida no perfil não altera o prêmio. Repetir uma nova partida
 com outro ticket pode gerar outra recompensa; não faça isso como diagnóstico de um

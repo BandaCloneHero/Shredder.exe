@@ -15,9 +15,9 @@ const { validarPreservacaoIdentidades } = require("./identidades");
 const { nomePublicoJogador } = require("./nomes-publicos");
 const { validarNomeConta } = require("./operadores");
 const { criarGoogleIdentity } = require("./google-identity");
+const campanhaWeb = require("./recompensas-campanha.json").fases;
 const { criarCreditosFeira } = require("./feira-creditos");
 const { registrarRotasFeira } = require("./feira-creditos-routes");
-const { fases: fasesComRecompensa } = require("./recompensas-campanha.json");
 const { criarCatalogoMusicas, normalizarNomeMusica, registrarRotaCapas } = require("./catalogo-musicas");
 const catalogoMusicas = criarCatalogoMusicas();
 const { registrarRotasGoogle } = require("./google-auth-routes");
@@ -1272,12 +1272,13 @@ io.on("connection", (socket) => {
             io.to(`operador-resultados:${ticket.roomId}`).emit("ticket_sessao_removido", { ticketId: ticket.ticketId });
             if (ticket.modo?.tipo === "historia") {
                 const venceu = ticket.bossDerrotado === true && ticket.resultadosExecutavel.every(item => item.concluida !== false);
+                const ultimaFase = ticket.modo.musica ? campanhaWeb.at(-1).fase : FASES_CAMPANHA.length;
                 sala.campanha = {
                     fase: ticket.modo.fase,
                     bossDerrotado: ticket.bossDerrotado ?? null,
                     venceu,
-                    proximaFase: venceu && ticket.modo.fase < FASES_CAMPANHA.length ? ticket.modo.fase + 1 : ticket.modo.fase,
-                    campanhaConcluida: venceu && ticket.modo.fase === FASES_CAMPANHA.length,
+                    proximaFase: venceu && ticket.modo.fase < ultimaFase ? ticket.modo.fase + 1 : ticket.modo.fase,
+                    campanhaConcluida: venceu && ticket.modo.fase === ultimaFase,
                 };
                 io.to(ticket.roomId).emit("resultado_boss_confirmado", sala.campanha);
             }
@@ -1464,9 +1465,14 @@ io.on("connection", (socket) => {
                 if (!modo || !["historia", "freeplay"].includes(modo.tipo)) throw new Error("Modo de jogo inválido.");
                 if (modo.tipo === "historia") {
                     validarFaseDosJogadores(sala.jogadores, modo.fase);
-                    modoTicket = { tipo: "historia", fase: modo.fase };
-                    const fasePremiada = fasesComRecompensa.find(({ fase }) => fase === modo.fase);
-                    if (fasePremiada) modoTicket.musica = { nome: fasePremiada.musicas[0] };
+                    const etapa = campanhaWeb.find(item => item.fase === modo.fase);
+                    if (!etapa?.musicas?.length) throw new Error("Esta fase não está disponível na campanha.");
+                    const faixa = catalogoMusicas.listar().musicas.find(item =>
+                        item.capaUrl && normalizarNomeMusica(item.nome) === normalizarNomeMusica(etapa.musicas[0])
+                    );
+                    if (!faixa) throw new Error("A música desta fase não foi encontrada na biblioteca.");
+                    const musica = catalogoMusicas.selecionar(faixa.id, sala);
+                    modoTicket = { tipo: "historia", fase: modo.fase, musicaId: musica.id, musica };
                 } else {
                     const musica = catalogoMusicas.selecionar(modo.musicaId, sala);
                     modoTicket = { tipo: "freeplay", fase: null, musicaId: musica.id, musica };

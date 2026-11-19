@@ -826,6 +826,7 @@ namespace YARG.Gameplay
             }
 
             var policies = new List<RhythmJudgmentSettings>(_players.Count);
+            var adaptedProKeys = new List<bool>(_players.Count);
             var profileIds = new List<Guid>(_players.Count);
             var frames = new List<ReplayFrame>(_players.Count);
             var replayStats = new List<ReplayStats>(_players.Count);
@@ -846,6 +847,7 @@ namespace YARG.Gameplay
                 frames.Add(frame);
                 var session = (player as TrackPlayer)?.JudgmentSession;
                 policies.Add(session != null && session.WeightedScoring ? session.Policy.Copy() : null);
+                adaptedProKeys.Add(player is ProKeysPlayer { AdaptedToSevenKeys: true });
                 profileIds.Add(player.Player.Profile.Id);
                 replayStats.Add(stats);
                 bandScore += player.Score;
@@ -875,7 +877,12 @@ namespace YARG.Gameplay
                 return null;
             }
 
-            ReplayJudgments = new JudgmentReplayMetadata { Players = profileIds.ToArray(), Policies = policies.ToArray() };
+            ReplayJudgments = new JudgmentReplayMetadata
+            {
+                Players = profileIds.ToArray(),
+                Policies = policies.ToArray(),
+                AdaptedProKeys = adaptedProKeys.ToArray(),
+            };
             ReplayJudgments.Save(replayInfo);
             ReplayContainer.AddEntry(replayInfo);
             _isReplaySaved = true;

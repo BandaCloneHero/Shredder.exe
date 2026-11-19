@@ -1136,7 +1136,7 @@
       "gamesPlayed": 0,
       "currentTitle": "Novato do Rock",
       "createdAt": "2026-11-12T11:30:52.036Z",
-      "updatedAt": "2026-11-14T14:09:41.806Z",
+      "updatedAt": "2026-11-18T20:55:42.485Z",
       "lifetimeStats": {
         "totalNotesHit": 0,
         "totalMisses": 0
@@ -1238,6 +1238,10 @@
           {
             "fase": 1,
             "selecionadaEm": "2026-11-14T14:09:41.806Z"
+          },
+          {
+            "fase": 1,
+            "selecionadaEm": "2026-11-18T20:55:42.485Z"
           }
         ]
       },

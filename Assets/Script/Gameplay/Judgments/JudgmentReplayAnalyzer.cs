@@ -16,6 +16,7 @@ using YARG.Core.Game;
 using YARG.Core.Logging;
 using YARG.Core.Replays;
 using YARG.Core.Replays.Analyzer;
+using YARG.Gameplay.Player;
 
 namespace YARG.Gameplay.Judgments
 {
@@ -33,7 +34,8 @@ namespace YARG.Gameplay.Judgments
             {
                 var frame = data.Frames[i];
                 var policy = metadata.GetPolicy(i);
-                engines[i] = CreateEngine(chart, frame.Profile, frame.EngineParameters, policy);
+                engines[i] = CreateEngine(chart, frame.Profile, frame.EngineParameters, policy,
+                    metadata.UsesAdaptedProKeys(i));
                 engines[i].PreferClosestNote = policy != null && policy.UseMillisecondWindow;
                 manager.Register(engines[i], frame.Profile.CurrentInstrument, chart, RockMeterPreset.Normal);
                 engines[i].SetSpeed(frame.EngineParameters.SongSpeed);
@@ -75,7 +77,8 @@ namespace YARG.Gameplay.Judgments
             return results;
         }
 
-        private static BaseEngine CreateEngine(SongChart _chart, YargProfile profile, BaseEngineParameters parameters, RhythmJudgmentSettings policy)
+        private static BaseEngine CreateEngine(SongChart _chart, YargProfile profile, BaseEngineParameters parameters,
+            RhythmJudgmentSettings policy, bool adaptedProKeys)
         {
             var session = policy == null ? null : new RhythmJudgmentSession(policy);
             switch (profile.GameMode)
@@ -141,6 +144,8 @@ namespace YARG.Gameplay.Judgments
                     {
                         // Reset the notes
                         var proNotes = _chart.ProKeys.GetDifficulty(profile.CurrentDifficulty).Clone();
+                        if (adaptedProKeys)
+                            SevenKeyProKeysChart.Adapt(proNotes);
                         profile.ApplyModifiers(proNotes, _chart.SyncTrack);
                         foreach (var note in proNotes.Notes)
                         {

@@ -14,7 +14,7 @@ test('Feira link/balance require the local session and never trust requested acc
  const balance=await f.run('GET','/api/feira/saldo',{session:{account:{accountId:'own'}},query:{accountId:'victim'}});assert.equal(balance.body.balance,100);assert.deepEqual(f.calls.at(-1),['balance','own']);
 });
 test('public reward configuration includes fixed tiers without secrets or performing a financial call',async()=>{
- const f=setup();const result=await f.run('GET','/api/feira/recompensas');assert.deepEqual(result.body.fases.map(f=>f.total),[400,600,800]);assert.equal(f.calls.length,0);assert.match(result.body.fases[0].musicas[0],/Teste/);
+ const f=setup();const result=await f.run('GET','/api/feira/recompensas');assert.deepEqual(result.body.fases.map(f=>f.total),[400,600,800]);assert.equal(f.calls.length,0);assert.deepEqual(result.body.fases.map(f=>f.musicas),[['Kairós'],['Neon em Ruínas'],['Colapso do Núcleo']]);
 });
 test('linking requires an explicit JSON consent and rejects cross-site origins',()=>{
  const middleware=criarPoliticaAutenticacao();

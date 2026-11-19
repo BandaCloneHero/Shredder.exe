@@ -39,8 +39,8 @@ história e todos os resultados concluídos. Todos com precisão zero não receb
 O módulo continua sendo cálculo puro, mas agora a fila de `servidor/feira-creditos.js`
 o utiliza depois da confirmação do operador e da releitura dos resultados persistidos.
 A configuração pública de músicas/fases fica em `servidor/recompensas-campanha.json`.
-A faixa original **Teste de creditos - Shredder** foi autorizada pelo responsável e
-cadastrada nas fases 1/2/3 para homologar os tetos sem as músicas definitivas.
+As fases 1, 2 e 3 usam **Kairós**, **Música Média** e **Música Difícil**,
+respectivamente. Cada fase só premia a música correspondente.
 A campanha de cinco fases não foi reduzida; fases 4/5 não têm prêmio configurado.
 
 A fila exige modo história, bossDerrotado=true e concluida=true em todos os resultados.
