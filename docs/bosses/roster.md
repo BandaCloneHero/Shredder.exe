@@ -1,7 +1,8 @@
 # Chefes de Shredder
 
-Na biblioteca, os três botões no topo escolhem o chefe da próxima música.
-A escolha é salva localmente. Gepeto permanece como opção inicial.
+As três faixas oficiais do álbum **Shredder.exe - Campanha** têm chefes fixos.
+Kairós enfrenta Gepeto, Neon em Ruínas enfrenta Geminias e Colapso do Núcleo
+enfrenta Cláudio.
 
 ## Gepeto — O Arquiteto
 
@@ -50,14 +51,13 @@ A arte procedural anterior permanece apenas como fallback para arquivo ausente.
 A recuperação limitada de vida, o bônus por bloqueio e o cálculo proporcional
 às notas usam as regras existentes. Nenhum ataque muda o tempo de acerto.
 
-Verificar no Unity: escolher cada chefe na biblioteca, iniciar uma música,
+Verificar no Unity: iniciar cada faixa oficial da campanha,
 bloquear e falhar uma defesa, atravessar 50% de vida, pausar durante ataque,
 derrotar o chefe e conferir o nome nos resultados. Repetir com Gepeto e com
 dois jogadores. Prática e busca de replay mantêm os ataques desativados.
 
-O ambiente de desenvolvimento sem Unity não permite confirmar a composição
-visual da biblioteca nem executar o combate; os botões superiores precisam de
-uma revisão visual em diferentes resoluções no Editor.
+Inicie também uma faixa fora da campanha e confira que a barra, o retrato e os
+ataques do chefe ficam ausentes. Revise o combate em diferentes resoluções no Editor.
 
 ## Retrato dentro do painel com recorte
 

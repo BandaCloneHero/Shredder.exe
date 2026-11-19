@@ -1377,6 +1377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsSeekingReplay: 0
+  _bossDock: {fileID: 1900000010}
   _trackViewManager: {fileID: 1330928978}
   _replayController: {fileID: 922548498}
   _pauseMenu: {fileID: 1323155442}
@@ -11021,7 +11022,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1900000011
 RectTransform:
   m_ObjectHideFlags: 0

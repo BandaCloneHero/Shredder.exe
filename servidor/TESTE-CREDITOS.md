@@ -64,9 +64,9 @@ Shredder. O painel do operador e o executável precisam usar a mesma fila.
    pode criar seu cadastro se ele ainda não existir; o site avisa isso. Essa conexão
    não é concessão de operador nem transferência de créditos.
 4. Se quiser comparar, clique **Consultar saldo da Feira** antes de jogar.
-5. No executável, escolha um chefe e **Kairós**, a música da fase 1 indicada no
-   ticket. Nas fases 2 e 3, toque **Neon em Ruínas** e **Colapso do Núcleo**,
-   respectivamente.
+5. No executável, escolha **Kairós** do álbum **Shredder.exe - Campanha** para
+   enfrentar Gepeto. Nas fases 2 e 3, **Neon em Ruínas** traz Geminias e
+   **Colapso do Núcleo** traz Cláudio.
 6. Termine a música e derrote o boss. Se ele sobreviver, não há recompensa.
 7. No painel de operador oficial, confira a música, os jogadores e a vitória; confirme
    o resultado do ticket correto. Essa ação autoriza o crédito real com a flag ligada.

@@ -185,6 +185,8 @@ namespace YARG.Gameplay
         private        bool HasBots            => _players.Any(p => !p.Player.SittingOut && p.Player.Profile.IsBot);
         private static bool SaveScoresWithBots => SettingsManager.Settings.SaveScoresWithBots.Value;
 
+        [SerializeField] private GameObject _bossDock;
+
         private void Awake()
         {
             // Set references
@@ -209,6 +211,9 @@ namespace YARG.Gameplay
                 GlobalVariables.Instance.LoadScene(SceneIndex.Menu);
                 return;
             }
+
+            if (BossRoster.ConfigureForSong(Song.Name, Song.Album) && _bossDock != null)
+                _bossDock.SetActive(true);
 
             // Hide vocals track (will be shown when players are initialized)
             VocalTrack.gameObject.SetActive(false);
@@ -619,23 +624,11 @@ namespace YARG.Gameplay
             }
 
             // Pass the score info to the stats screen
-            var bossReaction = FindAnyObjectByType<GepetoBossReaction>();
-            var bossBattle = bossReaction != null ? bossReaction.CaptureResult() : null;
-            if (bossBattle == null)
-            {
-                var bossHealth = FindAnyObjectByType<BossHealthBar>();
-                if (bossHealth != null)
-                    bossBattle = new BossBattleResult
-                    {
-                        Defeated = bossHealth.IsDefeated,
-                        RemainingHealth = bossHealth.CurrentHealth,
-                        MaxHealth = bossHealth.MaxHealth,
-                        BossName = "Boss"
-                    };
-            }
+            var bossReaction = _bossDock != null && _bossDock.activeInHierarchy
+                ? _bossDock.GetComponentInChildren<GepetoBossReaction>() : null;
             GlobalVariables.State.ScoreScreenStats = new ScoreScreenStats
             {
-                BossBattle = bossBattle,
+                BossBattle = bossReaction?.CaptureResult(),
                 PlayerScores = _players.Select(player => new PlayerScoreCard
                 {
                     IsHighScore = player.Score > player.LastHighScore,

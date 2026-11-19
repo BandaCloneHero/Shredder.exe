@@ -1,17 +1,26 @@
 using UnityEngine;
 
-/// <summary>Original AI-inspired stage personas. Selection persists between songs.</summary>
+/// <summary>Boss identities associated with the official campaign tracks.</summary>
 public static class BossRoster
 {
     public enum Identity { Gepeto, Geminias, Claudio }
-    private const string Preference = "Shredder.BossIdentity";
-    public static Identity Selected
+    public static Identity Selected { get; private set; }
+
+    public static bool ConfigureForSong(string name, string album)
     {
-        get => (Identity)Mathf.Clamp(PlayerPrefs.GetInt(Preference, 0), 0, 2);
-        set { PlayerPrefs.SetInt(Preference, (int)value); PlayerPrefs.Save(); }
+        var identity = album == "Shredder.exe - Campanha" ? name?.Normalize() switch
+        {
+            "Kairós" => Identity.Gepeto,
+            "Neon em Ruínas" => Identity.Geminias,
+            "Colapso do Núcleo" => Identity.Claudio,
+            _ => (Identity?)null
+        } : null;
+
+        Selected = identity.GetValueOrDefault();
+        return identity.HasValue;
     }
+
     public static string Name => Selected == Identity.Geminias ? "Geminias" : Selected == Identity.Claudio ? "Cláudio" : "Gepeto";
-    public static string Title => Selected == Identity.Geminias ? "O Processador Duplo" : Selected == Identity.Claudio ? "O Auditor de Circuitos" : "O Arquiteto";
     public static string Attack(int number) => Selected == Identity.Geminias
         ? (number % 2 == 1 ? "INFERÊNCIA PARALELA" : "SOBRECARGA MULTIMODAL")
         : Selected == Identity.Claudio ? "PROTOCOLO: REVISÃO" : "SOBRECARGA";

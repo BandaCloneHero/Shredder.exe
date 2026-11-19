@@ -1468,7 +1468,8 @@ io.on("connection", (socket) => {
                     const etapa = campanhaWeb.find(item => item.fase === modo.fase);
                     if (!etapa?.musicas?.length) throw new Error("Esta fase não está disponível na campanha.");
                     const faixa = catalogoMusicas.listar().musicas.find(item =>
-                        item.capaUrl && normalizarNomeMusica(item.nome) === normalizarNomeMusica(etapa.musicas[0])
+                        item.album === "Shredder.exe - Campanha" &&
+                        normalizarNomeMusica(item.nome) === normalizarNomeMusica(etapa.musicas[0])
                     );
                     if (!faixa) throw new Error("A música desta fase não foi encontrada na biblioteca.");
                     const musica = catalogoMusicas.selecionar(faixa.id, sala);

@@ -129,8 +129,6 @@ namespace YARG.Menu.MusicLibrary
         {
             base.Awake();
 
-            gameObject.AddComponent<global::BossSelectionPanel>();
-
             // Initialize sidebar
             _sidebar.Initialize(this, _searchField);
 
