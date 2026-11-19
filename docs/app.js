@@ -853,7 +853,7 @@ function initializeRoomPresence(player) {
         if (modo) writeJson(STORAGE.mode, modo);
         if (currentPage === "ticket") {
             const stage = document.querySelector("#ticket-stage");
-            if (stage) stage.textContent = modo?.tipo === "historia" ? `FASE ${modo.fase}` : (modo?.musica?.nome || "LIVRE");
+            if (stage) stage.textContent = modo?.musica?.nome || (modo?.tipo === "historia" ? `FASE ${modo.fase}` : "LIVRE");
             const type = document.querySelector("#ticket-mode");
             if (type) type.textContent = modo?.tipo === "historia" ? "MODO HISTÓRIA" : "FREEPLAY";
             renderTicketBattle(null);
@@ -1015,19 +1015,21 @@ function getProgress() {
 }
 
 const STAGES = [
-    "PULSO ZERO",
-    "CIDADE DE VIDRO",
-    "SINAL FANTASMA",
+    "Fase 1",
+    "Fase 2",
+    "Fase 3",
     "SOBRECARGA",
     "ÚLTIMA TRANSMISSÃO",
 ];
+
+const STAGE_COVERS = ["kairos.webp", "neon-em-ruinas.webp", "colapso-do-nucleo.webp"];
 
 function fasesLocaisComoPerfil() {
     // O armazenamento local não comprova vitórias; só o servidor libera fases.
     return { desbloqueadas: [1], favoritas: [], concluidas: [], selecionada: null, historicoSelecionadas: [] };
 }
 
-function renderStages(fases) {
+function renderStages(fases, recompensas = new Map()) {
     const desbloqueadas = new Set(fases.desbloqueadas || [1]);
     const concluidas = new Set(fases.concluidas || []);
     const grid = document.querySelector("#stage-grid");
@@ -1038,15 +1040,35 @@ function renderStages(fases) {
             const fase = index + 1;
             const isUnlocked = desbloqueadas.has(fase);
             const isComplete = concluidas.has(fase);
-            return `<div class="stage-option"><button type="button" class="stage-card ${isUnlocked ? "" : "locked"} ${isComplete ? "complete" : ""}" data-stage="${fase}" ${isUnlocked ? "" : "disabled"}><span class="stage-number">0${fase}</span><strong>${stage}</strong><small>${isComplete ? "Chefe derrotado" : isUnlocked ? "Disponível" : "Derrote o chefe anterior"}</small>${isComplete ? "<em>✓ Concluída</em>" : ""}</button></div>`;
+            const cover = STAGE_COVERS[index];
+            return `<div class="stage-option"><button type="button" class="stage-card ${cover ? "stage-card-with-cover" : ""} ${isUnlocked ? "" : "locked"} ${isComplete ? "complete" : ""}" data-stage="${fase}" ${isUnlocked ? "" : "disabled"}>${cover ? `<img class="music-cover" src="images/campanha/${cover}" alt="" decoding="async">` : ""}<span class="stage-number">0${fase}</span><strong>${stage}</strong><small>${isComplete ? "Chefe derrotado" : isUnlocked ? "Disponível" : "Derrote o chefe anterior"}</small><span class="stage-reward" hidden></span>${isComplete ? "<em>✓ Concluída</em>" : ""}</button></div>`;
         })
         .join("");
+    for (const card of grid.querySelectorAll(".stage-card")) {
+        const recompensa = recompensas.get(Number(card.dataset.stage));
+        if (!recompensa) continue;
+        card.querySelector("strong").textContent = recompensa.musicas[0];
+        const premio = card.querySelector(".stage-reward");
+        premio.textContent = `${recompensa.total} tijolinhos para a banda`;
+        premio.hidden = false;
+    }
     grid.querySelectorAll(".stage-card:not(.locked)").forEach((card) =>
         card.addEventListener("click", () =>
             chooseMode("historia", Number(card.dataset.stage)),
         ),
     );
     window.updateOwnerControls(window.shredderRoomState);
+}
+
+async function carregarRecompensasDaCampanha() {
+    try {
+        const response = await fetch("/api/feira/recompensas");
+        if (!response.ok) return new Map();
+        const { fases } = await response.json();
+        return new Map(fases.map((fase) => [fase.fase, fase]));
+    } catch {
+        return new Map();
+    }
 }
 
 async function carregarFasesDoPerfil(player) {
@@ -1090,7 +1112,8 @@ function initializeModes() {
     document.querySelector("#mode-player").textContent = player.apelido || player.nome;
     document.querySelector("#mode-instrument").textContent = player.instrumento;
     renderStages(fasesLocaisComoPerfil());
-    carregarFasesDoPerfil(player).then(renderStages);
+    Promise.all([carregarFasesDoPerfil(player), carregarRecompensasDaCampanha()])
+        .then(([fases, recompensas]) => renderStages(fases, recompensas));
     document
         .querySelector("#freeplay-card")
         .addEventListener("click", () => { window.location.href = "musicas.html"; });

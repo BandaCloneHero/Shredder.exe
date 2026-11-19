@@ -56,7 +56,7 @@ Shredder. O painel do operador e o executável precisam usar a mesma fila.
 
 ## Uma partida autorizada
 
-1. Copie a pasta `musicas/Shredder - Teste de creditos` para uma pasta de músicas
+1. Copie a pasta `musicas/musicas_autorais/Campanha` para uma pasta de músicas
    configurada no jogo. Faça uma busca completa. Arquivos na raiz `musicas/` não são
    incorporados automaticamente pelo processo de build do Unity.
 2. No site, crie sua sala, escolha um instrumento e selecione história/fase 1.
@@ -64,9 +64,9 @@ Shredder. O painel do operador e o executável precisam usar a mesma fila.
    pode criar seu cadastro se ele ainda não existir; o site avisa isso. Essa conexão
    não é concessão de operador nem transferência de créditos.
 4. Se quiser comparar, clique **Consultar saldo da Feira** antes de jogar.
-5. No executável, escolha Gepeto e **Teste de creditos - Shredder**. São 40 segundos,
-   com quatro instrumentos e charts simples em todas as dificuldades. A música é
-   original e feita para teste; seus sons são sintetizados.
+5. No executável, escolha um chefe e **Kairós**, a música da fase 1 indicada no
+   ticket. Nas fases 2 e 3, toque **Neon em Ruínas** e **Colapso do Núcleo**,
+   respectivamente.
 6. Termine a música e derrote o boss. Se ele sobreviver, não há recompensa.
 7. No painel de operador oficial, confira a música, os jogadores e a vitória; confirme
    o resultado do ticket correto. Essa ação autoriza o crédito real com a flag ligada.

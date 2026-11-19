@@ -12,19 +12,18 @@ modo livre, derrota, ausência de vitória e música não configurada não geram
 
 `recompensas-campanha.json` associa cada fase às músicas autorizadas e ao teto:
 
-- Fácil: 400 tijolinhos por partida da sala.
-- Média: 600.
-- Difícil: 800.
+- Fácil (Kairós): 400 tijolinhos por partida da sala.
+- Média (Neon em Ruínas): 600.
+- Difícil (Colapso do Núcleo): 800.
 
 Metade é dividida igualmente; metade é proporcional à precisão percentual de cada
 jogador. O maior resto distribui arredondamentos inteiros, com desempate estável por
 accountId. O total nunca aumenta: 100/60/40/10% na fácil produz 145/107/88/60. Quatro
 iguais recebem 100; um único vencedor recebe 400. Todos com 0% não recebem.
 
-A faixa original **Teste de creditos - Shredder**, de 40 segundos, está autorizada
-nas fases 1/2/3 exclusivamente para homologar os três valores sem as músicas finais.
-As fases 4/5 não geram recompensa. Antes do evento, substituir as músicas de teste no
-JSON pelas três músicas definitivas. A dificuldade individual não determina o teto.
+Os pacotes das três músicas ficam em `musicas/musicas_autorais/Campanha`. O ticket
+identifica a música da fase e o servidor confere o título recebido do executável.
+As fases 4/5 não geram recompensa. A dificuldade individual não determina o teto.
 Cada novo ticket confirmado é uma nova partida; a regra atual não limita partidas
 premiadas por pessoa/dia. Repetir o mesmo resultado/ticket não gera outro crédito.
 

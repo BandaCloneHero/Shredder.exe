@@ -17,6 +17,7 @@ const { validarNomeConta } = require("./operadores");
 const { criarGoogleIdentity } = require("./google-identity");
 const { criarCreditosFeira } = require("./feira-creditos");
 const { registrarRotasFeira } = require("./feira-creditos-routes");
+const { fases: fasesComRecompensa } = require("./recompensas-campanha.json");
 const { criarCatalogoMusicas, normalizarNomeMusica, registrarRotaCapas } = require("./catalogo-musicas");
 const catalogoMusicas = criarCatalogoMusicas();
 const { registrarRotasGoogle } = require("./google-auth-routes");
@@ -1464,6 +1465,8 @@ io.on("connection", (socket) => {
                 if (modo.tipo === "historia") {
                     validarFaseDosJogadores(sala.jogadores, modo.fase);
                     modoTicket = { tipo: "historia", fase: modo.fase };
+                    const fasePremiada = fasesComRecompensa.find(({ fase }) => fase === modo.fase);
+                    if (fasePremiada) modoTicket.musica = { nome: fasePremiada.musicas[0] };
                 } else {
                     const musica = catalogoMusicas.selecionar(modo.musicaId, sala);
                     modoTicket = { tipo: "freeplay", fase: null, musicaId: musica.id, musica };
@@ -1483,7 +1486,8 @@ io.on("connection", (socket) => {
                 roomName: sala.roomName,
                 banda: sala.banda,
                 modo: modoTicket,
-                ...(modoTicket.musica ? { musica: modoTicket.musica.nome, artista: modoTicket.musica.artista } : {}),
+                ...(modoTicket.musica ? { musica: modoTicket.musica.nome } : {}),
+                ...(modoTicket.musica?.artista ? { artista: modoTicket.musica.artista } : {}),
                 emitidoEm: new Date().toISOString(),
                 jogadores: sala.jogadores.map((jogador) => ({
                     id: jogador.id,
